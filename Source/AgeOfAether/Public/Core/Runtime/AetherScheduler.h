@@ -28,4 +28,5 @@ public:
 private:
     uint64 NextTaskId = 1;
     TArray<FAetherScheduledTask> Tasks;
+    double LastTickSeconds = 0.0;
 };
