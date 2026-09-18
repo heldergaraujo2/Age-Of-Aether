@@ -65,10 +65,13 @@ bool FAetherSchedulerTest::RunTest(const FString& Parameters)
     TestNotEqual(TEXT("Repeating task receives an ID"), RepeatingId, static_cast<uint64>(0));
 
     Scheduler.Tick(1.5);
-    TestEqual(TEXT("Repeating task fires once"), RepeatingCount, 1);
+    TestEqual(TEXT("Repeating task does not fire before initial delay"), RepeatingCount, 0);
 
-    Scheduler.Tick(2.5);
-    TestEqual(TEXT("Repeating task fires again"), RepeatingCount, 2);
+    Scheduler.Tick(2.0);
+    TestEqual(TEXT("Repeating task fires at initial due time"), RepeatingCount, 1);
+
+    Scheduler.Tick(3.0);
+    TestEqual(TEXT("Repeating task fires again after interval"), RepeatingCount, 2);
 
     TestTrue(TEXT("Repeating task can be cancelled"), Scheduler.Cancel(RepeatingId));
     TestEqual(TEXT("Cancelled task is removed"), Scheduler.NumTasks(), 0);
