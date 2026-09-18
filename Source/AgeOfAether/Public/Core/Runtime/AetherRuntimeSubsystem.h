@@ -6,6 +6,7 @@
 #include "Core/Runtime/AetherServerClock.h"
 #include "Core/Runtime/AetherScheduler.h"
 #include "Core/Runtime/AetherServiceRegistry.h"
+#include "Core/Runtime/AetherRuntimeConfig.h"
 
 #include "AetherRuntimeSubsystem.generated.h"
 
@@ -44,4 +45,5 @@ private:
     FAetherScheduler Scheduler;
     FAetherServiceRegistry ServiceRegistry;
     FTSTicker::FDelegateHandle TickerHandle;
+    FAetherRuntimeConfig RuntimeConfig;
 };
