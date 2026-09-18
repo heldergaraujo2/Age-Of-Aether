@@ -19,6 +19,7 @@ Phase 2 establishes the reusable runtime foundation required by later MMORPG sys
 - service registry;
 - core logging category;
 - runtime subsystem integration;
+- graceful shutdown path through the scheduler tick;
 - automation tests for core contracts.
 
 The implementation does not introduce networking, accounts, characters, items or persistence ahead of their roadmap phases.
@@ -64,6 +65,10 @@ FAetherRuntimeConfig reads:
 - TickIntervalSeconds.
 
 Defaults are stored in Config/DefaultGame.ini.
+
+### Graceful shutdown
+
+RequestShutdown transitions the runtime to ShuttingDown. The next runtime tick performs service shutdown, clears scheduled work, stops the server clock and removes the ticker callback. Unreal's Deinitialize path performs the same cleanup defensively.
 
 ### Service registry
 
