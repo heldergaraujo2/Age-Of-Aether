@@ -54,14 +54,7 @@ void UAetherRuntimeSubsystem::Deinitialize()
         TickerHandle.Reset();
     }
 
-    RuntimeState = EAetherRuntimeState::ShuttingDown;
-    ServiceRegistry.ShutdownAll();
-    Scheduler.Clear();
-    ServerClock.Stop();
-    HealthState = EAetherHealthState::Unknown;
-    RuntimeState = EAetherRuntimeState::Stopped;
-
-    UE_LOG(LogAgeOfAetherCore, Log, TEXT("Age of Aether core runtime stopped."));
+    FinalizeShutdown();
     Super::Deinitialize();
 }
 
@@ -91,7 +84,7 @@ FAetherRuntimeResult UAetherRuntimeSubsystem::RequestShutdown()
 
     RuntimeState = EAetherRuntimeState::ShuttingDown;
     HealthState = EAetherHealthState::Degraded;
-    return FAetherRuntimeResult::Success(TEXT("Shutdown requested."));
+    return FAetherRuntimeResult::Success(TEXT("Shutdown requested; runtime will stop on the next scheduler tick."));
 }
 
 FAetherServerClock& UAetherRuntimeSubsystem::GetServerClock()
@@ -106,6 +99,13 @@ FAetherScheduler& UAetherRuntimeSubsystem::GetScheduler()
 
 bool UAetherRuntimeSubsystem::TickRuntime(float DeltaTime)
 {
+    if (RuntimeState == EAetherRuntimeState::ShuttingDown)
+    {
+        FinalizeShutdown();
+        TickerHandle.Reset();
+        return false;
+    }
+
     if (RuntimeState != EAetherRuntimeState::Running)
     {
         return true;
@@ -115,18 +115,16 @@ bool UAetherRuntimeSubsystem::TickRuntime(float DeltaTime)
     return true;
 }
 
-FAetherRuntimeResult UAetherRuntimeSubsystem::TransitionTo(EAetherRuntimeState NewState)
+void UAetherRuntimeSubsystem::FinalizeShutdown()
 {
-    if (RuntimeState == NewState)
+    if (RuntimeState != EAetherRuntimeState::Stopped)
     {
-        return FAetherRuntimeResult::Success();
+        RuntimeState = EAetherRuntimeState::ShuttingDown;
+        ServiceRegistry.ShutdownAll();
+        Scheduler.Clear();
+        ServerClock.Stop();
+        HealthState = EAetherHealthState::Unknown;
+        RuntimeState = EAetherRuntimeState::Stopped;
+        UE_LOG(LogAgeOfAetherCore, Log, TEXT("Age of Aether core runtime stopped."));
     }
-
-    RuntimeState = NewState;
-    return FAetherRuntimeResult::Success();
-}
-
-void UAetherRuntimeSubsystem::SetHealth(EAetherHealthState NewHealth)
-{
-    HealthState = NewHealth;
 }
