@@ -32,7 +32,7 @@ bool FAetherServiceRegistry::UnregisterService(FName ServiceName)
 TSharedPtr<IAetherService> FAetherServiceRegistry::FindService(FName ServiceName) const
 {
     const TSharedRef<IAetherService>* Service = Services.Find(ServiceName);
-    return Service ? StaticCastSharedRef<IAetherService>(*Service) : nullptr;
+    return Service ? TSharedPtr<IAetherService>(*Service) : nullptr;
 }
 
 void FAetherServiceRegistry::ShutdownAll()
