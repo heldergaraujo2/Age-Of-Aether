@@ -9,7 +9,7 @@ uint64 FAetherScheduler::ScheduleOnce(double DelaySeconds, FAetherScheduledCallb
 
     FAetherScheduledTask Task;
     Task.TaskId = NextTaskId++;
-    Task.DueAtSeconds = DelaySeconds;
+    Task.DueAtSeconds = LastTickSeconds + DelaySeconds;
     Task.Callback = MoveTemp(Callback);
     Tasks.Add(MoveTemp(Task));
     return Tasks.Last().TaskId;
@@ -24,7 +24,7 @@ uint64 FAetherScheduler::ScheduleRepeating(double InitialDelaySeconds, double In
 
     FAetherScheduledTask Task;
     Task.TaskId = NextTaskId++;
-    Task.DueAtSeconds = InitialDelaySeconds;
+    Task.DueAtSeconds = LastTickSeconds + InitialDelaySeconds;
     Task.Callback = MoveTemp(Callback);
     Task.bRepeating = true;
     Task.IntervalSeconds = IntervalSeconds;
@@ -42,6 +42,7 @@ bool FAetherScheduler::Cancel(uint64 TaskId)
 
 void FAetherScheduler::Tick(double CurrentSeconds)
 {
+    LastTickSeconds = CurrentSeconds;
     for (int32 Index = Tasks.Num() - 1; Index >= 0; --Index)
     {
         FAetherScheduledTask& Task = Tasks[Index];
