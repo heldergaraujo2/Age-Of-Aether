@@ -36,8 +36,7 @@ public:
 
 private:
     bool TickRuntime(float DeltaTime);
-    FAetherRuntimeResult TransitionTo(EAetherRuntimeState NewState);
-    void SetHealth(EAetherHealthState NewHealth);
+    void FinalizeShutdown();
 
     EAetherRuntimeState RuntimeState = EAetherRuntimeState::Uninitialized;
     EAetherHealthState HealthState = EAetherHealthState::Unknown;
