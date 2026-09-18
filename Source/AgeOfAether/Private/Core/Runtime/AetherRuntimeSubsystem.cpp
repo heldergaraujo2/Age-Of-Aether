@@ -1,6 +1,7 @@
 #include "Core/Runtime/AetherRuntimeSubsystem.h"
 
 #include "Core/Runtime/AetherCoreLog.h"
+#include "Core/Runtime/AetherRuntimeConfig.h"
 #include "Containers/Ticker.h"
 
 void UAetherRuntimeSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -16,10 +17,28 @@ void UAetherRuntimeSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     }
 
     RuntimeState = EAetherRuntimeState::Initializing;
+
+    FString ConfigError;
+    if (!RuntimeConfig.Load(ConfigError))
+    {
+        UE_LOG(LogAgeOfAetherCore, Error, TEXT("Core runtime configuration is invalid: %s"), *ConfigError);
+        RuntimeState = EAetherRuntimeState::Failed;
+        HealthState = EAetherHealthState::Unhealthy;
+        return;
+    }
+
+    if (!RuntimeConfig.bEnabled)
+    {
+        RuntimeState = EAetherRuntimeState::Stopped;
+        HealthState = EAetherHealthState::Unknown;
+        UE_LOG(LogAgeOfAetherCore, Log, TEXT("Age of Aether core runtime is disabled by configuration."));
+        return;
+    }
+
     ServerClock.Start();
     TickerHandle = FTSTicker::GetCoreTicker().AddTicker(
         FTickerDelegate::CreateUObject(this, &UAetherRuntimeSubsystem::TickRuntime),
-        0.0f);
+        RuntimeConfig.TickIntervalSeconds);
 
     RuntimeState = EAetherRuntimeState::Running;
     HealthState = EAetherHealthState::Healthy;
