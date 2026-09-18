@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 1 — Unreal Project Foundation (repository baseline implemented; local validation pending)  
+**Status:** Phase 2 — Core Runtime (repository implementation complete; Unreal compilation/tests pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -838,6 +838,24 @@ Acceptance:
 ---
 
 ## PHASE 2 — Core Runtime
+
+**Repository implementation status:** COMPLETE  
+**Local Unreal validation:** PENDING
+
+Implemented repository-side:
+- runtime lifecycle and health states;
+- server clock;
+- scheduler;
+- configuration;
+- service registry;
+- core logging;
+- Unreal runtime subsystem;
+- core automation tests.
+
+Validation that requires Unreal Engine 5.8.1, UHT/UBT and the local Editor remains pending and is not represented as PASS.
+
+Deliverable: Docs/PHASE_2_CORE_RUNTIME.md
+
 
 Deliver:
 
