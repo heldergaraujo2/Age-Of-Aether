@@ -328,7 +328,45 @@ When another chat starts:
 7. Continue from the actual repository state.
 8. Update this file after every major change.
 
-## 15. IP/source rule
+## 15. Master Technical Blueprint
+
+The canonical detailed architecture document is:
+
+Docs/MASTER_TECHNICAL_BLUEPRINT.md
+
+It defines the target architecture and implementation model for:
+- Unreal Engine;
+- C++;
+- Blueprint;
+- data-driven content;
+- server authority;
+- Core Runtime;
+- accounts/sessions;
+- characters/stats/progression;
+- ItemDefinition and ItemInstance;
+- inventory/equipment;
+- options/sockets/enhancement;
+- drops;
+- world/NPCs/monsters/AI;
+- combat/skills/effects;
+- quests/rewards;
+- party/guild;
+- economy/trade/shops;
+- crafting;
+- events/instances/bosses;
+- social/mail;
+- persistence;
+- networking;
+- security/anti-cheat;
+- audit/logging/observability;
+- testing;
+- dedicated server;
+- future multi-server boundaries;
+- content/editor pipeline.
+
+This document describes the target architecture, not proof of implementation. Actual implementation status must always be verified against source code, tests and Git history.
+
+## 16. IP/source rule
 
 Do not copy MU Online proprietary code, assets, maps, protocols, client binaries or protected content.
 
