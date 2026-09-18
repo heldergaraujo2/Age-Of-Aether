@@ -9,7 +9,7 @@
 **Technical project:** AgeOfAether  
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
-**Current stage:** **Phase 0 — Repository and architecture foundation COMPLETE**  
+**Current stage:** Phase 0 — Repository and architecture foundation COMPLETE  
 **Roadmap:** `ROADMAP.md`
 
 AGE OF AETHER is intended to become a persistent MMORPG built with Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -29,8 +29,6 @@ AGE OF AETHER is intended to become a persistent MMORPG built with Unreal Engine
 - Documentation and this continuity file are part of the project.
 
 ## 3. Current status
-
-Phase 0 is complete. The repository now contains the governance and validation baseline required by the Phase 0 acceptance criteria.
 
 Repository is at the initial foundation stage.
 
@@ -293,9 +291,7 @@ PRÓXIMO PASSO
 
 ## 13. Immediate next step
 
-**PHASE 1 — Unreal Project Foundation.**
-
-First verify Unreal Engine 5.8.1 locally, verify the C++ toolchain and Git LFS, then create/validate the real Unreal project baseline. Do not create a fake .uproject in Phase 0.
+Create the clean Unreal project baseline and repository structure.
 
 Before implementation, determine:
 
@@ -370,19 +366,26 @@ It defines the target architecture and implementation model for:
 
 This document describes the target architecture, not proof of implementation. Actual implementation status must always be verified against source code, tests and Git history.
 
-## 16. Phase 0 evidence
-
-- Repository tree inspected at commit 9e5073f and after Phase 0 changes.
-- Recent Git history inspected; prior work is documentation/architecture only.
-- Required source-of-truth documents verified.
-- Git ignore and LFS policy added.
-- Repository foundation, coding standards, test strategy and asset/IP policy added.
-- No Unreal runtime or gameplay implementation was falsely declared complete.
-
-## 17. IP/source rule
+## 16. IP/source rule
 
 Do not copy MU Online proprietary code, assets, maps, protocols, client binaries or protected content.
 
 Use the supplied Item.txt and public documentation only as reference for data modeling and architectural lessons.
 
 AGE OF AETHER must use original implementation and original content.
+
+
+## 16. Phase 0 evidence
+
+- Repository tree inspected at the pre-change commit and after Phase 0 changes.
+- Recent Git history inspected; prior work is documentation/architecture only.
+- Required source-of-truth documents verified.
+- Git ignore and LFS policy added.
+- Repository foundation, coding standards, test strategy and asset/IP policy added.
+- No Unreal runtime or gameplay implementation was falsely declared complete.
+
+## 17. Next phase
+
+PHASE 1 — Unreal Project Foundation.
+
+First verify Unreal Engine 5.8.1 locally, verify the C++ toolchain and Git LFS, then create/validate the real Unreal project baseline. Do not create a fake .uproject in Phase 0.
