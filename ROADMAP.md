@@ -1,0 +1,1801 @@
+# AGE OF AETHER — MASTER ROADMAP
+## MMORPG • Unreal Engine + C++ • Server-Authoritative • Data-Driven
+
+**Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
+**Technical project:** `AgeOfAether`  
+**Status:** Architecture / foundation planning  
+**Source of truth:** This repository  
+**Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
+
+---
+
+## 1. Purpose of this roadmap
+
+This document is the master execution roadmap for AGE OF AETHER.
+
+The project is intended to become a persistent MMORPG with:
+
+- Unreal Engine client;
+- C++ gameplay/server foundation;
+- Blueprint for presentation, composition and selected content workflows;
+- server-authoritative gameplay;
+- persistent character and item data;
+- modular inventory and equipment;
+- data-driven item definitions;
+- extensible events, quests, skills, monsters, NPCs and rewards;
+- transactional economy/trade;
+- security and anti-cheat validation;
+- persistence/database abstraction;
+- dedicated-server readiness;
+- automated testing;
+- observability and administration;
+- future multi-server/scaling capability.
+
+The project must **not** be built as a collection of disconnected Blueprint prototypes.
+
+The architecture must make it possible to add content without rewriting core systems.
+
+---
+
+# 2. Foundational architectural principle
+
+AGE OF AETHER will use three complementary layers.
+
+## 2.1 C++ — rules, authority and engine
+
+C++ is the authoritative implementation for critical systems:
+
+- server runtime;
+- service lifecycle;
+- networking foundation;
+- session state;
+- account/character authority;
+- item validation;
+- inventory operations;
+- equipment;
+- stats;
+- combat;
+- skills/effects;
+- drops;
+- rewards;
+- quests;
+- economy;
+- trade;
+- persistence;
+- security;
+- anti-cheat;
+- transactions;
+- audit;
+- server-side simulation;
+- automated tests.
+
+Blueprint must not become the final authority for critical persistent data.
+
+## 2.2 Blueprint — presentation and composition
+
+Blueprints will be used where Unreal's visual workflow provides value:
+
+- UI;
+- widgets;
+- animations;
+- VFX;
+- SFX;
+- visual item presentation;
+- character presentation;
+- NPC presentation;
+- event presentation;
+- interactable composition;
+- designer-friendly orchestration;
+- non-critical presentation logic.
+
+Blueprint can expose safe C++ APIs, but server authority remains in C++.
+
+## 2.3 Data — content, not rules
+
+Content will be data-driven.
+
+Examples:
+
+- ItemDefinition;
+- MonsterDefinition;
+- SkillDefinition;
+- QuestDefinition;
+- RewardDefinition;
+- EventDefinition;
+- DropTable;
+- ClassDefinition;
+- MapDefinition;
+- NPCDefinition;
+- RecipeDefinition;
+- EnhancementDefinition;
+- Buff/Debuff Definition.
+
+The target model is:
+
+**C++ = how the game works**  
+**Data = what exists in the game**  
+**Blueprint = how it is presented/composed**
+
+---
+
+# 3. Reference analysis — supplied Item.txt
+
+The supplied `Item.txt` is treated as a **reference for data organization and game-design concepts**, not as code to copy.
+
+The file identifies itself as part of 3DServers MuOnline Server files and contains the 3DServers copyright header. Therefore AGE OF AETHER will not copy proprietary implementation, code, assets, protocol, client files, maps or protected game content from it.
+
+The useful part for our architecture is the observed **data model**: categorized item records, IDs, dimensions, serial/option/drop flags, names, level and combat attributes, requirements, class restrictions, equipment slots and specialized schemas.
+
+The supplied file contains 16 numbered item sections, 0 through 15, with different column schemas.
+
+Observed record counts in the supplied file:
+
+| Section | Observed records | Reference role |
+|---:|---:|---|
+| 0 | 96 | Sword/weapon family |
+| 1 | 11 | Axe family |
+| 2 | 33 | Mace/scepter family |
+| 3 | 19 | Spear/polearm family |
+| 4 | 52 | Bow/ranged family |
+| 5 | 69 | Staff family |
+| 6 | 43 | Shield family |
+| 7 | 161 | Helm family |
+| 8 | 182 | Armor family |
+| 9 | 182 | Pants family |
+| 10 | 162 | Gloves family |
+| 11 | 182 | Boots family |
+| 12 | 240 | Wings family |
+| 13 | 275 | Secondary-unit/pet/resistance-oriented records |
+| 14 | 278 | Consumable/miscellaneous records |
+| 15 | 38 | Skill scroll/parchment records |
+
+These counts are an audit snapshot of the supplied file and are not an AGE OF AETHER content requirement.
+
+The file contains repeated base columns such as:
+
+- Type
+- Slot
+- Skill
+- Width
+- Height
+- HaveSerial
+- HaveOption
+- DropItem
+- Name
+
+Weapon-oriented sections additionally expose fields such as:
+
+- Level
+- DamageMin
+- DamageMax
+- AttackSpeed
+- Durability
+- MagicDurability
+- MagicDamageRate
+- ReqLevel
+- ReqStrength
+- ReqDexterity
+- ReqEnergy
+- ReqVitality
+- ReqLeadership
+- class flags
+
+Defensive sections expose variants such as:
+
+- Defense
+- MagicDefense
+- DefenseSuccessRate
+- AttackSpeed or WalkSpeed depending on equipment type
+- requirements
+- class flags
+
+Other sections introduce:
+
+- BuyMoney
+- Resistance1–Resistance7
+- Value
+- specialized requirements
+
+The supplied file therefore confirms an important architectural requirement:
+
+> A single rigid item structure is not sufficient for every item type.
+
+AGE OF AETHER will solve this through a common item definition plus modular stat/behavior components.
+
+---
+
+# 4. What we learn from MU item configuration research
+
+Research into public MU Online server configuration confirms that item creation commonly spans more than one data layer.
+
+Public documentation and community/server-file examples show patterns including:
+
+- server-side item definitions;
+- client-side item definitions;
+- item IDs composed from category/section and index in some implementations;
+- class restrictions;
+- item requirements;
+- item options;
+- item drops;
+- NPC/shop configuration;
+- item models/textures;
+- tooltip/name presentation;
+- synchronization between server and client data.
+
+For example, public MU server configuration examples expose the same family of fields seen in the supplied file, including Type, Slot, Skill, Width, Height, serial/option/drop flags, name, damage, speed, durability and class restrictions. citeturn0search0turn0search11
+
+Public guides also describe adding an item as a multi-step process involving server definitions, drop configuration, client definitions and visual assets rather than a single file edit. citeturn0search2turn0search12
+
+This is the concept we will adopt — **not the legacy implementation**.
+
+AGE OF AETHER will replace the old fragmented workflow with one authoritative item/content pipeline.
+
+---
+
+# 5. Target AGE OF AETHER item architecture
+
+## 5.1 ItemDefinition
+
+Immutable/game-design definition.
+
+Conceptual fields:
+
+- ItemID
+- InternalName
+- DisplayName
+- Description
+- Category
+- SubCategory
+- EquipmentSlot
+- Width
+- Height
+- ItemClass
+- ItemTags
+- MaxStack
+- BaseLevel
+- BaseDurability
+- Requirements
+- AllowedClasses
+- BindingRules
+- TradeRules
+- DropRules
+- EconomyRules
+- EnhancementRules
+- VisualDefinitionID
+- IconDefinitionID
+- EffectDefinitionID
+- StatDefinition
+- OptionDefinition
+- SocketDefinition
+- GameplayFlags
+
+The final C++ representation will be decided after the Unreal project baseline is created.
+
+## 5.2 ItemInstance
+
+A concrete object owned by a player.
+
+Conceptual fields:
+
+- InstanceID
+- DefinitionID
+- OwnerCharacterID
+- CurrentLocation
+- Quantity
+- ItemLevel
+- Durability
+- Quality
+- Rarity
+- EnhancementLevel
+- Luck
+- Binding
+- GeneratedOptions
+- Sockets
+- CustomData
+- CreationTimestamp
+- ModificationTimestamp
+
+An ItemDefinition says **what the item type is**.
+
+An ItemInstance says **which actual item exists in the world/player inventory**.
+
+This separation is mandatory for persistent MMORPG behavior.
+
+---
+
+# 6. Item identity
+
+We will not blindly copy MU's category/index model.
+
+AGE OF AETHER will use an explicit stable identifier strategy.
+
+Recommended conceptual identity:
+
+`ItemDefinitionID` = globally unique definition identifier.
+
+`ItemInstanceID` = globally unique runtime/persistent instance identifier.
+
+The final representation may use GUIDs, 64-bit IDs, structured IDs, or a hybrid depending on persistence/network constraints.
+
+Requirements:
+
+- no accidental collisions;
+- deterministic lookup;
+- safe serialization;
+- database compatibility;
+- replication compatibility;
+- audit compatibility;
+- future sharding compatibility.
+
+---
+
+# 7. Item categories
+
+The initial taxonomy will support at least:
+
+### Equipment
+- Weapons
+- Off-hand
+- Helm
+- Chest
+- Legs
+- Gloves
+- Feet
+- Back
+- Ring
+- Necklace
+- Mount
+- Pet/Companion
+
+### Consumables
+- HP
+- MP
+- Stamina
+- Buff consumables
+- Recovery
+- Temporary items
+
+### Materials
+- Crafting materials
+- Enhancement materials
+- Event materials
+- Quest materials
+
+### Skill items
+- Scrolls
+- Books
+- Skill unlock items
+
+### Quest items
+
+### Currency-related items
+
+### Cosmetic items
+
+### Event items
+
+### Containers
+
+### Special/system items
+
+The taxonomy remains extensible.
+
+---
+
+# 8. Equipment system
+
+Target equipment slots:
+
+- Head
+- Chest
+- Legs
+- Hands
+- Feet
+- MainHand
+- OffHand
+- Back
+- Ring
+- Necklace
+- Mount
+- Pet
+
+Equipment rules will validate:
+
+1. Item exists.
+2. Item instance exists.
+3. Item belongs to the requesting character.
+4. Item is in an allowed inventory location.
+5. Character is alive/allowed to equip.
+6. Slot is compatible.
+7. Class requirement is satisfied.
+8. Level requirement is satisfied.
+9. Stat requirements are satisfied.
+10. Quest/event restrictions are satisfied.
+11. Binding/trade state allows operation.
+12. Existing equipment conflict is handled atomically.
+13. Derived stats are recalculated.
+14. Persistence is updated.
+15. Audit event is generated.
+16. Client receives authoritative result.
+
+---
+
+# 9. Inventory system
+
+Inventory must support:
+
+- add;
+- remove;
+- move;
+- swap;
+- split;
+- merge;
+- stack;
+- unstack;
+- use;
+- equip;
+- unequip;
+- drop;
+- pickup;
+- destroy;
+- trade;
+- sell;
+- buy;
+- quest consumption;
+- crafting consumption;
+- event consumption.
+
+The inventory must be server-authoritative.
+
+The client may request:
+
+`MoveItem(source, destination)`
+
+The server decides whether the operation is legal.
+
+Never:
+
+`Client says "I now own item X"`
+
+---
+
+# 10. Grid inventory
+
+Because the supplied reference includes Width and Height, AGE OF AETHER will support a grid-based inventory model.
+
+Example:
+
+`Sword = 1x4`
+
+`Armor = 2x3`
+
+`Potion = 1x1`
+
+The actual dimensions will be data-driven.
+
+The inventory service will calculate occupied cells and reject overlaps.
+
+The UI will visualize the authoritative layout.
+
+---
+
+# 11. Item options
+
+The system will not hard-code every option into ItemDefinition.
+
+Instead:
+
+`ItemDefinition`
+
++
+
+`OptionDefinition`
+
++
+
+`ItemInstance.GeneratedOptions`
+
+This supports:
+
+- bonus Strength;
+- bonus Agility;
+- bonus Vitality;
+- bonus Energy;
+- bonus HP;
+- bonus MP;
+- attack;
+- defense;
+- attack speed;
+- critical chance;
+- critical damage;
+- elemental effects;
+- resistances;
+- life steal;
+- mana steal;
+- skill modifiers;
+- custom effects.
+
+New option types should be added without rewriting inventory/equipment.
+
+---
+
+# 12. Enhancement system
+
+Target:
+
+- +0 to configurable maximum;
+- success probability;
+- failure;
+- downgrade;
+- destruction;
+- preservation;
+- materials;
+- currency;
+- pity/guarantee rules if desired;
+- event modifiers;
+- safe-zone restrictions.
+
+All rates must be data-driven.
+
+The enhancement service must be transactional.
+
+---
+
+# 13. Drop system
+
+Architecture:
+
+`Monster`
+
+→ `DropTable`
+
+→ `DropRule`
+
+→ `Roll`
+
+→ `ItemGeneration`
+
+→ `ItemInstance`
+
+→ `Inventory/LootWorld`
+
+Support:
+
+- weighted drops;
+- guaranteed drops;
+- rare drops;
+- conditional drops;
+- level restrictions;
+- class restrictions;
+- event modifiers;
+- party contribution;
+- ownership rules;
+- anti-duplication controls.
+
+---
+
+# 14. Shops and economy
+
+Item data must be reusable by:
+
+- NPC shops;
+- player shops;
+- marketplace;
+- rewards;
+- quests;
+- events;
+- drops;
+- crafting;
+- trade.
+
+Economy operations require:
+
+- transaction ID;
+- source;
+- destination;
+- amount;
+- currency;
+- character/account;
+- timestamp;
+- result;
+- audit record.
+
+---
+
+# 15. Persistence
+
+Persistent data includes:
+
+- accounts;
+- characters;
+- stats;
+- inventory;
+- ItemInstances;
+- equipment;
+- warehouse;
+- currency;
+- quests;
+- achievements;
+- guilds;
+- parties;
+- mail;
+- transactions;
+- audit records.
+
+Architecture:
+
+`Gameplay`
+
+→ `Application Services`
+
+→ `Repositories`
+
+→ `Persistence`
+
+→ `Database`
+
+No gameplay class should directly embed database implementation details.
+
+---
+
+# 16. Server authority
+
+Critical item operations are always validated by the server.
+
+Protected operations include:
+
+- create item;
+- destroy item;
+- move item;
+- equip;
+- unequip;
+- use;
+- trade;
+- sell;
+- buy;
+- drop;
+- pickup;
+- enhancement;
+- option generation;
+- socket modification;
+- reward;
+- quest completion;
+- event reward.
+
+The client is never trusted for:
+
+- item ownership;
+- item value;
+- item level;
+- rarity;
+- options;
+- durability;
+- currency;
+- reward;
+- damage;
+- cooldown;
+- movement;
+- trade state.
+
+---
+
+# 17. Unreal implementation strategy
+
+## C++ modules
+
+Initial conceptual modules:
+
+`Core`
+`World`
+`Characters`
+`Items`
+`Inventory`
+`Equipment`
+`Combat`
+`Skills`
+`Progression`
+`Quests`
+`Social`
+`Economy`
+`Events`
+`Persistence`
+`Security`
+`Administration`
+`Testing`
+
+Modules will be created when their phase begins. We will not create hundreds of empty classes just to make the tree look complete.
+
+## Blueprint
+
+Blueprint assets will consume safe C++ APIs.
+
+Examples:
+
+- `BP_ItemVisual`
+- `WBP_Inventory`
+- `WBP_ItemTooltip`
+- `BP_NPC`
+- `BP_EventPresentation`
+
+Names are provisional.
+
+---
+
+# 18. Data representation
+
+We will evaluate:
+
+### Primary Data Assets
+Good for rich individual definitions and inheritance.
+
+### Data Tables
+Good for structured bulk content and spreadsheet-like authoring.
+
+### Config/JSON
+Good for server/runtime configuration and external tooling where appropriate.
+
+### Database
+For persistent player-owned state, not static game design definitions unless a later content-management architecture requires it.
+
+A likely final solution will be hybrid.
+
+---
+
+# 19. Future Item Editor
+
+One major project objective is an internal content pipeline that makes item creation practical.
+
+Target workflow:
+
+1. Designer creates ItemDefinition.
+2. Tool validates ID.
+3. Tool validates category.
+4. Tool validates dimensions.
+5. Tool validates requirements.
+6. Tool validates class restrictions.
+7. Tool validates equipment slot.
+8. Tool validates option references.
+9. Tool validates visual asset references.
+10. Tool validates drop/shop references.
+11. Tool reports errors/warnings.
+12. Content is committed to Git.
+13. Server loads validated definitions.
+14. Client loads matching visual data.
+15. Automated tests verify the item.
+16. Item becomes available in-game.
+
+Long-term goal:
+
+**Adding a new item should not require modifying core inventory C++ code.**
+
+---
+
+# 20. Item pipeline
+
+The canonical pipeline will be:
+
+`Item Definition`
+→ `Validation`
+→ `Content Registry`
+→ `Server Runtime`
+→ `ItemInstance Generation`
+→ `Inventory/Equipment`
+→ `Persistence`
+→ `Replication`
+→ `Client UI/Visuals`
+
+---
+
+# 21. Full MMORPG roadmap
+
+## PHASE 0 — Repository and architecture foundation
+
+Deliver:
+
+- repository organization;
+- Unreal version decision;
+- source-of-truth policy;
+- Git strategy;
+- continuity system;
+- architecture documentation;
+- coding standards;
+- naming conventions;
+- branch strategy;
+- test strategy;
+- asset policy;
+- licensing/IP policy.
+
+Acceptance:
+
+- new agent can understand project from repository documentation.
+
+---
+
+## PHASE 1 — Unreal project foundation
+
+Deliver:
+
+- clean Unreal project;
+- C++ project/module;
+- Config;
+- Source;
+- Content;
+- Plugins;
+- Tests;
+- Docs;
+- Project Memory;
+- proper ignore rules;
+- optional Git LFS for large binary assets;
+- reproducible local setup.
+
+Acceptance:
+
+- project opens;
+- C++ compiles;
+- baseline map loads;
+- clean repository clone can reproduce the project.
+
+---
+
+## PHASE 2 — Core Runtime
+
+Deliver:
+
+- runtime state;
+- lifecycle;
+- server clock;
+- scheduler;
+- timer abstraction;
+- logging;
+- configuration;
+- service registry;
+- error handling;
+- health state.
+
+Acceptance:
+
+- runtime initializes/shuts down cleanly.
+
+---
+
+## PHASE 3 — Networking foundation
+
+Deliver:
+
+- client/server separation;
+- request/response foundation;
+- replication strategy;
+- authoritative server state;
+- network validation;
+- protocol/version abstraction.
+
+Acceptance:
+
+- client can connect to server and receive authoritative state.
+
+---
+
+## PHASE 4 — Accounts and sessions
+
+Deliver:
+
+- AccountID;
+- authentication abstraction;
+- session;
+- login;
+- logout;
+- reconnect;
+- timeout;
+- heartbeat;
+- permissions;
+- account status.
+
+Never store plaintext passwords.
+
+---
+
+## PHASE 5 — Character foundation
+
+Deliver:
+
+- CharacterID;
+- account relation;
+- name;
+- class;
+- location;
+- status;
+- base stats;
+- derived stats;
+- character lifecycle.
+
+---
+
+## PHASE 6 — Progression
+
+Deliver:
+
+- level;
+- XP;
+- MasterLevel;
+- XP calculator;
+- stat points;
+- reward service;
+- centralized progression rules.
+
+---
+
+## PHASE 7 — Item Definition Registry
+
+This is the first major item milestone.
+
+Deliver:
+
+- ItemDefinition;
+- ItemDefinitionID;
+- categories;
+- subcategories;
+- tags;
+- item registry;
+- validation;
+- Data Asset/Table strategy;
+- class restrictions;
+- requirements;
+- equipment slots;
+- dimensions;
+- flags;
+- serialization.
+
+Acceptance:
+
+- server can load item definitions and validate them.
+
+---
+
+## PHASE 8 — Item Instance system
+
+Deliver:
+
+- unique ItemInstanceID;
+- owner;
+- location;
+- quantity;
+- durability;
+- rarity;
+- quality;
+- enhancement level;
+- options;
+- sockets;
+- binding;
+- custom data.
+
+Acceptance:
+
+- two instances of the same definition can have different state.
+
+---
+
+## PHASE 9 — Inventory
+
+Deliver:
+
+- grid;
+- dimensions;
+- stacking;
+- splitting;
+- moving;
+- swapping;
+- merging;
+- pickup;
+- drop;
+- destroy;
+- use;
+- validation;
+- UI.
+
+Acceptance:
+
+- all inventory operations are authoritative and transactional.
+
+---
+
+## PHASE 10 — Equipment
+
+Deliver:
+
+- equipment slots;
+- requirements;
+- class validation;
+- equip/unequip;
+- two-handed handling;
+- derived stat recalculation;
+- visual representation.
+
+---
+
+## PHASE 11 — Options and item effects
+
+Deliver:
+
+- OptionDefinition;
+- option generation;
+- stat modifiers;
+- conditional effects;
+- item effects;
+- stacking rules;
+- conflicts;
+- recalculation pipeline.
+
+---
+
+## PHASE 12 — Enhancement
+
+Deliver:
+
+- +levels;
+- success/failure;
+- downgrade;
+- destruction;
+- preservation;
+- materials;
+- currency;
+- configurable rates;
+- audit.
+
+---
+
+## PHASE 13 — Sockets / special item systems
+
+Deliver:
+
+- sockets;
+- socket materials;
+- socket effects;
+- unique item mechanics;
+- binding;
+- event-specific properties.
+
+---
+
+## PHASE 14 — Drop Engine
+
+Deliver:
+
+- DropTable;
+- DropRule;
+- weighted selection;
+- guaranteed drops;
+- rare drops;
+- conditional drops;
+- loot ownership;
+- item generation;
+- anti-duplication.
+
+---
+
+## PHASE 15 — World
+
+Deliver:
+
+- maps;
+- zones;
+- portals;
+- spawn system;
+- safe zones;
+- PvP zones;
+- event zones;
+- weather/world rules.
+
+---
+
+## PHASE 16 — NPC and Monster systems
+
+Deliver:
+
+- NPC definitions;
+- capability system;
+- shops;
+- quests;
+- teleport;
+- banking;
+- crafting;
+- monster definitions;
+- AI states;
+- aggro;
+- respawn.
+
+---
+
+## PHASE 17 — Combat
+
+Deliver:
+
+- attack validation;
+- target validation;
+- range;
+- cooldown;
+- accuracy;
+- damage;
+- defense;
+- resistance;
+- critical;
+- effects;
+- death;
+- rewards;
+- combat logs.
+
+Central pipeline:
+
+`Request`
+→ `Validate`
+→ `Target`
+→ `Range`
+→ `Cooldown`
+→ `Accuracy`
+→ `Damage`
+→ `Defense`
+→ `Resistance`
+→ `Critical`
+→ `Effects`
+→ `HP/Shield`
+→ `Death`
+→ `Reward`
+→ `Audit`
+
+---
+
+## PHASE 18 — Skills and effects
+
+Deliver:
+
+- skill definitions;
+- skill requirements;
+- cooldown;
+- resource cost;
+- targeting;
+- buffs;
+- debuffs;
+- periodic effects;
+- dispel;
+- immunity;
+- stacking.
+
+---
+
+## PHASE 19 — Quests and rewards
+
+Deliver:
+
+- quest definitions;
+- objectives;
+- state machine;
+- progress;
+- rewards;
+- prerequisites;
+- branching;
+- repeatability.
+
+---
+
+## PHASE 20 — Party and guild
+
+Deliver:
+
+- party;
+- invitations;
+- roles;
+- loot rules;
+- XP distribution;
+- guild;
+- ranks;
+- permissions;
+- guild storage;
+- guild events;
+- guild wars.
+
+---
+
+## PHASE 21 — Economy and trade
+
+Deliver:
+
+- currency;
+- NPC shop;
+- player shop;
+- marketplace abstraction;
+- transactional trade;
+- buy/sell;
+- economic audit;
+- duplication prevention.
+
+Trade pipeline:
+
+`Request`
+→ `Accept`
+→ `Lock`
+→ `Validate`
+→ `Confirm`
+→ `Transaction`
+→ `Commit`
+→ `Audit`
+
+---
+
+## PHASE 22 — Crafting
+
+Deliver:
+
+- recipes;
+- inputs;
+- requirements;
+- success/failure;
+- outputs;
+- stations;
+- profession rules;
+- economy integration.
+
+---
+
+## PHASE 23 — Events
+
+Deliver:
+
+- event framework;
+- schedules;
+- participation;
+- event zones;
+- objectives;
+- contribution;
+- rewards;
+- event bosses;
+- phases;
+- enrage;
+- event-specific loot.
+
+---
+
+## PHASE 24 — Master progression
+
+Deliver:
+
+- MasterLevel;
+- achievements;
+- titles;
+- rankings;
+- resets/rebirth if desired;
+- long-term progression.
+
+---
+
+## PHASE 25 — Social
+
+Deliver:
+
+- friends;
+- ignore;
+- chat;
+- notifications;
+- mail;
+- item/currency mail;
+- expiration;
+- read state.
+
+---
+
+## PHASE 26 — Pets, mounts and companions
+
+Deliver:
+
+- pets;
+- companions;
+- summons;
+- mounts;
+- progression;
+- abilities;
+- equipment where applicable.
+
+---
+
+## PHASE 27 — Security and anti-cheat
+
+Validate:
+
+- movement;
+- speed;
+- attack;
+- damage;
+- cooldown;
+- inventory;
+- currency;
+- skills;
+- teleport;
+- trade;
+- rewards;
+- packets;
+- rate limits;
+- impossible states.
+
+Add:
+
+- security logs;
+- suspicious-action detection;
+- server-side invariants;
+- audit trail.
+
+---
+
+## PHASE 28 — Persistence hardening
+
+Deliver:
+
+- repositories;
+- transactional writes;
+- save policies;
+- logout saves;
+- periodic saves;
+- critical-operation saves;
+- crash recovery;
+- backup strategy;
+- rollback;
+- consistency checks.
+
+Never save the entire character every frame.
+
+---
+
+## PHASE 29 — Dedicated server
+
+Deliver:
+
+- dedicated-server target;
+- no rendering;
+- no client-only UI;
+- server startup;
+- configuration;
+- deployment;
+- health checks;
+- logging.
+
+---
+
+## PHASE 30 — Load and stress testing
+
+Test:
+
+- players;
+- inventory operations;
+- combat;
+- AI;
+- drops;
+- trades;
+- persistence;
+- database latency;
+- network traffic;
+- server tick;
+- memory;
+- CPU.
+
+---
+
+## PHASE 31 — Optimization
+
+Optimize only after measurement.
+
+Targets:
+
+- CPU;
+- RAM;
+- network;
+- replication;
+- database;
+- AI;
+- ticks;
+- allocations;
+- content loading;
+- asset streaming.
+
+---
+
+## PHASE 32 — Production readiness
+
+Deliver:
+
+- deployment pipeline;
+- versioning;
+- migrations;
+- backups;
+- monitoring;
+- alerting;
+- administration;
+- GM tools;
+- incident recovery;
+- security review;
+- load validation;
+- release checklist.
+
+---
+
+# 22. Long-term multi-server architecture
+
+The architecture must allow future:
+
+- Login Server;
+- Gateway;
+- World Server;
+- Game Server;
+- Chat Server;
+- Instance Server;
+- Matchmaking;
+- regional servers;
+- channels;
+- sharding;
+- services;
+- database replicas;
+- caching;
+- queues.
+
+We will not prematurely implement all of these.
+
+We will preserve the boundaries that make them possible.
+
+---
+
+# 23. Administration / GM
+
+Roles:
+
+- PLAYER
+- VIP
+- MODERATOR
+- GM
+- ADMIN
+- OWNER
+
+Permissions must be granular.
+
+Every administrative action must be auditable.
+
+Potential commands:
+
+- inspect player;
+- grant item;
+- remove item;
+- grant currency;
+- teleport;
+- spawn monster;
+- start event;
+- cancel event;
+- mute;
+- kick;
+- ban;
+- inspect audit;
+- inspect server health.
+
+---
+
+# 24. Testing strategy
+
+Testing begins with the foundation.
+
+## Unit
+
+- item validation;
+- inventory;
+- equipment;
+- requirements;
+- stat calculation;
+- drop rolls;
+- reward calculation;
+- trade state machine.
+
+## Integration
+
+- character + inventory;
+- inventory + persistence;
+- item + equipment;
+- monster + drop;
+- combat + rewards;
+- trade + economy.
+
+## Security
+
+- forged item IDs;
+- forged ownership;
+- duplicated requests;
+- replay;
+- invalid quantities;
+- negative values;
+- impossible movement;
+- cooldown bypass;
+- trade race conditions.
+
+## Load
+
+- simultaneous players;
+- inventory activity;
+- combat activity;
+- events;
+- persistence.
+
+---
+
+# 25. Documentation and continuity
+
+Every major implementation must update:
+
+- README;
+- roadmap status;
+- current state;
+- decisions;
+- tests;
+- continuity/handoff file.
+
+The canonical continuity file is:
+
+`PROJECT_MEMORY/00_CONTINUITY.md`
+
+Another agent must be able to start from that file and understand:
+
+- what AGE OF AETHER is;
+- repository;
+- architecture;
+- current phase;
+- completed work;
+- tests;
+- known failures;
+- pending work;
+- decisions;
+- risks;
+- exact next step;
+- relevant files;
+- commands required for validation.
+
+---
+
+# 26. Mandatory status format
+
+After every major stage:
+
+### STATUS
+Current project state.
+
+### IMPLEMENTADO
+What was actually implemented.
+
+### COMPILADO
+Whether a clean build succeeded.
+
+### TESTADO
+Tests actually executed.
+
+### VALIDADO
+Behavior verified in Unreal/runtime.
+
+### FALHAS
+Known failures.
+
+### PENDÊNCIAS
+Remaining tasks.
+
+### RISCOS
+Known technical risks.
+
+### PRÓXIMO PASSO
+The next concrete action.
+
+No step may be marked completed merely because code was written.
+
+---
+
+# 27. Development workflow
+
+The standard cycle is:
+
+1. Define phase.
+2. Inspect repository.
+3. Inspect existing implementation.
+4. Decide what is reusable.
+5. Implement smallest coherent increment.
+6. Compile.
+7. Run automated tests.
+8. Open/test in Unreal.
+9. Validate behavior.
+10. Document.
+11. Update continuity.
+12. Commit.
+13. Proceed.
+
+For editor-dependent actions, the user will execute the Unreal-side step when no editor automation/integration is available.
+
+---
+
+# 28. Item creation workflow — final target
+
+A future developer should be able to add an item approximately like this:
+
+### Step 1
+Create ItemDefinition.
+
+### Step 2
+Choose category.
+
+### Step 3
+Set dimensions.
+
+### Step 4
+Set requirements.
+
+### Step 5
+Set base stats.
+
+### Step 6
+Assign equipment slot.
+
+### Step 7
+Assign allowed classes.
+
+### Step 8
+Assign options/effects.
+
+### Step 9
+Assign visual/icon.
+
+### Step 10
+Assign drop/shop availability.
+
+### Step 11
+Run validator.
+
+### Step 12
+Commit content.
+
+### Step 13
+Run item tests.
+
+### Step 14
+Launch server.
+
+### Step 15
+Test in Unreal.
+
+No modification of the inventory engine should be necessary for a normal new item.
+
+---
+
+# 29. Item ID and content validation rules
+
+The future content validator must detect:
+
+- duplicate ItemDefinitionID;
+- missing display name;
+- invalid category;
+- invalid dimensions;
+- invalid slot;
+- missing visual reference;
+- invalid class reference;
+- invalid requirement;
+- negative invalid stats;
+- impossible stack size;
+- invalid option reference;
+- invalid drop reference;
+- invalid shop reference;
+- incompatible equipment configuration;
+- duplicate content aliases;
+- deprecated fields;
+- schema version mismatch.
+
+---
+
+# 30. Data migration
+
+The item system must support schema evolution.
+
+Every persistent definition/state must have a migration strategy.
+
+Example:
+
+`ItemSchemaVersion = 1`
+
+→ later
+
+`ItemSchemaVersion = 2`
+
+Existing ItemInstances must remain loadable through migration.
+
+Never silently reinterpret persistent fields.
+
+---
+
+# 31. Source/reference policy
+
+The supplied Item.txt is a **design reference**.
+
+Public MU documentation is a **research reference**.
+
+Neither becomes AGE OF AETHER source code.
+
+AGE OF AETHER must have:
+
+- original C++;
+- original Blueprint assets;
+- original game rules;
+- original data;
+- original art;
+- original world;
+- original networking;
+- original persistence;
+- original content.
+
+The project may use familiar MMORPG design patterns without reproducing another game's protected implementation or assets.
+
+---
+
+# 32. Research references
+
+The initial research used public sources describing MU item configuration:
+
+- MUDevs example Item.txt structure: https://github.com/MUDevs-Emulator/Default-configuration/blob/master/Season%206/Data/Item/Item.txt
+- MU Online Help Forum — historical custom-item workflow: https://forum.muonlinehelp.com/topic170-how-to-add-new-items-to-your-mu-online-server.html
+- ViciadosMU — item/server/client configuration workflow: https://viciadosmu.com.br/tutoriais/adicionar-itens-no-servidor
+- ViciadosMU — custom ItemList: https://viciadosmu.com.br/en/tutoriais/criar-itens-customizados-itemlist
+- IGCN — client custom item workflow: https://www.igcn.mu/guides/client-customization/adding-custom-items-to-the-game-r14/
+
+These sources describe different MU versions/server implementations, so their exact fields and workflows must not be assumed universal.
+
+---
+
+# 33. Immediate implementation order
+
+The next work is **not** to implement the entire MMORPG.
+
+The immediate sequence is:
+
+1. Establish clean Unreal project baseline.
+2. Establish Git/Git LFS policy where appropriate.
+3. Establish C++ module.
+4. Establish Core Runtime.
+5. Establish server authority foundation.
+6. Establish Data Registry.
+7. Establish ItemDefinition.
+8. Establish ItemInstance.
+9. Establish Inventory.
+10. Establish Equipment.
+11. Establish Item validation tests.
+12. Only then expand to combat/world/content.
+
+---
+
+# 34. Definition of done
+
+A phase is complete only when:
+
+- implementation exists;
+- code compiles;
+- tests execute;
+- expected behavior is verified;
+- repository documentation is updated;
+- continuity is updated;
+- known risks are recorded;
+- next step is explicit.
+
+A placeholder must be explicitly labeled as a placeholder.
+
+No fake implementation.
+
+No "implemented" claim for a class that merely exists but does not perform its intended function.
+
+---
+
+# 35. Current project state
+
+At roadmap creation:
+
+- Repository is connected and accessible.
+- Repository is currently at the initial/empty foundation stage.
+- The supplied Item.txt has been analyzed.
+- Public MU item-configuration workflows have been researched.
+- The target C++ + Blueprint + Data architecture has been defined.
+- The master roadmap has been established.
+- The continuity protocol has been established.
+- No MMORPG gameplay system is considered implemented yet.
+
+**Next concrete technical milestone: AGE OF AETHER FOUNDATION — Unreal project + C++ runtime + repository structure.**
