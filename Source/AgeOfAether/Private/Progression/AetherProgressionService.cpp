@@ -4,7 +4,7 @@ FAetherProgressionService::FAetherProgressionService()
 {
     Config.MaxLevel = 4000;
     Config.BaseExperienceToLevel = 100;
-    Config.ExperienceGrowthPerLevel = 1.15f;
+    Config.ExperienceGrowthPerLevel = 0.25f;
     Config.StatPointsPerLevel = 5;
     Config.MaxStatValue = 30000;
 }
@@ -21,11 +21,11 @@ int64 FAetherProgressionService::ExperienceRequiredForNextLevel(int32 CurrentLev
         return 0;
     }
 
-    const double Exponent = static_cast<double>(CurrentLevel - 1);
-    const double RawRequired = static_cast<double>(Config.BaseExperienceToLevel)
-        * FMath::Pow(static_cast<double>(Config.ExperienceGrowthPerLevel), Exponent);
+    const double LevelMultiplier = 1.0 + static_cast<double>(Config.ExperienceGrowthPerLevel) * static_cast<double>(CurrentLevel - 1);
+    const double RawRequired = static_cast<double>(Config.BaseExperienceToLevel) * LevelMultiplier;
+    const double SafeRequired = FMath::Min(RawRequired, static_cast<double>(MAX_int64));
 
-    return FMath::Max<int64>(1, static_cast<int64>(FMath::CeilToDouble(RawRequired)));
+    return FMath::Max<int64>(1, static_cast<int64>(FMath::CeilToDouble(SafeRequired)));
 }
 
 bool FAetherProgressionService::GrantExperience(
