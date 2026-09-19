@@ -1,7 +1,6 @@
 # AGE OF AETHER — CONTINUITY / HANDOFF
 
-> This file is the canonical handoff document for continuing AGE OF AETHER in a new chat/agent.
-> Read this file before making project decisions.
+> Canonical handoff for continuing AGE OF AETHER. Read this before making project decisions.
 
 ## 1. Project identity
 
@@ -9,17 +8,18 @@
 **Technical project:** AgeOfAether  
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
-**Current stage:** Phase 2 — Core Runtime (repository implementation complete; Unreal compilation/tests pending local validation)  
-**Roadmap:** `ROADMAP.md`
+**Target Unreal:** 5.8.1  
+**Current stage:** Phase 4 — Accounts and Sessions (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Roadmap:** ROADMAP.md
 
-AGE OF AETHER is intended to become a persistent MMORPG built with Unreal Engine, C++, Blueprint and a server-authoritative architecture.
+AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
 
 ## 2. Non-negotiable architecture
 
 - Client requests; server validates and decides.
 - Persistent critical state is authoritative on the server.
 - C++ implements core rules and critical systems.
-- Blueprint is used for presentation/composition and safe designer-facing workflows.
+- Blueprint is presentation/composition and safe designer-facing workflows.
 - Data defines content.
 - Gameplay code must not be rewritten for every new item/quest/monster/event.
 - Persistence is separated from gameplay through services/repositories.
@@ -27,407 +27,267 @@ AGE OF AETHER is intended to become a persistent MMORPG built with Unreal Engine
 - Security validation is server-side.
 - Testing starts from the foundation.
 - Documentation and this continuity file are part of the project.
+- Do not fake implementation or claim local Unreal validation that was not executed.
 
-## 3. Current status
+## 3. Completed phases
 
-Repository is at the initial foundation stage.
+### Phase 0 — Repository foundation
 
-Completed as planning/documentation:
+Completed repository policies and architecture:
+- .gitignore;
+- .gitattributes;
+- repository foundation;
+- coding standards;
+- Git/asset policy;
+- test strategy;
+- continuity/roadmap foundation.
 
-- project identity;
-- master MMORPG architecture;
-- C++ + Blueprint strategy;
-- data-driven content strategy;
-- ItemDefinition / ItemInstance concept;
-- inventory/equipment architecture concept;
-- item creation pipeline concept;
-- research of public MU item configuration patterns;
-- master roadmap;
-- continuity protocol.
+### Phase 1 — Unreal project foundation
 
-Not yet implemented:
-
-- Unreal project baseline;
-- C++ modules;
-- runtime;
-- networking;
-- accounts;
-- characters;
-- item registry;
-- inventory;
-- equipment;
-- database;
-- combat;
-- world;
-- events;
-- production server.
-
-## 4. Supplied Item.txt
-
-The user supplied `Item.txt`.
-
-The file is 2,221 text lines and contains 16 numbered sections (0–15), each ending with `end`.
-
-It identifies itself as part of 3DServers MuOnline Server files and contains a 3DServers copyright header.
-
-The file is a reference only.
-
-Observed section record counts:
-
-- 0: 96
-- 1: 11
-- 2: 33
-- 3: 19
-- 4: 52
-- 5: 69
-- 6: 43
-- 7: 161
-- 8: 182
-- 9: 182
-- 10: 162
-- 11: 182
-- 12: 240
-- 13: 275
-- 14: 278
-- 15: 38
-
-The schemas vary by category. Common fields include Type, Slot, Skill, Width, Height, serial/option/drop flags and Name. Weapon sections include damage/speed/durability and requirements. Defensive sections include defense/magic defense variants. Other sections contain BuyMoney, resistances, Value and skill/scroll-specific requirements.
-
-The architecture must therefore support a common item definition plus specialized/modular properties rather than one rigid record.
-
-## 5. MU research conclusions
-
-Public research confirms that MU item addition can involve multiple synchronized concerns:
-
-- server item definition;
-- client item definition;
-- item options;
-- drop configuration;
-- shops;
-- item visual/model/texture;
-- tooltip/presentation;
-- version-specific constraints.
-
-AGE OF AETHER will use the architectural lesson, not copy MU implementation.
-
-## 6. Target item architecture
-
-### ItemDefinition
-Defines the item type.
-
-Examples:
-
-- ItemDefinitionID
-- name/description
-- category/subcategory
-- slot
-- dimensions
-- base stats
-- requirements
-- class restrictions
-- flags
-- stack rules
-- option references
-- effect references
-- visual references
-- economy/drop rules
-
-### ItemInstance
-Defines the actual persistent object.
-
-Examples:
-
-- ItemInstanceID
-- DefinitionID
-- OwnerCharacterID
-- location
-- quantity
-- level
-- durability
-- rarity
-- quality
-- enhancement
-- options
-- sockets
-- binding
-- custom data
-
-## 7. Inventory target
-
-Must support:
-
-- grid;
-- item dimensions;
-- add/remove;
-- move/swap;
-- stack/split/merge;
-- pickup/drop;
-- use;
-- equip/unequip;
-- destroy;
-- trade;
-- sell/buy;
-- quest/crafting/event consumption.
-
-## 8. Equipment target
-
-Target slots:
-
-- Head
-- Chest
-- Legs
-- Hands
-- Feet
-- MainHand
-- OffHand
-- Back
-- Ring
-- Necklace
-- Mount
-- Pet
-
-All equip operations must be server validated.
-
-## 9. Item creation target
-
-Adding a normal new item should require data/content creation, not a new inventory engine implementation.
-
-Target:
-
-ItemDefinition
-→ validation
-→ registry
-→ server load
-→ ItemInstance generation
-→ inventory/equipment
-→ persistence
-→ replication
-→ client visual/UI
-
-## 10. Full planned systems
-
-- Core
-- Runtime
-- Configuration
-- Networking
-- Accounts
-- Sessions
-- Characters
-- Stats
-- Progression
-- Items
-- ItemInstances
-- Inventory
-- Equipment
-- Options
-- Sockets
-- Enhancement
-- Drops
-- World
-- Maps
-- NPCs
-- Monsters
-- AI
-- Combat
-- Skills
-- Effects
-- Quests
-- Rewards
-- Parties
-- Guilds
-- Economy
-- Trade
-- Shops
-- Marketplace
-- Crafting
-- Events
-- Bosses
-- Instances
-- Achievements
-- Titles
-- Rankings
-- Pets
-- Mounts
-- Social
-- Mail
-- Security
-- Anti-cheat
-- Persistence
-- Administration
-- Observability
-- Testing
-- Dedicated server
-- Load testing
-- Optimization
-- Production readiness
-
-## 11. Development rule
-
-Never jump directly from planning to a fake full implementation.
-
-For each phase:
-
-1. inspect;
-2. implement;
-3. compile;
-4. test;
-5. validate;
-6. document;
-7. update this file;
-8. commit;
-9. continue.
-
-## 12. Mandatory status after major work
-
-STATUS  
-IMPLEMENTADO  
-COMPILADO  
-TESTADO  
-VALIDADO  
-FALHAS  
-PENDÊNCIAS  
-RISCOS  
-PRÓXIMO PASSO
-
-## 13. Immediate next step
-
-Create the clean Unreal project baseline and repository structure.
-
-Before implementation, determine:
-
-- exact Unreal Engine version installed by the user;
-- Windows/toolchain environment;
-- desired project template;
-- whether Git LFS will be enabled;
-- whether the repository should remain public or be made private.
-
-Then establish:
-
-- `.uproject`;
+Repository baseline exists:
+- AgeOfAether.uproject;
 - Config;
-- Source;
-- Content;
-- Plugins;
-- Docs;
-- PROJECT_MEMORY;
-- tests;
-- Git ignore/LFS policy.
+- Source/AgeOfAether;
+- C++ game/editor targets;
+- Tests/README.md;
+- Docs/UNREAL_ENGINE_HANDOFF.md.
 
-Do not implement all gameplay systems in this step.
+Local-only gates remain unverified:
+- Unreal Editor startup;
+- Development Editor compilation;
+- baseline map;
+- Visual Studio C++ toolchain;
+- Git LFS runtime behavior;
+- clean-clone reproduction.
 
-## 14. Important continuity instruction
+### Phase 2 — Core Runtime
 
-When another chat starts:
+Implemented:
+- runtime lifecycle/health/result contracts;
+- server clock;
+- scheduler;
+- runtime configuration;
+- service registry;
+- core logging;
+- UAetherRuntimeSubsystem;
+- core automation tests;
+- graceful shutdown hardening.
 
-1. Read this file.
-2. Read `ROADMAP.md`.
-3. Inspect the repository.
-4. Determine the latest completed phase from Git history/files.
-5. Never assume a phase is complete only because documentation says it should exist.
-6. Verify code, build and tests.
-7. Continue from the actual repository state.
-8. Update this file after every major change.
+Repository/source inspection passed. Unreal UHT/UBT/Editor/test execution remains local-only and unverified.
 
-## 15. Master Technical Blueprint
+### Phase 3 — Networking Foundation
 
-The canonical detailed architecture document is:
+Implemented:
+- protocol version contract;
+- request/response contract;
+- authoritative replicated GameState;
+- server RPC request endpoint;
+- client RPC response endpoint;
+- request validation;
+- request ordering/replay guard;
+- network GameMode;
+- networking automation tests.
 
-Docs/MASTER_TECHNICAL_BLUEPRINT.md
+Generic Unreal replication is used at foundation scale. Replication Graph/Iris scaling decisions remain later and must be driven by profiling.
 
-It defines the target architecture and implementation model for:
-- Unreal Engine;
-- C++;
-- Blueprint;
-- data-driven content;
-- server authority;
-- Core Runtime;
-- accounts/sessions;
-- characters/stats/progression;
-- ItemDefinition and ItemInstance;
-- inventory/equipment;
-- options/sockets/enhancement;
-- drops;
-- world/NPCs/monsters/AI;
-- combat/skills/effects;
-- quests/rewards;
-- party/guild;
-- economy/trade/shops;
-- crafting;
-- events/instances/bosses;
-- social/mail;
-- persistence;
-- networking;
-- security/anti-cheat;
-- audit/logging/observability;
-- testing;
+Phase 3 repository implementation is complete. Unreal multiplayer runtime validation remains pending.
+
+## 4. Phase 4 — Accounts and Sessions
+
+Repository implementation is complete.
+
+### Account
+
+Implemented:
+- FAetherAccountId;
+- FAetherAccountRecord;
+- username normalization;
+- account status: Active, Disabled, Locked;
+- permission flags: Player, VIP, Moderator, GM, Admin, Owner.
+
+### Authentication
+
+Implemented:
+- authentication abstraction via injected FCredentialVerifier;
+- opaque credential proof input;
+- no plaintext password storage;
+- invalid credentials;
+- unavailable verifier;
+- protocol compatibility validation;
+- duplicate-login protection.
+
+The current verifier is intentionally an abstraction. Persistent credential storage/external identity belongs to later backend/persistence/security work.
+
+### Session
+
+Implemented:
+- FAetherSessionId;
+- FAetherSessionRecord;
+- active session tracking;
+- login;
+- reconnect;
+- logout;
+- heartbeat;
+- timeout;
+- account status enforcement.
+
+Runtime session timeout defaults to 30 seconds and is checked by the account/session GameInstance subsystem ticker.
+
+### Networking integration
+
+AAetherNetworkPlayerController now exposes:
+- AuthenticateAccount;
+- ReconnectAccount;
+- LogoutAccount;
+- SendSessionHeartbeat;
+- IsAccountAuthenticated;
+- GetAuthenticatedAccountId;
+- GetSessionId.
+
+Account RPCs use separate request IDs from generic Phase 3 networking requests.
+
+Server validates session/account ownership and never trusts client-provided authoritative account/session state.
+
+### Runtime subsystem
+
+UAetherAccountSessionSubsystem:
+- derives from UGameInstanceSubsystem;
+- owns the runtime account/session service;
+- provides the service boundary to networking;
+- expires timed-out sessions.
+
+The subsystem is runtime-only. It is not a database.
+
+## 5. Phase 4 tests
+
+Added:
+Source/AgeOfAether/Private/Tests/AetherAccountSessionTests.cpp
+
+Coverage:
+- registration;
+- username normalization;
+- duplicate registration;
+- bad credentials;
+- successful authentication;
+- permissions;
+- duplicate simultaneous login;
+- heartbeat;
+- reconnect;
+- logout;
+- closed-session rejection;
+- timeout;
+- diagnostic inspection;
+- disabled account;
+- re-enable;
+- incompatible protocol;
+- no session created on protocol rejection.
+
+These are Unreal Automation Framework tests.
+
+## 6. Validation truth
+
+### Repository/static validation
+
+Performed:
+- repository state inspected;
+- Phase 3 source inspected before Phase 4;
+- Phase 4 source/contracts/tests added;
+- architecture boundaries reviewed;
+- no plaintext password storage introduced;
+- no database placeholder presented as persistence;
+- request IDs are separated between generic networking and account/session operations.
+
+### Not executable in this environment
+
+Cannot truthfully mark PASS:
+- Unreal Header Tool;
+- Unreal Build Tool;
+- C++ compilation against Unreal 5.8.1;
+- Editor startup;
+- PIE multiplayer;
+- client/server authentication;
+- reconnect runtime;
+- heartbeat timeout runtime;
+- Unreal Automation Framework execution;
+- network emulation.
+
+No CI checks are configured for Unreal, so GitHub cannot provide an Unreal build/test PASS.
+
+## 7. Local Phase 4 acceptance procedure
+
+When local Unreal validation is available:
+
+1. Generate/update project files.
+2. Run UHT.
+3. Compile AgeOfAetherEditor.
+4. Open Editor.
+5. Start listen/server PIE.
+6. Configure a development credential verifier from test/bootstrap code.
+7. Register a test account on the authoritative server.
+8. Authenticate from a client.
+9. Verify accepted response/session ID.
+10. Verify duplicate login rejection.
+11. Heartbeat the active session.
+12. Stop heartbeats and verify timeout.
+13. Reconnect before timeout and verify acceptance.
+14. Reconnect after timeout and verify SessionExpired.
+15. Disable account and verify authentication rejection.
+16. Logout and verify Closed.
+17. Attempt operations with mismatched session IDs and verify rejection.
+18. Run AgeOfAether.Accounts.* automation tests.
+19. Repeat critical flows with Unreal network emulation.
+
+## 8. Important security/persistence boundaries
+
+Do not:
+- store plaintext passwords;
+- let the client choose AccountID authority;
+- let the client choose SessionID authority;
+- accept client permission values as authoritative;
+- implement database logic directly inside gameplay/controller classes;
+- treat runtime account registry as persistent storage;
+- mark Unreal validation complete without actually running it.
+
+Later phases must add:
+- persistent account repository/backend;
+- secure credential storage/provider;
+- rate limiting;
+- brute-force/abuse controls;
+- audit/security logging;
 - dedicated server;
-- future multi-server boundaries;
-- content/editor pipeline.
+- crash recovery;
+- production persistence.
 
-This document describes the target architecture, not proof of implementation. Actual implementation status must always be verified against source code, tests and Git history.
-
-## 16. IP/source rule
+## 9. IP/source rule
 
 Do not copy MU Online proprietary code, assets, maps, protocols, client binaries or protected content.
 
-Use the supplied Item.txt and public documentation only as reference for data modeling and architectural lessons.
+The supplied Item.txt and public documentation are references for data modeling/architecture only.
 
-AGE OF AETHER must use original implementation and original content.
+AGE OF AETHER must use original implementation, original content and original networking/persistence.
 
+## 10. Next implementation target
 
-## 16. Phase 0 evidence
+**PHASE 5 — Character Foundation**
 
-- Repository tree inspected at the pre-change commit and after Phase 0 changes.
-- Recent Git history inspected; prior work is documentation/architecture only.
-- Required source-of-truth documents verified.
-- Git ignore and LFS policy added.
-- Repository foundation, coding standards, test strategy and asset/IP policy added.
-- No Unreal runtime or gameplay implementation was falsely declared complete.
+Implement:
+- CharacterID;
+- account-to-character relation;
+- character name;
+- class;
+- location;
+- status;
+- base stats;
+- derived-stat foundation;
+- character lifecycle;
+- server-authoritative character ownership and validation.
 
-## 17. Next phase
+The character system must consume the authenticated account/session boundary created in Phase 4. Do not move character authority to the client.
 
-PHASE 1 — Unreal Project Foundation.
+## 11. Mandatory workflow
 
-First verify Unreal Engine 5.8.1 locally, verify the C++ toolchain and Git LFS, then create/validate the real Unreal project baseline. Do not create a fake .uproject in Phase 0.
+For every phase:
 
+AUDITAR → IMPLEMENTAR → COMPILAR → TESTAR → VALIDAR → DOCUMENTAR → COMMITAR → ATUALIZAR CONTINUIDADE → PROSSEGUIR.
 
-## 18. Phase 1 repository implementation status
-
-Repository baseline implemented in commit 2df455c74bce22f2d17595bec32606ae69eaf6a:
-- AgeOfAether.uproject
-- Config/DefaultEngine.ini
-- Config/DefaultGame.ini
-- Source/AgeOfAether/AgeOfAether.Build.cs
-- Source/AgeOfAether/Public/AgeOfAether.h
-- Source/AgeOfAether/Private/AgeOfAether.cpp
-- Source/AgeOfAether.Target.cs
-- Source/AgeOfAetherEditor.Target.cs
-- Tests/README.md
-- Docs/UNREAL_ENGINE_HANDOFF.md
-
-Repository-side validation passed by inspection: required baseline files are present and the project descriptor/module declarations are internally aligned.
-
-Local-only gates remain NOT VERIFIED: Unreal Editor opening, Development Editor compilation, baseline map load, Visual Studio toolchain, Git LFS runtime behavior, and clean-clone reproduction. Phase 1 must not be marked complete until those checks are executed on the development machine.
-## 19. Phase 2 repository implementation status
-
-Phase 2 Core Runtime repository implementation completed through the current commit chain.
-
-Implemented:
-- Core runtime state/health/result contracts;
-- FAetherServerClock;
-- FAetherScheduler;
-- FAetherRuntimeConfig;
-- FAetherServiceRegistry;
-- LogAgeOfAetherCore;
-- UAetherRuntimeSubsystem;
-- Unreal Automation Framework tests for runtime types, scheduler and server clock;
-- Docs/PHASE_2_CORE_RUNTIME.md;
-- roadmap status updated to Phase 2.
-
-Repository/source validation was performed by inspection. Unreal Header Tool, Unreal Build Tool, Editor startup and Automation Framework execution remain NOT VERIFIED because they require the local Unreal 5.8.1 environment.
-
-Phase 1 local validation remains pending and is not falsely marked complete.
-
-Graceful shutdown was hardened so RequestShutdown completes cleanup on the next runtime tick, while Deinitialize remains defensive.
-
-Next implementation target after local validation gates are eventually executed: Phase 4 — Accounts and Sessions.
+If a local/editor step is unavailable, record it as NOT VERIFIED rather than inventing a PASS.
