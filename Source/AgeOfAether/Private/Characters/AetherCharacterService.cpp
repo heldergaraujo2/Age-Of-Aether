@@ -43,6 +43,70 @@ bool FAetherCharacterService::CreateCharacter(
     return true;
 }
 
+bool FAetherCharacterService::RestoreCharacter(const FAetherCharacterRecord& PersistedCharacter)
+{
+    if (!PersistedCharacter.CharacterId.IsValid()
+        || !PersistedCharacter.AccountId.IsValid()
+        || PersistedCharacter.Name.TrimStartAndEnd().Len() < 3
+        || PersistedCharacter.Name.TrimStartAndEnd().Len() > 16
+        || PersistedCharacter.Level < 1
+        || PersistedCharacter.Experience < 0
+        || PersistedCharacter.UnspentStatPoints < 0)
+    {
+        return false;
+    }
+
+    const FString NormalizedName = NormalizeName(PersistedCharacter.Name);
+    if (const FAetherCharacterId* ExistingByName = CharacterIdByName.Find(NormalizedName))
+    {
+        if (*ExistingByName != PersistedCharacter.CharacterId)
+        {
+            return false;
+        }
+    }
+
+    if (FAetherCharacterRecord* Existing = Characters.Find(PersistedCharacter.CharacterId))
+    {
+        if (Existing->AccountId != PersistedCharacter.AccountId)
+        {
+            return false;
+        }
+
+        CharacterIdByName.Remove(NormalizeName(Existing->Name));
+        Existing->Name = NormalizedName;
+        Existing->Status = EAetherCharacterStatus::Offline;
+        Existing->CurrentHealth = FMath::Clamp(PersistedCharacter.CurrentHealth, 0.0f, PersistedCharacter.DerivedStats.MaxHealth);
+        Existing->CurrentShield = FMath::Max(0.0f, PersistedCharacter.CurrentShield);
+        Existing->CombatState = PersistedCharacter.CombatState;
+        Existing->Level = PersistedCharacter.Level;
+        Existing->Experience = PersistedCharacter.Experience;
+        Existing->UnspentStatPoints = PersistedCharacter.UnspentStatPoints;
+        Existing->BaseStats = PersistedCharacter.BaseStats;
+        Existing->DerivedStats = PersistedCharacter.DerivedStats;
+        Existing->WorldLocation = PersistedCharacter.WorldLocation;
+        Existing->WorldRotation = PersistedCharacter.WorldRotation;
+        Existing->CurrentZoneId = PersistedCharacter.CurrentZoneId;
+        Existing->CurrentZoneType = PersistedCharacter.CurrentZoneType;
+        CharacterIdByName.Add(Existing->Name, Existing->CharacterId);
+        SelectedCharacterByAccount.Remove(Existing->AccountId);
+        return true;
+    }
+
+    if (NumCharactersForAccount(PersistedCharacter.AccountId) >= MaxCharactersPerAccount)
+    {
+        return false;
+    }
+
+    FAetherCharacterRecord Restored = PersistedCharacter;
+    Restored.Name = NormalizedName;
+    Restored.Status = EAetherCharacterStatus::Offline;
+    Characters.Add(Restored.CharacterId, Restored);
+    CharacterIdByName.Add(Restored.Name, Restored.CharacterId);
+    CharacterIdsByAccount.FindOrAdd(Restored.AccountId).Add(Restored.CharacterId);
+    SelectedCharacterByAccount.Remove(Restored.AccountId);
+    return true;
+}
+
 bool FAetherCharacterService::FindCharacter(
     const FAetherCharacterId& CharacterId,
     FAetherCharacterRecord& OutCharacter) const
