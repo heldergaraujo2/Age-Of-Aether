@@ -628,6 +628,11 @@ void AAetherNetworkPlayerController::ServerDeselectCharacter_Implementation(
         if (Characters->DeselectCharacter(AuthenticatedAccountId, CharacterId))
         {
             Result = EAetherCharacterOperationResult::Accepted;
+
+            if (APawn* CurrentPawn = GetPawn())
+            {
+                CurrentPawn->Destroy();
+            }
         }
         else
         {
