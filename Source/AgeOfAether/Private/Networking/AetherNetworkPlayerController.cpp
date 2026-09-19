@@ -14,6 +14,7 @@
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
 #include "Networking/AetherNetworkGameState.h"
+#include "Multiplayer/AetherMultiplayerSubsystem.h"
 
 
 namespace
@@ -246,6 +247,8 @@ void AAetherNetworkPlayerController::ServerAuthenticateAccount_Implementation(
             AuthenticatedAccountId = Response.AccountId;
             SessionId = Response.SessionId;
             bAccountAuthenticated = true;
+            if (UAetherMultiplayerSubsystem* Multiplayer = GetGameInstance()->GetSubsystem<UAetherMultiplayerSubsystem>())
+                Multiplayer->SetAuthenticated(GetUniqueID(), true);
         }
     }
 
@@ -313,6 +316,8 @@ void AAetherNetworkPlayerController::ServerReconnectAccount_Implementation(
             AuthenticatedAccountId = Response.AccountId;
             SessionId = Response.SessionId;
             bAccountAuthenticated = true;
+            if (UAetherMultiplayerSubsystem* Multiplayer = GetGameInstance()->GetSubsystem<UAetherMultiplayerSubsystem>())
+                Multiplayer->SetAuthenticated(GetUniqueID(), true);
         }
     }
 
@@ -367,6 +372,13 @@ void AAetherNetworkPlayerController::ServerLogoutAccount_Implementation(
 
     if (bLoggedOut)
     {
+        if (UAetherMultiplayerSubsystem* Multiplayer = GetGameInstance()
+            ? GetGameInstance()->GetSubsystem<UAetherMultiplayerSubsystem>() : nullptr)
+        {
+            Multiplayer->SetAuthenticated(GetUniqueID(), false);
+            Multiplayer->Heartbeat(GetUniqueID(), GetServerTimeSeconds());
+        }
+
         if (UAetherCharacterSubsystem* Characters = GetGameInstance()
             ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
             : nullptr)
@@ -424,6 +436,12 @@ void AAetherNetworkPlayerController::ServerSessionHeartbeat_Implementation(
     UAetherAccountSessionSubsystem* Sessions = GetGameInstance()
         ? GetGameInstance()->GetSubsystem<UAetherAccountSessionSubsystem>()
         : nullptr;
+    UAetherMultiplayerSubsystem* Multiplayer = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherMultiplayerSubsystem>()
+        : nullptr;
+
+    const double Now = GetServerTimeSeconds();
+    const bool bAuthorityHeartbeat = Multiplayer && Multiplayer->Heartbeat(GetUniqueID(), Now);
 
     FAetherAuthenticationResponse Response;
     Response.AccountId = AuthenticatedAccountId;
@@ -431,7 +449,8 @@ void AAetherNetworkPlayerController::ServerSessionHeartbeat_Implementation(
     Response.Result = Sessions
         && bAccountAuthenticated
         && InSessionId == SessionId
-        && Sessions->Heartbeat(InSessionId, ProtocolVersion, GetServerTimeSeconds())
+        && bAuthorityHeartbeat
+        && Sessions->Heartbeat(InSessionId, ProtocolVersion, Now)
         ? EAetherAuthenticationResult::Accepted
         : EAetherAuthenticationResult::SessionNotFound;
 
