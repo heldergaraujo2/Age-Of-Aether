@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Characters/AetherCharacterTypes.h"
 
 #include "AetherNetworkGameMode.generated.h"
 
@@ -12,4 +13,6 @@ class AGEOFAETHER_API AAetherNetworkGameMode : public AGameModeBase
 
 public:
     AAetherNetworkGameMode();
+
+    void SpawnSelectedCharacter(APlayerController* PlayerController, const FAetherCharacterRecord& Character);
 };
