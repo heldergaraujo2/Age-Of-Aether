@@ -18,6 +18,8 @@ public:
         EAetherCharacterClass CharacterClass,
         FAetherCharacterRecord& OutCharacter);
 
+    bool RestoreCharacter(const FAetherCharacterRecord& PersistedCharacter);
+
     bool FindCharacter(const FAetherCharacterId& CharacterId, FAetherCharacterRecord& OutCharacter) const;
     bool FindCharacterByName(const FString& Name, FAetherCharacterRecord& OutCharacter) const;
     bool IsCharacterOwnedByAccount(const FAetherCharacterId& CharacterId, const FAetherAccountId& AccountId) const;
