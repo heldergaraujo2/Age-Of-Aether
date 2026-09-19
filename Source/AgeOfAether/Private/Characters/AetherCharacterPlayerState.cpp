@@ -23,6 +23,8 @@ void AAetherCharacterPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimePro
     DOREPLIFETIME(AAetherCharacterPlayerState, CurrentHealth);
     DOREPLIFETIME(AAetherCharacterPlayerState, CurrentShield);
     DOREPLIFETIME(AAetherCharacterPlayerState, CombatState);
+    DOREPLIFETIME(AAetherCharacterPlayerState, CurrentZoneId);
+    DOREPLIFETIME(AAetherCharacterPlayerState, CurrentZoneType);
 }
 
 void AAetherCharacterPlayerState::SetCharacterIdentity(const FAetherCharacterRecord& Character)
@@ -44,6 +46,8 @@ void AAetherCharacterPlayerState::SetCharacterIdentity(const FAetherCharacterRec
     CurrentHealth = Character.CurrentHealth;
     CurrentShield = Character.CurrentShield;
     CombatState = Character.CombatState;
+    CurrentZoneId = Character.CurrentZoneId;
+    CurrentZoneType = Character.CurrentZoneType;
     SetPlayerName(Character.Name);
 }
 
@@ -105,4 +109,14 @@ float AAetherCharacterPlayerState::GetCurrentShield() const
 EAetherCharacterCombatState AAetherCharacterPlayerState::GetCombatState() const
 {
     return CombatState;
+}
+
+FAetherWorldZoneId AAetherCharacterPlayerState::GetCurrentZoneId() const
+{
+    return CurrentZoneId;
+}
+
+EAetherWorldZoneType AAetherCharacterPlayerState::GetCurrentZoneType() const
+{
+    return CurrentZoneType;
 }
