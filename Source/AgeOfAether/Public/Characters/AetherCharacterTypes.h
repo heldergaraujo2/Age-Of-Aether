@@ -135,6 +135,9 @@ struct FAetherCharacterRecord
     int64 Experience = 0;
 
     UPROPERTY(BlueprintReadOnly)
+    int32 UnspentStatPoints = 0;
+
+    UPROPERTY(BlueprintReadOnly)
     FAetherBaseStats BaseStats;
 
     UPROPERTY(BlueprintReadOnly)
