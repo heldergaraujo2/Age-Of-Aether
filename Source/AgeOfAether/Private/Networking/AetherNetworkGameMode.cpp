@@ -4,6 +4,7 @@
 #include "Networking/AetherNetworkPlayerController.h"
 #include "Characters/AetherCharacter.h"
 #include "Characters/AetherCharacterPlayerState.h"
+#include "Characters/AetherCharacterSubsystem.h"
 #include "GameFramework/PlayerStart.h"
 #include "World/AetherWorldSubsystem.h"
 
