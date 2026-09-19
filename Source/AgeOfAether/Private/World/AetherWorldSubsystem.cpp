@@ -115,5 +115,39 @@ bool UAetherWorldSubsystem::FindSpawnPoint(
 bool UAetherWorldSubsystem::ConfigureFromDataAsset(
     const UAetherWorldConfigDataAsset* ConfigAsset)
 {
-    return ConfigAsset && WorldService.SetConfig(ConfigAsset->Config);
+    if (!ConfigAsset || !WorldService.SetConfig(ConfigAsset->Config))
+    {
+        return false;
+    }
+
+    WorldService.ClearWorldDefinitions();
+
+    for (const FAetherWorldZone& Zone : ConfigAsset->Zones)
+    {
+        if (!WorldService.RegisterZone(Zone))
+        {
+            WorldService.ClearWorldDefinitions();
+            return false;
+        }
+    }
+
+    for (const FAetherWorldSpawnPoint& Spawn : ConfigAsset->SpawnPoints)
+    {
+        if (!WorldService.RegisterSpawnPoint(Spawn))
+        {
+            WorldService.ClearWorldDefinitions();
+            return false;
+        }
+    }
+
+    for (const FAetherWorldPortal& Portal : ConfigAsset->Portals)
+    {
+        if (!WorldService.RegisterPortal(Portal))
+        {
+            WorldService.ClearWorldDefinitions();
+            return false;
+        }
+    }
+
+    return true;
 }
