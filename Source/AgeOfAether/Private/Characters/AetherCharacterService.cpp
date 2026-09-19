@@ -1,0 +1,212 @@
+#include "Characters/AetherCharacterService.h"
+
+bool FAetherCharacterService::CreateCharacter(
+    const FAetherAccountId& AccountId,
+    const FString& Name,
+    EAetherCharacterClass CharacterClass,
+    FAetherCharacterRecord& OutCharacter)
+{
+    if (!AccountId.IsValid())
+    {
+        return false;
+    }
+
+    const FString NormalizedName = NormalizeName(Name);
+    if (NormalizedName.IsEmpty() || NormalizedName.Len() < 3 || NormalizedName.Len() > 16)
+    {
+        return false;
+    }
+
+    if (CharacterIdByName.Contains(NormalizedName) || NumCharactersForAccount(AccountId) >= MaxCharactersPerAccount)
+    {
+        return false;
+    }
+
+    FAetherCharacterRecord Character;
+    Character.CharacterId = FAetherCharacterId::NewId();
+    Character.AccountId = AccountId;
+    Character.Name = NormalizedName;
+    Character.CharacterClass = CharacterClass;
+    Character.Status = EAetherCharacterStatus::Available;
+    Character.Level = 1;
+    Character.Experience = 0;
+    Character.BaseStats = FAetherBaseStats();
+    Character.DerivedStats = CalculateDerivedStats(Character.BaseStats, Character.Level);
+
+    Characters.Add(Character.CharacterId, Character);
+    CharacterIdByName.Add(NormalizedName, Character.CharacterId);
+    CharacterIdsByAccount.FindOrAdd(AccountId).Add(Character.CharacterId);
+    OutCharacter = Character;
+    return true;
+}
+
+bool FAetherCharacterService::FindCharacter(
+    const FAetherCharacterId& CharacterId,
+    FAetherCharacterRecord& OutCharacter) const
+{
+    const FAetherCharacterRecord* Character = Characters.Find(CharacterId);
+    if (!Character)
+    {
+        return false;
+    }
+
+    OutCharacter = *Character;
+    return true;
+}
+
+bool FAetherCharacterService::FindCharacterByName(
+    const FString& Name,
+    FAetherCharacterRecord& OutCharacter) const
+{
+    const FAetherCharacterId* CharacterId = CharacterIdByName.Find(NormalizeName(Name));
+    return CharacterId && FindCharacter(*CharacterId, OutCharacter);
+}
+
+bool FAetherCharacterService::IsCharacterOwnedByAccount(
+    const FAetherCharacterId& CharacterId,
+    const FAetherAccountId& AccountId) const
+{
+    const FAetherCharacterRecord* Character = Characters.Find(CharacterId);
+    return Character && Character->AccountId == AccountId;
+}
+
+bool FAetherCharacterService::SelectCharacter(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    FAetherCharacterRecord& OutCharacter)
+{
+    FAetherCharacterRecord* Character = Characters.Find(CharacterId);
+    if (!Character || Character->AccountId != AccountId)
+    {
+        return false;
+    }
+
+    if (Character->Status == EAetherCharacterStatus::Disabled ||
+        Character->Status == EAetherCharacterStatus::Deleted)
+    {
+        return false;
+    }
+
+    if (const FAetherCharacterId* Existing = SelectedCharacterByAccount.Find(AccountId))
+    {
+        if (*Existing != CharacterId)
+        {
+            return false;
+        }
+    }
+
+    Character->Status = EAetherCharacterStatus::Active;
+    SelectedCharacterByAccount.Add(AccountId, CharacterId);
+    OutCharacter = *Character;
+    return true;
+}
+
+bool FAetherCharacterService::DeselectCharacter(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId)
+{
+    FAetherCharacterRecord* Character = Characters.Find(CharacterId);
+    if (!Character || Character->AccountId != AccountId)
+    {
+        return false;
+    }
+
+    const FAetherCharacterId* Selected = SelectedCharacterByAccount.Find(AccountId);
+    if (!Selected || *Selected != CharacterId)
+    {
+        return false;
+    }
+
+    SelectedCharacterByAccount.Remove(AccountId);
+    Character->Status = EAetherCharacterStatus::Offline;
+    return true;
+}
+
+bool FAetherCharacterService::UpdateCharacterLocation(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    const FVector& Location,
+    const FRotator& Rotation)
+{
+    FAetherCharacterRecord* Character = Characters.Find(CharacterId);
+    if (!Character || Character->AccountId != AccountId || Character->Status != EAetherCharacterStatus::Active)
+    {
+        return false;
+    }
+
+    Character->WorldLocation = Location;
+    Character->WorldRotation = Rotation;
+    return true;
+}
+
+bool FAetherCharacterService::UpdateCharacterStatus(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    EAetherCharacterStatus Status)
+{
+    FAetherCharacterRecord* Character = Characters.Find(CharacterId);
+    if (!Character || Character->AccountId != AccountId)
+    {
+        return false;
+    }
+
+    if (Status == EAetherCharacterStatus::Active &&
+        (!SelectedCharacterByAccount.Contains(AccountId) ||
+         *SelectedCharacterByAccount.Find(AccountId) != CharacterId))
+    {
+        return false;
+    }
+
+    Character->Status = Status;
+    if (Status != EAetherCharacterStatus::Active)
+    {
+        if (const FAetherCharacterId* Selected = SelectedCharacterByAccount.Find(AccountId))
+        {
+            if (*Selected == CharacterId)
+            {
+                SelectedCharacterByAccount.Remove(AccountId);
+            }
+        }
+    }
+
+    return true;
+}
+
+bool FAetherCharacterService::GetSelectedCharacter(
+    const FAetherAccountId& AccountId,
+    FAetherCharacterRecord& OutCharacter) const
+{
+    const FAetherCharacterId* CharacterId = SelectedCharacterByAccount.Find(AccountId);
+    return CharacterId && FindCharacter(*CharacterId, OutCharacter);
+}
+
+int32 FAetherCharacterService::NumCharacters() const
+{
+    return Characters.Num();
+}
+
+int32 FAetherCharacterService::NumCharactersForAccount(const FAetherAccountId& AccountId) const
+{
+    const TSet<FAetherCharacterId>* CharacterIds = CharacterIdsByAccount.Find(AccountId);
+    return CharacterIds ? CharacterIds->Num() : 0;
+}
+
+FString FAetherCharacterService::NormalizeName(const FString& Name)
+{
+    return Name.TrimStartAndEnd().ToLower();
+}
+
+FAetherDerivedStats FAetherCharacterService::CalculateDerivedStats(
+    const FAetherBaseStats& BaseStats,
+    int32 Level)
+{
+    FAetherDerivedStats Stats;
+    const int32 SafeLevel = FMath::Max(1, Level);
+    Stats.MaxHealth = 100.0f + BaseStats.Vitality * 10.0f + SafeLevel * 5.0f;
+    Stats.MaxMana = 50.0f + BaseStats.Energy * 5.0f + SafeLevel * 2.0f;
+    Stats.AttackMin = 10.0f + BaseStats.Strength * 1.5f + SafeLevel;
+    Stats.AttackMax = Stats.AttackMin + 5.0f + BaseStats.Agility * 0.25f;
+    Stats.Defense = 5.0f + BaseStats.Agility * 0.5f + SafeLevel * 0.5f;
+    Stats.MoveSpeed = 600.0f;
+    return Stats;
+}
