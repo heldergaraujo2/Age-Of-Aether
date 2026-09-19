@@ -162,3 +162,20 @@ bool FAetherQuestCapacityTest::RunTest(const FString&)
     TestEqual(TEXT("capacity result"), Operation.Result, EAetherQuestOperationResult::CapacityReached);
     return true;
 }
+
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestOptionalObjectiveTest, "AgeOfAether.Quests.OptionalObjective", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FAetherQuestOptionalObjectiveTest::RunTest(const FString&)
+{
+    FAetherQuestService Service;
+    const FAetherCharacterRecord Character = MakeQuestCharacter();
+    FAetherQuestDefinition Definition = MakeQuest(TEXT("quest.optional"));
+    Definition.Objectives[0].bOptional = true;
+    TestTrue(TEXT("register"), Service.RegisterDefinition(Definition));
+
+    FAetherQuestOperation Operation;
+    TestTrue(TEXT("accept"), Service.AcceptQuest(Character, Definition.QuestId, Operation));
+    TestTrue(TEXT("optional objective can remain incomplete"), Service.CompleteQuest(Character, Definition.QuestId, Operation));
+    TestTrue(TEXT("reward marked"), Operation.State.bRewardGranted);
+    return true;
+}
