@@ -162,6 +162,18 @@ void FAetherPersistenceService::GetSnapshots(TArray<FAetherCharacterPersistenceS
     });
 }
 
+bool FAetherPersistenceService::RestoreSnapshot(const FAetherCharacterPersistenceSnapshot& InputSnapshot)
+{
+    FAetherCharacterPersistenceSnapshot Snapshot = InputSnapshot;
+    if (!MigrateSnapshot(Snapshot) || !ValidateSnapshot(Snapshot) || !VerifyChecksum(Snapshot))
+    {
+        return false;
+    }
+
+    Snapshots.Add(Snapshot.Character.CharacterId, Snapshot);
+    return true;
+}
+
 bool FAetherPersistenceService::LoadSnapshot(
     const FAetherCharacterId& CharacterId,
     FAetherCharacterPersistenceSnapshot& OutSnapshot,
