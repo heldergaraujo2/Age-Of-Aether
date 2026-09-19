@@ -184,7 +184,6 @@ bool FAetherSocialService::GetPartyMember(const FAetherSocialPartyId& PartyId, c
 {
     const FAetherSocialPartyId* Existing = PartyByCharacter.Find(CharacterId);
     if (!Existing || !(*Existing == PartyId)) return false;
-    const FAetherSocialPartyState* Dummy = nullptr;
     const FAetherPartyState* Party = Parties.Find(PartyId);
     if (!Party) return false;
     for (const FAetherPartyMember& Member : Party->Members)
