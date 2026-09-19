@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 11 — Social (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Status:** Phase 12 — Economy & Crafting (repository implementation complete; Unreal compilation/runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -27,7 +27,8 @@ The repository uses the following execution sequence for implementation continui
 - Phase 9 — World Runtime — COMPLETE at repository level; local Unreal validation pending
 - Phase 10 — Quest/Mission — COMPLETE at repository level; local Unreal validation pending
 - Phase 11 — Social — COMPLETE at repository level; local Unreal validation pending
-- Phase 12 — Economy & Crafting — NEXT
+- Phase 12 — Economy & Crafting — COMPLETE at repository level; local Unreal validation pending
+- Phase 13 — Multiplayer & Server Authority — NEXT
 - Phase 13 — Multiplayer & Server Authority
 - Phase 14 — Persistence & Backend
 - Phase 15 — Security & Anti-Cheat
@@ -2088,3 +2089,43 @@ At roadmap creation:
 - No MMORPG gameplay system is considered implemented yet.
 
 **Current implementation milestone: PHASE 4 — Accounts and Sessions.**
+
+
+## Phase 12 — Economy & Crafting
+
+Repository implementation is complete.
+
+Implemented:
+- character-owned Gold wallets using int64;
+- server-authoritative currency set/add/remove operations;
+- overflow and insufficient-funds validation;
+- data-driven shop definitions and entries;
+- fixed buy/sell prices and quantity limits;
+- authoritative buy/sell flows integrated with ItemService;
+- data-driven crafting recipes and ingredients/outputs;
+- crafting level, currency and ingredient requirements;
+- complete-output inventory preflight before ingredient consumption;
+- atomic Economy Config Data Asset registration;
+- economy transaction result contract;
+- economy PlayerController RPCs and Blueprint delegate;
+- dedicated economy request ordering guard;
+- automation tests for wallet, shops, buying, selling, crafting, validation and overflow.
+
+Security boundary:
+- client cannot author wallet balance;
+- client cannot author prices;
+- client cannot author recipe contents;
+- client cannot bypass inventory ownership;
+- client cannot bypass ingredient, currency, level or capacity rules;
+- active CharacterID is resolved from authenticated server state.
+
+Validation truth:
+- repository/static validation PASSED;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/multiplayer/Automation Framework/network emulation remain NOT VERIFIED because Unreal is unavailable here;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Deliverable:
+- Docs/PHASE_12_ECONOMY_CRAFTING.md
+
+Next implementation target:
+**PHASE 13 — MULTIPLAYER & SERVER AUTHORITY**
