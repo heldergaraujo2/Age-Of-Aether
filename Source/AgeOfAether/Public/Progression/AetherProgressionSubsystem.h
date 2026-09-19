@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Progression/AetherProgressionService.h"
+#include "Progression/AetherProgressionConfigDataAsset.h"
 #include "Progression/AetherProgressionSubsystem.generated.h"
 
 UCLASS()
@@ -26,6 +27,7 @@ public:
     int64 ExperienceRequiredForNextLevel(int32 CurrentLevel) const;
 
     const FAetherProgressionConfig& GetConfig() const;
+    bool ConfigureFromDataAsset(const UAetherProgressionConfigDataAsset* ConfigAsset);
 
 private:
     FAetherProgressionService ProgressionService;
