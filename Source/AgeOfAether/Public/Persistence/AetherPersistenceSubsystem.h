@@ -20,6 +20,17 @@ public:
         uint64 ExpectedRevision,
         FAetherPersistenceOperation& OutOperation);
 
+    bool SaveCharacterState(
+        const FAetherAccountId& AccountId,
+        const FAetherCharacterId& CharacterId,
+        uint64 ExpectedRevision,
+        FAetherPersistenceOperation& OutOperation);
+
+    bool LoadCharacterState(
+        const FAetherAccountId& AccountId,
+        const FAetherCharacterId& CharacterId,
+        FAetherPersistenceOperation& OutOperation);
+
     bool LoadCharacterSnapshot(
         const FAetherCharacterId& CharacterId,
         FAetherCharacterPersistenceSnapshot& OutSnapshot,
