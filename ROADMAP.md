@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 15 — Security & Anti-Cheat (repository implementation complete; Unreal compilation/runtime validation pending local validation)  
+**Status:** Phase 16 — MMORPG Scale & Dedicated Server (repository implementation complete; Unreal compilation/runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -31,7 +31,8 @@ The repository uses the following execution sequence for implementation continui
 - Phase 13 — Multiplayer & Server Authority — COMPLETE at repository level; local Unreal validation pending
 - Phase 14 — Persistence & Backend — COMPLETE at repository level; local Unreal persistence validation pending
 - Phase 15 — Security & Anti-Cheat — COMPLETE at repository level; local Unreal security validation pending
-- Phase 16 — MMORPG Scale & Dedicated Server — NEXT
+- Phase 16 — MMORPG Scale & Dedicated Server — COMPLETE at repository level; local Unreal validation pending
+- Phase 17 — AI/GPT Integration — NEXT
 - Phase 13 — Multiplayer & Server Authority
 - Phase 14 — Persistence & Backend
 - Phase 15 — Security & Anti-Cheat
@@ -2241,3 +2242,49 @@ Deliverable:
 
 Next implementation target:
 **PHASE 16 — MMORPG SCALE & DEDICATED SERVER**
+
+
+## Phase 16 — MMORPG Scale & Dedicated Server
+
+Repository implementation is COMPLETE.
+
+Implemented:
+- restored/verified Unreal project foundation required for UBT targets;
+- dedicated server target using TargetType.Server;
+- FAetherScaleConfig and data-driven scale limits;
+- server-node identity and lifecycle;
+- accepting/draining admission;
+- node health heartbeat;
+- load snapshots and load score;
+- automatic drain at hard load;
+- cross-server transfer request contract with expiration;
+- scale subsystem and Data Asset;
+- scale automation tests.
+
+Architecture:
+- Phase 13 remains the connection-level multiplayer authority;
+- Phase 16 adds node-level capacity and lifecycle above connection admission;
+- gameplay state remains server-authoritative;
+- transfer state cannot be authored by clients;
+- no cloud provider, gateway or production database is fabricated.
+
+Replication boundary:
+- Replication Graph is documented as the intended scalable Unreal replication option;
+- no unverified engine/plugin dependency was hard-wired before local UE 5.8.1 validation.
+
+World boundary:
+- World Partition remains the intended large-world streaming technology;
+- real maps, Data Layers, HLOD, terrain, collision, NavMesh and streaming sources require Unreal Editor.
+
+Validation truth:
+- repository/static validation PASSED;
+- dedicated-server target/source inspection PASSED;
+- delimiter and escaped-newline audits PASSED;
+- Unreal 5.8.1 UHT/UBT/Editor/Automation/dedicated-server cook/runtime/multi-client load/Replication Graph/World Partition remain NOT VERIFIED because Unreal is unavailable;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Deliverable:
+- Docs/PHASE_16_SCALE_DEDICATED_SERVER.md
+
+Next implementation target:
+**PHASE 17 — AI/GPT INTEGRATION**

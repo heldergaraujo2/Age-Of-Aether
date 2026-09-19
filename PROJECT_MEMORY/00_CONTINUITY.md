@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 15 — Security & Anti-Cheat (repository implementation complete; repository/static validation passed; Unreal compilation/runtime validation pending local validation)  
+**Current stage:** Phase 16 — MMORPG Scale & Dedicated Server (repository implementation complete; repository/static validation passed; Unreal compilation/runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -779,3 +779,45 @@ Design boundary:
 
 Next implementation target:
 **PHASE 16 — MMORPG SCALE & DEDICATED SERVER**
+
+
+## Phase 16 — MMORPG Scale & Dedicated Server
+
+Repository implementation is COMPLETE at source/repository level.
+
+Implemented:
+- dedicated server UBT target;
+- restored/verified Unreal project/module foundation required for server builds;
+- FAetherScaleConfig;
+- FAetherServerNodeId;
+- FAetherServerNodeDescriptor;
+- FAetherServerLoadSnapshot;
+- FAetherServerTransferRequest;
+- FAetherScaleService;
+- UAetherScaleSubsystem;
+- UAetherScaleConfigDataAsset;
+- server accepting/draining lifecycle;
+- node health heartbeat;
+- capacity and load scoring;
+- hard-load automatic drain;
+- expiring server-to-server transfer contract;
+- scale automation tests.
+
+Validation:
+- repository/static validation PASSED;
+- source delimiter audit PASSED;
+- escaped-newline audit PASSED;
+- target naming and TargetType.Server audit PASSED;
+- no fake .uasset/.umap content added;
+- Unreal 5.8.1 UHT/UBT/Editor/Automation/dedicated-server runtime/multi-client load/Replication Graph/World Partition remain NOT VERIFIED because Unreal is unavailable;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Design boundary:
+- Phase 13 remains the connection-level admission/rate authority;
+- Phase 16 adds server-node admission and lifecycle above it;
+- cross-server transfer is a server-side contract only;
+- production gateway/cloud/database infrastructure is not fabricated;
+- Replication Graph remains a validated Unreal-stage integration point rather than an unverified dependency.
+
+Next implementation target:
+**PHASE 17 — AI/GPT INTEGRATION**
