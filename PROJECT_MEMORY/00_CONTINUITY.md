@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 14 — Persistence & Backend (repository implementation complete; repository/static validation passed; Unreal compilation/runtime validation pending local validation)  
+**Current stage:** Phase 15 — Security & Anti-Cheat (repository implementation complete; repository/static validation passed; Unreal compilation/runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -716,3 +716,66 @@ Design boundary:
 
 Next implementation target:
 **PHASE 15 — SECURITY & ANTI-CHEAT**
+
+
+## Phase 15 — Security & Anti-Cheat
+
+Repository implementation is COMPLETE at source/repository level.
+
+Implemented:
+- FAetherSecurityTypes.h;
+- FAetherSecurityService;
+- FAetherSecuritySubsystem;
+- FAetherSecurityConfigDataAsset;
+- per-connection request token bucket;
+- per-action request replay protection;
+- authentication gating;
+- temporary quarantine;
+- suspicion score;
+- bounded security audit trail;
+- authoritative movement anomaly sampling during session heartbeat;
+- security authorization helper in AAetherNetworkPlayerController;
+- security gates on all 43 Server*_Implementation RPCs;
+- multiplayer token-bucket hardening with independent LastRequestRefillAt;
+- security and multiplayer automation tests.
+
+Security model:
+- all client-originated server gameplay RPCs pass through the security policy before gameplay logic;
+- category-local request IDs remain independently guarded by the PlayerController;
+- security replay tracking uses EAetherSecurityAction as a byte-keyed category;
+- unauthenticated gameplay requests are rejected;
+- authentication/session requests remain available before authentication;
+- rate exhaustion returns RateLimited;
+- repeated invalid behavior can trigger temporary Quarantined state;
+- impossible authoritative movement samples increase suspicion and generate audit events.
+
+Important files:
+- Source/AgeOfAether/Public/Security/AetherSecurityTypes.h
+- Source/AgeOfAether/Public/Security/AetherSecurityService.h
+- Source/AgeOfAether/Private/Security/AetherSecurityService.cpp
+- Source/AgeOfAether/Public/Security/AetherSecuritySubsystem.h
+- Source/AgeOfAether/Private/Security/AetherSecuritySubsystem.cpp
+- Source/AgeOfAether/Public/Security/AetherSecurityConfigDataAsset.h
+- Source/AgeOfAether/Public/Networking/AetherNetworkPlayerController.h
+- Source/AgeOfAether/Private/Networking/AetherNetworkPlayerController.cpp
+- Source/AgeOfAether/Private/Tests/AetherSecurityTests.cpp
+- Source/AgeOfAether/Private/Tests/AetherMultiplayerTests.cpp
+- Docs/PHASE_15_SECURITY_ANTI_CHEAT.md
+
+Validation truth:
+- source/static delimiter audit PASSED;
+- escaped-newline audit PASSED;
+- all 43 server RPC security-gate coverage PASSED;
+- per-action replay audit PASSED;
+- multiplayer heartbeat/request-refill isolation PASSED;
+- Unreal 5.8.1 UHT/UBT/Editor/Automation/PIE/network-emulation/dedicated-server attack runtime remains NOT VERIFIED because Unreal is unavailable in this environment;
+- no CI pipeline exists to substitute for Unreal validation.
+
+Design boundary:
+- security service is defense-in-depth and does not replace gameplay-service authority;
+- permanent bans and persistent moderation evidence are intentionally deferred to production backend/admin infrastructure;
+- no external anti-cheat SDK or kernel component is fabricated;
+- future production security can consume the bounded audit events and suspicion signals through a backend adapter.
+
+Next implementation target:
+**PHASE 16 — MMORPG SCALE & DEDICATED SERVER**
