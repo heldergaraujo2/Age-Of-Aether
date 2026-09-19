@@ -4,12 +4,15 @@
 #include "GameFramework/PlayerController.h"
 #include "Networking/AetherNetworkTypes.h"
 #include "Accounts/AetherAccountSessionTypes.h"
+#include "Characters/AetherCharacterTypes.h"
 
 #include "AetherNetworkPlayerController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherNetworkResponseEvent, const FAetherNetworkResponse&, Response);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherAuthenticationResponseEvent, const FAetherAuthenticationResponse&, Response);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherSessionHeartbeatEvent, bool, bAccepted);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAetherCharacterOperationEvent, EAetherCharacterOperationResult, Result, const FAetherCharacterRecord&, Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCharacterListEvent, const TArray<FAetherCharacterRecord>&, Characters);
 
 UCLASS()
 class AGEOFAETHER_API AAetherNetworkPlayerController : public APlayerController
@@ -34,6 +37,18 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Accounts")
     void SendSessionHeartbeat();
 
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Character")
+    void RequestCharacterList();
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Character")
+    void CreateCharacter(const FString& Name, EAetherCharacterClass CharacterClass);
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Character")
+    void SelectCharacter(const FAetherCharacterId& CharacterId);
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Character")
+    void DeselectCharacter();
+
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Accounts")
     bool IsAccountAuthenticated() const;
 
@@ -51,6 +66,12 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Accounts")
     FAetherSessionHeartbeatEvent OnSessionHeartbeat;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Character")
+    FAetherCharacterOperationEvent OnCharacterOperation;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Character")
+    FAetherCharacterListEvent OnCharacterList;
 
 protected:
     UFUNCTION(Server, Reliable)
@@ -83,6 +104,24 @@ protected:
     UFUNCTION(Client, Reliable)
     void ClientReceiveSessionHeartbeat(uint32 RequestId, const FAetherAuthenticationResponse& Response);
 
+    UFUNCTION(Server, Reliable)
+    void ServerRequestCharacterList(uint32 RequestId);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveCharacterList(uint32 RequestId, const TArray<FAetherCharacterRecord>& Characters);
+
+    UFUNCTION(Server, Reliable)
+    void ServerCreateCharacter(uint32 RequestId, const FString& Name, EAetherCharacterClass CharacterClass);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveCharacterOperation(uint32 RequestId, EAetherCharacterOperationResult Result, const FAetherCharacterRecord& Character);
+
+    UFUNCTION(Server, Reliable)
+    void ServerSelectCharacter(uint32 RequestId, const FAetherCharacterId& CharacterId);
+
+    UFUNCTION(Server, Reliable)
+    void ServerDeselectCharacter(uint32 RequestId, const FAetherCharacterId& CharacterId);
+
     virtual void BeginPlay() override;
 
 private:
@@ -96,6 +135,8 @@ private:
     uint32 LastProcessedRequestId = 0;
     uint32 NextAccountRequestId = 1;
     uint32 LastProcessedAccountRequestId = 0;
+    uint32 NextCharacterRequestId = 1;
+    uint32 LastProcessedCharacterRequestId = 0;
 
     FAetherAccountId AuthenticatedAccountId;
     FAetherSessionId SessionId;
