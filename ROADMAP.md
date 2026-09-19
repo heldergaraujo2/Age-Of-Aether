@@ -2424,3 +2424,27 @@ Implementation files:
 - `Source/AgeOfAether/Private/Tests/AetherContentRegistryTests.cpp`
 
 **Next implementation target: Phase 20 — Asset Pipeline & Visual Asset Registry.**
+
+
+## Phase 20 — Asset Pipeline & Visual Asset Registry
+
+**Status: COMPLETE at repository/source level.**
+
+Implemented:
+- stable AssetID identity;
+- visual asset type contract;
+- asset descriptors for Unreal path, fallback, skeleton, animation, material, icon, VFX and SFX;
+- source/import metadata for FBX workflow;
+- registry with deterministic enumeration;
+- duplicate and cross-reference validation;
+- structural validation;
+- Automation tests.
+
+Validation truth:
+- repository/static validation: PASS;
+- Unreal 5.8.1 UHT/UBT/Editor/Automation/FBX import/runtime rendering: NOT VERIFIED because Unreal is unavailable in this environment.
+
+Deliverable:
+- \`Docs/PHASE_20_ASSET_PIPELINE_VISUAL_REGISTRY.md\`
+
+**Next implementation target: Phase 21 — Complete Item, Equipment & Enhancement Data.**
