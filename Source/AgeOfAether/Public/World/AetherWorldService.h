@@ -13,6 +13,7 @@ public:
     bool RegisterZone(const FAetherWorldZone& Zone);
     bool RegisterSpawnPoint(const FAetherWorldSpawnPoint& SpawnPoint);
     bool RegisterPortal(const FAetherWorldPortal& Portal);
+    void ClearWorldDefinitions();
 
     bool FindZone(const FAetherWorldZoneId& ZoneId, FAetherWorldZone& OutZone) const;
     bool FindSpawnPoint(const FAetherWorldZoneId& ZoneId, int32 CharacterLevel, FAetherWorldSpawnPoint& OutSpawn) const;
