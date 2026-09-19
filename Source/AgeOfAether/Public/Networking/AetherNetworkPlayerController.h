@@ -12,6 +12,7 @@
 #include "Quests/AetherQuestTypes.h"
 #include "Social/AetherSocialTypes.h"
 #include "Economy/AetherEconomyTypes.h"
+#include "Security/AetherSecurityTypes.h"
 
 #include "AetherNetworkPlayerController.generated.h"
 
@@ -335,6 +336,7 @@ private:
     bool ValidateRequest(const FAetherNetworkRequest& Request) const;
     bool ValidateAccountRequestId(uint32 RequestId) const;
     double GetServerTimeSeconds() const;
+    bool AuthorizeSecurityRequest(uint32 RequestId, EAetherSecurityAction Action) const;
     void ApplyAuthenticatedSession(const FAetherAuthenticationResponse& Response);
     void ClearAuthenticatedSession();
 
