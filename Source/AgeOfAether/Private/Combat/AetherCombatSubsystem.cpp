@@ -95,3 +95,9 @@ bool UAetherCombatSubsystem::Configure(const FAetherCombatConfig& NewConfig)
 {
     return CombatService.SetConfig(NewConfig);
 }
+
+
+bool UAetherCombatSubsystem::ConfigureFromDataAsset(const UAetherCombatConfigDataAsset* ConfigAsset)
+{
+    return ConfigAsset && CombatService.SetConfig(ConfigAsset->Config);
+}
