@@ -1,5 +1,10 @@
 #include "Items/AetherItemSubsystem.h"
 
+bool UAetherItemSubsystem::RegisterDefinitionAsset(const UAetherItemDefinitionDataAsset* DefinitionAsset)
+{
+    return DefinitionAsset && RegisterDefinition(DefinitionAsset->Definition);
+}
+
 bool UAetherItemSubsystem::RegisterDefinition(const FAetherItemDefinition& Definition)
 {
     return ItemService.RegisterDefinition(Definition);
