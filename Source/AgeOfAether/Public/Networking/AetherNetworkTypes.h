@@ -35,6 +35,14 @@ struct FAetherProtocolVersion
         return Major == Other.Major;
     }
 
+    static FAetherProtocolVersion Current()
+    {
+        FAetherProtocolVersion Version;
+        Version.Major = 1;
+        Version.Minor = 0;
+        return Version;
+    }
+
     FString ToString() const
     {
         return FString::Printf(TEXT("%u.%u"), Major, Minor);
