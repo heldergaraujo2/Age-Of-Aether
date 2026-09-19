@@ -302,6 +302,7 @@ FAetherDerivedStats FAetherCharacterService::CalculateDerivedStats(
     Stats.AttackMin = 10.0f + BaseStats.Strength * 1.5f + SafeLevel;
     Stats.AttackMax = Stats.AttackMin + 5.0f + BaseStats.Agility * 0.25f;
     Stats.Defense = 5.0f + BaseStats.Agility * 0.5f + SafeLevel * 0.5f;
+    Stats.Resistance = FMath::Clamp(BaseStats.Energy * 0.1f, 0.0f, 75.0f);
     Stats.MoveSpeed = 600.0f;
     return Stats;
 }
