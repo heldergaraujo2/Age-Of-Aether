@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 6 — Item and Inventory System (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Current stage:** Phase 7 — Progression System (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -285,6 +285,56 @@ Persistence boundary:
 - durable item repositories/database remain future work;
 - equipment, options, enhancement, drops, shops, trade and crafting are deferred.
 
+## Phase 7 — Progression System
+
+Repository implementation is complete.
+
+Implemented:
+
+- FAetherProgressionConfig;
+- FAetherProgressionResult;
+- authoritative experience grants;
+- bounded linear experience curve;
+- default max level 4000;
+- multi-level advancement with rollover XP;
+- unspent stat points;
+- Strength/Agility/Vitality/Energy/Command allocation;
+- configurable stat cap;
+- derived-stat recalculation;
+- CharacterID/AccountID ownership validation;
+- disabled/deleted lifecycle rejection;
+- progression GameInstance subsystem;
+- CharacterService progression commit boundary;
+- progression Data Asset configuration contract;
+- replicated level/XP/stat points/base stats/derived stats;
+- server-authoritative stat allocation RPC;
+- progression automation tests.
+
+Security boundary:
+
+- XP has no client RPC;
+- stat allocation is only a server-validated request;
+- AccountID comes from authenticated session state;
+- CharacterID comes from active Character PlayerState;
+- client cannot author XP, level, stat totals, derived stats or stat-point balance.
+
+Validation truth:
+
+- repository/static validation PASSED;
+- Unreal UHT/UBT/Editor/PIE/replication/network emulation/Automation Framework are NOT VERIFIED because Unreal 5.8.1 is unavailable in this environment;
+- no CI pipeline exists that can substitute for Unreal validation.
+
+Persistence boundary:
+
+- progression remains runtime-only;
+- durable progression storage belongs to later persistence/backend phases.
+
+Next implementation target:
+
+**PHASE 8 — Combat Runtime**
+
+Combat will consume authoritative Character and Progression state while keeping damage, cooldowns, targets and rewards server-authoritative.
+
 ## 6. Validation truth
 
 ### Repository/static validation
@@ -372,9 +422,9 @@ Repeated login/reconnect on an already authenticated controller is explicitly re
 
 ## 11. Next implementation target
 
-**PHASE 7 — Progression System**
+**PHASE 8 — Combat Runtime**
 
-The next system will build authoritative experience, levels and stat allocation on the existing Character foundation and integrate progression requirements with the item foundation without moving authority to the client.
+The next system will consume authoritative Character and Progression state for target validation, range, cooldown, accuracy, damage, defense, resistance, criticals, effects, death and rewards.
 
 ## 12. Mandatory workflow
 
