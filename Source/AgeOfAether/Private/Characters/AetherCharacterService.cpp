@@ -54,6 +54,32 @@ bool FAetherCharacterService::FindCharacter(
     return true;
 }
 
+void FAetherCharacterService::GetCharactersForAccount(
+    const FAetherAccountId& AccountId,
+    TArray<FAetherCharacterRecord>& OutCharacters) const
+{
+    OutCharacters.Reset();
+
+    const TSet<FAetherCharacterId>* CharacterIds = CharacterIdsByAccount.Find(AccountId);
+    if (!CharacterIds)
+    {
+        return;
+    }
+
+    for (const FAetherCharacterId& CharacterId : *CharacterIds)
+    {
+        if (const FAetherCharacterRecord* Character = Characters.Find(CharacterId))
+        {
+            OutCharacters.Add(*Character);
+        }
+    }
+
+    OutCharacters.Sort([](const FAetherCharacterRecord& A, const FAetherCharacterRecord& B)
+    {
+        return A.Name < B.Name;
+    });
+}
+
 bool FAetherCharacterService::FindCharacterByName(
     const FString& Name,
     FAetherCharacterRecord& OutCharacter) const
