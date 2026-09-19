@@ -469,9 +469,9 @@ Repeated login/reconnect on an already authenticated controller is explicitly re
 
 ## 11. Next implementation target
 
-**PHASE 8 — Combat Runtime**
+**PHASE 9 — World Runtime**
 
-The next system will consume authoritative Character and Progression state for target validation, range, cooldown, accuracy, damage, defense, resistance, criticals, effects, death and rewards.
+The next system will establish authoritative maps, zones, portals, spawn points, safe/PvP/event zones and world rules while consuming the existing Character, Networking and Combat foundations.
 
 ## 12. Mandatory workflow
 
