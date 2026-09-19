@@ -28,7 +28,7 @@ The runtime service is:
 - FAetherWorldService
 - UAetherWorldSubsystem
 
-Unreal's World Partition is the intended large-world technology for the eventual Unreal content layer. Epic documents it as a distance-based streaming/data-management system using grid cells, streaming sources and Data Layers. Level Streaming remains available for specific cases, but World Composition is legacy and World Partition is recommended for UE5 projects. citeturn0search0turn0search2
+Unreal's World Partition is the intended large-world technology for the eventual Unreal content layer. Epic documents it as a distance-based streaming/data-management system using grid cells, streaming sources and Data Layers. Level Streaming remains available for specific cases, but World Composition is legacy and World Partition is recommended for UE5 projects.
 
 ## World rules
 
@@ -137,11 +137,11 @@ No map content is faked in C++. Unreal map/World Partition assets belong to the 
 
 ## Unreal large-world integration
 
-The project should use World Partition rather than introducing a new World Composition architecture. Epic documents World Partition as a persistent level divided into runtime grid cells that stream based on streaming sources; Player Controllers can act as streaming sources. citeturn0search0
+The project should use World Partition rather than introducing a new World Composition architecture. Epic documents World Partition as a persistent level divided into runtime grid cells that stream based on streaming sources; Player Controllers can act as streaming sources.
 
 The World Runtime C++ layer intentionally does not attempt to manufacture .umap assets without an Unreal editor environment.
 
-Navigation is deliberately not hard-coded into this phase. Unreal's Navigation System generates navigable space from collision geometry through Navigation Mesh data, and Navigation Mesh Bounds Volumes define the area to generate. citeturn0search1turn0search8
+Navigation is deliberately not hard-coded into this phase. Unreal's Navigation System generates navigable space from collision geometry through Navigation Mesh data, and Navigation Mesh Bounds Volumes define the area to generate.
 
 AI navigation will consume this world layer in a later phase.
 
