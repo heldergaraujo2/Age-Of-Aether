@@ -1758,7 +1758,7 @@ bool AAetherNetworkPlayerController::AuthorizeSecurityRequest(uint32 RequestId, 
         return false;
     }
 
-    const UAetherSecuritySubsystem* Security =
+    UAetherSecuritySubsystem* Security =
         GetGameInstance()->GetSubsystem<UAetherSecuritySubsystem>();
 
     if (!Security)
