@@ -6,6 +6,7 @@
 #include "Characters/AetherCharacterPlayerState.h"
 #include "Characters/AetherCharacterSubsystem.h"
 #include "GameFramework/PlayerStart.h"
+#include "Engine/GameInstance.h"
 #include "World/AetherWorldSubsystem.h"
 
 AAetherNetworkGameMode::AAetherNetworkGameMode()
