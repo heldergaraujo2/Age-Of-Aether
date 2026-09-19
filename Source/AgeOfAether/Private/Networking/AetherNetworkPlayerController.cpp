@@ -3,6 +3,7 @@
 #include "Accounts/AetherAccountSessionSubsystem.h"
 #include "Characters/AetherCharacterPlayerState.h"
 #include "Characters/AetherCharacterSubsystem.h"
+#include "Items/AetherItemSubsystem.h"
 #include "Networking/AetherNetworkGameMode.h"
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
@@ -658,6 +659,225 @@ void AAetherNetworkPlayerController::ClientReceiveCharacterOperation_Implementat
     const FAetherCharacterRecord& Character)
 {
     OnCharacterOperation.Broadcast(Result, Character);
+}
+
+
+void AAetherNetworkPlayerController::RequestInventory()
+{
+    const uint32 RequestId = NextInventoryRequestId++;
+    if (HasAuthority())
+    {
+        ServerRequestInventory_Implementation(RequestId);
+        return;
+    }
+    ServerRequestInventory(RequestId);
+}
+
+void AAetherNetworkPlayerController::MoveInventoryItem(const FAetherItemInstanceId& InstanceId, int32 TargetSlot)
+{
+    const uint32 RequestId = NextInventoryRequestId++;
+    if (HasAuthority())
+    {
+        ServerMoveInventoryItem_Implementation(RequestId, InstanceId, TargetSlot);
+        return;
+    }
+    ServerMoveInventoryItem(RequestId, InstanceId, TargetSlot);
+}
+
+void AAetherNetworkPlayerController::SplitInventoryStack(const FAetherItemInstanceId& InstanceId, int32 Quantity, int32 TargetSlot)
+{
+    const uint32 RequestId = NextInventoryRequestId++;
+    if (HasAuthority())
+    {
+        ServerSplitInventoryStack_Implementation(RequestId, InstanceId, Quantity, TargetSlot);
+        return;
+    }
+    ServerSplitInventoryStack(RequestId, InstanceId, Quantity, TargetSlot);
+}
+
+void AAetherNetworkPlayerController::MergeInventoryStacks(const FAetherItemInstanceId& SourceInstanceId, const FAetherItemInstanceId& TargetInstanceId)
+{
+    const uint32 RequestId = NextInventoryRequestId++;
+    if (HasAuthority())
+    {
+        ServerMergeInventoryStacks_Implementation(RequestId, SourceInstanceId, TargetInstanceId);
+        return;
+    }
+    ServerMergeInventoryStacks(RequestId, SourceInstanceId, TargetInstanceId);
+}
+
+void AAetherNetworkPlayerController::DiscardInventoryItem(const FAetherItemInstanceId& InstanceId, int32 Quantity)
+{
+    const uint32 RequestId = NextInventoryRequestId++;
+    if (HasAuthority())
+    {
+        ServerDiscardInventoryItem_Implementation(RequestId, InstanceId, Quantity);
+        return;
+    }
+    ServerDiscardInventoryItem(RequestId, InstanceId, Quantity);
+}
+
+namespace
+{
+    bool ResolveAuthenticatedCharacter(
+        AAetherNetworkPlayerController* Controller,
+        FAetherCharacterId& OutCharacterId)
+    {
+        OutCharacterId = FAetherCharacterId();
+        if (!Controller || !Controller->IsAccountAuthenticated())
+        {
+            return false;
+        }
+
+        const AAetherCharacterPlayerState* State = Controller->GetPlayerState<AAetherCharacterPlayerState>();
+        if (!State || !State->GetCharacterId().IsValid())
+        {
+            return false;
+        }
+
+        OutCharacterId = State->GetCharacterId();
+        return true;
+    }
+}
+
+void AAetherNetworkPlayerController::ServerRequestInventory_Implementation(uint32 RequestId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
+
+    TArray<FAetherInventorySlot> Inventory;
+    EAetherInventoryOperationResult Result = EAetherInventoryOperationResult::NotAuthenticated;
+    FAetherCharacterId CharacterId;
+
+    UAetherItemSubsystem* Items = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherItemSubsystem>()
+        : nullptr;
+
+    if (ResolveAuthenticatedCharacter(this, CharacterId) && Items)
+    {
+        Result = Items->GetInventory(CharacterId, Inventory)
+            ? EAetherInventoryOperationResult::Accepted
+            : EAetherInventoryOperationResult::InvalidRequest;
+    }
+
+    LastProcessedInventoryRequestId = RequestId;
+    ClientReceiveInventory(RequestId, Inventory, Result);
+}
+
+void AAetherNetworkPlayerController::ServerMoveInventoryItem_Implementation(
+    uint32 RequestId,
+    const FAetherItemInstanceId& InstanceId,
+    int32 TargetSlot)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
+
+    TArray<FAetherInventorySlot> Inventory;
+    EAetherInventoryOperationResult Result = EAetherInventoryOperationResult::NotAuthenticated;
+    FAetherCharacterId CharacterId;
+
+    UAetherItemSubsystem* Items = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherItemSubsystem>()
+        : nullptr;
+
+    if (ResolveAuthenticatedCharacter(this, CharacterId) && Items)
+    {
+        Result = Items->MoveItem(CharacterId, InstanceId, TargetSlot, Inventory)
+            ? EAetherInventoryOperationResult::Accepted
+            : EAetherInventoryOperationResult::InvalidRequest;
+    }
+
+    LastProcessedInventoryRequestId = RequestId;
+    ClientReceiveInventory(RequestId, Inventory, Result);
+}
+
+void AAetherNetworkPlayerController::ServerSplitInventoryStack_Implementation(
+    uint32 RequestId,
+    const FAetherItemInstanceId& InstanceId,
+    int32 Quantity,
+    int32 TargetSlot)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
+
+    TArray<FAetherInventorySlot> Inventory;
+    EAetherInventoryOperationResult Result = EAetherInventoryOperationResult::NotAuthenticated;
+    FAetherCharacterId CharacterId;
+
+    UAetherItemSubsystem* Items = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherItemSubsystem>()
+        : nullptr;
+
+    if (ResolveAuthenticatedCharacter(this, CharacterId) && Items)
+    {
+        Result = Items->SplitStack(CharacterId, InstanceId, Quantity, TargetSlot, Inventory)
+            ? EAetherInventoryOperationResult::Accepted
+            : EAetherInventoryOperationResult::InvalidRequest;
+    }
+
+    LastProcessedInventoryRequestId = RequestId;
+    ClientReceiveInventory(RequestId, Inventory, Result);
+}
+
+void AAetherNetworkPlayerController::ServerMergeInventoryStacks_Implementation(
+    uint32 RequestId,
+    const FAetherItemInstanceId& SourceInstanceId,
+    const FAetherItemInstanceId& TargetInstanceId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
+
+    TArray<FAetherInventorySlot> Inventory;
+    EAetherInventoryOperationResult Result = EAetherInventoryOperationResult::NotAuthenticated;
+    FAetherCharacterId CharacterId;
+
+    UAetherItemSubsystem* Items = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherItemSubsystem>()
+        : nullptr;
+
+    if (ResolveAuthenticatedCharacter(this, CharacterId) && Items)
+    {
+        Result = Items->MergeStacks(CharacterId, SourceInstanceId, TargetInstanceId, Inventory)
+            ? EAetherInventoryOperationResult::Accepted
+            : EAetherInventoryOperationResult::InvalidRequest;
+    }
+
+    LastProcessedInventoryRequestId = RequestId;
+    ClientReceiveInventory(RequestId, Inventory, Result);
+}
+
+void AAetherNetworkPlayerController::ServerDiscardInventoryItem_Implementation(
+    uint32 RequestId,
+    const FAetherItemInstanceId& InstanceId,
+    int32 Quantity)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
+
+    TArray<FAetherInventorySlot> Inventory;
+    EAetherInventoryOperationResult Result = EAetherInventoryOperationResult::NotAuthenticated;
+    FAetherCharacterId CharacterId;
+
+    UAetherItemSubsystem* Items = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherItemSubsystem>()
+        : nullptr;
+
+    if (ResolveAuthenticatedCharacter(this, CharacterId) && Items)
+    {
+        Result = Items->RemoveItem(CharacterId, InstanceId, Quantity, Inventory)
+            ? EAetherInventoryOperationResult::Accepted
+            : EAetherInventoryOperationResult::InvalidRequest;
+    }
+
+    LastProcessedInventoryRequestId = RequestId;
+    ClientReceiveInventory(RequestId, Inventory, Result);
+}
+
+void AAetherNetworkPlayerController::ClientReceiveInventory_Implementation(
+    uint32 RequestId,
+    const TArray<FAetherInventorySlot>& Inventory,
+    EAetherInventoryOperationResult Result)
+{
+    OnInventoryOperation.Broadcast(Result);
+    if (Result == EAetherInventoryOperationResult::Accepted)
+    {
+        OnInventory.Broadcast(Inventory);
+    }
 }
 
 bool AAetherNetworkPlayerController::ValidateRequest(const FAetherNetworkRequest& Request) const
