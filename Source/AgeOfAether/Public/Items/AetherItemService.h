@@ -12,6 +12,7 @@ public:
     bool FindDefinition(const FAetherItemDefinitionId& DefinitionId, FAetherItemDefinition& OutDefinition) const;
 
     bool GetInventory(const FAetherCharacterId& CharacterId, TArray<FAetherInventorySlot>& OutSlots) const;
+    bool CanRestoreInventory(const FAetherCharacterId& CharacterId, const TArray<FAetherInventorySlot>& Slots) const;
     bool RestoreInventory(const FAetherCharacterId& CharacterId, const TArray<FAetherInventorySlot>& Slots);
 
     bool AddItem(const FAetherCharacterId& CharacterId, const FAetherItemDefinitionId& DefinitionId, int32 Quantity, TArray<FAetherInventorySlot>& OutInventory);
