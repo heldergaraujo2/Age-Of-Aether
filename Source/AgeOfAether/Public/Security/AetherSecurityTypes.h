@@ -88,7 +88,7 @@ struct FAetherSecurityConnectionState
     UPROPERTY(BlueprintReadOnly)
     double QuarantinedUntil = 0.0;
 
-    uint32 LastRequestId = 0;
+    TMap<EAetherSecurityAction, uint32> LastRequestIds;
     double LastMovementTime = 0.0;
     FVector LastAuthoritativeLocation = FVector::ZeroVector;
 };
