@@ -158,7 +158,7 @@ UAetherAccountSessionSubsystem:
 
 The subsystem is runtime-only. It is not a database.
 
-## 5. Phase 4 tests
+### Phase 4 tests
 
 Added:
 Source/AgeOfAether/Private/Tests/AetherAccountSessionTests.cpp
@@ -252,14 +252,15 @@ Security/persistence boundary:
 ### Repository/static validation
 
 Performed:
-- repository state inspected;
-- Phase 3 source inspected before Phase 4;
-- Phase 4 source/contracts/tests added;
-- architecture boundaries reviewed;
-- no plaintext password storage introduced;
-- no database placeholder presented as persistence;
-- request IDs are separated between generic networking and account/session operations.
-- repeated authentication/reconnect requests are rejected while the controller already owns an authenticated session, preventing accidental session replacement.
+- repository state inspected before Phase 5;
+- Phase 5 source/contracts/tests added;
+- character/account architecture boundaries reviewed;
+- CharacterID ownership remains tied to AccountID;
+- character operations are server RPCs;
+- PlayerState carries replicated character identity;
+- character pawn is spawned only after server-side selection;
+- no persistence placeholder was presented as durable storage;
+- logout cleanup removes the active character pawn and deselects the character.
 
 ### Not executable in this environment
 
@@ -269,15 +270,15 @@ Cannot truthfully mark PASS:
 - C++ compilation against Unreal 5.8.1;
 - Editor startup;
 - PIE multiplayer;
-- client/server authentication;
-- reconnect runtime;
-- heartbeat timeout runtime;
+- character creation/select runtime;
+- possession and replication runtime;
+- movement/network correction;
 - Unreal Automation Framework execution;
 - network emulation.
 
 No CI checks are configured for Unreal, so GitHub cannot provide an Unreal build/test PASS.
 
-## 7. Local Phase 4 acceptance procedure
+## 7. Local Phase 5 acceptance procedure
 
 When local Unreal validation is available:
 
@@ -286,73 +287,58 @@ When local Unreal validation is available:
 3. Compile AgeOfAetherEditor.
 4. Open Editor.
 5. Start listen/server PIE.
-6. Configure a development credential verifier from test/bootstrap code.
-7. Register a test account on the authoritative server.
-8. Authenticate from a client.
-9. Verify accepted response/session ID.
-10. Verify duplicate login rejection.
-11. Heartbeat the active session.
-12. Stop heartbeats and verify timeout.
-13. Reconnect before timeout and verify acceptance.
-14. Reconnect after timeout and verify SessionExpired.
-15. Disable account and verify authentication rejection.
-16. Logout and verify Closed.
-17. Attempt operations with mismatched session IDs and verify rejection.
-18. Run AgeOfAether.Accounts.* automation tests.
-19. Repeat critical flows with Unreal network emulation.
+6. Authenticate a test account.
+7. Create two characters.
+8. Request the character list.
+9. Select one character.
+10. Verify AAetherCharacter is spawned by the server.
+11. Verify AAetherCharacterPlayerState replicates CharacterID/name/class/level.
+12. Verify CharacterID replicates on the character actor.
+13. Move the character from the client and verify server authority.
+14. Test latency/loss/jitter with Unreal network emulation.
+15. Attempt cross-account character selection and verify rejection.
+16. Attempt simultaneous selection of two characters for one account and verify rejection.
+17. Logout and verify pawn destruction and character deselection.
+18. Re-authenticate and select the character again.
+19. Run AgeOfAether.Character.* automation tests.
 
 ## 8. Important security/persistence boundaries
 
 Do not:
-- store plaintext passwords;
-- let the client choose AccountID authority;
-- let the client choose SessionID authority;
-- accept client permission values as authoritative;
-- implement database logic directly inside gameplay/controller classes;
-- treat runtime account registry as persistent storage;
+- let the client choose CharacterID authority;
+- let the client choose AccountID ownership;
+- accept client lifecycle state as authoritative;
+- allow selection of another account's character;
+- implement database logic directly inside the Character Actor;
+- treat runtime character state as persistent storage;
 - mark Unreal validation complete without actually running it.
 
 Later phases must add:
-- persistent account repository/backend;
-- secure credential storage/provider;
-- rate limiting;
-- brute-force/abuse controls;
-- audit/security logging;
-- dedicated server;
+- durable character repository/backend;
+- transactional persistence;
 - crash recovery;
-- production persistence.
+- data-driven class definitions;
+- progression;
+- inventory/equipment;
+- combat and skills.
 
 ## 9. IP/source rule
 
 Do not copy MU Online proprietary code, assets, maps, protocols, client binaries or protected content.
 
-The supplied Item.txt and public documentation are references for data modeling/architecture only.
-
 AGE OF AETHER must use original implementation, original content and original networking/persistence.
 
-## 11. Final Phase 4 hardening
+## 10. Phase 4 final hardening
 
 Repeated login/reconnect on an already authenticated controller is explicitly rejected. This prevents a second successful authentication from replacing controller-local identity while leaving the previous session active.
 
-## 12. Next implementation target
+## 11. Next implementation target
 
 **PHASE 6 — Item and Inventory System**
 
-Implement:
-- CharacterID;
-- account-to-character relation;
-- character name;
-- class;
-- location;
-- status;
-- base stats;
-- derived-stat foundation;
-- character lifecycle;
-- server-authoritative character ownership and validation.
+The next system will attach inventory ownership to CharacterID, define data-driven item identity, create authoritative inventory operations and prepare equipment state without moving authority to the client.
 
-The character system must consume the authenticated account/session boundary created in Phase 4. Do not move character authority to the client.
-
-## 13. Mandatory workflow
+## 12. Mandatory workflow
 
 For every phase:
 
