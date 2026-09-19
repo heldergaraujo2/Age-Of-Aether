@@ -241,6 +241,10 @@ bool FAetherQuestService::AreRequiredObjectivesComplete(const FAetherQuestState&
 {
     for (const FAetherQuestObjectiveProgress& Objective : State.Objectives)
     {
+        if (Objective.RequiredCount <= 0)
+        {
+            continue;
+        }
         if (!Objective.bCompleted)
         {
             return false;
