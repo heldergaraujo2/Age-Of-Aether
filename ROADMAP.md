@@ -2336,7 +2336,7 @@ Next implementation target:
 
 ## Phase 18 — Production & Live MMORPG
 
-Repository implementation is COMPLETE at source/repository level.
+Repository implementation is COMPLETE at source/repository level. Production lifecycle hardening also completed: drain state is preserved while checks update, and shutdown/readiness semantics are covered by tests.
 
 Implemented:
 - FAetherProductionConfig;
