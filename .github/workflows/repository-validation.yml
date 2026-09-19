@@ -35,22 +35,22 @@ jobs:
         shell: python
         run: |
           from pathlib import Path
-          roots = [Path("Source"), Path("Docs"), Path("PROJECT_MEMORY")]
-          files = [p for root in roots if root.exists() for p in root.rglob("*") if p.is_file() and p.suffix.lower() in {".h", ".hpp", ".cpp", ".md", ".cs"}]
+          roots=[Path("Source"),Path("Docs"),Path("PROJECT_MEMORY")]
+          files=[p for root in roots if root.exists() for p in root.rglob("*") if p.is_file() and p.suffix.lower() in {".h",".hpp",".cpp",".md",".cs"}]
           if not files: raise SystemExit("No source/documentation files were found.")
           failures=[]
+          pairs={"}":"{",")":"(","]":"["}
+          opens=set(pairs.values())
           for path in files:
               text=path.read_text(encoding="utf-8")
               if "\\\\n" in text: failures.append(f"{path}: contains literal escaped newline sequence")
-              for opening,closing in [("{","}"),("(",")"),("[","]")]:
-                  depth=0
-                  for index,char in enumerate(text):
-                      if char==opening: depth+=1
-                      elif char==closing:
-                          depth-=1
-                          if depth<0:
-                              failures.append(f"{path}: unexpected '{closing}' near character {index}"); break
-                  if depth!=0: failures.append(f"{path}: unbalanced '{opening}{closing}' delimiters")
+              stack=[]
+              for index,char in enumerate(text):
+                  if char in opens: stack.append(char)
+                  elif char in pairs:
+                      if not stack or stack.pop()!=pairs[char]:
+                          failures.append(f"{path}: unexpected '{char}' near character {index}"); break
+              if stack: failures.append(f"{path}: unbalanced delimiters")
           if failures:
               print("\\n".join(failures)); raise SystemExit(1)
           print(f"Validated {len(files)} source/documentation files.")
