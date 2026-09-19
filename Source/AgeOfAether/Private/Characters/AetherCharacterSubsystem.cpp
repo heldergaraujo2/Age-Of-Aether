@@ -9,6 +9,11 @@ bool UAetherCharacterSubsystem::CreateCharacter(
     return CharacterService.CreateCharacter(AccountId, Name, CharacterClass, OutCharacter);
 }
 
+bool UAetherCharacterSubsystem::RestoreCharacter(const FAetherCharacterRecord& PersistedCharacter)
+{
+    return CharacterService.RestoreCharacter(PersistedCharacter);
+}
+
 bool UAetherCharacterSubsystem::FindCharacter(
     const FAetherCharacterId& CharacterId,
     FAetherCharacterRecord& OutCharacter) const
