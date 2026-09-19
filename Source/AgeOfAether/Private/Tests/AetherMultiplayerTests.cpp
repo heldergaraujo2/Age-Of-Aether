@@ -90,3 +90,25 @@ bool FAetherMultiplayerRequestRefillTest::RunTest(const FString&)
     TestEqual(TEXT("time refill"), Service.ConsumeRequest(1, 1.0), EAetherAuthorityResult::Accepted);
     return true;
 }
+
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherMultiplayerHeartbeatRefillIsolationTest, "AgeOfAether.Multiplayer.HeartbeatCannotRefillRequests",
+    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+bool FAetherMultiplayerHeartbeatRefillIsolationTest::RunTest(const FString&)
+{
+    FAetherMultiplayerService Service;
+    FAetherMultiplayerConfig Config;
+    Config.MaxPlayers = 1;
+    Config.RequestsPerSecond = 2;
+    Config.BurstCapacity = 2;
+    Service.Initialize(Config);
+    Service.RegisterConnection(1, 0.0);
+    Service.SetAuthenticated(1, true);
+
+    TestEqual(TEXT("first request"), Service.ConsumeRequest(1, 0.0), EAetherAuthorityResult::Accepted);
+    TestEqual(TEXT("second request"), Service.ConsumeRequest(1, 0.0), EAetherAuthorityResult::Accepted);
+    Service.Heartbeat(1, 10.0);
+    TestEqual(TEXT("heartbeat does not create request budget"), Service.ConsumeRequest(1, 10.0), EAetherAuthorityResult::RateLimited);
+    TestEqual(TEXT("elapsed request time refills"), Service.ConsumeRequest(1, 11.0), EAetherAuthorityResult::Accepted);
+    return true;
+}
