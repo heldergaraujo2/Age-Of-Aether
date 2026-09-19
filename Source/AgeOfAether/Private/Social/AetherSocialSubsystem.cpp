@@ -21,4 +21,7 @@ bool UAetherSocialSubsystem::LeaveGuild(const FAetherCharacterRecord& C,FAetherS
 bool UAetherSocialSubsystem::SetGuildRole(const FAetherCharacterRecord& C,const FAetherCharacterId& T,EAetherGuildRole R,FAetherSocialOperation& O){return SocialService.SetGuildRole(C,T,R,O);}
 bool UAetherSocialSubsystem::GetGuildForCharacter(const FAetherCharacterId& C,FAetherGuildState& O)const{return SocialService.GetGuildForCharacter(C,O);}
 bool UAetherSocialSubsystem::ValidateChat(const FAetherCharacterRecord& C,EAetherSocialChannel Ch,const FAetherAccountId& T,const FString& M,double S,FAetherChatMessage& O,EAetherSocialResult& R){return SocialService.ValidateChat(C,Ch,T,M,S,O,R);}
+void UAetherSocialSubsystem::ClearCharacterState(const FAetherCharacterId& CharacterId){SocialService.ClearCharacterState(CharacterId);}
+void UAetherSocialSubsystem::ClearAccountState(const FAetherAccountId& AccountId){SocialService.ClearAccountState(AccountId);}
+
 #undef FORWARD
