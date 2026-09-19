@@ -45,6 +45,14 @@ bool UAetherCharacterSubsystem::SelectCharacter(
     return CharacterService.SelectCharacter(AccountId, CharacterId, OutCharacter);
 }
 
+bool UAetherCharacterSubsystem::UpdateCharacterStatus(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    EAetherCharacterStatus Status)
+{
+    return CharacterService.UpdateCharacterStatus(AccountId, CharacterId, Status);
+}
+
 bool UAetherCharacterSubsystem::DeselectCharacter(
     const FAetherAccountId& AccountId,
     const FAetherCharacterId& CharacterId)
