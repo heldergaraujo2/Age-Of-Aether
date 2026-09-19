@@ -9,6 +9,7 @@
 #include "World/AetherWorldSubsystem.h"
 #include "Quests/AetherQuestSubsystem.h"
 #include "Social/AetherSocialSubsystem.h"
+#include "Economy/AetherEconomySubsystem.h"
 #include "Networking/AetherNetworkGameMode.h"
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
@@ -1440,6 +1441,92 @@ void AAetherNetworkPlayerController::ClientReceiveFriends_Implementation(uint32 
 void AAetherNetworkPlayerController::ClientReceiveChat_Implementation(uint32 Id,const FAetherChatMessage& Message){OnChatMessage.Broadcast(Message);}
 
 #undef AETHER_SOCIAL_GUARD
+
+void AAetherNetworkPlayerController::RequestWallet()
+{
+    const uint32 Id = NextEconomyRequestId++;
+    if (HasAuthority()) ServerRequestWallet_Implementation(Id); else ServerRequestWallet(Id);
+}
+
+void AAetherNetworkPlayerController::BuyItem(const FString& ShopId, const FAetherItemDefinitionId& ItemDefinitionId, int32 Quantity)
+{
+    const uint32 Id = NextEconomyRequestId++;
+    if (HasAuthority()) ServerBuyItem_Implementation(Id, ShopId, ItemDefinitionId, Quantity); else ServerBuyItem(Id, ShopId, ItemDefinitionId, Quantity);
+}
+
+void AAetherNetworkPlayerController::SellItem(const FString& ShopId, const FAetherItemInstanceId& InstanceId, int32 Quantity)
+{
+    const uint32 Id = NextEconomyRequestId++;
+    if (HasAuthority()) ServerSellItem_Implementation(Id, ShopId, InstanceId, Quantity); else ServerSellItem(Id, ShopId, InstanceId, Quantity);
+}
+
+void AAetherNetworkPlayerController::CraftItem(const FString& RecipeId, int32 Quantity)
+{
+    const uint32 Id = NextEconomyRequestId++;
+    if (HasAuthority()) ServerCraftItem_Implementation(Id, RecipeId, Quantity); else ServerCraftItem(Id, RecipeId, Quantity);
+}
+
+#define AETHER_ECONOMY_GUARD(Id) if((Id)==0||(Id)<=LastProcessedEconomyRequestId){return;} LastProcessedEconomyRequestId=(Id)
+
+void AAetherNetworkPlayerController::ServerRequestWallet_Implementation(uint32 Id)
+{
+    AETHER_ECONOMY_GUARD(Id);
+    FAetherEconomyTransaction Transaction;
+    Transaction.Result = EAetherEconomyResult::NotOwned;
+    UAetherEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>() : nullptr;
+    FAetherCharacterRecord Character;
+    if (Economy && GetControllerCharacter(this, Character))
+    {
+        Transaction.CharacterId = Character.CharacterId;
+        Transaction.Result = EAetherEconomyResult::Accepted;
+        Transaction.Currency = EAetherCurrency::Gold;
+        Transaction.BalanceAfter = Economy->GetBalance(Character.CharacterId, EAetherCurrency::Gold);
+    }
+    ClientReceiveEconomy(Id, Transaction);
+}
+
+void AAetherNetworkPlayerController::ServerBuyItem_Implementation(uint32 Id, const FString& ShopId, const FAetherItemDefinitionId& ItemDefinitionId, int32 Quantity)
+{
+    AETHER_ECONOMY_GUARD(Id);
+    FAetherEconomyTransaction Transaction;
+    Transaction.Result = EAetherEconomyResult::NotOwned;
+    FAetherCharacterRecord Character;
+    UAetherEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>() : nullptr;
+    if (Economy && GetControllerCharacter(this, Character))
+        Economy->Buy(Character.CharacterId, ShopId, ItemDefinitionId, Quantity, Transaction);
+    ClientReceiveEconomy(Id, Transaction);
+}
+
+void AAetherNetworkPlayerController::ServerSellItem_Implementation(uint32 Id, const FString& ShopId, const FAetherItemInstanceId& InstanceId, int32 Quantity)
+{
+    AETHER_ECONOMY_GUARD(Id);
+    FAetherEconomyTransaction Transaction;
+    Transaction.Result = EAetherEconomyResult::NotOwned;
+    FAetherCharacterRecord Character;
+    UAetherEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>() : nullptr;
+    if (Economy && GetControllerCharacter(this, Character))
+        Economy->Sell(Character.CharacterId, ShopId, InstanceId, Quantity, Transaction);
+    ClientReceiveEconomy(Id, Transaction);
+}
+
+void AAetherNetworkPlayerController::ServerCraftItem_Implementation(uint32 Id, const FString& RecipeId, int32 Quantity)
+{
+    AETHER_ECONOMY_GUARD(Id);
+    FAetherEconomyTransaction Transaction;
+    Transaction.Result = EAetherEconomyResult::NotOwned;
+    FAetherCharacterRecord Character;
+    UAetherEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>() : nullptr;
+    if (Economy && GetControllerCharacter(this, Character))
+        Economy->Craft(Character.CharacterId, RecipeId, Quantity, Character.Level, Transaction);
+    ClientReceiveEconomy(Id, Transaction);
+}
+
+void AAetherNetworkPlayerController::ClientReceiveEconomy_Implementation(uint32 Id, const FAetherEconomyTransaction& Transaction)
+{
+    OnEconomyTransaction.Broadcast(Transaction);
+}
+
+#undef AETHER_ECONOMY_GUARD
 
 void AAetherNetworkPlayerController::AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount)
 {
