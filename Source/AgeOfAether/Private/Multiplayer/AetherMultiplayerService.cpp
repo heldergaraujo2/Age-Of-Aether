@@ -25,6 +25,7 @@ EAetherAdmissionResult FAetherMultiplayerService::RegisterConnection(uint32 Conn
     Connection.ConnectionId = ConnectionId;
     Connection.ConnectedAt = NowSeconds;
     Connection.LastHeartbeatAt = NowSeconds;
+    Connection.LastRequestRefillAt = NowSeconds;
     Connection.RequestBudget = Config.BurstCapacity;
     Connections.Add(ConnectionId, Connection);
     return EAetherAdmissionResult::Accepted;
@@ -58,11 +59,12 @@ bool FAetherMultiplayerService::Heartbeat(uint32 ConnectionId, double NowSeconds
 
 void FAetherMultiplayerService::RefillBudget(FAetherMultiplayerConnection& Connection, double NowSeconds) const
 {
-    const double Elapsed = FMath::Max(0.0, NowSeconds - Connection.LastHeartbeatAt);
+    const double Elapsed = FMath::Max(0.0, NowSeconds - Connection.LastRequestRefillAt);
     if (Elapsed > 0.0)
     {
         const int32 Refill = FMath::FloorToInt(Elapsed * Config.RequestsPerSecond);
         Connection.RequestBudget = FMath::Min(Config.BurstCapacity, Connection.RequestBudget + Refill);
+        Connection.LastRequestRefillAt += static_cast<double>(Refill) / Config.RequestsPerSecond;
     }
 }
 
