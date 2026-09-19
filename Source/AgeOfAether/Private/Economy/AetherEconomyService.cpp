@@ -93,7 +93,7 @@ int64 FAetherEconomyService::GetBalance(const FAetherCharacterId& CharacterId, E
 
 bool FAetherEconomyService::SetBalance(const FAetherCharacterId& CharacterId, EAetherCurrency Currency, int64 Amount)
 {
-    if (!CharacterId.IsValid() || Amount < 0) return false;
+    if (!CharacterId.IsValid() || Amount < 0 || Currency != EAetherCurrency::Gold) return false;
     FAetherWallet& Wallet = Wallets.FindOrAdd(CharacterId);
     Wallet.CharacterId = CharacterId;
     for (FAetherCurrencyBalance& Balance : Wallet.Balances)
@@ -110,7 +110,7 @@ bool FAetherEconomyService::SetBalance(const FAetherCharacterId& CharacterId, EA
 bool FAetherEconomyService::AddCurrency(const FAetherCharacterId& CharacterId, EAetherCurrency Currency, int64 Amount, FAetherEconomyTransaction& OutTransaction)
 {
     InitializeTransaction(CharacterId, OutTransaction);
-    if (!CharacterId.IsValid() || Amount <= 0) { OutTransaction.Result = EAetherEconomyResult::InvalidRequest; return false; }
+    if (!CharacterId.IsValid() || Amount <= 0 || Currency != EAetherCurrency::Gold) { OutTransaction.Result = EAetherEconomyResult::InvalidRequest; return false; }
     const int64 Current = GetBalance(CharacterId, Currency);
     int64 NewAmount = 0;
     if (!CheckedAddInt64(Current, Amount, NewAmount)) { OutTransaction.Result = EAetherEconomyResult::Overflow; return false; }
@@ -261,13 +261,57 @@ bool FAetherEconomyService::Craft(const FAetherCharacterId& CharacterId, const F
     if (!FindRecipe(RecipeId, Recipe)) { OutTransaction.Result = EAetherEconomyResult::RecipeNotFound; return false; }
     if (!Recipe.bEnabled) { OutTransaction.Result = EAetherEconomyResult::CraftingDisabled; return false; }
     if (!IsPositiveQuantity(Quantity) || Quantity > 99 || CharacterLevel < Recipe.RequiredLevel) { OutTransaction.Result = EAetherEconomyResult::InvalidQuantity; return false; }
+    TArray<FAetherInventorySlot> WorkingInventory;
+    if (!Items.GetInventory(CharacterId, WorkingInventory))
+    {
+        OutTransaction.Result = EAetherEconomyResult::CharacterNotFound;
+        return false;
+    }
+
     for (const FAetherCraftIngredient& Output : Recipe.Outputs)
     {
-        const int64 Needed = static_cast<int64>(Output.Quantity) * Quantity;
-        if (Needed > MAX_int32 || !CanAddToInventory(CharacterId, Output.ItemDefinitionId, static_cast<int32>(Needed), Items))
+        const int64 Needed64 = static_cast<int64>(Output.Quantity) * Quantity;
+        if (Needed64 > MAX_int32)
         {
-            OutTransaction.Result = EAetherEconomyResult::InventoryFull;
+            OutTransaction.Result = EAetherEconomyResult::Overflow;
             return false;
+        }
+
+        FAetherItemDefinition Definition;
+        if (!Items.FindDefinition(Output.ItemDefinitionId, Definition))
+        {
+            OutTransaction.Result = EAetherEconomyResult::DefinitionNotFound;
+            return false;
+        }
+
+        int32 Remaining = static_cast<int32>(Needed64);
+        for (FAetherInventorySlot& Slot : WorkingInventory)
+        {
+            if (!Slot.IsOccupied() || Slot.Item.DefinitionId != Output.ItemDefinitionId) continue;
+            const int32 Capacity = FMath::Max(0, Definition.MaxStack - Slot.Item.Quantity);
+            const int32 Added = FMath::Min(Remaining, Capacity);
+            Slot.Item.Quantity += Added;
+            Remaining -= Added;
+            if (Remaining == 0) break;
+        }
+
+        while (Remaining > 0)
+        {
+            int32 EmptySlot = INDEX_NONE;
+            for (int32 Index = 0; Index < WorkingInventory.Num(); ++Index)
+            {
+                if (!WorkingInventory[Index].IsOccupied()) { EmptySlot = Index; break; }
+            }
+            if (EmptySlot == INDEX_NONE)
+            {
+                OutTransaction.Result = EAetherEconomyResult::InventoryFull;
+                return false;
+            }
+            const int32 Added = FMath::Min(Remaining, Definition.MaxStack);
+            WorkingInventory[EmptySlot].SlotIndex = EmptySlot;
+            WorkingInventory[EmptySlot].Item.DefinitionId = Output.ItemDefinitionId;
+            WorkingInventory[EmptySlot].Item.Quantity = Added;
+            Remaining -= Added;
         }
     }
     for (const FAetherCraftIngredient& Ingredient : Recipe.Ingredients)
