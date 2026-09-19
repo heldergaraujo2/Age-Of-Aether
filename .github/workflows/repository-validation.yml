@@ -1,0 +1,98 @@
+name: Repository Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  static-validation:
+    name: Static repository validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required project structure
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -f ROADMAP.md
+          test -f ROADMAP_CONTENT_AND_CLIENT.md
+          test -f PROJECT_MEMORY/00_CONTINUITY.md
+
+          test -f Source/AgeOfAether/Public/Data/AetherContentTypes.h
+          test -f Source/AgeOfAether/Public/Data/AetherContentRegistry.h
+          test -f Source/AgeOfAether/Public/Data/AetherAssetTypes.h
+          test -f Source/AgeOfAether/Public/Data/AetherAssetRegistry.h
+          test -f Source/AgeOfAether/Public/Data/AetherWorldActorTypes.h
+          test -f Source/AgeOfAether/Public/Data/AetherWorldActorRegistry.h
+
+      - name: Validate text and source invariants
+        shell: python
+        run: |
+          from pathlib import Path
+
+          roots = [
+              Path("Source"),
+              Path("Docs"),
+              Path("PROJECT_MEMORY"),
+          ]
+
+          files = [
+              p for root in roots if root.exists()
+              for p in root.rglob("*")
+              if p.is_file() and p.suffix.lower() in {".h", ".hpp", ".cpp", ".md", ".cs"}
+          ]
+
+          if not files:
+              raise SystemExit("No source/documentation files were found.")
+
+          failures = []
+
+          for path in files:
+              text = path.read_text(encoding="utf-8")
+
+              if "\\\\n" in text:
+                  failures.append(f"{path}: contains literal escaped newline sequence")
+
+              pairs = [("{", "}"), ("(", ")"), ("[", "]")]
+              for opening, closing in pairs:
+                  depth = 0
+                  for index, char in enumerate(text):
+                      if char == opening:
+                          depth += 1
+                      elif char == closing:
+                          depth -= 1
+                          if depth < 0:
+                              failures.append(f"{path}: unexpected '{closing}' near character {index}")
+                              break
+                  if depth != 0:
+                      failures.append(f"{path}: unbalanced '{opening}{closing}' delimiters")
+
+          if failures:
+              print("\\n".join(failures))
+              raise SystemExit(1)
+
+          print(f"Validated {len(files)} source/documentation files.")
+
+      - name: Validate Phase 22 deliverables
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -f Source/AgeOfAether/Private/Tests/AetherWorldActorRegistryTests.cpp
+          test -f Docs/PHASE_22_MONSTER_NPC_BOSS_AI.md
+
+          grep -q "FAetherWorldActorRegistry" Source/AgeOfAether/Public/Data/AetherWorldActorRegistry.h
+          grep -q "FAetherWorldActorRegistryTests" Source/AgeOfAether/Private/Tests/AetherWorldActorRegistryTests.cpp
+          grep -q "repository implementation complete" Docs/PHASE_22_MONSTER_NPC_BOSS_AI.md
+
+      - name: Report
+        run: echo "Repository static validation completed successfully."
