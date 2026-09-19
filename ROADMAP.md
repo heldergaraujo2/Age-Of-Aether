@@ -277,9 +277,9 @@ Public documentation and community/server-file examples show patterns including:
 - tooltip/name presentation;
 - synchronization between server and client data.
 
-For example, public MU server configuration examples expose the same family of fields seen in the supplied file, including Type, Slot, Skill, Width, Height, serial/option/drop flags, name, damage, speed, durability and class restrictions. citeturn0search0turn0search11
+For example, public MU server configuration examples expose the same family of fields seen in the supplied file, including Type, Slot, Skill, Width, Height, serial/option/drop flags, name, damage, speed, durability and class restrictions.
 
-Public guides also describe adding an item as a multi-step process involving server definitions, drop configuration, client definitions and visual assets rather than a single file edit. citeturn0search2turn0search12
+Public guides also describe adding an item as a multi-step process involving server definitions, drop configuration, client definitions and visual assets rather than a single file edit.
 
 This is the concept we will adopt — **not the legacy implementation**.
 
