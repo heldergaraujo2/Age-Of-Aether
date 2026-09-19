@@ -27,6 +27,9 @@ public:
     bool Sell(const FAetherCharacterId& CharacterId, const FString& ShopId, const FAetherItemInstanceId& InstanceId, int32 Quantity, FAetherEconomyTransaction& OutTransaction);
     bool Craft(const FAetherCharacterId& CharacterId, const FString& RecipeId, int32 Quantity, int32 CharacterLevel, FAetherEconomyTransaction& OutTransaction);
 
+    FAetherEconomyService& GetEconomyService() { return EconomyService; }
+    const FAetherEconomyService& GetEconomyService() const { return EconomyService; }
+
 private:
     FAetherEconomyService EconomyService;
 };
