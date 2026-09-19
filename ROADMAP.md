@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 9 — World Runtime (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Status:** Phase 10 — Quest/Mission (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -25,7 +25,7 @@ The repository uses the following execution sequence for implementation continui
 - Phase 7 — Progression System — COMPLETE at repository level; local Unreal validation pending
 - Phase 8 — Combat Runtime — COMPLETE at repository level; local Unreal validation pending
 - Phase 9 — World Runtime — COMPLETE at repository level; local Unreal validation pending
-- Phase 10 — Quest/Mission — NEXT
+- Phase 10 — Quest/Mission — COMPLETE at repository level; local Unreal validation pending
 - Phase 11 — Social
 - Phase 12 — Economy & Crafting
 - Phase 13 — Multiplayer & Server Authority
@@ -80,6 +80,52 @@ Unreal content boundary:
 - actual map, Data Layer, HLOD, terrain, collision and NavMesh authoring require Unreal Editor and remain local/content-stage work.
 
 Deliverable: Docs/PHASE_9_WORLD_RUNTIME.md
+
+## Phase 10 — Quest/Mission
+
+Repository implementation is COMPLETE.
+
+Implemented:
+- data-driven quest definition contract and Data Asset;
+- quest IDs, lifecycle states and objective types;
+- level and prerequisite requirements;
+- character-owned quest state;
+- active quest capacity limit;
+- server-authoritative accept, abandon and completion operations;
+- objective progression by explicit objective ID;
+- objective progression by authoritative target/type events;
+- required versus optional objective semantics;
+- idempotent reward-grant state guard;
+- reward contract carrying XP and item definitions/quantities;
+- GameInstance quest subsystem boundary;
+- server RPCs for quest list/accept/abandon/complete;
+- authenticated AccountID and active CharacterID ownership enforcement;
+- request replay/ordering guard;
+- automation tests for definitions, registration, lifecycle, progression, prerequisites, security, capacity and optional objectives.
+
+Security boundary:
+- client cannot submit authoritative CharacterID or AccountID;
+- client cannot advance objectives directly;
+- objective progress is intended to be driven by server-side combat/world/inventory systems;
+- quest completion is accepted only from active server state with all required objectives complete;
+- reward-granted state prevents duplicate completion rewards.
+
+Data boundary:
+- quest definitions are content data;
+- runtime quest state is character-owned runtime state;
+- persistence of quest state belongs to the later persistence/backend phase;
+- no fake Unreal content assets are generated without the editor.
+
+Validation truth:
+- repository/static inspection performed after implementation;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/network emulation/Automation Framework are NOT VERIFIED in this environment;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Deliverable:
+- Docs/PHASE_10_QUEST_MISSION.md
+
+Next implementation target:
+**PHASE 11 — Social**
 
 ## Phase 7 — Progression System
 
