@@ -1427,7 +1427,7 @@ void AAetherNetworkPlayerController::LeaveGuild(){const uint32 Id=NextSocialRequ
 void AAetherNetworkPlayerController::SetGuildRole(const FAetherCharacterId& Target,EAetherGuildRole Role){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerSetGuildRole_Implementation(Id,Target,Role);else ServerSetGuildRole(Id,Target,Role);}
 void AAetherNetworkPlayerController::SendChat(EAetherSocialChannel Channel,const FAetherAccountId& Target,const FString& Message){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerSendChat_Implementation(Id,Channel,Target,Message);else ServerSendChat(Id,Channel,Target,Message);}
 
-#define AETHER_SOCIAL_GUARD(Id) if((Id)==0||(Id)<=LastProcessedSocialRequestId){return;} LastProcessedSocialRequestId=(Id)
+#define AETHER_SOCIAL_GUARD(Id) if((Id)==0||(Id)<=LastProcessedSocialRequestId){return;} if(!AuthorizeSecurityRequest((Id),EAetherSecurityAction::Social)){return;} LastProcessedSocialRequestId=(Id)
 
 void AAetherNetworkPlayerController::ServerRequestFriends_Implementation(uint32 Id)
 {
