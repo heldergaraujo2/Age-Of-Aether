@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Economy/AetherEconomyService.h"
+#include "Economy/AetherEconomyConfigDataAsset.h"
 #include "Economy/AetherEconomySubsystem.generated.h"
 
 UCLASS()
@@ -13,6 +14,7 @@ class AGEOFAETHER_API UAetherEconomySubsystem : public UGameInstanceSubsystem
 public:
     bool RegisterShop(const FAetherShopDefinition& Shop);
     bool RegisterRecipe(const FAetherCraftRecipe& Recipe);
+    bool RegisterConfigAsset(const UAetherEconomyConfigDataAsset* ConfigAsset);
     bool FindShop(const FString& ShopId, FAetherShopDefinition& OutShop) const;
     bool FindRecipe(const FString& RecipeId, FAetherCraftRecipe& OutRecipe) const;
 
