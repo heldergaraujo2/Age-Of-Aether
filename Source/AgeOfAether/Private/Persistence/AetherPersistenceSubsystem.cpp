@@ -273,6 +273,15 @@ bool UAetherPersistenceSubsystem::LoadCharacterState(
         return false;
     }
 
+    if (!FAetherPersistenceService::ValidateSnapshot(Snapshot)
+        || !Items->GetItemService().CanRestoreInventory(CharacterId, Snapshot.Inventory)
+        || !Economy->GetEconomyService().CanRestoreWallet(Snapshot.Wallet)
+        || !Quests->GetQuestService().CanRestoreQuestStates(CharacterId, Snapshot.QuestStates))
+    {
+        OutOperation.Result = EAetherPersistenceResult::InvalidSnapshot;
+        return false;
+    }
+
     if (!Characters->RestoreCharacter(Snapshot.Character)
         || !Items->GetItemService().RestoreInventory(CharacterId, Snapshot.Inventory)
         || !Economy->GetEconomyService().RestoreWallet(Snapshot.Wallet)
