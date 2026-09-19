@@ -8,10 +8,35 @@
 #include "Combat/AetherCombatSubsystem.h"
 #include "World/AetherWorldSubsystem.h"
 #include "Quests/AetherQuestSubsystem.h"
+#include "Social/AetherSocialSubsystem.h"
 #include "Networking/AetherNetworkGameMode.h"
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
 #include "Networking/AetherNetworkGameState.h"
+
+
+namespace
+{
+    bool GetControllerCharacter(AAetherNetworkPlayerController* Controller, FAetherCharacterRecord& OutCharacter)
+    {
+        if (!Controller || !Controller->IsAccountAuthenticated())
+        {
+            return false;
+        }
+
+        const AAetherCharacterPlayerState* State = Controller->GetPlayerState<AAetherCharacterPlayerState>();
+        if (!State || !State->GetCharacterId().IsValid())
+        {
+            return false;
+        }
+
+        UAetherCharacterSubsystem* Characters = Controller->GetGameInstance()
+            ? Controller->GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+            : nullptr;
+        return Characters && Characters->FindCharacter(State->GetCharacterId(), OutCharacter)
+            && OutCharacter.AccountId == Controller->GetAuthenticatedAccountId();
+    }
+}
 
 AAetherNetworkPlayerController::AAetherNetworkPlayerController()
 {
@@ -1269,6 +1294,73 @@ void AAetherNetworkPlayerController::ClientReceiveQuestOperation_Implementation(
 {
     OnQuestOperation.Broadcast(Operation);
 }
+
+
+void AAetherNetworkPlayerController::RequestFriends(){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerRequestFriends_Implementation(Id);else ServerRequestFriends(Id);}
+void AAetherNetworkPlayerController::SendFriendRequest(const FAetherAccountId& Target){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerSendFriendRequest_Implementation(Id,Target);else ServerSendFriendRequest(Id,Target);}
+void AAetherNetworkPlayerController::AcceptFriendRequest(const FAetherAccountId& Sender){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerAcceptFriendRequest_Implementation(Id,Sender);else ServerAcceptFriendRequest(Id,Sender);}
+void AAetherNetworkPlayerController::RejectFriendRequest(const FAetherAccountId& Sender){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerRejectFriendRequest_Implementation(Id,Sender);else ServerRejectFriendRequest(Id,Sender);}
+void AAetherNetworkPlayerController::RemoveFriend(const FAetherAccountId& Friend){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerRemoveFriend_Implementation(Id,Friend);else ServerRemoveFriend(Id,Friend);}
+void AAetherNetworkPlayerController::BlockAccount(const FAetherAccountId& Target){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerBlockAccount_Implementation(Id,Target);else ServerBlockAccount(Id,Target);}
+void AAetherNetworkPlayerController::UnblockAccount(const FAetherAccountId& Target){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerUnblockAccount_Implementation(Id,Target);else ServerUnblockAccount(Id,Target);}
+void AAetherNetworkPlayerController::CreateParty(){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerCreateParty_Implementation(Id);else ServerCreateParty(Id);}
+void AAetherNetworkPlayerController::InviteToParty(const FAetherAccountId& Target){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerInviteToParty_Implementation(Id,Target);else ServerInviteToParty(Id,Target);}
+void AAetherNetworkPlayerController::AcceptPartyInvite(const FAetherSocialPartyId& PartyId){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerAcceptPartyInvite_Implementation(Id,PartyId);else ServerAcceptPartyInvite(Id,PartyId);}
+void AAetherNetworkPlayerController::LeaveParty(){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerLeaveParty_Implementation(Id);else ServerLeaveParty(Id);}
+void AAetherNetworkPlayerController::KickFromParty(const FAetherCharacterId& Target){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerKickFromParty_Implementation(Id,Target);else ServerKickFromParty(Id,Target);}
+void AAetherNetworkPlayerController::CreateGuild(const FString& Name){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerCreateGuild_Implementation(Id,Name);else ServerCreateGuild(Id,Name);}
+void AAetherNetworkPlayerController::InviteToGuild(const FAetherAccountId& Target){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerInviteToGuild_Implementation(Id,Target);else ServerInviteToGuild(Id,Target);}
+void AAetherNetworkPlayerController::AcceptGuildInvite(const FAetherGuildId& GuildId){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerAcceptGuildInvite_Implementation(Id,GuildId);else ServerAcceptGuildInvite(Id,GuildId);}
+void AAetherNetworkPlayerController::LeaveGuild(){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerLeaveGuild_Implementation(Id);else ServerLeaveGuild(Id);}
+void AAetherNetworkPlayerController::SetGuildRole(const FAetherCharacterId& Target,EAetherGuildRole Role){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerSetGuildRole_Implementation(Id,Target,Role);else ServerSetGuildRole(Id,Target,Role);}
+void AAetherNetworkPlayerController::SendChat(EAetherSocialChannel Channel,const FAetherAccountId& Target,const FString& Message){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerSendChat_Implementation(Id,Channel,Target,Message);else ServerSendChat(Id,Channel,Target,Message);}
+
+#define AETHER_SOCIAL_GUARD(Id) if((Id)==0||(Id)<=LastProcessedSocialRequestId){return;} LastProcessedSocialRequestId=(Id)
+
+void AAetherNetworkPlayerController::ServerRequestFriends_Implementation(uint32 Id)
+{
+    AETHER_SOCIAL_GUARD(Id);
+    TArray<FAetherSocialRelation> Friends;
+    UAetherSocialSubsystem* Social=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;
+    if(Social&&bAccountAuthenticated)Social->GetFriends(AuthenticatedAccountId,Friends);
+    ClientReceiveFriends(Id,Friends);
+}
+void AAetherNetworkPlayerController::ServerSendFriendRequest_Implementation(uint32 Id,const FAetherAccountId& Target){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::NotAuthenticated;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&bAccountAuthenticated)S->SendFriendRequest(AuthenticatedAccountId,Target,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerAcceptFriendRequest_Implementation(uint32 Id,const FAetherAccountId& Sender){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::NotAuthenticated;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&bAccountAuthenticated)S->AcceptFriendRequest(AuthenticatedAccountId,Sender,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerRejectFriendRequest_Implementation(uint32 Id,const FAetherAccountId& Sender){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::NotAuthenticated;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&bAccountAuthenticated)S->RejectFriendRequest(AuthenticatedAccountId,Sender,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerRemoveFriend_Implementation(uint32 Id,const FAetherAccountId& Friend){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::NotAuthenticated;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&bAccountAuthenticated)S->RemoveFriend(AuthenticatedAccountId,Friend,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerBlockAccount_Implementation(uint32 Id,const FAetherAccountId& Target){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::NotAuthenticated;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&bAccountAuthenticated)S->BlockAccount(AuthenticatedAccountId,Target,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerUnblockAccount_Implementation(uint32 Id,const FAetherAccountId& Target){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::NotAuthenticated;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&bAccountAuthenticated)S->UnblockAccount(AuthenticatedAccountId,Target,O);ClientReceiveSocialOperation(Id,O);}
+
+void AAetherNetworkPlayerController::ServerCreateParty_Implementation(uint32 Id){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->CreateParty(C,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerInviteToParty_Implementation(uint32 Id,const FAetherAccountId& Target){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->InviteToParty(C,Target,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerAcceptPartyInvite_Implementation(uint32 Id,const FAetherSocialPartyId& PartyId){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->AcceptPartyInvite(C,PartyId,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerLeaveParty_Implementation(uint32 Id){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->LeaveParty(C,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerKickFromParty_Implementation(uint32 Id,const FAetherCharacterId& Target){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->KickFromParty(C,Target,O);ClientReceiveSocialOperation(Id,O);}
+
+void AAetherNetworkPlayerController::ServerCreateGuild_Implementation(uint32 Id,const FString& Name){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->CreateGuild(C,Name,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerInviteToGuild_Implementation(uint32 Id,const FAetherAccountId& Target){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->InviteToGuild(C,Target,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerAcceptGuildInvite_Implementation(uint32 Id,const FAetherGuildId& GuildId){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->AcceptGuildInvite(C,GuildId,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerLeaveGuild_Implementation(uint32 Id){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->LeaveGuild(C,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerSetGuildRole_Implementation(uint32 Id,const FAetherCharacterId& Target,EAetherGuildRole Role){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->SetGuildRole(C,Target,Role,O);ClientReceiveSocialOperation(Id,O);}
+
+void AAetherNetworkPlayerController::ServerSendChat_Implementation(uint32 Id,EAetherSocialChannel Channel,const FAetherAccountId& Target,const FString& Message)
+{
+    AETHER_SOCIAL_GUARD(Id);
+    FAetherSocialResult Result=EAetherSocialResult::InvalidRequest;
+    FAetherChatMessage Chat;
+    FAetherCharacterRecord C;
+    UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;
+    if(S&&GetControllerCharacter(this,C))S->ValidateChat(C,Channel,Target,Message,GetServerTimeSeconds(),Chat,Result);
+    if(Result==EAetherSocialResult::Accepted)ClientReceiveChat(Id,Chat);
+    else { FAetherSocialOperation O; O.Result=Result; ClientReceiveSocialOperation(Id,O); }
+}
+
+void AAetherNetworkPlayerController::ClientReceiveSocialOperation_Implementation(uint32 Id,const FAetherSocialOperation& Operation){OnSocialOperation.Broadcast(Operation);}
+void AAetherNetworkPlayerController::ClientReceiveFriends_Implementation(uint32 Id,const TArray<FAetherSocialRelation>& Friends){OnFriends.Broadcast(Friends);}
+void AAetherNetworkPlayerController::ClientReceiveChat_Implementation(uint32 Id,const FAetherChatMessage& Message){OnChatMessage.Broadcast(Message);}
+
+#undef AETHER_SOCIAL_GUARD
 
 void AAetherNetworkPlayerController::AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount)
 {
