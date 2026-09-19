@@ -7,6 +7,7 @@
 #include "Progression/AetherProgressionSubsystem.h"
 #include "Combat/AetherCombatSubsystem.h"
 #include "World/AetherWorldSubsystem.h"
+#include "Quests/AetherQuestSubsystem.h"
 #include "Networking/AetherNetworkGameMode.h"
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
@@ -1072,6 +1073,202 @@ void AAetherNetworkPlayerController::ClientReceiveWorldTransition_Implementation
     const FAetherWorldTransitionResult& Result)
 {
     OnWorldTransition.Broadcast(Result);
+}
+
+
+void AAetherNetworkPlayerController::RequestQuestList()
+{
+    const uint32 RequestId = NextQuestRequestId++;
+    if (HasAuthority())
+    {
+        ServerRequestQuestList_Implementation(RequestId);
+        return;
+    }
+    ServerRequestQuestList(RequestId);
+}
+
+void AAetherNetworkPlayerController::AcceptQuest(const FAetherQuestId& QuestId)
+{
+    const uint32 RequestId = NextQuestRequestId++;
+    if (HasAuthority())
+    {
+        ServerAcceptQuest_Implementation(RequestId, QuestId);
+        return;
+    }
+    ServerAcceptQuest(RequestId, QuestId);
+}
+
+void AAetherNetworkPlayerController::AbandonQuest(const FAetherQuestId& QuestId)
+{
+    const uint32 RequestId = NextQuestRequestId++;
+    if (HasAuthority())
+    {
+        ServerAbandonQuest_Implementation(RequestId, QuestId);
+        return;
+    }
+    ServerAbandonQuest(RequestId, QuestId);
+}
+
+void AAetherNetworkPlayerController::CompleteQuest(const FAetherQuestId& QuestId)
+{
+    const uint32 RequestId = NextQuestRequestId++;
+    if (HasAuthority())
+    {
+        ServerCompleteQuest_Implementation(RequestId, QuestId);
+        return;
+    }
+    ServerCompleteQuest(RequestId, QuestId);
+}
+
+void AAetherNetworkPlayerController::ServerRequestQuestList_Implementation(uint32 RequestId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedQuestRequestId)
+    {
+        return;
+    }
+
+    TArray<FAetherQuestState> States;
+    if (bAccountAuthenticated)
+    {
+        const AAetherCharacterPlayerState* CharacterState = GetPlayerState<AAetherCharacterPlayerState>();
+        const FAetherCharacterId CharacterId = CharacterState ? CharacterState->GetCharacterId() : FAetherCharacterId();
+
+        if (UAetherQuestSubsystem* Quests = GetGameInstance()
+            ? GetGameInstance()->GetSubsystem<UAetherQuestSubsystem>()
+            : nullptr)
+        {
+            Quests->GetQuestStates(CharacterId, States);
+        }
+    }
+
+    LastProcessedQuestRequestId = RequestId;
+    ClientReceiveQuestList(RequestId, States);
+}
+
+void AAetherNetworkPlayerController::ServerAcceptQuest_Implementation(uint32 RequestId, const FAetherQuestId& QuestId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedQuestRequestId)
+    {
+        return;
+    }
+
+    FAetherQuestOperation Operation;
+    Operation.Result = EAetherQuestOperationResult::CharacterInvalid;
+
+    const AAetherCharacterPlayerState* CharacterState = GetPlayerState<AAetherCharacterPlayerState>();
+    const FAetherCharacterId CharacterId = CharacterState ? CharacterState->GetCharacterId() : FAetherCharacterId();
+
+    UAetherCharacterSubsystem* Characters = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+        : nullptr;
+    UAetherQuestSubsystem* Quests = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherQuestSubsystem>()
+        : nullptr;
+
+    FAetherCharacterRecord Character;
+    if (bAccountAuthenticated && Characters && Quests && Characters->FindCharacter(CharacterId, Character))
+    {
+        if (Character.AccountId == AuthenticatedAccountId)
+        {
+            Quests->AcceptQuest(Character, QuestId, Operation);
+        }
+        else
+        {
+            Operation.Result = EAetherQuestOperationResult::CharacterNotOwned;
+        }
+    }
+
+    LastProcessedQuestRequestId = RequestId;
+    ClientReceiveQuestOperation(RequestId, Operation);
+}
+
+void AAetherNetworkPlayerController::ServerAbandonQuest_Implementation(uint32 RequestId, const FAetherQuestId& QuestId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedQuestRequestId)
+    {
+        return;
+    }
+
+    FAetherQuestOperation Operation;
+    Operation.Result = EAetherQuestOperationResult::CharacterInvalid;
+
+    const AAetherCharacterPlayerState* CharacterState = GetPlayerState<AAetherCharacterPlayerState>();
+    const FAetherCharacterId CharacterId = CharacterState ? CharacterState->GetCharacterId() : FAetherCharacterId();
+
+    UAetherCharacterSubsystem* Characters = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+        : nullptr;
+    UAetherQuestSubsystem* Quests = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherQuestSubsystem>()
+        : nullptr;
+
+    FAetherCharacterRecord Character;
+    if (bAccountAuthenticated && Characters && Quests && Characters->FindCharacter(CharacterId, Character))
+    {
+        if (Character.AccountId == AuthenticatedAccountId)
+        {
+            Quests->AbandonQuest(Character, QuestId, Operation);
+        }
+        else
+        {
+            Operation.Result = EAetherQuestOperationResult::CharacterNotOwned;
+        }
+    }
+
+    LastProcessedQuestRequestId = RequestId;
+    ClientReceiveQuestOperation(RequestId, Operation);
+}
+
+void AAetherNetworkPlayerController::ServerCompleteQuest_Implementation(uint32 RequestId, const FAetherQuestId& QuestId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedQuestRequestId)
+    {
+        return;
+    }
+
+    FAetherQuestOperation Operation;
+    Operation.Result = EAetherQuestOperationResult::CharacterInvalid;
+
+    const AAetherCharacterPlayerState* CharacterState = GetPlayerState<AAetherCharacterPlayerState>();
+    const FAetherCharacterId CharacterId = CharacterState ? CharacterState->GetCharacterId() : FAetherCharacterId();
+
+    UAetherCharacterSubsystem* Characters = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+        : nullptr;
+    UAetherQuestSubsystem* Quests = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherQuestSubsystem>()
+        : nullptr;
+
+    FAetherCharacterRecord Character;
+    if (bAccountAuthenticated && Characters && Quests && Characters->FindCharacter(CharacterId, Character))
+    {
+        if (Character.AccountId == AuthenticatedAccountId)
+        {
+            Quests->CompleteQuest(Character, QuestId, Operation);
+        }
+        else
+        {
+            Operation.Result = EAetherQuestOperationResult::CharacterNotOwned;
+        }
+    }
+
+    LastProcessedQuestRequestId = RequestId;
+    ClientReceiveQuestOperation(RequestId, Operation);
+}
+
+void AAetherNetworkPlayerController::ClientReceiveQuestList_Implementation(
+    uint32 RequestId,
+    const TArray<FAetherQuestState>& States)
+{
+    // Quest state is delivered through the operation delegate path; list consumers can query
+    // the replicated/runtime subsystem through their owning client integration.
+}
+
+void AAetherNetworkPlayerController::ClientReceiveQuestOperation_Implementation(
+    uint32 RequestId,
+    const FAetherQuestOperation& Operation)
+{
+    OnQuestOperation.Broadcast(Operation);
 }
 
 void AAetherNetworkPlayerController::AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount)
