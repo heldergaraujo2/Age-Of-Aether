@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 17 — AI/GPT Integration (repository implementation complete; repository/static validation passed; Unreal/provider runtime validation pending local validation)  
+**Current stage:** Phase 18 — Production & Live MMORPG (repository implementation complete; repository/static validation passed; Unreal runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -881,4 +881,4 @@ Validation:
 - Unreal 5.8.1 UHT/UBT/Editor/Automation/dedicated-server/live runtime remains NOT VERIFIED because Unreal is unavailable;
 - no CI pipeline exists to substitute for Unreal validation.
 
-**NEXT:** repository roadmap phases are exhausted. Production lifecycle hardening is complete; further work is environment-driven Unreal validation, content, deployment and live-service operations.
+**NEXT:** roadmap phases are exhausted. Further work is environment-driven Unreal validation, content, deployment and live-service operations.
