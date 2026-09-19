@@ -78,6 +78,7 @@ bool FAetherQuestService::BuildAvailableState(const FAetherQuestDefinition& Defi
         FAetherQuestObjectiveProgress Progress;
         Progress.ObjectiveId = Objective.ObjectiveId;
         Progress.RequiredCount = Objective.RequiredCount;
+        Progress.bOptional = Objective.bOptional;
         OutState.Objectives.Add(Progress);
     }
     return true;
@@ -241,7 +242,7 @@ bool FAetherQuestService::AreRequiredObjectivesComplete(const FAetherQuestState&
 {
     for (const FAetherQuestObjectiveProgress& Objective : State.Objectives)
     {
-        if (Objective.RequiredCount <= 0)
+        if (Objective.bOptional)
         {
             continue;
         }
