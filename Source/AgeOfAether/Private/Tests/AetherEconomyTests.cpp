@@ -68,6 +68,9 @@ bool FAetherEconomyWalletTest::RunTest(const FString&)
     TestFalse(TEXT("overspend rejected"), Economy.RemoveCurrency(Character, EAetherCurrency::Gold, 61, Tx));
     TestEqual(TEXT("overspend leaves balance"), Economy.GetBalance(Character, EAetherCurrency::Gold), int64(60));
     TestFalse(TEXT("negative balance rejected"), Economy.SetBalance(Character, EAetherCurrency::Gold, -1));
+    TestTrue(TEXT("set maximum balance"), Economy.SetBalance(Character, EAetherCurrency::Gold, MAX_int64));
+    TestFalse(TEXT("currency overflow rejected"), Economy.AddCurrency(Character, EAetherCurrency::Gold, 1, Tx));
+    TestEqual(TEXT("overflow leaves balance"), Economy.GetBalance(Character, EAetherCurrency::Gold), MAX_int64);
     return true;
 }
 
@@ -179,5 +182,49 @@ bool FAetherEconomyValidationTest::RunTest(const FString&)
     FAetherItemService Items;
     TestFalse(TEXT("missing recipe rejected"), Economy.Craft(Character, TEXT("missing"), 1, 1, Items, Tx));
     TestEqual(TEXT("invalid transaction result"), Tx.Result, EAetherEconomyResult::RecipeNotFound);
+    return true;
+}
+
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherEconomyCraftingCapacityAtomicityTest, "AgeOfAether.Economy.CraftingCapacityAtomicity",
+    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+
+bool FAetherEconomyCraftingCapacityAtomicityTest::RunTest(const FString&)
+{
+    FAetherEconomyService Economy;
+    FAetherItemService Items;
+    const FAetherCharacterId Character = TestCharacter(TEXT("full-crafter"));
+    const FAetherItemDefinition Filler = TestItem(TEXT("Filler"), 1);
+    const FAetherItemDefinition Herb = TestItem(TEXT("Herb"), 20);
+    const FAetherItemDefinition Potion = TestItem(TEXT("Potion"), 20);
+    TestTrue(TEXT("filler definition"), Items.RegisterDefinition(Filler));
+    TestTrue(TEXT("herb definition"), Items.RegisterDefinition(Herb));
+    TestTrue(TEXT("potion definition"), Items.RegisterDefinition(Potion));
+
+    TArray<FAetherInventorySlot> Inventory;
+    TestTrue(TEXT("fill 63 slots"), Items.AddItem(Character, Filler.DefinitionId, 63, Inventory));
+    TestTrue(TEXT("place ingredient in last slot"), Items.AddItem(Character, Herb.DefinitionId, 1, Inventory));
+
+    FAetherCraftRecipe Recipe;
+    Recipe.RecipeId = TEXT("BlockedRecipe");
+    FAetherCraftIngredient Input;
+    Input.ItemDefinitionId = Herb.DefinitionId;
+    Input.Quantity = 1;
+    Recipe.Ingredients.Add(Input);
+    FAetherCraftIngredient Output;
+    Output.ItemDefinitionId = Potion.DefinitionId;
+    Output.Quantity = 1;
+    Recipe.Outputs.Add(Output);
+    TestTrue(TEXT("blocked recipe registers"), Economy.RegisterRecipe(Recipe));
+
+    FAetherEconomyTransaction Tx;
+    TestFalse(TEXT("full inventory rejects craft"), Economy.Craft(Character, Recipe.RecipeId, 1, 10, Items, Tx));
+    TestEqual(TEXT("capacity result"), Tx.Result, EAetherEconomyResult::InventoryFull);
+
+    Items.GetInventory(Character, Inventory);
+    int32 HerbCount = 0;
+    for (const FAetherInventorySlot& Slot : Inventory)
+        if (Slot.IsOccupied() && Slot.Item.DefinitionId == Herb.DefinitionId) HerbCount += Slot.Item.Quantity;
+    TestEqual(TEXT("failed craft preserves ingredients"), HerbCount, 1);
     return true;
 }
