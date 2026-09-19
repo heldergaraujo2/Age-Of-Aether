@@ -14,6 +14,9 @@ public:
     bool ImportSnapshot(
         const FAetherCharacterPersistenceSnapshot& Snapshot);
 
+    bool RestoreSnapshot(
+        const FAetherCharacterPersistenceSnapshot& Snapshot);
+
     bool LoadSnapshot(
         const FAetherCharacterId& CharacterId,
         FAetherCharacterPersistenceSnapshot& OutSnapshot,
