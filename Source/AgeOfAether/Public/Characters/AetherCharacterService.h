@@ -45,6 +45,11 @@ public:
         const FAetherCharacterId& CharacterId,
         const FAetherCharacterRecord& UpdatedCharacter);
 
+    bool ApplyCombatState(
+        const FAetherAccountId& AccountId,
+        const FAetherCharacterId& CharacterId,
+        const FAetherCharacterRecord& UpdatedCharacter);
+
     bool GetSelectedCharacter(
         const FAetherAccountId& AccountId,
         FAetherCharacterRecord& OutCharacter) const;
