@@ -28,6 +28,7 @@ bool FAetherContentRegistry::RegisterDefinitions(
 {
     OutIssues.Reset();
     bool bSuccess = true;
+    TArray<FAetherContentValidationIssue> RegistrationIssues;
 
     for (const FAetherContentDefinition& Definition : InDefinitions)
     {
@@ -35,15 +36,18 @@ bool FAetherContentRegistry::RegisterDefinitions(
         if (!RegisterDefinition(Definition, Error))
         {
             bSuccess = false;
-            AddIssue(OutIssues, Definition.Metadata.DefinitionID, TEXT("RegisterFailed"), Error);
+            AddIssue(RegistrationIssues, Definition.Metadata.DefinitionID, TEXT("RegisterFailed"), Error);
         }
     }
 
-    if (!Validate(OutIssues))
+    TArray<FAetherContentValidationIssue> ValidationIssues;
+    if (!Validate(ValidationIssues))
     {
         bSuccess = false;
     }
 
+    OutIssues.Append(RegistrationIssues);
+    OutIssues.Append(ValidationIssues);
     return bSuccess;
 }
 
