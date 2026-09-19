@@ -36,6 +36,9 @@ public:
 
     void ClearCharacterState(const FAetherCharacterId& CharacterId);
 
+    FAetherQuestService& GetQuestService() { return QuestService; }
+    const FAetherQuestService& GetQuestService() const { return QuestService; }
+
 private:
     FAetherQuestService QuestService;
 };
