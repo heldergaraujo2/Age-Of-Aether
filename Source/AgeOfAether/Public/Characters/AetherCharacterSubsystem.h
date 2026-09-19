@@ -47,6 +47,11 @@ public:
         const FAetherAccountId& AccountId,
         FAetherCharacterRecord& OutCharacter) const;
 
+    bool ApplyProgressionState(
+        const FAetherAccountId& AccountId,
+        const FAetherCharacterId& CharacterId,
+        const FAetherCharacterRecord& UpdatedCharacter);
+
     int32 NumCharacters() const;
     int32 NumCharactersForAccount(const FAetherAccountId& AccountId) const;
 
