@@ -278,7 +278,6 @@ bool FAetherPersistenceService::ValidateSnapshot(const FAetherCharacterPersisten
         }
         CurrencyTypes.Add(Balance.Currency);
     }
-    }
 
     TSet<FAetherQuestId> QuestIds;
     for (const FAetherQuestState& Quest : Snapshot.QuestStates)
