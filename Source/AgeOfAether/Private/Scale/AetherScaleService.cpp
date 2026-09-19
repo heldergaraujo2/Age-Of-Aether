@@ -33,7 +33,7 @@ EAetherScaleResult FAetherScaleService::RegisterPlayer(double NowSeconds)
     if (Node.CurrentPlayers >= Node.MaxPlayers) return EAetherScaleResult::ServerFull;
     ++Node.CurrentPlayers;
     Load.ActiveConnections = Node.CurrentPlayers;
-    Load.AuthenticatedPlayers = FMath::Min(Load.AuthenticatedPlayers + 1, Load.ActiveConnections);
+    Load.AuthenticatedPlayers = FMath::Min(Load.AuthenticatedPlayers, Load.ActiveConnections);
     return EAetherScaleResult::Accepted;
 }
 
