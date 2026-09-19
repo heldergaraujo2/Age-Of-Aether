@@ -21,6 +21,8 @@ public:
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Character")
     FAetherCharacterId GetCharacterId() const;
 
+    void InitializeCharacterIdentity(const FAetherCharacterId& InCharacterId);
+
 protected:
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Character")
     FAetherCharacterId CharacterId;
