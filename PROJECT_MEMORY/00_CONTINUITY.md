@@ -1141,6 +1141,38 @@ Next:
 **Phase 24 — Loot, Drop, Reward & Respawn.**
 
 
+## PHASE 25 — QUEST, EVENT, DIALOGUE & WORLD CONTENT AUTHORING — COMPLETED 2026-09-19
+
+Repository implementation is complete.
+
+Implemented:
+- data-driven quests with kill, collect, interact, talk, reach-area, escort, craft, timed and world-event objectives;
+- objective counts, level bounds, optional objectives and reusable prerequisite conditions;
+- quest chains through prerequisite and next-quest references;
+- data-driven dialogues with localization-ready text, nodes, choices, conditions and outcomes;
+- dialogue graph validation with missing-edge rejection and intentional cycle tolerance;
+- world events with trigger modes, duration, cooldown, zone, participant, objective, reward and announcement metadata;
+- world-content definitions connecting actors, quests, dialogues, events and spawn groups;
+- global ID uniqueness, normalized lookup and deterministic enumeration;
+- cross-validation against Phase 19 content, Phase 21 items, Phase 22 world actors and Phase 24 loot/reward data.
+
+Validation truth:
+- repository/static validation is complete;
+- GitHub Actions Phase 25 validation configured and must pass;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation remain NOT VERIFIED because Unreal is unavailable;
+- no compilation success is claimed.
+
+Important files:
+- Source/AgeOfAether/Public/Data/AetherQuestDialogueEventTypes.h
+- Source/AgeOfAether/Public/Data/AetherQuestDialogueEventRegistry.h
+- Source/AgeOfAether/Private/Data/AetherQuestDialogueEventTypes.cpp
+- Source/AgeOfAether/Private/Data/AetherQuestDialogueEventRegistry.cpp
+- Source/AgeOfAether/Private/Tests/AetherQuestDialogueEventRegistryTests.cpp
+- Docs/PHASE_25_QUEST_EVENT_DIALOGUE_WORLD_CONTENT.md
+
+Next:
+**Phase 26 — Crafting, Mixing, Forge & Recipe Authoring.**
+
 ## PHASE 24 — LOOT, DROP, REWARD & RESPAWN — COMPLETED 2026-09-19
 
 Repository implementation complete.
