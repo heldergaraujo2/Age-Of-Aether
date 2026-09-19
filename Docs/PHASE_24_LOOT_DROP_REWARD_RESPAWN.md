@@ -11,6 +11,8 @@ This phase establishes data-driven definitions and registry validation for loot 
 - Loot entries with item IDs, quantity ranges, weight, chance and tag requirements.
 - RewardDefinition with experience, currencies, direct item rewards and nested loot-table references.
 - RespawnDefinition with world actor ID, base respawn time, jitter, maximum alive count, enable state and spawn/world tags.
+- DropRuleDefinition linking source world actors to loot tables with trigger, chance, level bounds and tags.
+- SpawnGroupDefinition linking world actors to respawn definitions with initial/max counts and spawn/world tags.
 - Stable global IDs and normalized deterministic registry lookup.
 - Cross-validation against Phase 19 Content Registry, Phase 20 Asset Registry boundary, Phase 21 Item Registry and Phase 22 World Actor Registry.
 - Structural validation for quantities, probability ranges, level ranges, weighted tables, reward non-emptiness and respawn timing.
