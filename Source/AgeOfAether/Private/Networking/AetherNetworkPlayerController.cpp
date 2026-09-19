@@ -5,7 +5,6 @@
 #include "Characters/AetherCharacterSubsystem.h"
 #include "Items/AetherItemSubsystem.h"
 #include "Progression/AetherProgressionSubsystem.h"
-#include "Characters/AetherCharacterPlayerState.h"
 #include "Networking/AetherNetworkGameMode.h"
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
