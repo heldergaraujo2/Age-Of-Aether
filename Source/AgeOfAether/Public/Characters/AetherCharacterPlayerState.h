@@ -4,6 +4,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Accounts/AetherAccountSessionTypes.h"
 #include "Characters/AetherCharacterTypes.h"
+#include "World/AetherWorldTypes.h"
 
 #include "AetherCharacterPlayerState.generated.h"
 
@@ -55,6 +56,12 @@ public:
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Combat")
     EAetherCharacterCombatState GetCombatState() const;
 
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|World")
+    FAetherWorldZoneId GetCurrentZoneId() const;
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|World")
+    EAetherWorldZoneType GetCurrentZoneType() const;
+
 protected:
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Character")
     FAetherAccountId AccountId;
@@ -91,4 +98,10 @@ protected:
 
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Combat")
     EAetherCharacterCombatState CombatState = EAetherCharacterCombatState::Alive;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|World")
+    FAetherWorldZoneId CurrentZoneId;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|World")
+    EAetherWorldZoneType CurrentZoneType = EAetherWorldZoneType::Safe;
 };
