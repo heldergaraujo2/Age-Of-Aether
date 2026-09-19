@@ -177,6 +177,41 @@ bool FAetherCharacterSelectionLifecycleTest::RunTest(const FString& Parameters)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FAetherCharacterStatusTest,
+    "AgeOfAether.Character.Status",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FAetherCharacterStatusTest::RunTest(const FString& Parameters)
+{
+    FAetherCharacterService Service;
+    const FAetherAccountId AccountId = MakeAccountId();
+
+    FAetherCharacterRecord Character;
+    TestTrue(TEXT("Status test character creation succeeds"),
+        Service.CreateCharacter(AccountId, TEXT("StatusHero"), EAetherCharacterClass::Warrior, Character));
+
+    TestTrue(TEXT("Character can be disabled"),
+        Service.UpdateCharacterStatus(AccountId, Character.CharacterId, EAetherCharacterStatus::Disabled));
+
+    FAetherCharacterRecord Selected;
+    TestFalse(TEXT("Disabled character cannot be selected"),
+        Service.SelectCharacter(AccountId, Character.CharacterId, Selected));
+
+    TestTrue(TEXT("Character can be re-enabled"),
+        Service.UpdateCharacterStatus(AccountId, Character.CharacterId, EAetherCharacterStatus::Available));
+
+    TestTrue(TEXT("Re-enabled character can be selected"),
+        Service.SelectCharacter(AccountId, Character.CharacterId, Selected));
+
+    TestTrue(TEXT("Active character can be deleted through lifecycle status"),
+        Service.UpdateCharacterStatus(AccountId, Character.CharacterId, EAetherCharacterStatus::Deleted));
+
+    TestFalse(TEXT("Deleted character cannot be selected"),
+        Service.SelectCharacter(AccountId, Character.CharacterId, Selected));
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FAetherCharacterLocationTest,
     "AgeOfAether.Character.LocationAuthority",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
