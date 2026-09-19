@@ -112,6 +112,9 @@ struct FAetherDerivedStats
     float Defense = 5.0f;
 
     UPROPERTY(BlueprintReadOnly)
+    float Resistance = 0.0f;
+
+    UPROPERTY(BlueprintReadOnly)
     float MoveSpeed = 600.0f;
 };
 
