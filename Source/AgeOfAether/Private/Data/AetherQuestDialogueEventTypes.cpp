@@ -36,7 +36,7 @@ bool ValidateConditions(const TArray<FAetherQuestCondition>& Conditions, FString
 bool FAetherQuestCondition::IsStructurallyValid(FString& OutError) const
 {
     OutError.Reset();
-    return ValidateConditions({*this}, OutError);
+    TArray<FAetherQuestCondition> Conditions;\n    Conditions.Add(*this);\n    return ValidateConditions(Conditions, OutError);
 }
 
 bool FAetherQuestObjectiveDefinition::IsStructurallyValid(FString& OutError) const
