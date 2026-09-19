@@ -8,6 +8,36 @@
 #include "GameFramework/PlayerStart.h"
 #include "Engine/GameInstance.h"
 #include "World/AetherWorldSubsystem.h"
+#include "Multiplayer/AetherMultiplayerSubsystem.h"
+#include "HAL/PlatformTime.h"
+
+void AAetherNetworkGameMode::PostLogin(APlayerController* NewPlayer)
+{
+    Super::PostLogin(NewPlayer);
+    if (!NewPlayer) return;
+    UAetherMultiplayerSubsystem* Multiplayer = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherMultiplayerSubsystem>() : nullptr;
+    const uint32 ConnectionId = NewPlayer->GetUniqueID();
+    const bool bAccepted = Multiplayer && Multiplayer->RegisterConnection(ConnectionId, FPlatformTime::Seconds());
+    if (!bAccepted)
+    {
+        NewPlayer->ClientReturnToMainMenuWithTextReason(FText::FromString(TEXT("Server is full or unavailable.")));
+        NewPlayer->Destroy();
+    }
+}
+
+void AAetherNetworkGameMode::Logout(AController* Exiting)
+{
+    if (Exiting)
+    {
+        if (UAetherMultiplayerSubsystem* Multiplayer = GetGameInstance()
+            ? GetGameInstance()->GetSubsystem<UAetherMultiplayerSubsystem>() : nullptr)
+        {
+            Multiplayer->UnregisterConnection(Exiting->GetUniqueID());
+        }
+    }
+    Super::Logout(Exiting);
+}
 
 AAetherNetworkGameMode::AAetherNetworkGameMode()
 {
