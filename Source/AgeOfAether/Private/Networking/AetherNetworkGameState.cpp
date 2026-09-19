@@ -14,6 +14,8 @@ void AAetherNetworkGameState::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 
     DOREPLIFETIME(AAetherNetworkGameState, ProtocolVersion);
     DOREPLIFETIME(AAetherNetworkGameState, AuthoritativeStateRevision);
+    DOREPLIFETIME(AAetherNetworkGameState, ConnectedPlayerCount);
+    DOREPLIFETIME(AAetherNetworkGameState, bAcceptingConnections);
 }
 
 FAetherProtocolVersion AAetherNetworkGameState::GetProtocolVersion() const
@@ -34,4 +36,14 @@ void AAetherNetworkGameState::AdvanceAuthoritativeState()
     }
 
     ++AuthoritativeStateRevision;
+}
+
+void AAetherNetworkGameState::SetConnectedPlayerCount(int32 Count)
+{
+    if (HasAuthority()) ConnectedPlayerCount = FMath::Max(0, Count);
+}
+
+void AAetherNetworkGameState::SetAcceptingConnections(bool bAccepting)
+{
+    if (HasAuthority()) bAcceptingConnections = bAccepting;
 }
