@@ -430,4 +430,4 @@ Phase 1 local validation remains pending and is not falsely marked complete.
 
 Graceful shutdown was hardened so RequestShutdown completes cleanup on the next runtime tick, while Deinitialize remains defensive.
 
-Next implementation target after local validation gates are eventually executed: Phase 3 — Networking Foundation.
+Next implementation target after local validation gates are eventually executed: Phase 4 — Accounts and Sessions.
