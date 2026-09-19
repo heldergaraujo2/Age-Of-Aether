@@ -19,6 +19,7 @@ public:
         FAetherCharacterRecord& OutCharacter);
 
     bool FindCharacter(const FAetherCharacterId& CharacterId, FAetherCharacterRecord& OutCharacter) const;
+    void GetCharactersForAccount(const FAetherAccountId& AccountId, TArray<FAetherCharacterRecord>& OutCharacters) const;
 
     bool SelectCharacter(
         const FAetherAccountId& AccountId,
