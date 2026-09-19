@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/AetherCharacterTypes.generated.h"
+#include "Combat/AetherCombatTypes.generated.h"
 
 UENUM(BlueprintType)
 enum class EAetherCharacterClass : uint8
@@ -142,6 +143,15 @@ struct FAetherCharacterRecord
 
     UPROPERTY(BlueprintReadOnly)
     FAetherDerivedStats DerivedStats;
+
+    UPROPERTY(BlueprintReadOnly)
+    float CurrentHealth = 100.0f;
+
+    UPROPERTY(BlueprintReadOnly)
+    float CurrentShield = 0.0f;
+
+    UPROPERTY(BlueprintReadOnly)
+    EAetherCharacterCombatState CombatState = EAetherCharacterCombatState::Alive;
 
     UPROPERTY(BlueprintReadOnly)
     FVector WorldLocation = FVector::ZeroVector;
