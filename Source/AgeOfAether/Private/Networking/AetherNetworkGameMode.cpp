@@ -43,6 +43,7 @@ void AAetherNetworkGameMode::SpawnSelectedCharacter(
         CharacterState->SetCharacterIdentity(Character);
     }
 
+    SpawnedCharacter->InitializeCharacterIdentity(Character.CharacterId);
     SpawnedCharacter->SetActorLocation(Character.WorldLocation);
     SpawnedCharacter->SetActorRotation(Character.WorldRotation);
 }
