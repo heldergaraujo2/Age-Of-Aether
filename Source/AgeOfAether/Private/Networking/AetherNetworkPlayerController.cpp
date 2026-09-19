@@ -567,30 +567,39 @@ void AAetherNetworkPlayerController::ServerSelectCharacter_Implementation(
 
     if (bAccountAuthenticated && Characters)
     {
-        if (Characters->IsCharacterOwnedByAccount(CharacterId, AuthenticatedAccountId))
+        if (!Characters->FindCharacter(CharacterId, Character))
         {
-            if (Characters->SelectCharacter(AuthenticatedAccountId, CharacterId, Character))
+            Result = EAetherCharacterOperationResult::CharacterNotFound;
+        }
+        else if (Character.AccountId != AuthenticatedAccountId)
+        {
+            Result = EAetherCharacterOperationResult::NotOwned;
+        }
+        else if (Character.Status == EAetherCharacterStatus::Disabled)
+        {
+            Result = EAetherCharacterOperationResult::CharacterDisabled;
+        }
+        else if (Character.Status == EAetherCharacterStatus::Deleted)
+        {
+            Result = EAetherCharacterOperationResult::CharacterDeleted;
+        }
+        else if (Characters->SelectCharacter(AuthenticatedAccountId, CharacterId, Character))
+        {
+            Result = EAetherCharacterOperationResult::Accepted;
+
+            if (AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>())
             {
-                Result = EAetherCharacterOperationResult::Accepted;
-
-                if (AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>())
-                {
-                    State->SetCharacterIdentity(Character);
-                }
-
-                if (AAetherNetworkGameMode* GameMode = GetWorld()->GetAuthGameMode<AAetherNetworkGameMode>())
-                {
-                    GameMode->SpawnSelectedCharacter(this, Character);
-                }
+                State->SetCharacterIdentity(Character);
             }
-            else
+
+            if (AAetherNetworkGameMode* GameMode = GetWorld()->GetAuthGameMode<AAetherNetworkGameMode>())
             {
-                Result = EAetherCharacterOperationResult::AnotherCharacterSelected;
+                GameMode->SpawnSelectedCharacter(this, Character);
             }
         }
         else
         {
-            Result = EAetherCharacterOperationResult::NotOwned;
+            Result = EAetherCharacterOperationResult::AnotherCharacterSelected;
         }
     }
 
