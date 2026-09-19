@@ -595,7 +595,10 @@ Repeated login/reconnect on an already authenticated controller is explicitly re
 
 **PHASE 12 — Economy & Crafting**
 
-The next system will establish authoritative currency, wallet transactions, shops, crafting recipes and transactional economic rules while preserving server authority and auditability.
+Phase 12 is now complete at repository level. It establishes authoritative Gold wallets, shop buy/sell flows, data-driven crafting recipes, complete-output inventory preflight, economy transaction results, controller RPCs and automation coverage. Persistence remains deferred to Phase 14.
+
+Next implementation target:
+**PHASE 13 — Multiplayer & Server Authority**
 
 ## 12. Mandatory workflow
 
@@ -604,3 +607,41 @@ For every phase:
 AUDITAR → IMPLEMENTAR → COMPILAR → TESTAR → VALIDAR → DOCUMENTAR → COMMITAR → ATUALIZAR CONTINUIDADE → PROSSEGUIR.
 
 If a local/editor step is unavailable, record it as NOT VERIFIED rather than inventing a PASS.
+
+
+## Phase 12 — Economy & Crafting
+
+Repository implementation is complete.
+
+Implemented:
+- FAetherEconomyService;
+- UAetherEconomySubsystem;
+- FAetherEconomyConfigDataAsset;
+- FAetherCurrency and character-owned wallet balances;
+- server-authoritative Gold mutations;
+- shop definitions and buy/sell transactions;
+- crafting recipe definitions and transactional crafting validation;
+- inventory capacity simulation before crafting consumption;
+- economy transaction result/delegate;
+- economy PlayerController RPCs and replay guards;
+- economy automation tests.
+
+Hardening completed during implementation:
+- repaired Item Data Asset registration boundary;
+- removed a literal escaped-newline artifact from AetherItemSubsystem.h;
+- made economy config registration atomic;
+- checked sell currency overflow before removing inventory items;
+- simulated all crafting outputs together before consuming ingredients;
+- restricted the currently implemented currency mutation path to Gold.
+
+Validation truth:
+- repository/static validation PASSED;
+- balanced delimiters and escaped-newline audit PASSED for Phase 12 and modified source;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/multiplayer/Automation Framework/network emulation NOT VERIFIED;
+- no CI pipeline exists to substitute for Unreal validation.
+
+Deliverable:
+- Docs/PHASE_12_ECONOMY_CRAFTING.md
+
+Next implementation target:
+**PHASE 13 — Multiplayer & Server Authority**
