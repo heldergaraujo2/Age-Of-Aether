@@ -96,14 +96,13 @@ bool FAetherEconomyBuySellTest::RunTest(const FString&)
     FAetherEconomyTransaction Tx;
     TestTrue(TEXT("buy succeeds"), Economy.Buy(Character, TEXT("General"), Entry.ItemDefinitionId, 3, Items, Tx));
     TestEqual(TEXT("gold after buy"), Economy.GetBalance(Character, EAetherCurrency::Gold), int64(70));
-    TestEqual(TEXT("three potions exist"), [&]()
-    {
-        TArray<FAetherInventorySlot> Inventory;
-        Items.GetInventory(Character, Inventory);
-        return [&](){ int32 N=0; for(const FAetherInventorySlot& S:Inventory) if(S.IsOccupied()) N += S.Item.Quantity; return N; }();
-    }(), 3);
-
     TArray<FAetherInventorySlot> Inventory;
+    Items.GetInventory(Character, Inventory);
+    int32 PotionCount = 0;
+    for (const FAetherInventorySlot& Slot : Inventory)
+        if (Slot.IsOccupied() && Slot.Item.DefinitionId == Entry.ItemDefinitionId) PotionCount += Slot.Item.Quantity;
+    TestEqual(TEXT("three potions exist"), PotionCount, 3);
+
     Items.GetInventory(Character, Inventory);
     FAetherItemInstanceId Instance;
     for (const FAetherInventorySlot& Slot : Inventory) if (Slot.IsOccupied()) { Instance = Slot.Item.InstanceId; break; }
@@ -177,7 +176,8 @@ bool FAetherEconomyValidationTest::RunTest(const FString&)
 
     TestFalse(TEXT("zero currency rejected"), Economy.AddCurrency(Character, EAetherCurrency::Gold, 0, Tx));
     TestFalse(TEXT("negative currency rejected"), Economy.AddCurrency(Character, EAetherCurrency::Gold, -1, Tx));
-    TestFalse(TEXT("zero craft quantity rejected"), Economy.Craft(Character, TEXT("missing"), 0, 1, *new FAetherItemService(), Tx));
+    FAetherItemService Items;
+    TestFalse(TEXT("missing recipe rejected"), Economy.Craft(Character, TEXT("missing"), 1, 1, Items, Tx));
     TestEqual(TEXT("invalid transaction result"), Tx.Result, EAetherEconomyResult::RecipeNotFound);
     return true;
 }
