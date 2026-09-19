@@ -12,7 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherNetworkResponseEvent, const F
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherAuthenticationResponseEvent, const FAetherAuthenticationResponse&, Response);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherSessionHeartbeatEvent, bool, bAccepted);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAetherCharacterOperationEvent, EAetherCharacterOperationResult, Result, const FAetherCharacterRecord&, Character);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCharacterListEvent, const TArray<FAetherCharacterRecord>&, Characters);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCharacterListEvent, const TArray<FAetherCharacterRecord>&, Characters);\nDECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryEvent, const TArray<FAetherInventorySlot>&, Inventory);\nDECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryOperationEvent, EAetherInventoryOperationResult, Result);
 
 UCLASS()
 class AGEOFAETHER_API AAetherNetworkPlayerController : public APlayerController
@@ -47,7 +47,7 @@ public:
     void SelectCharacter(const FAetherCharacterId& CharacterId);
 
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Character")
-    void DeselectCharacter();
+    void DeselectCharacter();\n\n    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Inventory")\n    void RequestInventory();\n\n    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Inventory")\n    void MoveInventoryItem(const FAetherItemInstanceId& InstanceId, int32 TargetSlot);\n\n    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Inventory")\n    void SplitInventoryStack(const FAetherItemInstanceId& InstanceId, int32 Quantity, int32 TargetSlot);\n\n    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Inventory")\n    void MergeInventoryStacks(const FAetherItemInstanceId& SourceInstanceId, const FAetherItemInstanceId& TargetInstanceId);\n\n    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Inventory")\n    void DiscardInventoryItem(const FAetherItemInstanceId& InstanceId, int32 Quantity);
 
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Accounts")
     bool IsAccountAuthenticated() const;
