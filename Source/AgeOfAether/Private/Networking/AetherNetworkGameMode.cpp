@@ -5,6 +5,7 @@
 #include "Characters/AetherCharacter.h"
 #include "Characters/AetherCharacterPlayerState.h"
 #include "GameFramework/PlayerStart.h"
+#include "World/AetherWorldSubsystem.h"
 
 AAetherNetworkGameMode::AAetherNetworkGameMode()
 {
@@ -30,6 +31,33 @@ void AAetherNetworkGameMode::SpawnSelectedCharacter(
         PlayerController->GetPawn()->Destroy();
     }
 
+    FAetherCharacterRecord SpawnCharacter = Character;
+    if (UGameInstance* GameInstance = GetGameInstance())
+    {
+        if (UAetherWorldSubsystem* World = GameInstance->GetSubsystem<UAetherWorldSubsystem>())
+        {
+            FAetherWorldTransitionResult WorldResult;
+            if (World->InitializeCharacterSpawn(
+                Character.AccountId,
+                Character.CharacterId,
+                WorldResult))
+            {
+                FAetherCharacterRecord RefreshedCharacter;
+                if (WorldResult.IsAccepted())
+                {
+                    if (UAetherCharacterSubsystem* Characters =
+                        GameInstance->GetSubsystem<UAetherCharacterSubsystem>())
+                    {
+                        if (Characters->FindCharacter(Character.CharacterId, RefreshedCharacter))
+                        {
+                            SpawnCharacter = RefreshedCharacter;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     RestartPlayer(PlayerController);
 
     AAetherCharacter* SpawnedCharacter = Cast<AAetherCharacter>(PlayerController->GetPawn());
@@ -40,10 +68,10 @@ void AAetherNetworkGameMode::SpawnSelectedCharacter(
 
     if (AAetherCharacterPlayerState* CharacterState = PlayerController->GetPlayerState<AAetherCharacterPlayerState>())
     {
-        CharacterState->SetCharacterIdentity(Character);
+        CharacterState->SetCharacterIdentity(SpawnCharacter);
     }
 
-    SpawnedCharacter->InitializeCharacterIdentity(Character.CharacterId);
-    SpawnedCharacter->SetActorLocation(Character.WorldLocation);
-    SpawnedCharacter->SetActorRotation(Character.WorldRotation);
+    SpawnedCharacter->InitializeCharacterIdentity(SpawnCharacter.CharacterId);
+    SpawnedCharacter->SetActorLocation(SpawnCharacter.WorldLocation);
+    SpawnedCharacter->SetActorRotation(SpawnCharacter.WorldRotation);
 }
