@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 10 — Quest/Mission (repository implementation complete; repository/static validation passed; Unreal compilation/network runtime validation pending local validation)  
+**Current stage:** Phase 11 — Social (repository implementation complete; repository/static validation passed; Unreal compilation/network runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -470,6 +470,42 @@ Documentation:
 Next implementation target:
 **PHASE 11 — Social**
 
+## Phase 11 — Social
+
+Repository implementation is complete.
+
+Implemented:
+- account-level friends and pending requests;
+- accept/reject/remove/block/unblock;
+- party creation, invitation, acceptance, leave, leader handoff and kick;
+- party capacity and account/character membership indexes;
+- guild creation, unique normalized names, invitations and role management;
+- guild leader/officer/member roles and leave rules;
+- Local/Party/Guild/Whisper/System chat contracts;
+- server-side message validation, rate limit and recipient routing;
+- social service/subsystem/config Data Asset;
+- dedicated social request sequence and PlayerController RPCs/delegates;
+- automation tests for friends, blocking, party, party capacity, guild, security and chat.
+
+Security boundary:
+- AccountID is derived from authenticated session state;
+- CharacterID is derived from active Character PlayerState;
+- social role and membership state are server-authoritative;
+- chat routing is server-authoritative;
+- external Online Services/EOS remains an adapter concern rather than core gameplay authority.
+
+Validation truth:
+- repository/static validation passed;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/network emulation/Automation Framework remain NOT VERIFIED because Unreal is unavailable in this environment;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Documentation:
+- `Docs/PHASE_11_SOCIAL.md`
+- `ROADMAP.md`
+
+Next implementation target:
+**PHASE 12 — Economy & Crafting**
+
 ## 6. Validation truth
 
 ### Repository/static validation
@@ -557,9 +593,9 @@ Repeated login/reconnect on an already authenticated controller is explicitly re
 
 ## 11. Next implementation target
 
-**PHASE 11 — Social**
+**PHASE 12 — Economy & Crafting**
 
-The next system will establish authoritative party, friend, guild and chat foundations while preserving AccountID/CharacterID ownership and server-side permissions.
+The next system will establish authoritative currency, wallet transactions, shops, crafting recipes and transactional economic rules while preserving server authority and auditability.
 
 ## 12. Mandatory workflow
 
