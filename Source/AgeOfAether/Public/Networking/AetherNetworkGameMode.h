@@ -13,6 +13,8 @@ class AGEOFAETHER_API AAetherNetworkGameMode : public AGameModeBase
 
 public:
     AAetherNetworkGameMode();
+    virtual void PostLogin(APlayerController* NewPlayer) override;
+    virtual void Logout(AController* Exiting) override;
 
     void SpawnSelectedCharacter(APlayerController* PlayerController, const FAetherCharacterRecord& Character);
 };
