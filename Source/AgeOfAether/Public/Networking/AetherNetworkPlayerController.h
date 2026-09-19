@@ -34,4 +34,5 @@ protected:
 private:
     bool ValidateRequest(const FAetherNetworkRequest& Request) const;
     uint32 NextRequestId = 1;
+    uint32 LastProcessedRequestId = 0;
 };
