@@ -82,6 +82,43 @@ bool FAetherLootTableDefinition::IsStructurallyValid(FString& OutError) const
     return true;
 }
 
+bool FAetherDropRuleDefinition::IsStructurallyValid(FString& OutError) const
+{
+    OutError.Reset();
+    if (DefinitionID.TrimStartAndEnd().IsEmpty() || SourceWorldActorID.TrimStartAndEnd().IsEmpty() || LootTableID.TrimStartAndEnd().IsEmpty())
+    {
+        OutError = TEXT("Drop rule ID, SourceWorldActorID and LootTableID are required.");
+        return false;
+    }
+    if (!IsFiniteNonNegative(Chance) || Chance > 1.0)
+    {
+        OutError = TEXT("Drop rule Chance must be in [0,1].");
+        return false;
+    }
+    if (MinimumLevel < 0 || MaximumLevel < 0 || (MaximumLevel > 0 && MaximumLevel < MinimumLevel))
+    {
+        OutError = TEXT("Drop rule level bounds are invalid.");
+        return false;
+    }
+    return true;
+}
+
+bool FAetherSpawnGroupDefinition::IsStructurallyValid(FString& OutError) const
+{
+    OutError.Reset();
+    if (DefinitionID.TrimStartAndEnd().IsEmpty() || WorldActorID.TrimStartAndEnd().IsEmpty() || RespawnDefinitionID.TrimStartAndEnd().IsEmpty())
+    {
+        OutError = TEXT("Spawn group ID, WorldActorID and RespawnDefinitionID are required.");
+        return false;
+    }
+    if (InitialCount < 0 || MaximumCount <= 0 || InitialCount > MaximumCount)
+    {
+        OutError = TEXT("Spawn group counts are invalid.");
+        return false;
+    }
+    return true;
+}
+
 bool FAetherRewardItem::IsStructurallyValid(FString& OutError) const
 {
     OutError.Reset();
