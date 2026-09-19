@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 11 — Social (repository implementation complete; repository/static validation passed; Unreal compilation/network runtime validation pending local validation)  
+**Current stage:** Phase 13 — Multiplayer & Server Authority (repository implementation complete; repository/static validation passed; Unreal compilation/runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -645,3 +645,12 @@ Deliverable:
 
 Next implementation target:
 **PHASE 13 — Multiplayer & Server Authority**
+
+
+## Phase 13 — Multiplayer & Server Authority
+
+Repository implementation is complete. Added connection admission, lifecycle tracking, authentication binding, heartbeat authority, request rate limiting, timeout handling, replicated player population state and automation coverage. Unreal build/runtime/network emulation remain NOT VERIFIED locally.
+
+Deliverable: Docs/PHASE_13_MULTIPLAYER_SERVER_AUTHORITY.md
+
+Next implementation target: **PHASE 14 — PERSISTENCE & BACKEND**
