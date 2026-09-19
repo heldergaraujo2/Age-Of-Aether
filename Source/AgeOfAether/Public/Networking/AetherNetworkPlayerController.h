@@ -9,6 +9,7 @@
 #include "Progression/AetherProgressionTypes.h"
 #include "Combat/AetherCombatTypes.h"
 #include "World/AetherWorldTypes.h"
+#include "Quests/AetherQuestTypes.h"
 
 #include "AetherNetworkPlayerController.generated.h"
 
@@ -22,6 +23,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryOperationEvent, EAet
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherProgressionEvent, const FAetherProgressionResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCombatEvent, const FAetherCombatResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherWorldTransitionEvent, const FAetherWorldTransitionResult&, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherQuestEvent, const FAetherQuestOperation&, Operation);
 
 UCLASS()
 class AGEOFAETHER_API AAetherNetworkPlayerController : public APlayerController
@@ -82,6 +84,18 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|World")
     void RequestWorldTransition(const FAetherWorldZoneId& TargetZoneId);
 
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Quest")
+    void RequestQuestList();
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Quest")
+    void AcceptQuest(const FAetherQuestId& QuestId);
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Quest")
+    void AbandonQuest(const FAetherQuestId& QuestId);
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Quest")
+    void CompleteQuest(const FAetherQuestId& QuestId);
+
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Accounts")
     bool IsAccountAuthenticated() const;
 
@@ -120,6 +134,9 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|World")
     FAetherWorldTransitionEvent OnWorldTransition;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Quest")
+    FAetherQuestEvent OnQuestOperation;
 
 protected:
     UFUNCTION(Server, Reliable)
@@ -206,6 +223,24 @@ protected:
     UFUNCTION(Client, Reliable)
     void ClientReceiveWorldTransition(uint32 RequestId, const FAetherWorldTransitionResult& Result);
 
+    UFUNCTION(Server, Reliable)
+    void ServerRequestQuestList(uint32 RequestId);
+
+    UFUNCTION(Server, Reliable)
+    void ServerAcceptQuest(uint32 RequestId, const FAetherQuestId& QuestId);
+
+    UFUNCTION(Server, Reliable)
+    void ServerAbandonQuest(uint32 RequestId, const FAetherQuestId& QuestId);
+
+    UFUNCTION(Server, Reliable)
+    void ServerCompleteQuest(uint32 RequestId, const FAetherQuestId& QuestId);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveQuestList(uint32 RequestId, const TArray<FAetherQuestState>& States);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveQuestOperation(uint32 RequestId, const FAetherQuestOperation& Operation);
+
     virtual void BeginPlay() override;
 
 private:
@@ -229,6 +264,8 @@ private:
     uint32 LastProcessedCombatRequestId = 0;
     uint32 NextWorldRequestId = 1;
     uint32 LastProcessedWorldRequestId = 0;
+    uint32 NextQuestRequestId = 1;
+    uint32 LastProcessedQuestRequestId = 0;
 
     FAetherAccountId AuthenticatedAccountId;
     FAetherSessionId SessionId;
