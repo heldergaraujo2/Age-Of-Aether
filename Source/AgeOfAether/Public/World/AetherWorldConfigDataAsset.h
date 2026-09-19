@@ -14,4 +14,13 @@ class AGEOFAETHER_API UAetherWorldConfigDataAsset : public UDataAsset
 public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "World")
     FAetherWorldConfig Config;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "World|Zones")
+    TArray<FAetherWorldZone> Zones;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "World|Spawns")
+    TArray<FAetherWorldSpawnPoint> SpawnPoints;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "World|Portals")
+    TArray<FAetherWorldPortal> Portals;
 };
