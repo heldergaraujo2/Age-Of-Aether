@@ -16,6 +16,10 @@ void AAetherCharacterPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimePro
     DOREPLIFETIME(AAetherCharacterPlayerState, CharacterName);
     DOREPLIFETIME(AAetherCharacterPlayerState, CharacterClass);
     DOREPLIFETIME(AAetherCharacterPlayerState, CharacterLevel);
+    DOREPLIFETIME(AAetherCharacterPlayerState, CharacterExperience);
+    DOREPLIFETIME(AAetherCharacterPlayerState, UnspentStatPoints);
+    DOREPLIFETIME(AAetherCharacterPlayerState, BaseStats);
+    DOREPLIFETIME(AAetherCharacterPlayerState, DerivedStats);
 }
 
 void AAetherCharacterPlayerState::SetCharacterIdentity(const FAetherCharacterRecord& Character)
@@ -30,6 +34,10 @@ void AAetherCharacterPlayerState::SetCharacterIdentity(const FAetherCharacterRec
     CharacterName = Character.Name;
     CharacterClass = Character.CharacterClass;
     CharacterLevel = Character.Level;
+    CharacterExperience = Character.Experience;
+    UnspentStatPoints = Character.UnspentStatPoints;
+    BaseStats = Character.BaseStats;
+    DerivedStats = Character.DerivedStats;
     SetPlayerName(Character.Name);
 }
 
@@ -56,4 +64,24 @@ EAetherCharacterClass AAetherCharacterPlayerState::GetCharacterClass() const
 int32 AAetherCharacterPlayerState::GetCharacterLevel() const
 {
     return CharacterLevel;
+}
+
+int64 AAetherCharacterPlayerState::GetCharacterExperience() const
+{
+    return CharacterExperience;
+}
+
+int32 AAetherCharacterPlayerState::GetUnspentStatPoints() const
+{
+    return UnspentStatPoints;
+}
+
+FAetherBaseStats AAetherCharacterPlayerState::GetBaseStats() const
+{
+    return BaseStats;
+}
+
+FAetherDerivedStats AAetherCharacterPlayerState::GetDerivedStats() const
+{
+    return DerivedStats;
 }
