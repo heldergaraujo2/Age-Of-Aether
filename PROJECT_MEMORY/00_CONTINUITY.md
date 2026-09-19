@@ -210,6 +210,7 @@ Implemented:
 - spectator-before-selection flow;
 - server-authoritative character spawn;
 - logout character cleanup;
+- server-side disabled/deleted lifecycle control and deleted-character listing exclusion;
 - character automation tests.
 
 Network integration:
