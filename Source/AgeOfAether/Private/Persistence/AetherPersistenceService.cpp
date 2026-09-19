@@ -78,7 +78,7 @@ bool FAetherPersistenceService::SaveSnapshot(
     OutOperation = FAetherPersistenceOperation{};
 
     FAetherCharacterPersistenceSnapshot Snapshot = InputSnapshot;
-    if (!MigrateSnapshot(Snapshot) || !ValidateSnapshot(Snapshot))
+    if (!MigrateSnapshot(Snapshot) || !Snapshot.HasValidIdentity())
     {
         OutOperation.Result = EAetherPersistenceResult::InvalidSnapshot;
         return false;
@@ -97,12 +97,52 @@ bool FAetherPersistenceService::SaveSnapshot(
     Snapshot.Revision = CurrentRevision + 1;
     Snapshot.Checksum = ComputeChecksum(Snapshot);
 
+    if (!ValidateSnapshot(Snapshot))
+    {
+        OutOperation.Result = EAetherPersistenceResult::InvalidSnapshot;
+        return false;
+    }
+
     Snapshots.Add(Snapshot.Character.CharacterId, Snapshot);
 
     OutOperation.Result = EAetherPersistenceResult::Accepted;
     OutOperation.Revision = Snapshot.Revision;
     OutOperation.Snapshot = Snapshot;
     return true;
+}
+
+bool FAetherPersistenceService::ImportSnapshot(const FAetherCharacterPersistenceSnapshot& InputSnapshot)
+{
+    FAetherCharacterPersistenceSnapshot Snapshot = InputSnapshot;
+    if (!MigrateSnapshot(Snapshot) || !ValidateSnapshot(Snapshot) || !VerifyChecksum(Snapshot))
+    {
+        return false;
+    }
+
+    const FAetherCharacterPersistenceSnapshot* Existing = Snapshots.Find(Snapshot.Character.CharacterId);
+    if (Existing && Existing->Revision >= Snapshot.Revision)
+    {
+        return false;
+    }
+
+    Snapshots.Add(Snapshot.Character.CharacterId, Snapshot);
+    return true;
+}
+
+void FAetherPersistenceService::GetSnapshots(TArray<FAetherCharacterPersistenceSnapshot>& OutSnapshots) const
+{
+    OutSnapshots.Reset();
+    OutSnapshots.Reserve(Snapshots.Num());
+
+    for (const TPair<FAetherCharacterId, FAetherCharacterPersistenceSnapshot>& Pair : Snapshots)
+    {
+        OutSnapshots.Add(Pair.Value);
+    }
+
+    OutSnapshots.Sort([](const FAetherCharacterPersistenceSnapshot& A, const FAetherCharacterPersistenceSnapshot& B)
+    {
+        return A.Character.CharacterId.Value < B.Character.CharacterId.Value;
+    });
 }
 
 bool FAetherPersistenceService::LoadSnapshot(
