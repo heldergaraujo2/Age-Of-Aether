@@ -67,8 +67,14 @@ EAetherSecurityResult FAetherSecurityService::AuthorizeRequest(
         return EAetherSecurityResult::Quarantined;
     }
 
-    // Replay ordering is enforced by the owning RPC category in the PlayerController.
-    // This service intentionally keeps rate/quarantine state independent of category-local request IDs.
+    uint32* LastRequestId = State.LastRequestIds.Find(Action);
+    if (LastRequestId && RequestId <= *LastRequestId)
+    {
+        ++State.InvalidRequestCount;
+        ++State.SuspicionScore;
+        AddAudit(ConnectionId, Action, EAetherSecurityResult::ReplayRejected, RequestId, NowSeconds, State.SuspicionScore);
+        return EAetherSecurityResult::ReplayRejected;
+    }
 
     if (State.RequestBudget <= 0)
     {
