@@ -1352,8 +1352,76 @@ void AAetherNetworkPlayerController::ServerSendChat_Implementation(uint32 Id,EAe
     FAetherCharacterRecord C;
     UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;
     if(S&&GetControllerCharacter(this,C))S->ValidateChat(C,Channel,Target,Message,GetServerTimeSeconds(),Chat,Result);
-    if(Result==EAetherSocialResult::Accepted)ClientReceiveChat(Id,Chat);
-    else { FAetherSocialOperation O; O.Result=Result; ClientReceiveSocialOperation(Id,O); }
+    if(Result==EAetherSocialResult::Accepted)
+    {
+        if(UWorld* World=GetWorld())
+        {
+            for(FConstPlayerControllerIterator It=World->GetPlayerControllerIterator(); It; ++It)
+            {
+                AAetherNetworkPlayerController* Recipient=Cast<AAetherNetworkPlayerController>(It->Get());
+                if(!Recipient || !Recipient->IsAccountAuthenticated()) continue;
+
+                bool bDeliver=false;
+                if(Channel==EAetherSocialChannel::Whisper)
+                {
+                    bDeliver=Recipient->GetAuthenticatedAccountId()==Target;
+                }
+                else if(Channel==EAetherSocialChannel::Party)
+                {
+                    FAetherCharacterRecord RecipientCharacter;
+                    if(GetControllerCharacter(Recipient,RecipientCharacter))
+                    {
+                        FAetherPartyState Party;
+                        bDeliver=S->GetPartyForCharacter(C.CharacterId,Party);
+                        if(bDeliver)
+                        {
+                            bDeliver=false;
+                            for(const FAetherPartyMember& Member:Party.Members)
+                            {
+                                if(Member.AccountId==RecipientCharacter.AccountId){bDeliver=true;break;}
+                            }
+                        }
+                    }
+                }
+                else if(Channel==EAetherSocialChannel::Guild)
+                {
+                    FAetherCharacterRecord RecipientCharacter;
+                    if(GetControllerCharacter(Recipient,RecipientCharacter))
+                    {
+                        FAetherGuildState Guild;
+                        bDeliver=S->GetGuildForCharacter(C.CharacterId,Guild);
+                        if(bDeliver)
+                        {
+                            bDeliver=false;
+                            for(const FAetherGuildMember& Member:Guild.Members)
+                            {
+                                if(Member.AccountId==RecipientCharacter.AccountId){bDeliver=true;break;}
+                            }
+                        }
+                    }
+                }
+                else if(Channel==EAetherSocialChannel::Local)
+                {
+                    const APawn* SenderPawn=GetPawn();
+                    const APawn* RecipientPawn=Recipient->GetPawn();
+                    bDeliver=SenderPawn && RecipientPawn
+                        && FVector::DistSquared(SenderPawn->GetActorLocation(),RecipientPawn->GetActorLocation()) <= FMath::Square(2000.0f);
+                }
+                else
+                {
+                    bDeliver=true;
+                }
+
+                if(bDeliver) Recipient->ClientReceiveChat(Id,Chat);
+            }
+        }
+    }
+    else
+    {
+        FAetherSocialOperation O;
+        O.Result=Result;
+        ClientReceiveSocialOperation(Id,O);
+    }
 }
 
 void AAetherNetworkPlayerController::ClientReceiveSocialOperation_Implementation(uint32 Id,const FAetherSocialOperation& Operation){OnSocialOperation.Broadcast(Operation);}
