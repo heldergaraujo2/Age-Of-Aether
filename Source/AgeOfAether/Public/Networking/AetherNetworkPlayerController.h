@@ -6,6 +6,7 @@
 #include "Accounts/AetherAccountSessionTypes.h"
 #include "Characters/AetherCharacterTypes.h"
 #include "Items/AetherItemTypes.h"
+#include "Progression/AetherProgressionTypes.h"
 
 #include "AetherNetworkPlayerController.generated.h"
 
@@ -16,6 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAetherCharacterOperationEvent, EAe
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCharacterListEvent, const TArray<FAetherCharacterRecord>&, Characters);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryEvent, const TArray<FAetherInventorySlot>&, Inventory);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryOperationEvent, EAetherInventoryOperationResult, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherProgressionEvent, const FAetherProgressionResult&, Result);
 
 UCLASS()
 class AGEOFAETHER_API AAetherNetworkPlayerController : public APlayerController
@@ -66,6 +68,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Inventory")
     void DiscardInventoryItem(const FAetherItemInstanceId& InstanceId, int32 Quantity);
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Progression")
+    void AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount);
 
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Accounts")
     bool IsAccountAuthenticated() const;
