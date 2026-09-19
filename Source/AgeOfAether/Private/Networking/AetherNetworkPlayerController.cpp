@@ -336,6 +336,23 @@ void AAetherNetworkPlayerController::ServerLogoutAccount_Implementation(
 
     if (bLoggedOut)
     {
+        if (UAetherCharacterSubsystem* Characters = GetGameInstance()
+            ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+            : nullptr)
+        {
+            if (const AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>())
+            {
+                Characters->DeselectCharacter(
+                    AuthenticatedAccountId,
+                    State->GetCharacterId());
+            }
+        }
+
+        if (APawn* CurrentPawn = GetPawn())
+        {
+            CurrentPawn->Destroy();
+        }
+
         ClearAuthenticatedSession();
     }
 }
