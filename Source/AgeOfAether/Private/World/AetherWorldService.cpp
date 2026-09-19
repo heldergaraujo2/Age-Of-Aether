@@ -13,6 +13,13 @@ bool FAetherWorldService::SetConfig(const FAetherWorldConfig& NewConfig)
     return true;
 }
 
+void FAetherWorldService::ClearWorldDefinitions()
+{
+    Zones.Reset();
+    SpawnsByZone.Reset();
+    Portals.Reset();
+}
+
 bool FAetherWorldService::RegisterZone(const FAetherWorldZone& Zone)
 {
     if (!Zone.ZoneId.IsValid() ||
