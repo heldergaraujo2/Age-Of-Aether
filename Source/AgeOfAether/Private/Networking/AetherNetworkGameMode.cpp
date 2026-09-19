@@ -23,6 +23,13 @@ void AAetherNetworkGameMode::PostLogin(APlayerController* NewPlayer)
     {
         NewPlayer->ClientReturnToMainMenuWithTextReason(FText::FromString(TEXT("Server is full or unavailable.")));
         NewPlayer->Destroy();
+        return;
+    }
+
+    if (AAetherNetworkGameState* State = GetGameState<AAetherNetworkGameState>())
+    {
+        State->SetConnectedPlayerCount(GetNumPlayers());
+        State->AdvanceAuthoritativeState();
     }
 }
 
@@ -35,6 +42,11 @@ void AAetherNetworkGameMode::Logout(AController* Exiting)
         {
             Multiplayer->UnregisterConnection(Exiting->GetUniqueID());
         }
+    }
+    if (AAetherNetworkGameState* State = GetGameState<AAetherNetworkGameState>())
+    {
+        State->SetConnectedPlayerCount(FMath::Max(0, GetNumPlayers() - 1));
+        State->AdvanceAuthoritativeState();
     }
     Super::Logout(Exiting);
 }
