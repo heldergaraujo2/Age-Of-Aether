@@ -38,11 +38,13 @@ void AAetherCharacter::PossessedBy(AController* NewController)
 
 void AAetherCharacter::UnPossessed()
 {
+    AController* PreviousController = GetController();
+
     if (HasAuthority())
     {
         if (AAetherCharacterPlayerState* CharacterState = GetPlayerState<AAetherCharacterPlayerState>())
         {
-            if (AAetherNetworkPlayerController* Controller = Cast<AAetherNetworkPlayerController>(GetController()))
+            if (AAetherNetworkPlayerController* Controller = Cast<AAetherNetworkPlayerController>(PreviousController))
             {
                 if (Controller->IsAccountAuthenticated())
                 {
@@ -60,6 +62,14 @@ void AAetherCharacter::UnPossessed()
     }
 
     Super::UnPossessed();
+}
+
+void AAetherCharacter::InitializeCharacterIdentity(const FAetherCharacterId& InCharacterId)
+{
+    if (HasAuthority())
+    {
+        CharacterId = InCharacterId;
+    }
 }
 
 FAetherCharacterId AAetherCharacter::GetCharacterId() const
