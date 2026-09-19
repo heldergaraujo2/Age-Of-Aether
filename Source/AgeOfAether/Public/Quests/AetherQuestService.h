@@ -17,6 +17,7 @@ public:
 
     bool GetQuestState(const FAetherCharacterId& CharacterId, const FAetherQuestId& QuestId, FAetherQuestState& OutState) const;
     bool GetQuestStates(const FAetherCharacterId& CharacterId, TArray<FAetherQuestState>& OutStates) const;
+    bool CanRestoreQuestStates(const FAetherCharacterId& CharacterId, const TArray<FAetherQuestState>& States) const;
     bool RestoreQuestStates(const FAetherCharacterId& CharacterId, const TArray<FAetherQuestState>& States);
 
     bool AcceptQuest(const FAetherCharacterRecord& Character, const FAetherQuestId& QuestId, FAetherQuestOperation& OutOperation);
