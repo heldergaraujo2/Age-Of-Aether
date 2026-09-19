@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 16 — MMORPG Scale & Dedicated Server (repository implementation complete; Unreal compilation/runtime validation pending local validation)  
+**Status:** Phase 17 — AI/GPT Integration (repository implementation complete; Unreal/provider runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -32,7 +32,8 @@ The repository uses the following execution sequence for implementation continui
 - Phase 14 — Persistence & Backend — COMPLETE at repository level; local Unreal persistence validation pending
 - Phase 15 — Security & Anti-Cheat — COMPLETE at repository level; local Unreal security validation pending
 - Phase 16 — MMORPG Scale & Dedicated Server — COMPLETE at repository level; local Unreal validation pending
-- Phase 17 — AI/GPT Integration — NEXT
+- Phase 17 — AI/GPT Integration — COMPLETE at repository level; Unreal/provider validation pending local
+- Phase 18 — Production & Live MMORPG — NEXT
 - Phase 13 — Multiplayer & Server Authority
 - Phase 14 — Persistence & Backend
 - Phase 15 — Security & Anti-Cheat
@@ -2288,3 +2289,46 @@ Deliverable:
 
 Next implementation target:
 **PHASE 17 — AI/GPT INTEGRATION**
+
+
+## Phase 17 — AI/GPT Integration
+
+Repository implementation is COMPLETE.
+
+Implemented:
+- provider-agnostic AI contracts;
+- AI request/result/tool contracts;
+- server-side AI service;
+- GameInstance AI subsystem;
+- data-driven AI configuration;
+- per-account rate limiting;
+- per-account replay protection;
+- bounded context/output;
+- character-scoped bounded runtime memory;
+- provider failure handling;
+- output leakage defense-in-depth;
+- tool proposal validation;
+- automation tests.
+
+Authority boundary:
+- AI may produce dialogue and bounded proposals;
+- AI never directly mutates gameplay state;
+- quest, economy, world, combat, social and persistence systems remain authoritative;
+- tool proposals must be validated by the corresponding gameplay subsystem.
+
+Provider boundary:
+- no API key;
+- no provider secret;
+- no client-side OpenAI dependency;
+- live provider adapter remains a server/backend concern.
+
+Validation truth:
+- repository/static validation PASSED;
+- Unreal 5.8.1 UHT/UBT/Editor/Automation/live provider/network validation remains NOT VERIFIED;
+- no CI pipeline exists to substitute for Unreal validation.
+
+Deliverable:
+- Docs/PHASE_17_AI_GPT_INTEGRATION.md
+
+Next implementation target:
+**PHASE 18 — Production & Live MMORPG**

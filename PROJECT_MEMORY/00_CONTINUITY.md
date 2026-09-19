@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 16 — MMORPG Scale & Dedicated Server (repository implementation complete; repository/static validation passed; Unreal compilation/runtime validation pending local validation)  
+**Current stage:** Phase 17 — AI/GPT Integration (repository implementation complete; repository/static validation passed; Unreal/provider runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -821,3 +821,39 @@ Design boundary:
 
 Next implementation target:
 **PHASE 17 — AI/GPT INTEGRATION**
+
+
+## Phase 17 — AI/GPT Integration
+
+Repository implementation is COMPLETE at source/repository level.
+
+Implemented:
+- FAetherAIConfig;
+- FAetherAIContext;
+- FAetherAIRequest/Response;
+- FAetherAIToolProposal;
+- IAetherAIProvider;
+- FAetherAIService;
+- UAetherAISubsystem;
+- UAetherAIConfigDataAsset;
+- AI automation tests.
+
+Security/authority:
+- AI remains advisory;
+- per-account rate limiting and replay protection;
+- bounded context and memory;
+- output safety checks;
+- tool proposals cannot directly execute gameplay;
+- no client API key or provider secret;
+- authoritative gameplay subsystems remain the only state mutation boundary.
+
+Validation:
+- repository/static validation PASSED;
+- per-account request ID isolation tested;
+- no escaped-newline artifacts;
+- no credentials added;
+- Unreal 5.8.1 UHT/UBT/Editor/Automation/live provider/network validation NOT VERIFIED because Unreal is unavailable;
+- no CI exists to substitute for local Unreal validation.
+
+Next implementation target:
+**PHASE 18 — Production & Live MMORPG**
