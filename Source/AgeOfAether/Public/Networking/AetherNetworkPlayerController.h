@@ -96,6 +96,15 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Character")
     FAetherCharacterListEvent OnCharacterList;
 
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Inventory")
+    FAetherInventoryEvent OnInventory;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Inventory")
+    FAetherInventoryOperationEvent OnInventoryOperation;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Progression")
+    FAetherProgressionEvent OnProgression;
+
 protected:
     UFUNCTION(Server, Reliable)
     void ServerSubmitRequest(const FAetherNetworkRequest& Request);
@@ -145,6 +154,30 @@ protected:
     UFUNCTION(Server, Reliable)
     void ServerDeselectCharacter(uint32 RequestId, const FAetherCharacterId& CharacterId);
 
+    UFUNCTION(Server, Reliable)
+    void ServerRequestInventory(uint32 RequestId);
+
+    UFUNCTION(Server, Reliable)
+    void ServerMoveInventoryItem(uint32 RequestId, const FAetherItemInstanceId& InstanceId, int32 TargetSlot);
+
+    UFUNCTION(Server, Reliable)
+    void ServerSplitInventoryStack(uint32 RequestId, const FAetherItemInstanceId& InstanceId, int32 Quantity, int32 TargetSlot);
+
+    UFUNCTION(Server, Reliable)
+    void ServerMergeInventoryStacks(uint32 RequestId, const FAetherItemInstanceId& SourceInstanceId, const FAetherItemInstanceId& TargetInstanceId);
+
+    UFUNCTION(Server, Reliable)
+    void ServerDiscardInventoryItem(uint32 RequestId, const FAetherItemInstanceId& InstanceId, int32 Quantity);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveInventory(uint32 RequestId, const TArray<FAetherInventorySlot>& Inventory, EAetherInventoryOperationResult Result);
+
+    UFUNCTION(Server, Reliable)
+    void ServerAllocateStatPoints(uint32 RequestId, EAetherCharacterStat Stat, int32 Amount);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveProgression(uint32 RequestId, const FAetherProgressionResult& Result);
+
     virtual void BeginPlay() override;
 
 private:
@@ -160,6 +193,10 @@ private:
     uint32 LastProcessedAccountRequestId = 0;
     uint32 NextCharacterRequestId = 1;
     uint32 LastProcessedCharacterRequestId = 0;
+    uint32 NextInventoryRequestId = 1;
+    uint32 LastProcessedInventoryRequestId = 0;
+    uint32 NextProgressionRequestId = 1;
+    uint32 LastProcessedProgressionRequestId = 0;
 
     FAetherAccountId AuthenticatedAccountId;
     FAetherSessionId SessionId;
