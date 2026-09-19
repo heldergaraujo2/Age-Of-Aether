@@ -196,6 +196,7 @@ Performed:
 - no plaintext password storage introduced;
 - no database placeholder presented as persistence;
 - request IDs are separated between generic networking and account/session operations.
+- repeated authentication/reconnect requests are rejected while the controller already owns an authenticated session, preventing accidental session replacement.
 
 ### Not executable in this environment
 
@@ -266,7 +267,11 @@ The supplied Item.txt and public documentation are references for data modeling/
 
 AGE OF AETHER must use original implementation, original content and original networking/persistence.
 
-## 10. Next implementation target
+## 10. Final Phase 4 hardening
+
+Repeated login/reconnect on an already authenticated controller is explicitly rejected. This prevents a second successful authentication from replacing controller-local identity while leaving the previous session active.
+
+## 11. Next implementation target
 
 **PHASE 5 — Character Foundation**
 
@@ -284,7 +289,7 @@ Implement:
 
 The character system must consume the authenticated account/session boundary created in Phase 4. Do not move character authority to the client.
 
-## 11. Mandatory workflow
+## 12. Mandatory workflow
 
 For every phase:
 
