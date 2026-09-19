@@ -5,8 +5,7 @@
 AAetherNetworkGameState::AAetherNetworkGameState()
 {
     bReplicates = true;
-    ProtocolVersion.Major = 1;
-    ProtocolVersion.Minor = 0;
+    ProtocolVersion = FAetherProtocolVersion::Current();
 }
 
 void AAetherNetworkGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
