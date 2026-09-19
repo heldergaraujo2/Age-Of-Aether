@@ -28,4 +28,5 @@ struct FAetherMultiplayerConnection
     UPROPERTY(BlueprintReadOnly) double ConnectedAt = 0.0;
     UPROPERTY(BlueprintReadOnly) double LastHeartbeatAt = 0.0;
     UPROPERTY(BlueprintReadOnly) int32 RequestBudget = 0;
+    UPROPERTY(BlueprintReadOnly) double LastRequestRefillAt = 0.0;
 };
