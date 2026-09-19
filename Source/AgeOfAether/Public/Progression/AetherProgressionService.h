@@ -8,6 +8,7 @@ public:
     FAetherProgressionService();
 
     const FAetherProgressionConfig& GetConfig() const;
+    bool SetConfig(const FAetherProgressionConfig& NewConfig);
     int64 ExperienceRequiredForNextLevel(int32 CurrentLevel) const;
 
     bool GrantExperience(FAetherCharacterRecord& Character, int64 ExperienceAmount, FAetherProgressionResult& OutResult) const;
