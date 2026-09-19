@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 24 — Loot, Drop, Reward & Respawn (repository implementation complete; Unreal runtime validation pending local validation)  
+**Status:** Phase 25 — Quest, Event, Dialogue & World Content Authoring (repository implementation complete; Unreal runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -40,7 +40,8 @@ The repository uses the following execution sequence for implementation continui
 - Phase 22 — Monster, NPC, Boss & AI Content — COMPLETE at repository level; local Unreal validation pending
 - Phase 23 — Skills, Effects, Buffs, Debuffs & Status — COMPLETE at repository level; local Unreal validation pending
 - Phase 24 — Loot, Drop, Reward & Respawn — COMPLETE at repository level; local Unreal validation pending
-- Phase 25 — Quest, Event, Dialogue & World Content Authoring — NEXT
+- Phase 25 — Quest, Event, Dialogue & World Content Authoring — COMPLETE at repository level; local Unreal validation pending
+- Phase 26 — Crafting, Mixing, Forge & Recipe Authoring — NEXT
 - Phase 13 — Multiplayer & Server Authority
 - Phase 14 — Persistence & Backend
 - Phase 15 — Security & Anti-Cheat
