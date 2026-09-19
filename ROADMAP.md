@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 2 — Core Runtime (repository implementation complete; Unreal compilation/tests pending local validation)  
+**Status:** Phase 3 — Networking Foundation (repository implementation complete; Unreal/network validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
