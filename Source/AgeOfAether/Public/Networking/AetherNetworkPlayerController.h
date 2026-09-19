@@ -10,6 +10,7 @@
 #include "Combat/AetherCombatTypes.h"
 #include "World/AetherWorldTypes.h"
 #include "Quests/AetherQuestTypes.h"
+#include "Social/AetherSocialTypes.h"
 
 #include "AetherNetworkPlayerController.generated.h"
 
@@ -25,6 +26,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCombatEvent, const FAetherCom
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherWorldTransitionEvent, const FAetherWorldTransitionResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherQuestEvent, const FAetherQuestOperation&, Operation);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherQuestListEvent, const TArray<FAetherQuestState>&, States);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherSocialEvent, const FAetherSocialOperation&, Operation);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherFriendsEvent, const TArray<FAetherSocialRelation>&, Friends);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherChatEvent, const FAetherChatMessage&, Message);
 
 UCLASS()
 class AGEOFAETHER_API AAetherNetworkPlayerController : public APlayerController
@@ -97,6 +101,25 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Quest")
     void CompleteQuest(const FAetherQuestId& QuestId);
 
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void RequestFriends();
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void SendFriendRequest(const FAetherAccountId& TargetAccountId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void AcceptFriendRequest(const FAetherAccountId& SenderAccountId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void RejectFriendRequest(const FAetherAccountId& SenderAccountId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void RemoveFriend(const FAetherAccountId& FriendAccountId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void BlockAccount(const FAetherAccountId& TargetAccountId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void UnblockAccount(const FAetherAccountId& TargetAccountId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void CreateParty();
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void InviteToParty(const FAetherAccountId& TargetAccountId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void AcceptPartyInvite(const FAetherSocialPartyId& PartyId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void LeaveParty();
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void KickFromParty(const FAetherCharacterId& TargetCharacterId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void CreateGuild(const FString& Name);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void InviteToGuild(const FAetherAccountId& TargetAccountId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void AcceptGuildInvite(const FAetherGuildId& GuildId);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void LeaveGuild();
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void SetGuildRole(const FAetherCharacterId& TargetCharacterId, EAetherGuildRole Role);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void SendChat(EAetherSocialChannel Channel, const FAetherAccountId& TargetAccountId, const FString& Message);
+
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Accounts")
     bool IsAccountAuthenticated() const;
 
@@ -141,6 +164,10 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Quest")
     FAetherQuestListEvent OnQuestList;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Social") FAetherSocialEvent OnSocialOperation;
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Social") FAetherFriendsEvent OnFriends;
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Social") FAetherChatEvent OnChatMessage;
 
 protected:
     UFUNCTION(Server, Reliable)
@@ -270,6 +297,8 @@ private:
     uint32 LastProcessedWorldRequestId = 0;
     uint32 NextQuestRequestId = 1;
     uint32 LastProcessedQuestRequestId = 0;
+    uint32 NextSocialRequestId = 1;
+    uint32 LastProcessedSocialRequestId = 0;
 
     FAetherAccountId AuthenticatedAccountId;
     FAetherSessionId SessionId;
