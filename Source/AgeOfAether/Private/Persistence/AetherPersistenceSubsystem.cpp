@@ -124,6 +124,11 @@ bool UAetherPersistenceSubsystem::PersistToDisk()
     const uint64 NextStorageRevision = ActiveRevision + 1;
     if (!WriteSlot(!bUsingAlternateSlot, Snapshots, NextStorageRevision))
     {
+        if (bHadPrevious)
+        {
+            PersistenceService.RestoreSnapshot(PreviousSnapshot);
+        }
+        OutResult = EAetherPersistenceResult::StorageFailure;
         return false;
     }
 
@@ -144,6 +149,13 @@ bool UAetherPersistenceSubsystem::SaveCharacterSnapshot(
         return false;
     }
 
+    FAetherCharacterPersistenceSnapshot PreviousSnapshot;
+    EAetherPersistenceResult PreviousResult = EAetherPersistenceResult::NotFound;
+    const bool bHadPrevious = PersistenceService.LoadSnapshot(
+        Snapshot.Character.CharacterId,
+        PreviousSnapshot,
+        PreviousResult);
+
     if (!PersistenceService.SaveSnapshot(Snapshot, ExpectedRevision, OutOperation))
     {
         return false;
@@ -154,8 +166,16 @@ bool UAetherPersistenceSubsystem::SaveCharacterSnapshot(
     PersistenceService.GetSnapshots(Snapshots);
     if (!WriteSlot(!bUsingAlternateSlot, Snapshots, NextStorageRevision))
     {
-        EAetherPersistenceResult IgnoredResult;
-        PersistenceService.DeleteSnapshot(Snapshot.Character.CharacterId, IgnoredResult);
+        if (bHadPrevious)
+        {
+            PersistenceService.RestoreSnapshot(PreviousSnapshot);
+        }
+        else
+        {
+            EAetherPersistenceResult IgnoredResult;
+            PersistenceService.DeleteSnapshot(Snapshot.Character.CharacterId, IgnoredResult);
+        }
+
         OutOperation.Result = EAetherPersistenceResult::StorageFailure;
         return false;
     }
@@ -188,6 +208,10 @@ bool UAetherPersistenceSubsystem::DeleteCharacterSnapshot(
         OutResult = EAetherPersistenceResult::StorageFailure;
         return false;
     }
+
+    FAetherCharacterPersistenceSnapshot PreviousSnapshot;
+    EAetherPersistenceResult PreviousResult = EAetherPersistenceResult::NotFound;
+    const bool bHadPrevious = PersistenceService.LoadSnapshot(CharacterId, PreviousSnapshot, PreviousResult);
 
     if (!PersistenceService.DeleteSnapshot(CharacterId, OutResult))
     {
