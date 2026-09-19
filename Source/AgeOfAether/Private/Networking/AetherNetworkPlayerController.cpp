@@ -1,6 +1,9 @@
 #include "Networking/AetherNetworkPlayerController.h"
 
 #include "Accounts/AetherAccountSessionSubsystem.h"
+#include "Characters/AetherCharacterPlayerState.h"
+#include "Characters/AetherCharacterSubsystem.h"
+#include "Networking/AetherNetworkGameMode.h"
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
 #include "Networking/AetherNetworkGameState.h"
@@ -382,6 +385,248 @@ void AAetherNetworkPlayerController::ClientReceiveSessionHeartbeat_Implementatio
     const FAetherAuthenticationResponse& Response)
 {
     OnSessionHeartbeat.Broadcast(Response.Result == EAetherAuthenticationResult::Accepted);
+}
+
+void AAetherNetworkPlayerController::RequestCharacterList()
+{
+    const uint32 RequestId = NextCharacterRequestId++;
+
+    if (HasAuthority())
+    {
+        ServerRequestCharacterList_Implementation(RequestId);
+        return;
+    }
+
+    ServerRequestCharacterList(RequestId);
+}
+
+void AAetherNetworkPlayerController::CreateCharacter(
+    const FString& Name,
+    EAetherCharacterClass CharacterClass)
+{
+    const uint32 RequestId = NextCharacterRequestId++;
+
+    if (HasAuthority())
+    {
+        ServerCreateCharacter_Implementation(RequestId, Name, CharacterClass);
+        return;
+    }
+
+    ServerCreateCharacter(RequestId, Name, CharacterClass);
+}
+
+void AAetherNetworkPlayerController::SelectCharacter(const FAetherCharacterId& CharacterId)
+{
+    const uint32 RequestId = NextCharacterRequestId++;
+
+    if (HasAuthority())
+    {
+        ServerSelectCharacter_Implementation(RequestId, CharacterId);
+        return;
+    }
+
+    ServerSelectCharacter(RequestId, CharacterId);
+}
+
+void AAetherNetworkPlayerController::DeselectCharacter()
+{
+    const uint32 RequestId = NextCharacterRequestId++;
+
+    FAetherCharacterId CharacterId;
+    if (const AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>())
+    {
+        CharacterId = State->GetCharacterId();
+    }
+
+    if (HasAuthority())
+    {
+        ServerDeselectCharacter_Implementation(RequestId, CharacterId);
+        return;
+    }
+
+    ServerDeselectCharacter(RequestId, CharacterId);
+}
+
+void AAetherNetworkPlayerController::ServerRequestCharacterList_Implementation(uint32 RequestId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedCharacterRequestId)
+    {
+        return;
+    }
+
+    if (!bAccountAuthenticated)
+    {
+        ClientReceiveCharacterList(RequestId, TArray<FAetherCharacterRecord>());
+        return;
+    }
+
+    UAetherCharacterSubsystem* Characters = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+        : nullptr;
+
+    TArray<FAetherCharacterRecord> CharacterList;
+    if (Characters)
+    {
+        Characters->GetCharactersForAccount(AuthenticatedAccountId, CharacterList);
+    }
+
+    LastProcessedCharacterRequestId = RequestId;
+    ClientReceiveCharacterList(RequestId, CharacterList);
+}
+
+void AAetherNetworkPlayerController::ClientReceiveCharacterList_Implementation(
+    uint32 RequestId,
+    const TArray<FAetherCharacterRecord>& Characters)
+{
+    OnCharacterList.Broadcast(Characters);
+}
+
+void AAetherNetworkPlayerController::ServerCreateCharacter_Implementation(
+    uint32 RequestId,
+    const FString& Name,
+    EAetherCharacterClass CharacterClass)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedCharacterRequestId)
+    {
+        return;
+    }
+
+    FAetherCharacterRecord Character;
+    EAetherCharacterOperationResult Result = EAetherCharacterOperationResult::NotAuthenticated;
+
+    UAetherCharacterSubsystem* Characters = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+        : nullptr;
+
+    if (bAccountAuthenticated && Characters)
+    {
+        if (Characters->CreateCharacter(AuthenticatedAccountId, Name, CharacterClass, Character))
+        {
+            Result = EAetherCharacterOperationResult::Accepted;
+        }
+        else
+        {
+            FAetherCharacterRecord Existing;
+            if (Characters->FindCharacterByName(Name, Existing))
+            {
+                Result = Existing.AccountId == AuthenticatedAccountId
+                    ? EAetherCharacterOperationResult::NameUnavailable
+                    : EAetherCharacterOperationResult::NameUnavailable;
+            }
+            else if (Name.TrimStartAndEnd().Len() < 3 || Name.TrimStartAndEnd().Len() > 16)
+            {
+                Result = EAetherCharacterOperationResult::InvalidName;
+            }
+            else if (Characters->NumCharactersForAccount(AuthenticatedAccountId) >= FAetherCharacterService::MaxCharactersPerAccount)
+            {
+                Result = EAetherCharacterOperationResult::CharacterLimitReached;
+            }
+            else
+            {
+                Result = EAetherCharacterOperationResult::InvalidRequest;
+            }
+        }
+    }
+
+    LastProcessedCharacterRequestId = RequestId;
+    ClientReceiveCharacterOperation(RequestId, Result, Character);
+}
+
+void AAetherNetworkPlayerController::ServerSelectCharacter_Implementation(
+    uint32 RequestId,
+    const FAetherCharacterId& CharacterId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedCharacterRequestId)
+    {
+        return;
+    }
+
+    FAetherCharacterRecord Character;
+    EAetherCharacterOperationResult Result = EAetherCharacterOperationResult::NotAuthenticated;
+
+    UAetherCharacterSubsystem* Characters = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+        : nullptr;
+
+    if (bAccountAuthenticated && Characters)
+    {
+        if (Characters->IsCharacterOwnedByAccount(CharacterId, AuthenticatedAccountId))
+        {
+            if (Characters->SelectCharacter(AuthenticatedAccountId, CharacterId, Character))
+            {
+                Result = EAetherCharacterOperationResult::Accepted;
+
+                if (AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>())
+                {
+                    State->SetCharacterIdentity(Character);
+                }
+
+                if (AAetherNetworkGameMode* GameMode = GetWorld()->GetAuthGameMode<AAetherNetworkGameMode>())
+                {
+                    GameMode->SpawnSelectedCharacter(this, Character);
+                }
+            }
+            else
+            {
+                Result = EAetherCharacterOperationResult::AnotherCharacterSelected;
+            }
+        }
+        else
+        {
+            Result = EAetherCharacterOperationResult::NotOwned;
+        }
+    }
+
+    LastProcessedCharacterRequestId = RequestId;
+    ClientReceiveCharacterOperation(RequestId, Result, Character);
+}
+
+void AAetherNetworkPlayerController::ServerDeselectCharacter_Implementation(
+    uint32 RequestId,
+    const FAetherCharacterId& CharacterId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedCharacterRequestId)
+    {
+        return;
+    }
+
+    FAetherCharacterRecord Character;
+    EAetherCharacterOperationResult Result = EAetherCharacterOperationResult::NotAuthenticated;
+
+    UAetherCharacterSubsystem* Characters = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+        : nullptr;
+
+    if (bAccountAuthenticated && Characters)
+    {
+        if (Characters->DeselectCharacter(AuthenticatedAccountId, CharacterId))
+        {
+            Result = EAetherCharacterOperationResult::Accepted;
+        }
+        else
+        {
+            Result = Characters->FindCharacter(CharacterId, Character)
+                ? EAetherCharacterOperationResult::NotOwned
+                : EAetherCharacterOperationResult::CharacterNotFound;
+
+            if (Result == EAetherCharacterOperationResult::NotOwned &&
+                Character.AccountId == AuthenticatedAccountId)
+            {
+                Result = EAetherCharacterOperationResult::InvalidRequest;
+            }
+        }
+    }
+
+    LastProcessedCharacterRequestId = RequestId;
+    ClientReceiveCharacterOperation(RequestId, Result, Character);
+}
+
+void AAetherNetworkPlayerController::ClientReceiveCharacterOperation_Implementation(
+    uint32 RequestId,
+    EAetherCharacterOperationResult Result,
+    const FAetherCharacterRecord& Character)
+{
+    OnCharacterOperation.Broadcast(Result, Character);
 }
 
 bool AAetherNetworkPlayerController::ValidateRequest(const FAetherNetworkRequest& Request) const
