@@ -11,6 +11,9 @@ public:
         uint64 ExpectedRevision,
         FAetherPersistenceOperation& OutOperation);
 
+    bool ImportSnapshot(
+        const FAetherCharacterPersistenceSnapshot& Snapshot);
+
     bool LoadSnapshot(
         const FAetherCharacterId& CharacterId,
         FAetherCharacterPersistenceSnapshot& OutSnapshot,
@@ -20,6 +23,7 @@ public:
         const FAetherCharacterId& CharacterId,
         EAetherPersistenceResult& OutResult);
 
+    void GetSnapshots(TArray<FAetherCharacterPersistenceSnapshot>& OutSnapshots) const;
     bool HasSnapshot(const FAetherCharacterId& CharacterId) const;
     int32 NumSnapshots() const;
 
