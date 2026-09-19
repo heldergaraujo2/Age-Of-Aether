@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 5 — Character Foundation (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Current stage:** Phase 6 — Item and Inventory System (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -248,6 +248,43 @@ Security/persistence boundary:
 - Persistence/database work belongs to later backend/persistence phases.
 - Combat, inventory, equipment, progression and skills are not implemented in this phase.
 
+## Phase 6 — Item and Inventory System
+
+Repository implementation is complete.
+
+Implemented:
+
+- FAetherItemDefinition and stable definition identity;
+- FAetherItemInstance with separate instance identity;
+- CharacterID-owned 64-slot inventory;
+- stacking and multi-stack grants;
+- remove, move, split and merge;
+- transactional AddItem with no partial mutation on failed capacity;
+- UDataAsset item definition contract;
+- UAetherItemSubsystem service boundary;
+- server-authoritative inventory RPCs;
+- authoritative inventory snapshots;
+- automation coverage for definitions, stacking, mutations, ownership isolation and transactional capacity failure.
+
+Network integration:
+
+- AAetherNetworkPlayerController exposes inventory read and mutation requests;
+- server derives the active CharacterID from authenticated controller/PlayerState;
+- client cannot submit authoritative CharacterID or ItemInstance ownership;
+- mutations execute only through the server-side inventory subsystem.
+
+Validation truth:
+
+- repository/static inspection passed;
+- Unreal UHT/UBT/Editor/PIE/network runtime/Automation Framework remain NOT VERIFIED because Unreal 5.8.1 is not executable in this environment;
+- no CI check exists that can substitute for Unreal validation.
+
+Persistence boundary:
+
+- item state is runtime-only in Phase 6;
+- durable item repositories/database remain future work;
+- equipment, options, enhancement, drops, shops, trade and crafting are deferred.
+
 ## 6. Validation truth
 
 ### Repository/static validation
@@ -335,9 +372,9 @@ Repeated login/reconnect on an already authenticated controller is explicitly re
 
 ## 11. Next implementation target
 
-**PHASE 6 — Item and Inventory System**
+**PHASE 7 — Progression System**
 
-The next system will attach inventory ownership to CharacterID, define data-driven item identity, create authoritative inventory operations and prepare equipment state without moving authority to the client.
+The next system will build authoritative experience, levels and stat allocation on the existing Character foundation and integrate progression requirements with the item foundation without moving authority to the client.
 
 ## 12. Mandatory workflow
 
