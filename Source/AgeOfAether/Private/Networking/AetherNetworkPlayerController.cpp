@@ -1033,6 +1033,13 @@ void AAetherNetworkPlayerController::ServerRequestWorldTransition_Implementation
 
     if (bAccepted)
     {
+        if (AAetherNetworkGameState* NetworkState = GetWorld()
+            ? GetWorld()->GetGameState<AAetherNetworkGameState>()
+            : nullptr)
+        {
+            NetworkState->AdvanceAuthoritativeState();
+        }
+
         UAetherCharacterSubsystem* Characters = GetGameInstance()
             ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
             : nullptr;
