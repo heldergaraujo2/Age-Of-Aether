@@ -64,7 +64,7 @@ struct FAetherItemDefinitionId
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     FString Value;
 
     bool IsValid() const { return !Value.IsEmpty(); }
