@@ -34,6 +34,18 @@ public:
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Character")
     int32 GetCharacterLevel() const;
 
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|Progression")
+    int64 GetCharacterExperience() const;
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|Progression")
+    int32 GetUnspentStatPoints() const;
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|Progression")
+    FAetherBaseStats GetBaseStats() const;
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|Progression")
+    FAetherDerivedStats GetDerivedStats() const;
+
 protected:
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Character")
     FAetherAccountId AccountId;
@@ -49,4 +61,16 @@ protected:
 
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Character")
     int32 CharacterLevel = 1;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Progression")
+    int64 CharacterExperience = 0;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Progression")
+    int32 UnspentStatPoints = 0;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Progression")
+    FAetherBaseStats BaseStats;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Progression")
+    FAetherDerivedStats DerivedStats;
 };
