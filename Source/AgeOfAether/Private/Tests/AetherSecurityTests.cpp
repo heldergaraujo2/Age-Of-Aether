@@ -104,3 +104,25 @@ bool FAetherSecurityAuditTest::RunTest(const FString&)
     TestEqual(TEXT("suspicion severity applied"), Service.GetSuspicionScore(1), 3);
     return true;
 }
+
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSecurityReplayTest, "AgeOfAether.Security.Replay",
+    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+bool FAetherSecurityReplayTest::RunTest(const FString&)
+{
+    FAetherSecurityService Service;
+    Service.Initialize(FAetherSecurityConfig{});
+
+    TestEqual(TEXT("first request accepted"),
+        Service.AuthorizeRequest(1, 1, EAetherSecurityAction::Combat, true, 0.0),
+        EAetherSecurityResult::Accepted);
+
+    TestEqual(TEXT("same category replay rejected"),
+        Service.AuthorizeRequest(1, 1, EAetherSecurityAction::Combat, true, 0.1),
+        EAetherSecurityResult::ReplayRejected);
+
+    TestEqual(TEXT("same numeric id is valid in another category"),
+        Service.AuthorizeRequest(1, 1, EAetherSecurityAction::Inventory, true, 0.2),
+        EAetherSecurityResult::Accepted);
+    return true;
+}
