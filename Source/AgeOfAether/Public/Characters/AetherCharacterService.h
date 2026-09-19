@@ -40,6 +40,11 @@ public:
         const FAetherCharacterId& CharacterId,
         EAetherCharacterStatus Status);
 
+    bool ApplyProgressionState(
+        const FAetherAccountId& AccountId,
+        const FAetherCharacterId& CharacterId,
+        const FAetherCharacterRecord& UpdatedCharacter);
+
     bool GetSelectedCharacter(
         const FAetherAccountId& AccountId,
         FAetherCharacterRecord& OutCharacter) const;
