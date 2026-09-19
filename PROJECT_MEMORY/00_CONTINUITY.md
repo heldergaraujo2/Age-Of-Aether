@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 7 — Progression System (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Current stage:** Phase 8 — Combat Runtime (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -334,6 +334,53 @@ Next implementation target:
 **PHASE 8 — Combat Runtime**
 
 Combat will consume authoritative Character and Progression state while keeping damage, cooldowns, targets and rewards server-authoritative.
+
+## Phase 8 — Combat Runtime
+
+Repository implementation is complete.
+
+Implemented:
+- server-authoritative basic attack request;
+- attacker identity derived from authenticated Character PlayerState;
+- target validation and self-target rejection;
+- authoritative range validation;
+- server-side per-character cooldown;
+- deterministic accuracy and damage rolls;
+- defense mitigation;
+- derived resistance mitigation;
+- critical hit calculation;
+- shield absorption before health;
+- authoritative health clamping;
+- Dead combat state;
+- replicated health/shield/combat state;
+- combat configuration Data Asset contract;
+- combat result/audit payload;
+- CharacterService combat-state commit boundary;
+- combat RPCs and client combat result delegate;
+- automation tests for hit, defense, resistance, shield, critical, miss, cooldown, range, target validation, death and invalid configuration.
+
+Security boundary:
+- client cannot submit damage, attacker identity, attacker stats, target health, cooldown time or critical outcome;
+- attacker is derived from authenticated session + active PlayerState;
+- attacker/target positions and combat stats are read from authoritative CharacterService state;
+- cooldown is server-time based;
+- target state is committed only through CharacterService.
+
+Validation truth:
+- repository/static validation is complete and will be reported separately;
+- Unreal UHT/UBT/Editor/PIE/replication/network emulation/Automation Framework are NOT VERIFIED because Unreal 5.8.1 is not executable in this environment;
+- no CI pipeline exists that can substitute for Unreal validation.
+
+Persistence/effects boundary:
+- health/combat state remains runtime-only;
+- skills, buffs/debuffs, AI combat, projectile collision, kill rewards, loot and respawn rules remain later systems;
+- combat persistence/history belongs to later persistence/backend phases.
+
+Deliverable:
+- Docs/PHASE_8_COMBAT_RUNTIME.md
+
+Next implementation target:
+**PHASE 9 — World Runtime**
 
 ## 6. Validation truth
 
