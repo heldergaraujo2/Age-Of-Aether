@@ -67,13 +67,8 @@ EAetherSecurityResult FAetherSecurityService::AuthorizeRequest(
         return EAetherSecurityResult::Quarantined;
     }
 
-    if (RequestId <= State.LastRequestId)
-    {
-        ++State.InvalidRequestCount;
-        ++State.SuspicionScore;
-        AddAudit(ConnectionId, Action, EAetherSecurityResult::ReplayRejected, RequestId, NowSeconds, State.SuspicionScore);
-        return EAetherSecurityResult::ReplayRejected;
-    }
+    // Replay ordering is enforced by the owning RPC category in the PlayerController.
+    // This service intentionally keeps rate/quarantine state independent of category-local request IDs.
 
     if (State.RequestBudget <= 0)
     {
@@ -83,8 +78,6 @@ EAetherSecurityResult FAetherSecurityService::AuthorizeRequest(
     }
 
     --State.RequestBudget;
-    State.LastRequestId = RequestId;
-
     if (!bAuthenticated && Action != EAetherSecurityAction::Authentication
         && Action != EAetherSecurityAction::Session)
     {
