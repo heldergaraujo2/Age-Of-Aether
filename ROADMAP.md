@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 4 — Accounts and Sessions (repository implementation complete; Unreal/network validation pending local validation)  
+**Status:** Phase 5 — Character Foundation (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -914,19 +914,55 @@ Never store plaintext passwords.
 
 ## PHASE 5 — Character foundation
 
-Deliver:
+**Repository implementation status:** COMPLETE  
+**Local Unreal/network validation:** PENDING
 
-- CharacterID;
-- account relation;
-- name;
-- class;
-- location;
-- status;
+Implemented repository-side:
+- CharacterID identity contract;
+- account-to-character ownership;
+- normalized unique character names;
+- configurable character-per-account limit (5);
+- character classes: Warrior, Mage, Archer, Cleric;
+- character lifecycle states;
 - base stats;
 - derived stats;
-- character lifecycle.
+- authoritative world location/rotation;
+- character creation;
+- character listing;
+- character selection;
+- character deselection;
+- active-character ownership protection;
+- server-authoritative character PlayerState;
+- replicated character identity;
+- replicated character pawn;
+- authoritative character spawn after selection;
+- character location persistence in the runtime service;
+- logout cleanup of the active character;
+- automation coverage for creation, names, ownership, limits, selection, location authority and listing.
 
----
+Unreal integration:
+- AAetherCharacter derives from ACharacter;
+- AAetherCharacterPlayerState carries replicated character identity visible to clients;
+- AAetherNetworkGameMode uses the character pawn and character PlayerState;
+- players start as spectators and receive a character pawn only after server-side authentication and character selection;
+- character operations are exposed through server RPCs on AAetherNetworkPlayerController.
+
+Security boundary:
+- the client requests creation/selection;
+- the server validates authenticated account ownership and character state;
+- the client cannot select another account's character;
+- the client cannot choose authoritative character ownership or lifecycle state;
+- location is written to the character service only through server-side operations.
+
+Persistence boundary:
+- character data is runtime-only by design;
+- database persistence, migrations, durable character storage and crash recovery remain later backend/persistence work.
+
+Acceptance:
+- repository implementation and automation coverage complete;
+- Unreal UHT/UBT, Editor, PIE multiplayer, possession, replication, movement and logout cleanup require local Unreal 5.8.1 validation.
+
+Deliverable: Docs/PHASE_5_CHARACTER_FOUNDATION.md
 
 ## PHASE 6 — Progression
 
