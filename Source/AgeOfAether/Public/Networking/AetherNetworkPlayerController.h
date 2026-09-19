@@ -11,6 +11,7 @@
 #include "World/AetherWorldTypes.h"
 #include "Quests/AetherQuestTypes.h"
 #include "Social/AetherSocialTypes.h"
+#include "Economy/AetherEconomyTypes.h"
 
 #include "AetherNetworkPlayerController.generated.h"
 
@@ -29,6 +30,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherQuestListEvent, const TArray<
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherSocialEvent, const FAetherSocialOperation&, Operation);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherFriendsEvent, const TArray<FAetherSocialRelation>&, Friends);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherChatEvent, const FAetherChatMessage&, Message);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherEconomyEvent, const FAetherEconomyTransaction&, Transaction);
 
 UCLASS()
 class AGEOFAETHER_API AAetherNetworkPlayerController : public APlayerController
@@ -168,6 +170,7 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Social") FAetherSocialEvent OnSocialOperation;
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Social") FAetherFriendsEvent OnFriends;
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Social") FAetherChatEvent OnChatMessage;
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Economy") FAetherEconomyEvent OnEconomyTransaction;
 
 protected:
     UFUNCTION(Server, Reliable)
@@ -290,6 +293,16 @@ protected:
     void ServerSetGuildRole(uint32 RequestId, const FAetherCharacterId& Target, EAetherGuildRole Role);
     UFUNCTION(Server, Reliable)
     void ServerSendChat(uint32 RequestId, EAetherSocialChannel Channel, const FAetherAccountId& Target, const FString& Message);
+    UFUNCTION(Server, Reliable)
+    void ServerRequestWallet(uint32 RequestId);
+    UFUNCTION(Server, Reliable)
+    void ServerBuyItem(uint32 RequestId, const FString& ShopId, const FAetherItemDefinitionId& ItemDefinitionId, int32 Quantity);
+    UFUNCTION(Server, Reliable)
+    void ServerSellItem(uint32 RequestId, const FString& ShopId, const FAetherItemInstanceId& InstanceId, int32 Quantity);
+    UFUNCTION(Server, Reliable)
+    void ServerCraftItem(uint32 RequestId, const FString& RecipeId, int32 Quantity);
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveEconomy(uint32 RequestId, const FAetherEconomyTransaction& Transaction);
 
     UFUNCTION(Client, Reliable)
     void ClientReceiveSocialOperation(uint32 RequestId, const FAetherSocialOperation& Operation);
@@ -343,6 +356,8 @@ private:
     uint32 LastProcessedQuestRequestId = 0;
     uint32 NextSocialRequestId = 1;
     uint32 LastProcessedSocialRequestId = 0;
+    uint32 NextEconomyRequestId = 1;
+    uint32 LastProcessedEconomyRequestId = 0;
 
     FAetherAccountId AuthenticatedAccountId;
     FAetherSessionId SessionId;
