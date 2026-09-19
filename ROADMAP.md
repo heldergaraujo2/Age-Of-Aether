@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 5 — Character Foundation (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Status:** Phase 6 — Item and Inventory System (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -977,6 +977,49 @@ Deliver:
 - centralized progression rules.
 
 ---
+
+## PHASE 6 — Item and Inventory System
+
+**Repository implementation status:** COMPLETE  
+**Local Unreal validation:** PENDING
+
+Implemented repository-side:
+
+- FAetherItemDefinition and stable definition identity;
+- FAetherItemInstance and separate instance identity;
+- CharacterID-owned inventory state;
+- fixed 64-slot inventory foundation;
+- stack accumulation and multi-stack grants;
+- remove;
+- move;
+- split;
+- merge;
+- transactional item grants with no partial mutation on capacity failure;
+- Primary Data Asset contract for item definitions;
+- inventory GameInstance subsystem boundary;
+- server-authoritative inventory RPCs;
+- authoritative inventory snapshots to the owning client;
+- automation tests for definitions, stacking, mutations, ownership isolation and transactional capacity failure.
+
+Security boundary:
+
+- client requests inventory operations;
+- server resolves the authenticated active CharacterID;
+- server validates item ownership through CharacterID-scoped inventory state;
+- client cannot submit authoritative ownership or item state;
+- item persistence remains deferred to later persistence/backend phases.
+
+Explicitly deferred:
+
+- equipment;
+- item modifiers/options;
+- sockets/enhancement;
+- drops/loot;
+- shops/trade/crafting;
+- persistent item repository/database;
+- production grid occupancy based on Width/Height.
+
+Deliverable: Docs/PHASE_6_ITEM_INVENTORY.md
 
 ## PHASE 7 — Item Definition Registry
 
