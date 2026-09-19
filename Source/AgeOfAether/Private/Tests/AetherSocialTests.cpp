@@ -75,7 +75,7 @@ bool FAetherSocialSecurityTest::RunTest(const FString&)
     FAetherSocialService S; auto A=MakeCharacter(TEXT("A")); auto B=MakeCharacter(TEXT("B")); auto C=MakeCharacter(TEXT("C")); FAetherSocialOperation O;
     TestFalse(TEXT("self friend"),S.SendFriendRequest(A.AccountId,A.AccountId,O)); TestEqual(TEXT("self result"),O.Result,EAetherSocialResult::CannotTargetSelf);
     TestFalse(TEXT("nonleader kick"),S.KickFromParty(B,A.CharacterId,O)); TestEqual(TEXT("not member"),O.Result,EAetherSocialResult::NotPartyMember);
-    TestFalse(TEXT("invalid chat"),S.ValidateChat(A,EAetherSocialChannel::Local,FAetherAccountId(),TEXT(""),1.0,O.ChatMessage,O.Result));
+    TestFalse(TEXT("invalid chat"),S.ValidateChat(A,EAetherSocialChannel::Local,FAetherAccountId(),TEXT(""),1.0,*(new FAetherChatMessage()),O.Result));
     return true;
 }
 
