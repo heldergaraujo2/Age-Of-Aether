@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 3 — Networking Foundation (repository implementation complete; Unreal/network validation pending local validation)  
+**Status:** Phase 4 — Accounts and Sessions (repository implementation complete; Unreal/network validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -1816,4 +1816,4 @@ At roadmap creation:
 - The continuity protocol has been established.
 - No MMORPG gameplay system is considered implemented yet.
 
-**Next concrete technical milestone: AGE OF AETHER FOUNDATION — Unreal project + C++ runtime + repository structure.**
+**Current implementation milestone: PHASE 4 — Accounts and Sessions.**
