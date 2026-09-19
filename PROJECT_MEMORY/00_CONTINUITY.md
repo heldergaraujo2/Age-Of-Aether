@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 13 — Multiplayer & Server Authority (repository implementation complete; repository/static validation passed; Unreal compilation/runtime validation pending local validation)  
+**Current stage:** Phase 14 — Persistence & Backend (repository implementation complete; repository/static validation passed; Unreal compilation/runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -654,3 +654,65 @@ Repository implementation is complete. Added connection admission, lifecycle tra
 Deliverable: Docs/PHASE_13_MULTIPLAYER_SERVER_AUTHORITY.md
 
 Next implementation target: **PHASE 14 — PERSISTENCE & BACKEND**
+
+
+## Phase 14 — Persistence & Backend
+
+Repository implementation is COMPLETE at the source/repository level.
+
+Implemented:
+- FAetherPersistenceResult and versioned persistence contract;
+- FAetherCharacterPersistenceSnapshot;
+- revision-based optimistic concurrency;
+- checksum integrity;
+- snapshot validation;
+- schema migration boundary;
+- rollback-safe restore;
+- UAetherPersistenceSaveGame;
+- UAetherPersistenceSubsystem;
+- alternating durable SaveGame slots;
+- recovery using the highest valid storage revision;
+- character identity restoration preserving CharacterID;
+- inventory restore boundary and preflight;
+- economy wallet restore boundary and preflight;
+- quest state restore boundary and preflight;
+- runtime save/load orchestration across Character, Item, Economy and Quest services;
+- persistence automation tests.
+
+Important files:
+- Source/AgeOfAether/Public/Persistence/AetherPersistenceTypes.h
+- Source/AgeOfAether/Public/Persistence/AetherPersistenceService.h
+- Source/AgeOfAether/Private/Persistence/AetherPersistenceService.cpp
+- Source/AgeOfAether/Public/Persistence/AetherPersistenceSaveGame.h
+- Source/AgeOfAether/Public/Persistence/AetherPersistenceSubsystem.h
+- Source/AgeOfAether/Private/Persistence/AetherPersistenceSubsystem.cpp
+- Source/AgeOfAether/Private/Tests/AetherPersistenceTests.cpp
+- Docs/PHASE_14_PERSISTENCE_BACKEND.md
+
+Persistence slots:
+- AetherServerPersistence_A
+- AetherServerPersistence_B
+
+Consistency model:
+- save requires ExpectedRevision == CurrentRevision;
+- accepted save increments the character revision;
+- stale save is rejected with Conflict;
+- checksum covers persistent identity, class/status, progression, derived stats, combat state, health/shield, world transform/zone, inventory, wallet and quest state;
+- restore validates all dependent runtime definitions before mutation.
+
+Validation truth:
+- source/static validation PASSED;
+- changed-source delimiter audit PASSED after final correction;
+- literal escaped-newline audit PASSED;
+- rollback-variable audit PASSED;
+- Unreal 5.8.1 UHT/UBT/Editor/Automation/disk round-trip/dedicated-server persistence remain NOT VERIFIED because Unreal is unavailable in this environment;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Design boundary:
+- local SaveGame is a real durable development/server adapter;
+- production external database/API is not fabricated;
+- FAetherPersistenceService remains the backend boundary for a future PostgreSQL/MySQL/service implementation;
+- synchronous SaveGame writes are used for the current authoritative transactional foundation; Epic recommends asynchronous save/load for larger active-session saves to avoid hitches, so async production adaptation remains a deliberate future optimization. citeturn1view0
+
+Next implementation target:
+**PHASE 15 — SECURITY & ANTI-CHEAT**
