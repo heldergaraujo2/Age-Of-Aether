@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 9 — World Runtime (repository implementation complete; repository/static validation passed; Unreal compilation/network runtime validation pending local validation)  
+**Current stage:** Phase 10 — Quest/Mission (repository implementation complete; repository/static validation passed; Unreal compilation/network runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -424,6 +424,52 @@ Validation truth:
 Next implementation target:
 **PHASE 10 — Quest/Mission**
 
+
+## Phase 10 — Quest/Mission
+
+Repository implementation is complete.
+
+Implemented:
+- data-driven quest contracts and `UAetherQuestDefinitionDataAsset`;
+- quest lifecycle and objective contracts;
+- minimum-level and prerequisite validation;
+- character-owned runtime quest state;
+- active quest capacity;
+- authoritative accept/abandon/complete operations;
+- objective progression by ID and by authoritative type/target;
+- required/optional objective semantics;
+- reward contract and duplicate-reward guard;
+- `UAetherQuestSubsystem` service boundary;
+- quest list/accept/abandon/complete server RPCs;
+- AccountID/CharacterID ownership enforcement;
+- dedicated quest request replay/ordering guard;
+- Blueprint-assignable quest operation/list delegates;
+- automation tests for definition validation, registration, lifecycle, progression, prerequisites, security, capacity and optional objectives.
+
+Security boundary:
+- client does not provide authoritative AccountID or CharacterID;
+- client cannot directly grant objective progress;
+- server resolves active character from authenticated PlayerState;
+- completion requires all required objectives to be complete;
+- completed state prevents a second reward grant.
+
+Integration boundary:
+- Combat, Inventory, World and Progression can call server-side objective advancement APIs when their authoritative events are implemented;
+- no cross-system client event is trusted;
+- reward data is returned as an authoritative contract; durable reward/persistence transactions remain later work.
+
+Validation truth:
+- repository/static validation passed;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/network emulation/Automation Framework remain NOT VERIFIED because Unreal is unavailable in this environment;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Documentation:
+- `Docs/PHASE_10_QUEST_MISSION.md`
+- `ROADMAP.md`
+
+Next implementation target:
+**PHASE 11 — Social**
+
 ## 6. Validation truth
 
 ### Repository/static validation
@@ -511,9 +557,9 @@ Repeated login/reconnect on an already authenticated controller is explicitly re
 
 ## 11. Next implementation target
 
-**PHASE 9 — World Runtime**
+**PHASE 11 — Social**
 
-The next system will establish authoritative maps, zones, portals, spawn points, safe/PvP/event zones and world rules while consuming the existing Character, Networking and Combat foundations.
+The next system will establish authoritative party, friend, guild and chat foundations while preserving AccountID/CharacterID ownership and server-side permissions.
 
 ## 12. Mandatory workflow
 
