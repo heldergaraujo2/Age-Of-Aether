@@ -45,6 +45,23 @@ bool UAetherCharacterSubsystem::SelectCharacter(
     return CharacterService.SelectCharacter(AccountId, CharacterId, OutCharacter);
 }
 
+bool UAetherCharacterSubsystem::UpdateCharacterWorldState(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    const FAetherWorldZoneId& ZoneId,
+    EAetherWorldZoneType ZoneType,
+    const FVector& Location,
+    const FRotator& Rotation)
+{
+    return CharacterService.UpdateCharacterWorldState(
+        AccountId,
+        CharacterId,
+        ZoneId,
+        ZoneType,
+        Location,
+        Rotation);
+}
+
 bool UAetherCharacterSubsystem::UpdateCharacterStatus(
     const FAetherAccountId& AccountId,
     const FAetherCharacterId& CharacterId,
