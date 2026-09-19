@@ -76,6 +76,14 @@ bool UAetherCharacterSubsystem::GetSelectedCharacter(
     return CharacterService.GetSelectedCharacter(AccountId, OutCharacter);
 }
 
+bool UAetherCharacterSubsystem::ApplyProgressionState(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    const FAetherCharacterRecord& UpdatedCharacter)
+{
+    return CharacterService.ApplyProgressionState(AccountId, CharacterId, UpdatedCharacter);
+}
+
 int32 UAetherCharacterSubsystem::NumCharacters() const
 {
     return CharacterService.NumCharacters();
