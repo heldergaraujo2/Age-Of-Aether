@@ -2370,3 +2370,26 @@ Roadmap status:
 **ALL 18 IMPLEMENTATION PHASES ARE COMPLETE AT REPOSITORY LEVEL.**
 
 Future work is production hardening against the real Unreal 5.8.1 environment and live operational infrastructure.
+ 
+# 29. Content Pipeline & Client Program (Phases 19–30)
+
+The original implementation roadmap (Phases 0–18) is complete at repository/source level. The next program is documented in **`ROADMAP_CONTENT_AND_CLIENT.md`** and is incorporated into project continuity.
+
+Execution order:
+
+- Phase 19 — Universal Data Model & Content Registry
+- Phase 20 — Asset Pipeline & Visual Asset Registry
+- Phase 21 — Complete Item, Equipment & Enhancement Data
+- Phase 22 — Monster, NPC, Boss & AI Content
+- Phase 23 — Skills, Effects, Buffs, Debuffs & Status
+- Phase 24 — Loot, Drop, Reward & World Spawn
+- Phase 25 — Quest, Event, Dialogue & World Content Authoring
+- Phase 26 — Crafting, Mixing, Forge & Recipe Authoring
+- Phase 27 — World, Map, Interaction & Streaming Content
+- Phase 28 — Client Core Architecture
+- Phase 29 — Complete MMORPG UI/UX
+- Phase 30 — Client Presentation, Performance & Final Integration
+
+The client must not become the authority for gameplay state. Stable definition IDs are the bridge between server gameplay data and client visual/presentation assets.
+
+**Next implementation target: Phase 19 — Universal Data Model & Content Registry.**
