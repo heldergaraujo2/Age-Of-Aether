@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Characters/AetherCharacterTypes.generated.h"
-#include "Combat/AetherCombatTypes.generated.h"
 
 UENUM(BlueprintType)
 enum class EAetherCharacterClass : uint8
@@ -28,6 +27,13 @@ enum class EAetherCharacterOperationResult : uint8
     CharacterDeleted,
     AlreadySelected,
     AnotherCharacterSelected
+};
+
+UENUM(BlueprintType)
+enum class EAetherCharacterCombatState : uint8
+{
+    Alive,
+    Dead
 };
 
 UENUM(BlueprintType)
