@@ -126,6 +126,29 @@ bool FAetherItemRegistryCrossReferenceTest::RunTest(const FString&)
     return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherItemRegistryMissingReferenceTest, "AgeOfAether.Data.ItemRegistry.MissingReferences", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FAetherItemRegistryMissingReferenceTest::RunTest(const FString&)
+{
+    FAetherItemRegistry Registry;
+    FString Error;
+    FAetherItemDefinition Sword = MakeItem(TEXT("Item.Weapon.MissingRefs"), EAetherItemCategory::Equipment);
+    Sword.EquipmentSlot = EAetherEquipmentSlot::MainHand;
+    Sword.MaxEnhancementLevel = 1;
+    Sword.Enhancements.SetNum(2);
+    Sword.Enhancements[0].Level = 0;
+    Sword.Enhancements[1].Level = 1;
+    Sword.Enhancements[1].Materials.Add({ TEXT("Item.Material.DoesNotExist"), 1 });
+    TestTrue(TEXT("item registers structurally"), Registry.RegisterItem(Sword, Error));
+    TArray<FAetherItemValidationIssue> Issues;
+    TestFalse(TEXT("missing enhancement material detected"), Registry.Validate(Issues));
+    TestTrue(TEXT("missing material issue exists"), Issues.ContainsByPredicate(
+        [](const FAetherItemValidationIssue& Issue)
+        {
+            return Issue.Code == TEXT("MissingEnhancementMaterial");
+        }));
+    return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherItemRegistryDuplicateAndDeterminismTest, "AgeOfAether.Data.ItemRegistry.DuplicateAndDeterminism", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 bool FAetherItemRegistryDuplicateAndDeterminismTest::RunTest(const FString&)
 {
