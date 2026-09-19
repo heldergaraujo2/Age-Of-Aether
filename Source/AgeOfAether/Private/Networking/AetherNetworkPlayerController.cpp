@@ -383,6 +383,17 @@ void AAetherNetworkPlayerController::ServerLogoutAccount_Implementation(
             CurrentPawn->Destroy();
         }
 
+        if (UAetherSocialSubsystem* Social = GetGameInstance()
+            ? GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>()
+            : nullptr)
+        {
+            if (const AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>())
+            {
+                Social->ClearCharacterState(State->GetCharacterId());
+            }
+            Social->ClearAccountState(AuthenticatedAccountId);
+        }
+
         ClearAuthenticatedSession();
     }
 }
