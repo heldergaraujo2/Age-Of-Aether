@@ -19,6 +19,15 @@ enum class EAetherRewardType : uint8
     Item
 };
 
+UENUM(BlueprintType)
+enum class EAetherDropTrigger : uint8
+{
+    OnDeath,
+    OnEvent,
+    OnInteraction,
+    OnContainerOpen
+};
+
 USTRUCT(BlueprintType)
 struct FAetherLootEntry
 {
@@ -56,6 +65,38 @@ struct FAetherRewardItem
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString ItemID;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 Quantity = 1;
+
+    bool IsStructurallyValid(FString& OutError) const;
+};
+
+USTRUCT(BlueprintType)
+USTRUCT(BlueprintType)
+struct FAetherDropRuleDefinition
+{
+    GENERATED_BODY()
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) FString DefinitionID;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) FString SourceWorldActorID;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) FString LootTableID;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherDropTrigger Trigger = EAetherDropTrigger::OnDeath;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) double Chance = 1.0;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 MinimumLevel = 0;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 MaximumLevel = 0;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> RequiredTags;
+
+    bool IsStructurallyValid(FString& OutError) const;
+};
+
+USTRUCT(BlueprintType)
+struct FAetherSpawnGroupDefinition
+{
+    GENERATED_BODY()
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) FString DefinitionID;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) FString WorldActorID;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) FString RespawnDefinitionID;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 InitialCount = 1;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 MaximumCount = 1;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> SpawnPointTags;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> RequiredWorldTags;
 
     bool IsStructurallyValid(FString& OutError) const;
 };
