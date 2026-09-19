@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "World/AetherWorldTypes.h"
 #include "Characters/AetherCharacterTypes.generated.h"
 
 UENUM(BlueprintType)
@@ -167,4 +168,10 @@ struct FAetherCharacterRecord
 
     UPROPERTY(BlueprintReadOnly)
     FRotator WorldRotation = FRotator::ZeroRotator;
+
+    UPROPERTY(BlueprintReadOnly)
+    FAetherWorldZoneId CurrentZoneId;
+
+    UPROPERTY(BlueprintReadOnly)
+    EAetherWorldZoneType CurrentZoneType = EAetherWorldZoneType::Safe;
 };
