@@ -8,6 +8,7 @@
 #include "Items/AetherItemTypes.h"
 #include "Progression/AetherProgressionTypes.h"
 #include "Combat/AetherCombatTypes.h"
+#include "World/AetherWorldTypes.h"
 
 #include "AetherNetworkPlayerController.generated.h"
 
@@ -20,6 +21,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryEvent, const TArray<
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryOperationEvent, EAetherInventoryOperationResult, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherProgressionEvent, const FAetherProgressionResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCombatEvent, const FAetherCombatResult&, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherWorldTransitionEvent, const FAetherWorldTransitionResult&, Result);
 
 UCLASS()
 class AGEOFAETHER_API AAetherNetworkPlayerController : public APlayerController
@@ -77,6 +79,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Combat")
     void BasicAttack(const FAetherCharacterId& TargetCharacterId);
 
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|World")
+    void RequestWorldTransition(const FAetherWorldZoneId& TargetZoneId);
+
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Accounts")
     bool IsAccountAuthenticated() const;
 
@@ -112,6 +117,9 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Combat")
     FAetherCombatEvent OnCombat;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|World")
+    FAetherWorldTransitionEvent OnWorldTransition;
 
 protected:
     UFUNCTION(Server, Reliable)
@@ -192,6 +200,12 @@ protected:
     UFUNCTION(Client, Reliable)
     void ClientReceiveCombat(uint32 RequestId, const FAetherCombatResult& Result);
 
+    UFUNCTION(Server, Reliable)
+    void ServerRequestWorldTransition(uint32 RequestId, const FAetherWorldZoneId& TargetZoneId);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveWorldTransition(uint32 RequestId, const FAetherWorldTransitionResult& Result);
+
     virtual void BeginPlay() override;
 
 private:
@@ -213,6 +227,8 @@ private:
     uint32 LastProcessedProgressionRequestId = 0;
     uint32 NextCombatRequestId = 1;
     uint32 LastProcessedCombatRequestId = 0;
+    uint32 NextWorldRequestId = 1;
+    uint32 LastProcessedWorldRequestId = 0;
 
     FAetherAccountId AuthenticatedAccountId;
     FAetherSessionId SessionId;
