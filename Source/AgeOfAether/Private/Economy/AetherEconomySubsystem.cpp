@@ -7,10 +7,12 @@ bool UAetherEconomySubsystem::RegisterRecipe(const FAetherCraftRecipe& Recipe) {
 bool UAetherEconomySubsystem::RegisterConfigAsset(const UAetherEconomyConfigDataAsset* ConfigAsset)
 {
     if (!ConfigAsset) return false;
+    FAetherEconomyService Candidate = EconomyService;
     for (const FAetherShopDefinition& Shop : ConfigAsset->Shops)
-        if (!RegisterShop(Shop)) return false;
+        if (!Candidate.RegisterShop(Shop)) return false;
     for (const FAetherCraftRecipe& Recipe : ConfigAsset->Recipes)
-        if (!RegisterRecipe(Recipe)) return false;
+        if (!Candidate.RegisterRecipe(Recipe)) return false;
+    EconomyService = MoveTemp(Candidate);
     return true;
 }
 bool UAetherEconomySubsystem::FindShop(const FString& ShopId, FAetherShopDefinition& OutShop) const { return EconomyService.FindShop(ShopId, OutShop); }
