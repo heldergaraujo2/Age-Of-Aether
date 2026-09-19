@@ -33,6 +33,8 @@ jobs:
           test -f Source/AgeOfAether/Public/Data/AetherSkillEffectRegistry.h
           test -f Source/AgeOfAether/Public/Data/AetherLootRewardTypes.h
           test -f Source/AgeOfAether/Public/Data/AetherLootRewardRegistry.h
+          test -f Source/AgeOfAether/Public/Data/AetherQuestDialogueEventTypes.h
+          test -f Source/AgeOfAether/Public/Data/AetherQuestDialogueEventRegistry.h
       - name: Validate text and source invariants
         shell: python
         run: |
@@ -56,7 +58,7 @@ jobs:
           if failures:
               print("\\n".join(failures)); raise SystemExit(1)
           print(f"Validated {len(files)} source/documentation files.")
-      - name: Validate Phase 22, Phase 23 and Phase 24 deliverables
+      - name: Validate Phase 22, Phase 23, Phase 24 and Phase 25 deliverables
         shell: bash
         run: |
           set -euo pipefail
@@ -75,5 +77,10 @@ jobs:
           grep -q "FAetherLootRewardRegistry" Source/AgeOfAether/Public/Data/AetherLootRewardRegistry.h
           grep -q "FAetherLootRewardBasicTest" Source/AgeOfAether/Private/Tests/AetherLootRewardRegistryTests.cpp
           grep -q "Repository implementation" Docs/PHASE_24_LOOT_DROP_REWARD_RESPAWN.md
+          test -f Source/AgeOfAether/Private/Tests/AetherQuestDialogueEventRegistryTests.cpp
+          test -f Docs/PHASE_25_QUEST_EVENT_DIALOGUE_WORLD_CONTENT.md
+          grep -q "FAetherQuestDialogueEventRegistry" Source/AgeOfAether/Public/Data/AetherQuestDialogueEventRegistry.h
+          grep -q "FAetherQuestDialogueEventBasicTest" Source/AgeOfAether/Private/Tests/AetherQuestDialogueEventRegistryTests.cpp
+          grep -q "Repository implementation" Docs/PHASE_25_QUEST_EVENT_DIALOGUE_WORLD_CONTENT.md
       - name: Report
         run: echo "Repository static validation completed successfully."
