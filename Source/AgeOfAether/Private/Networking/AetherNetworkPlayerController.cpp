@@ -5,6 +5,7 @@
 #include "Characters/AetherCharacterSubsystem.h"
 #include "Items/AetherItemSubsystem.h"
 #include "Progression/AetherProgressionSubsystem.h"
+#include "Combat/AetherCombatSubsystem.h"
 #include "Networking/AetherNetworkGameMode.h"
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
@@ -881,6 +882,88 @@ void AAetherNetworkPlayerController::ClientReceiveInventory_Implementation(
     }
 }
 
+
+void AAetherNetworkPlayerController::BasicAttack(const FAetherCharacterId& TargetCharacterId)
+{
+    const uint32 RequestId = NextCombatRequestId++;
+    if (HasAuthority())
+    {
+        ServerBasicAttack_Implementation(RequestId, TargetCharacterId);
+        return;
+    }
+
+    ServerBasicAttack(RequestId, TargetCharacterId);
+}
+
+void AAetherNetworkPlayerController::ServerBasicAttack_Implementation(
+    uint32 RequestId,
+    const FAetherCharacterId& TargetCharacterId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedCombatRequestId)
+    {
+        return;
+    }
+
+    FAetherCombatResult Result;
+    Result.RequestId = RequestId;
+
+    UAetherCombatSubsystem* Combat = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherCombatSubsystem>()
+        : nullptr;
+
+    const AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>();
+    const FAetherCharacterId AttackerId = State ? State->GetCharacterId() : FAetherCharacterId();
+
+    bool bResolved = false;
+    if (Combat && bAccountAuthenticated && AttackerId.IsValid() && TargetCharacterId.IsValid())
+    {
+        bResolved = Combat->BasicAttack(
+            AuthenticatedAccountId,
+            AttackerId,
+            TargetCharacterId,
+            RequestId,
+            GetServerTimeSeconds(),
+            Result);
+    }
+    else
+    {
+        Result.Result = EAetherCombatResultCode::NotAuthenticated;
+    }
+
+    LastProcessedCombatRequestId = RequestId;
+
+    if (bResolved && Result.Result != EAetherCombatResultCode::Missed)
+    {
+        if (AAetherCharacterPlayerState* TargetState = nullptr)
+        {
+            (void)TargetState;
+        }
+
+        UAetherCharacterSubsystem* Characters = GetGameInstance()
+            ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+            : nullptr;
+        if (Characters)
+        {
+            FAetherCharacterRecord TargetCharacter;
+            if (Characters->FindCharacter(TargetCharacterId, TargetCharacter))
+            {
+                if (AAetherNetworkGameMode* GameMode = GetWorld()->GetAuthGameMode<AAetherNetworkGameMode>())
+                {
+                    (void)GameMode;
+                }
+            }
+        }
+    }
+
+    ClientReceiveCombat(RequestId, Result);
+}
+
+void AAetherNetworkPlayerController::ClientReceiveCombat_Implementation(
+    uint32 RequestId,
+    const FAetherCombatResult& Result)
+{
+    OnCombat.Broadcast(Result);
+}
 
 void AAetherNetworkPlayerController::AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount)
 {
