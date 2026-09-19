@@ -22,7 +22,7 @@ void FAetherLootRewardRegistry::AddIssue(TArray<FAetherLootRewardValidationIssue
 bool FAetherLootRewardRegistry::IsIDAvailable(const FString& ID) const
 {
     const FString Normalized = NormalizeID(ID);
-    return !Normalized.IsEmpty() && !LootTables.Contains(Normalized) && !Rewards.Contains(Normalized) && !Respawns.Contains(Normalized);
+    return !Normalized.IsEmpty() && !LootTables.Contains(Normalized) && !Rewards.Contains(Normalized) && !Respawns.Contains(Normalized) && !DropRules.Contains(Normalized) && !SpawnGroups.Contains(Normalized);
 }
 
 bool FAetherLootRewardRegistry::RegisterLootTable(const FAetherLootTableDefinition& Definition, FString& OutError)
@@ -67,6 +67,34 @@ bool FAetherLootRewardRegistry::RegisterRespawn(const FAetherRespawnDefinition& 
     return true;
 }
 
+bool FAetherLootRewardRegistry::RegisterDropRule(const FAetherDropRuleDefinition& Definition, FString& OutError)
+{
+    OutError.Reset();
+    FAetherDropRuleDefinition Copy = Definition;
+    Copy.DefinitionID = NormalizeID(Copy.DefinitionID);
+    if (!Copy.IsStructurallyValid(OutError) || !IsIDAvailable(Copy.DefinitionID))
+    {
+        if (OutError.IsEmpty()) { OutError = TEXT("DefinitionID is already registered or invalid."); }
+        return false;
+    }
+    DropRules.Add(Copy.DefinitionID, Copy);
+    return true;
+}
+
+bool FAetherLootRewardRegistry::RegisterSpawnGroup(const FAetherSpawnGroupDefinition& Definition, FString& OutError)
+{
+    OutError.Reset();
+    FAetherSpawnGroupDefinition Copy = Definition;
+    Copy.DefinitionID = NormalizeID(Copy.DefinitionID);
+    if (!Copy.IsStructurallyValid(OutError) || !IsIDAvailable(Copy.DefinitionID))
+    {
+        if (OutError.IsEmpty()) { OutError = TEXT("DefinitionID is already registered or invalid."); }
+        return false;
+    }
+    SpawnGroups.Add(Copy.DefinitionID, Copy);
+    return true;
+}
+
 bool FAetherLootRewardRegistry::ResolveLootTable(const FString& ID, FAetherLootTableDefinition& OutDefinition) const
 {
     const FAetherLootTableDefinition* Found = LootTables.Find(NormalizeID(ID));
@@ -91,10 +119,26 @@ bool FAetherLootRewardRegistry::ResolveRespawn(const FString& ID, FAetherRespawn
     return true;
 }
 
+bool FAetherLootRewardRegistry::ResolveDropRule(const FString& ID, FAetherDropRuleDefinition& OutDefinition) const
+{
+    const FAetherDropRuleDefinition* Found = DropRules.Find(NormalizeID(ID));
+    if (!Found) { return false; }
+    OutDefinition = *Found;
+    return true;
+}
+
+bool FAetherLootRewardRegistry::ResolveSpawnGroup(const FString& ID, FAetherSpawnGroupDefinition& OutDefinition) const
+{
+    const FAetherSpawnGroupDefinition* Found = SpawnGroups.Find(NormalizeID(ID));
+    if (!Found) { return false; }
+    OutDefinition = *Found;
+    return true;
+}
+
 bool FAetherLootRewardRegistry::Contains(const FString& ID) const
 {
     const FString Normalized = NormalizeID(ID);
-    return LootTables.Contains(Normalized) || Rewards.Contains(Normalized) || Respawns.Contains(Normalized);
+    return LootTables.Contains(Normalized) || Rewards.Contains(Normalized) || Respawns.Contains(Normalized) || DropRules.Contains(Normalized) || SpawnGroups.Contains(Normalized);
 }
 
 void FAetherLootRewardRegistry::GetDefinitionIDs(TArray<FString>& OutIDs) const
@@ -103,6 +147,8 @@ void FAetherLootRewardRegistry::GetDefinitionIDs(TArray<FString>& OutIDs) const
     for (const auto& Pair : LootTables) { OutIDs.Add(Pair.Key); }
     for (const auto& Pair : Rewards) { OutIDs.Add(Pair.Key); }
     for (const auto& Pair : Respawns) { OutIDs.Add(Pair.Key); }
+    for (const auto& Pair : DropRules) { OutIDs.Add(Pair.Key); }
+    for (const auto& Pair : SpawnGroups) { OutIDs.Add(Pair.Key); }
     OutIDs.Sort();
 }
 
@@ -111,6 +157,8 @@ void FAetherLootRewardRegistry::Reset()
     LootTables.Reset();
     Rewards.Reset();
     Respawns.Reset();
+    DropRules.Reset();
+    SpawnGroups.Reset();
 }
 
 bool FAetherLootRewardRegistry::Validate(TArray<FAetherLootRewardValidationIssue>& OutIssues,
@@ -172,6 +220,32 @@ bool FAetherLootRewardRegistry::Validate(TArray<FAetherLootRewardValidationIssue
         }
     }
 
+    for (const auto& Pair : DropRules)
+    {
+        const FAetherDropRuleDefinition& Definition = Pair.Value;
+        if (WorldActorRegistry && !WorldActorRegistry->Contains(Definition.SourceWorldActorID))
+        {
+            AddIssue(OutIssues, Definition.DefinitionID, TEXT("MissingWorldActorReference"), FString::Printf(TEXT("Missing source world actor '%s'."), *Definition.SourceWorldActorID));
+        }
+        if (!LootTables.Contains(NormalizeID(Definition.LootTableID)))
+        {
+            AddIssue(OutIssues, Definition.DefinitionID, TEXT("MissingLootTableReference"), FString::Printf(TEXT("Missing loot table '%s'."), *Definition.LootTableID));
+        }
+    }
+
+    for (const auto& Pair : SpawnGroups)
+    {
+        const FAetherSpawnGroupDefinition& Definition = Pair.Value;
+        if (WorldActorRegistry && !WorldActorRegistry->Contains(Definition.WorldActorID))
+        {
+            AddIssue(OutIssues, Definition.DefinitionID, TEXT("MissingWorldActorReference"), FString::Printf(TEXT("Missing spawn world actor '%s'."), *Definition.WorldActorID));
+        }
+        if (!Respawns.Contains(NormalizeID(Definition.RespawnDefinitionID)))
+        {
+            AddIssue(OutIssues, Definition.DefinitionID, TEXT("MissingRespawnReference"), FString::Printf(TEXT("Missing respawn definition '%s'."), *Definition.RespawnDefinitionID));
+        }
+    }
+
     if (ContentRegistry)
     {
         for (const auto& Pair : LootTables)
@@ -183,6 +257,14 @@ bool FAetherLootRewardRegistry::Validate(TArray<FAetherLootRewardValidationIssue
             ValidateContent(Pair.Key, Pair.Key);
         }
         for (const auto& Pair : Respawns)
+        {
+            ValidateContent(Pair.Key, Pair.Key);
+        }
+        for (const auto& Pair : DropRules)
+        {
+            ValidateContent(Pair.Key, Pair.Key);
+        }
+        for (const auto& Pair : SpawnGroups)
         {
             ValidateContent(Pair.Key, Pair.Key);
         }
