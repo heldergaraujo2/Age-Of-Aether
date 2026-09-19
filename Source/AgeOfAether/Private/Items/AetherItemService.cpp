@@ -66,6 +66,47 @@ bool FAetherItemService::CreateItemInstance(
     return true;
 }
 
+bool FAetherItemService::RestoreInventory(const FAetherCharacterId& CharacterId, const TArray<FAetherInventorySlot>& Slots)
+{
+    if (!CharacterId.IsValid() || Slots.Num() > MaxInventorySlots)
+    {
+        return false;
+    }
+
+    TArray<FAetherInventorySlot> Restored;
+    Restored.SetNum(MaxInventorySlots);
+    TSet<FAetherItemInstanceId> InstanceIds;
+
+    for (int32 Index = 0; Index < Restored.Num(); ++Index)
+    {
+        Restored[Index].SlotIndex = Index;
+    }
+
+    for (const FAetherInventorySlot& Slot : Slots)
+    {
+        if (Slot.SlotIndex < 0 || Slot.SlotIndex >= MaxInventorySlots || !Slot.IsOccupied())
+        {
+            return false;
+        }
+
+        const FAetherItemDefinition* Definition = Definitions.Find(Slot.Item.DefinitionId);
+        if (!Definition
+            || Slot.Item.OwnerCharacterId != CharacterId
+            || Slot.Item.Quantity <= 0
+            || Slot.Item.Quantity > Definition->MaxStack
+            || InstanceIds.Contains(Slot.Item.InstanceId))
+        {
+            return false;
+        }
+
+        Restored[Slot.SlotIndex] = Slot;
+        InstanceIds.Add(Slot.Item.InstanceId);
+    }
+
+    Inventories.Add(CharacterId, MoveTemp(Restored));
+    return true;
+}
+
 bool FAetherItemService::AddItem(
     const FAetherCharacterId& CharacterId,
     const FAetherItemDefinitionId& DefinitionId,
