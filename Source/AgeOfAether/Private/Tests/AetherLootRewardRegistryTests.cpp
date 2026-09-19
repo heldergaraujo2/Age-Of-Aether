@@ -12,7 +12,11 @@ bool FAetherLootRewardBasicTest::RunTest(const FString&)
     TestTrue(TEXT("loot registration"),R.RegisterLootTable(L,E));
     TestTrue(TEXT("reward registration"),R.RegisterReward(Reward,E));
     TestTrue(TEXT("respawn registration"),R.RegisterRespawn(Respawn,E));
-    TestEqual(TEXT("counts"),R.NumLootTables()+R.NumRewards()+R.NumRespawns(),3);
+    FAetherDropRuleDefinition Drop; Drop.DefinitionID=TEXT("Drop.Goblin"); Drop.SourceWorldActorID=TEXT("Monster.Goblin.001"); Drop.LootTableID=TEXT("Loot.Goblin");
+    FAetherSpawnGroupDefinition Group; Group.DefinitionID=TEXT("Spawn.Goblin"); Group.WorldActorID=TEXT("Monster.Goblin.001"); Group.RespawnDefinitionID=TEXT("Respawn.Goblin"); Group.InitialCount=2; Group.MaximumCount=3;
+    TestTrue(TEXT("drop registration"),R.RegisterDropRule(Drop,E));
+    TestTrue(TEXT("spawn group registration"),R.RegisterSpawnGroup(Group,E));
+    TestEqual(TEXT("counts"),R.NumLootTables()+R.NumRewards()+R.NumRespawns()+R.NumDropRules()+R.NumSpawnGroups(),5);
     return true;
 }
 
@@ -28,6 +32,8 @@ bool FAetherLootRewardValidationTest::RunTest(const FString&)
     TestFalse(TEXT("zero total weight"),R.RegisterLootTable(W,E));
     FAetherRewardDefinition Empty; Empty.DefinitionID=TEXT("Reward.Empty"); Empty.DisplayName=TEXT("Empty");
     TestFalse(TEXT("empty reward"),R.RegisterReward(Empty,E));
+    FAetherDropRuleDefinition BadDrop; BadDrop.DefinitionID=TEXT("Drop.Bad"); BadDrop.SourceWorldActorID=TEXT("Monster.X"); BadDrop.LootTableID=TEXT("Loot.X"); BadDrop.Chance=2; TestFalse(TEXT("bad drop chance"),R.RegisterDropRule(BadDrop,E));
+    FAetherSpawnGroupDefinition BadGroup; BadGroup.DefinitionID=TEXT("Spawn.Bad"); BadGroup.WorldActorID=TEXT("Monster.X"); BadGroup.RespawnDefinitionID=TEXT("Respawn.X"); BadGroup.InitialCount=4; BadGroup.MaximumCount=3; TestFalse(TEXT("bad spawn counts"),R.RegisterSpawnGroup(BadGroup,E));
     FAetherRespawnDefinition BadR; BadR.DefinitionID=TEXT("Respawn.Bad"); BadR.WorldActorID=TEXT("Monster.X"); BadR.RespawnSeconds=5; BadR.RespawnJitterSeconds=6;
     TestFalse(TEXT("bad jitter"),R.RegisterRespawn(BadR,E));
     return true;
@@ -40,10 +46,14 @@ bool FAetherLootRewardCrossReferenceTest::RunTest(const FString&)
     FAetherLootTableDefinition L; L.DefinitionID=TEXT("Loot.Missing"); L.DisplayName=TEXT("Missing");
     FAetherLootEntry Entry; Entry.ItemID=TEXT("Item.Nope"); L.Entries.Add(Entry); R.RegisterLootTable(L,E);
     FAetherRespawnDefinition Respawn; Respawn.DefinitionID=TEXT("Respawn.Missing"); Respawn.WorldActorID=TEXT("Monster.Nope"); Respawn.RespawnSeconds=10; R.RegisterRespawn(Respawn,E);
+    FAetherDropRuleDefinition Drop; Drop.DefinitionID=TEXT("Drop.Missing"); Drop.SourceWorldActorID=TEXT("Monster.Nope"); Drop.LootTableID=TEXT("Loot.Nope"); R.RegisterDropRule(Drop,E);
+    FAetherSpawnGroupDefinition Group; Group.DefinitionID=TEXT("Spawn.Missing"); Group.WorldActorID=TEXT("Monster.Nope"); Group.RespawnDefinitionID=TEXT("Respawn.Nope"); R.RegisterSpawnGroup(Group,E);
     TArray<FAetherLootRewardValidationIssue> Issues;
     TestFalse(TEXT("missing refs"),R.Validate(Issues));
     TestTrue(TEXT("missing item"),Issues.ContainsByPredicate([](const FAetherLootRewardValidationIssue& I){return I.Code==TEXT("MissingItemReference");}));
     TestTrue(TEXT("missing world actor"),Issues.ContainsByPredicate([](const FAetherLootRewardValidationIssue& I){return I.Code==TEXT("MissingWorldActorReference");}));
+    TestTrue(TEXT("missing loot table"),Issues.ContainsByPredicate([](const FAetherLootRewardValidationIssue& I){return I.Code==TEXT("MissingLootTableReference");}));
+    TestTrue(TEXT("missing respawn"),Issues.ContainsByPredicate([](const FAetherLootRewardValidationIssue& I){return I.Code==TEXT("MissingRespawnReference");}));
     return true;
 }
 
@@ -71,5 +81,7 @@ bool FAetherLootRewardDeterminismTest::RunTest(const FString&)
     TestEqual(TEXT("first"),IDs[0],FString(TEXT("Loot.A")));
     TestEqual(TEXT("second"),IDs[1],FString(TEXT("Loot.Z")));
     TestEqual(TEXT("third"),IDs[2],FString(TEXT("Reward.M")));
+    TestEqual(TEXT("fourth"),IDs[3],FString(TEXT("Spawn.Goblin")));
+    TestEqual(TEXT("fifth"),IDs[4],FString(TEXT("Respawn.Goblin")));
     return true;
 }
