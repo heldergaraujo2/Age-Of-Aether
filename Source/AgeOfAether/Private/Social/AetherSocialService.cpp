@@ -485,7 +485,26 @@ void FAetherSocialService::ClearCharacterState(const FAetherCharacterId& Charact
         FAetherSocialPartyState* Party=Parties.Find(PartyId);
         if(Party)
         {
-            for(const FAetherPartyMember& M:Party->Members)if(M.CharacterId==CharacterId){Party->Members.Remove(M);break;}
+            for(int32 I=0; I<Party->Members.Num(); ++I)
+            {
+                if(Party->Members[I].CharacterId == CharacterId)
+                {
+                    const bool bLeader = Party->Members[I].Role == EAetherPartyRole::Leader;
+                    const FAetherAccountId RemovedAccount = Party->Members[I].AccountId;
+                    Party->Members.RemoveAt(I);
+                    PartyByAccount.Remove(RemovedAccount);
+                    if(bLeader && Party->Members.Num() > 0)
+                    {
+                        Party->Members[0].Role = EAetherPartyRole::Leader;
+                    }
+                    break;
+                }
+            }
+            if(Party->Members.Num() == 0)
+            {
+                PendingPartyInvites.Remove(PartyId);
+                Parties.Remove(PartyId);
+            }
         }
         PartyByCharacter.Remove(CharacterId);
     }
