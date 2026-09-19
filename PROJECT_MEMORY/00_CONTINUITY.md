@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 8 — Combat Runtime (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Current stage:** Phase 9 — World Runtime (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -381,6 +381,48 @@ Deliverable:
 
 Next implementation target:
 **PHASE 9 — World Runtime**
+
+## Phase 9 — World Runtime
+
+Repository implementation is complete.
+
+Implemented:
+- FAetherWorldZone and zone types Safe/PvP/Event/Dungeon/City;
+- authoritative zone enable and level rules;
+- FAetherWorldSpawnPoint and deterministic spawn resolution;
+- FAetherWorldPortal and directed transition rules;
+- FAetherWorldConfig and data-driven UAetherWorldConfigDataAsset;
+- atomic world-definition loading;
+- authoritative character initial spawn;
+- authoritative portal transition;
+- CurrentZoneId and CurrentZoneType on FAetherCharacterRecord;
+- CharacterService world-state commit boundary;
+- replicated zone identity on AAetherCharacterPlayerState;
+- server-side pawn teleport after accepted transition;
+- authoritative GameState revision increment;
+- server RequestWorldTransition RPC;
+- world transition result delegate;
+- automation tests for configuration, definitions, deterministic spawns, level requirements, missing/disabled portals/zones, initial spawn and character transition.
+
+Security boundary:
+- client supplies only a target ZoneID request;
+- server resolves source zone from authoritative character state;
+- server resolves portal and target spawn;
+- client cannot provide destination coordinates or rotation;
+- world state is committed through CharacterService and replicated through PlayerState.
+
+Unreal/content boundary:
+- no .umap or fake World Partition assets are generated without Unreal;
+- World Partition is the intended large-world technology;
+- actual maps, Data Layers, HLOD, terrain, collision/NavMesh and streaming-source authoring remain Unreal content work.
+
+Validation truth:
+- repository/static validation is performed after implementation;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/network emulation/Automation Framework remain NOT VERIFIED in this environment;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Next implementation target:
+**PHASE 10 — Quest/Mission**
 
 ## 6. Validation truth
 
