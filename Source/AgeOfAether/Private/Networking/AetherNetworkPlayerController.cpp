@@ -156,6 +156,10 @@ FAetherSessionId AAetherNetworkPlayerController::GetSessionId() const
 
 void AAetherNetworkPlayerController::ServerSubmitRequest_Implementation(const FAetherNetworkRequest& Request)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Generic))
+    {
+        return;
+    }
     FAetherNetworkResponse Response;
     Response.RequestId = Request.RequestId;
     Response.ProtocolVersion = FAetherProtocolVersion::Current();
@@ -208,6 +212,10 @@ void AAetherNetworkPlayerController::ServerAuthenticateAccount_Implementation(
     const FString& CredentialProof,
     const FAetherProtocolVersion& ProtocolVersion)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Authentication))
+    {
+        return;
+    }
     if (!ValidateAccountRequestId(RequestId))
     {
         FAetherAuthenticationResponse Response;
@@ -276,6 +284,10 @@ void AAetherNetworkPlayerController::ServerReconnectAccount_Implementation(
     const FString& CredentialProof,
     const FAetherProtocolVersion& ProtocolVersion)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Authentication))
+    {
+        return;
+    }
     if (!ValidateAccountRequestId(RequestId))
     {
         FAetherAuthenticationResponse Response;
@@ -343,6 +355,10 @@ void AAetherNetworkPlayerController::ServerLogoutAccount_Implementation(
     const FAetherSessionId& InSessionId,
     const FAetherProtocolVersion& ProtocolVersion)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Session))
+    {
+        return;
+    }
     if (!ValidateAccountRequestId(RequestId))
     {
         FAetherAuthenticationResponse Response;
@@ -429,6 +445,10 @@ void AAetherNetworkPlayerController::ServerSessionHeartbeat_Implementation(
     const FAetherSessionId& InSessionId,
     const FAetherProtocolVersion& ProtocolVersion)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Session))
+    {
+        return;
+    }
     if (!ValidateAccountRequestId(RequestId))
     {
         return;
@@ -528,6 +548,10 @@ void AAetherNetworkPlayerController::DeselectCharacter()
 
 void AAetherNetworkPlayerController::ServerRequestCharacterList_Implementation(uint32 RequestId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Character))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedCharacterRequestId)
     {
         return;
@@ -565,6 +589,10 @@ void AAetherNetworkPlayerController::ServerCreateCharacter_Implementation(
     const FString& Name,
     EAetherCharacterClass CharacterClass)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Character))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedCharacterRequestId)
     {
         return;
@@ -615,6 +643,10 @@ void AAetherNetworkPlayerController::ServerSelectCharacter_Implementation(
     uint32 RequestId,
     const FAetherCharacterId& CharacterId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Character))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedCharacterRequestId)
     {
         return;
@@ -673,6 +705,10 @@ void AAetherNetworkPlayerController::ServerDeselectCharacter_Implementation(
     uint32 RequestId,
     const FAetherCharacterId& CharacterId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Character))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedCharacterRequestId)
     {
         return;
@@ -803,6 +839,10 @@ namespace
 
 void AAetherNetworkPlayerController::ServerRequestInventory_Implementation(uint32 RequestId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Inventory))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
 
     TArray<FAetherInventorySlot> Inventory;
@@ -829,6 +869,10 @@ void AAetherNetworkPlayerController::ServerMoveInventoryItem_Implementation(
     const FAetherItemInstanceId& InstanceId,
     int32 TargetSlot)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Inventory))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
 
     TArray<FAetherInventorySlot> Inventory;
@@ -856,6 +900,10 @@ void AAetherNetworkPlayerController::ServerSplitInventoryStack_Implementation(
     int32 Quantity,
     int32 TargetSlot)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Inventory))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
 
     TArray<FAetherInventorySlot> Inventory;
@@ -882,6 +930,10 @@ void AAetherNetworkPlayerController::ServerMergeInventoryStacks_Implementation(
     const FAetherItemInstanceId& SourceInstanceId,
     const FAetherItemInstanceId& TargetInstanceId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Inventory))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
 
     TArray<FAetherInventorySlot> Inventory;
@@ -908,6 +960,10 @@ void AAetherNetworkPlayerController::ServerDiscardInventoryItem_Implementation(
     const FAetherItemInstanceId& InstanceId,
     int32 Quantity)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Inventory))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedInventoryRequestId) return;
 
     TArray<FAetherInventorySlot> Inventory;
@@ -958,6 +1014,10 @@ void AAetherNetworkPlayerController::ServerBasicAttack_Implementation(
     uint32 RequestId,
     const FAetherCharacterId& TargetCharacterId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Combat))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedCombatRequestId)
     {
         return;
@@ -1048,6 +1108,10 @@ void AAetherNetworkPlayerController::ServerRequestWorldTransition_Implementation
     uint32 RequestId,
     const FAetherWorldZoneId& TargetZoneId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::World))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedWorldRequestId)
     {
         return;
@@ -1179,6 +1243,10 @@ void AAetherNetworkPlayerController::CompleteQuest(const FAetherQuestId& QuestId
 
 void AAetherNetworkPlayerController::ServerRequestQuestList_Implementation(uint32 RequestId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Quest))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedQuestRequestId)
     {
         return;
@@ -1204,6 +1272,10 @@ void AAetherNetworkPlayerController::ServerRequestQuestList_Implementation(uint3
 
 void AAetherNetworkPlayerController::ServerAcceptQuest_Implementation(uint32 RequestId, const FAetherQuestId& QuestId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Quest))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedQuestRequestId)
     {
         return;
@@ -1241,6 +1313,10 @@ void AAetherNetworkPlayerController::ServerAcceptQuest_Implementation(uint32 Req
 
 void AAetherNetworkPlayerController::ServerAbandonQuest_Implementation(uint32 RequestId, const FAetherQuestId& QuestId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Quest))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedQuestRequestId)
     {
         return;
@@ -1278,6 +1354,10 @@ void AAetherNetworkPlayerController::ServerAbandonQuest_Implementation(uint32 Re
 
 void AAetherNetworkPlayerController::ServerCompleteQuest_Implementation(uint32 RequestId, const FAetherQuestId& QuestId)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Quest))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedQuestRequestId)
     {
         return;
@@ -1351,6 +1431,10 @@ void AAetherNetworkPlayerController::SendChat(EAetherSocialChannel Channel,const
 
 void AAetherNetworkPlayerController::ServerRequestFriends_Implementation(uint32 Id)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     AETHER_SOCIAL_GUARD(Id);
     TArray<FAetherSocialRelation> Friends;
     UAetherSocialSubsystem* Social=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;
@@ -1378,6 +1462,10 @@ void AAetherNetworkPlayerController::ServerSetGuildRole_Implementation(uint32 Id
 
 void AAetherNetworkPlayerController::ServerSendChat_Implementation(uint32 Id,EAetherSocialChannel Channel,const FAetherAccountId& Target,const FString& Message)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     AETHER_SOCIAL_GUARD(Id);
     FAetherSocialResult Result=EAetherSocialResult::InvalidRequest;
     FAetherChatMessage Chat;
@@ -1464,24 +1552,40 @@ void AAetherNetworkPlayerController::ClientReceiveChat_Implementation(uint32 Id,
 
 void AAetherNetworkPlayerController::RequestWallet()
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     const uint32 Id = NextEconomyRequestId++;
     if (HasAuthority()) ServerRequestWallet_Implementation(Id); else ServerRequestWallet(Id);
 }
 
 void AAetherNetworkPlayerController::BuyItem(const FString& ShopId, const FAetherItemDefinitionId& ItemDefinitionId, int32 Quantity)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     const uint32 Id = NextEconomyRequestId++;
     if (HasAuthority()) ServerBuyItem_Implementation(Id, ShopId, ItemDefinitionId, Quantity); else ServerBuyItem(Id, ShopId, ItemDefinitionId, Quantity);
 }
 
 void AAetherNetworkPlayerController::SellItem(const FString& ShopId, const FAetherItemInstanceId& InstanceId, int32 Quantity)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     const uint32 Id = NextEconomyRequestId++;
     if (HasAuthority()) ServerSellItem_Implementation(Id, ShopId, InstanceId, Quantity); else ServerSellItem(Id, ShopId, InstanceId, Quantity);
 }
 
 void AAetherNetworkPlayerController::CraftItem(const FString& RecipeId, int32 Quantity)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     const uint32 Id = NextEconomyRequestId++;
     if (HasAuthority()) ServerCraftItem_Implementation(Id, RecipeId, Quantity); else ServerCraftItem(Id, RecipeId, Quantity);
 }
@@ -1490,6 +1594,10 @@ void AAetherNetworkPlayerController::CraftItem(const FString& RecipeId, int32 Qu
 
 void AAetherNetworkPlayerController::ServerRequestWallet_Implementation(uint32 Id)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     AETHER_ECONOMY_GUARD(Id);
     FAetherEconomyTransaction Transaction;
     Transaction.Result = EAetherEconomyResult::NotOwned;
@@ -1507,6 +1615,10 @@ void AAetherNetworkPlayerController::ServerRequestWallet_Implementation(uint32 I
 
 void AAetherNetworkPlayerController::ServerBuyItem_Implementation(uint32 Id, const FString& ShopId, const FAetherItemDefinitionId& ItemDefinitionId, int32 Quantity)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     AETHER_ECONOMY_GUARD(Id);
     FAetherEconomyTransaction Transaction;
     Transaction.Result = EAetherEconomyResult::NotOwned;
@@ -1519,6 +1631,10 @@ void AAetherNetworkPlayerController::ServerBuyItem_Implementation(uint32 Id, con
 
 void AAetherNetworkPlayerController::ServerSellItem_Implementation(uint32 Id, const FString& ShopId, const FAetherItemInstanceId& InstanceId, int32 Quantity)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     AETHER_ECONOMY_GUARD(Id);
     FAetherEconomyTransaction Transaction;
     Transaction.Result = EAetherEconomyResult::NotOwned;
@@ -1531,6 +1647,10 @@ void AAetherNetworkPlayerController::ServerSellItem_Implementation(uint32 Id, co
 
 void AAetherNetworkPlayerController::ServerCraftItem_Implementation(uint32 Id, const FString& RecipeId, int32 Quantity)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     AETHER_ECONOMY_GUARD(Id);
     FAetherEconomyTransaction Transaction;
     Transaction.Result = EAetherEconomyResult::NotOwned;
@@ -1543,6 +1663,10 @@ void AAetherNetworkPlayerController::ServerCraftItem_Implementation(uint32 Id, c
 
 void AAetherNetworkPlayerController::ClientReceiveEconomy_Implementation(uint32 Id, const FAetherEconomyTransaction& Transaction)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     OnEconomyTransaction.Broadcast(Transaction);
 }
 
@@ -1550,6 +1674,10 @@ void AAetherNetworkPlayerController::ClientReceiveEconomy_Implementation(uint32 
 
 void AAetherNetworkPlayerController::AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     const uint32 RequestId = NextProgressionRequestId++;
     if (HasAuthority())
     {
@@ -1564,6 +1692,10 @@ void AAetherNetworkPlayerController::ServerAllocateStatPoints_Implementation(
     EAetherCharacterStat Stat,
     int32 Amount)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Progression))
+    {
+        return;
+    }
     if (RequestId == 0 || RequestId <= LastProcessedProgressionRequestId)
     {
         return;
@@ -1612,6 +1744,10 @@ void AAetherNetworkPlayerController::ClientReceiveProgression_Implementation(
     uint32 RequestId,
     const FAetherProgressionResult& Result)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     OnProgression.Broadcast(Result);
 }
 
@@ -1667,6 +1803,10 @@ double AAetherNetworkPlayerController::GetServerTimeSeconds() const
 
 void AAetherNetworkPlayerController::ApplyAuthenticatedSession(const FAetherAuthenticationResponse& Response)
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     AuthenticatedAccountId = Response.AccountId;
     SessionId = Response.SessionId;
     bAccountAuthenticated = true;
@@ -1674,6 +1814,10 @@ void AAetherNetworkPlayerController::ApplyAuthenticatedSession(const FAetherAuth
 
 void AAetherNetworkPlayerController::ClearAuthenticatedSession()
 {
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    {
+        return;
+    }
     AuthenticatedAccountId = FAetherAccountId();
     SessionId = FAetherSessionId();
     bAccountAuthenticated = false;
