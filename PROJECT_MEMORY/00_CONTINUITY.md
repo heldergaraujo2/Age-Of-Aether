@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 19 — Universal Data Model & Content Registry (repository implementation complete; Unreal runtime validation pending local validation)  
+**Current stage:** Phase 20 — Asset Pipeline & Visual Asset Registry (repository implementation complete; Unreal runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -1017,3 +1017,38 @@ Hardening performed:
 
 Next implementation target:
 **PHASE 20 — ASSET PIPELINE & VISUAL ASSET REGISTRY.**
+
+
+## 38. PHASE 20 — ASSET PIPELINE & VISUAL ASSET REGISTRY — COMPLETED 2026-09-19
+
+Phase 20 is complete at repository/source level.
+
+Implemented:
+- \`EAetherAssetType\` and visual asset identity contract;
+- \`FAetherAssetReference\`;
+- \`FAetherAssetDefinition\`;
+- \`FAetherAssetRegistry\`;
+- stable AssetID independent of Unreal package paths;
+- fallback, skeleton, animation, material, icon, VFX and SFX references;
+- source/import metadata for FBX -> Unreal UAsset workflow;
+- finite positive scale validation;
+- required skeleton/fallback validation;
+- duplicate AssetID rejection;
+- cross-reference validation;
+- deterministic asset enumeration;
+- Automation tests for registration, normalization, duplicates, fallback, skeleton, numeric constraints, dependency graph and deterministic ordering.
+
+Important files:
+- Source/AgeOfAether/Public/Data/AetherAssetTypes.h
+- Source/AgeOfAether/Public/Data/AetherAssetRegistry.h
+- Source/AgeOfAether/Private/Data/AetherAssetRegistry.cpp
+- Source/AgeOfAether/Private/Tests/AetherAssetRegistryTests.cpp
+- Docs/PHASE_20_ASSET_PIPELINE_VISUAL_REGISTRY.md
+
+Validation truth:
+- repository/static validation: PASS;
+- Unreal 5.8.1 UHT/UBT/Editor/Automation/FBX import/runtime rendering: NOT VERIFIED because Unreal is unavailable in this environment;
+- no CI workflow is available as a substitute.
+
+Next implementation target:
+**PHASE 21 — COMPLETE ITEM, EQUIPMENT & ENHANCEMENT DATA.**
