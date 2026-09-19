@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 4 — Accounts and Sessions (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Current stage:** Phase 5 — Character Foundation (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -184,6 +184,69 @@ Coverage:
 
 These are Unreal Automation Framework tests.
 
+## 5. Phase 5 — Character Foundation
+
+Repository implementation is complete.
+
+Implemented:
+- FAetherCharacterId;
+- FAetherCharacterRecord;
+- account-to-character ownership;
+- normalized globally unique character names;
+- five-character account limit;
+- Warrior/Mage/Archer/Cleric class contract;
+- Created/Available/Selected/Active/Offline/Disabled/Deleted lifecycle;
+- base stats;
+- derived stats;
+- runtime world location/rotation;
+- character creation;
+- account character listing;
+- selection;
+- deselection;
+- server-side ownership checks;
+- character GameInstance subsystem;
+- replicated character PlayerState;
+- replicated ACharacter pawn;
+- spectator-before-selection flow;
+- server-authoritative character spawn;
+- logout character cleanup;
+- character automation tests.
+
+Network integration:
+- AAetherNetworkPlayerController exposes character list/create/select/deselect requests.
+- All mutations are server RPCs.
+- The server checks authenticated AccountID before character operations.
+- The server spawns the character only after successful selection.
+- The client never supplies authoritative ownership or lifecycle state.
+
+Tests added:
+- Source/AgeOfAether/Private/Tests/AetherCharacterTests.cpp
+- creation;
+- ID generation;
+- name normalization;
+- initial state;
+- derived stats;
+- ownership;
+- cross-account selection rejection;
+- account limit;
+- name boundaries;
+- duplicate names;
+- selection lifecycle;
+- one-character-active rule;
+- deselection;
+- location authority;
+- account listing and deterministic ordering.
+
+Validation truth:
+- Repository/static inspection passed.
+- Unreal UHT/UBT/Editor/PIE/multiplayer/movement/automation runtime are NOT VERIFIED because Unreal 5.8.1 is not executable in this environment.
+- No CI check exists that can substitute for Unreal validation.
+
+Security/persistence boundary:
+- Character data remains runtime-only.
+- Persistence/database work belongs to later backend/persistence phases.
+- Combat, inventory, equipment, progression and skills are not implemented in this phase.
+
 ## 6. Validation truth
 
 ### Repository/static validation
@@ -267,13 +330,13 @@ The supplied Item.txt and public documentation are references for data modeling/
 
 AGE OF AETHER must use original implementation, original content and original networking/persistence.
 
-## 10. Final Phase 4 hardening
+## 11. Final Phase 4 hardening
 
 Repeated login/reconnect on an already authenticated controller is explicitly rejected. This prevents a second successful authentication from replacing controller-local identity while leaving the previous session active.
 
-## 11. Next implementation target
+## 12. Next implementation target
 
-**PHASE 5 — Character Foundation**
+**PHASE 6 — Item and Inventory System**
 
 Implement:
 - CharacterID;
@@ -289,7 +352,7 @@ Implement:
 
 The character system must consume the authenticated account/session boundary created in Phase 4. Do not move character authority to the client.
 
-## 12. Mandatory workflow
+## 13. Mandatory workflow
 
 For every phase:
 
