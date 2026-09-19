@@ -4,6 +4,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Characters/AetherCharacterTypes.h"
 #include "Combat/AetherCombatService.h"
+#include "Combat/AetherCombatConfigDataAsset.h"
 
 #include "AetherCombatSubsystem.generated.h"
 
@@ -28,6 +29,7 @@ public:
 
     const FAetherCombatConfig& GetConfig() const;
     bool Configure(const FAetherCombatConfig& NewConfig);
+    bool ConfigureFromDataAsset(const UAetherCombatConfigDataAsset* ConfigAsset);
 
 private:
     FAetherCombatService CombatService;
