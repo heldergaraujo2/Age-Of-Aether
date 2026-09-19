@@ -16,6 +16,20 @@ bool UAetherCharacterSubsystem::FindCharacter(
     return CharacterService.FindCharacter(CharacterId, OutCharacter);
 }
 
+bool UAetherCharacterSubsystem::FindCharacterByName(
+    const FString& Name,
+    FAetherCharacterRecord& OutCharacter) const
+{
+    return CharacterService.FindCharacterByName(Name, OutCharacter);
+}
+
+bool UAetherCharacterSubsystem::IsCharacterOwnedByAccount(
+    const FAetherCharacterId& CharacterId,
+    const FAetherAccountId& AccountId) const
+{
+    return CharacterService.IsCharacterOwnedByAccount(CharacterId, AccountId);
+}
+
 void UAetherCharacterSubsystem::GetCharactersForAccount(
     const FAetherAccountId& AccountId,
     TArray<FAetherCharacterRecord>& OutCharacters) const
