@@ -1,0 +1,9 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.8",
+  "Category": "Games",
+  "Description": "AGE OF AETHER MMORPG",
+  "Modules": [
+    { "Name": "AgeOfAether", "Type": "Runtime", "LoadingPhase": "Default" }
+  ]
+}
