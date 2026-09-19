@@ -66,6 +66,32 @@ bool FAetherItemService::CreateItemInstance(
     return true;
 }
 
+bool FAetherItemService::CanRestoreInventory(const FAetherCharacterId& CharacterId, const TArray<FAetherInventorySlot>& Slots) const
+{
+    if (!CharacterId.IsValid() || Slots.Num() > MaxInventorySlots)
+    {
+        return false;
+    }
+
+    TSet<int32> SlotIndices;
+    TSet<FAetherItemInstanceId> InstanceIds;
+    for (const FAetherInventorySlot& Slot : Slots)
+    {
+        const FAetherItemDefinition* Definition = Definitions.Find(Slot.Item.DefinitionId);
+        if (Slot.SlotIndex < 0 || Slot.SlotIndex >= MaxInventorySlots || !Slot.IsOccupied()
+            || !Definition || Slot.Item.OwnerCharacterId != CharacterId
+            || Slot.Item.Quantity <= 0 || Slot.Item.Quantity > Definition->MaxStack
+            || SlotIndices.Contains(Slot.SlotIndex) || InstanceIds.Contains(Slot.Item.InstanceId))
+        {
+            return false;
+        }
+        SlotIndices.Add(Slot.SlotIndex);
+        InstanceIds.Add(Slot.Item.InstanceId);
+    }
+
+    return true;
+}
+
 bool FAetherItemService::RestoreInventory(const FAetherCharacterId& CharacterId, const TArray<FAetherInventorySlot>& Slots)
 {
     if (!CharacterId.IsValid() || Slots.Num() > MaxInventorySlots)
