@@ -66,7 +66,7 @@ jobs:
           grep -q "FAetherWorldActorBasicTest" Source/AgeOfAether/Private/Tests/AetherWorldActorRegistryTests.cpp
           grep -q "FAetherSkillEffectRegistry" Source/AgeOfAether/Public/Data/AetherSkillEffectRegistry.h
           grep -q "FAetherSkillEffectBasicTest" Source/AgeOfAether/Private/Tests/AetherSkillEffectRegistryTests.cpp
-          grep -q "repository implementation" Docs/PHASE_22_MONSTER_NPC_BOSS_AI.md
+          grep -q "Repository implementation" Docs/PHASE_22_MONSTER_NPC_BOSS_AI.md
           grep -q "Repository implementation" Docs/PHASE_23_SKILLS_EFFECTS_STATUS.md
       - name: Report
         run: echo "Repository static validation completed successfully."
