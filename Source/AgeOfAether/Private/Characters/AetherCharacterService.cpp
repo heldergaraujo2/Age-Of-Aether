@@ -171,6 +171,30 @@ bool FAetherCharacterService::UpdateCharacterLocation(
     return true;
 }
 
+bool FAetherCharacterService::UpdateCharacterWorldState(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    const FAetherWorldZoneId& ZoneId,
+    EAetherWorldZoneType ZoneType,
+    const FVector& Location,
+    const FRotator& Rotation)
+{
+    FAetherCharacterRecord* Character = Characters.Find(CharacterId);
+    if (!Character ||
+        Character->AccountId != AccountId ||
+        Character->Status != EAetherCharacterStatus::Active ||
+        !ZoneId.IsValid())
+    {
+        return false;
+    }
+
+    Character->WorldLocation = Location;
+    Character->WorldRotation = Rotation;
+    Character->CurrentZoneId = ZoneId;
+    Character->CurrentZoneType = ZoneType;
+    return true;
+}
+
 bool FAetherCharacterService::UpdateCharacterStatus(
     const FAetherAccountId& AccountId,
     const FAetherCharacterId& CharacterId,
