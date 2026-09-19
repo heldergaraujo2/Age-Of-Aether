@@ -82,6 +82,41 @@ void FAetherEconomyService::InitializeTransaction(const FAetherCharacterId& Char
     OutTransaction.CharacterId = CharacterId;
 }
 
+bool FAetherEconomyService::GetWallet(const FAetherCharacterId& CharacterId, FAetherWallet& OutWallet) const
+{
+    const FAetherWallet* Found = Wallets.Find(CharacterId);
+    if (!Found)
+    {
+        OutWallet = FAetherWallet();
+        OutWallet.CharacterId = CharacterId;
+        return true;
+    }
+
+    OutWallet = *Found;
+    return true;
+}
+
+bool FAetherEconomyService::RestoreWallet(const FAetherWallet& Wallet)
+{
+    if (!Wallet.CharacterId.IsValid() || Wallet.Balances.Num() > 16)
+    {
+        return false;
+    }
+
+    TSet<EAetherCurrency> Currencies;
+    for (const FAetherCurrencyBalance& Balance : Wallet.Balances)
+    {
+        if (Balance.Amount < 0 || Balance.Currency != EAetherCurrency::Gold || Currencies.Contains(Balance.Currency))
+        {
+            return false;
+        }
+        Currencies.Add(Balance.Currency);
+    }
+
+    Wallets.Add(Wallet.CharacterId, Wallet);
+    return true;
+}
+
 int64 FAetherEconomyService::GetBalance(const FAetherCharacterId& CharacterId, EAetherCurrency Currency) const
 {
     const FAetherWallet* Wallet = Wallets.Find(CharacterId);
