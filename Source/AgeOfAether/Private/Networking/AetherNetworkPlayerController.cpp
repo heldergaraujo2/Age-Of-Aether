@@ -934,22 +934,30 @@ void AAetherNetworkPlayerController::ServerBasicAttack_Implementation(
 
     if (bResolved && Result.Result != EAetherCombatResultCode::Missed)
     {
-        if (AAetherCharacterPlayerState* TargetState = nullptr)
-        {
-            (void)TargetState;
-        }
-
         UAetherCharacterSubsystem* Characters = GetGameInstance()
             ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
             : nullptr;
+
         if (Characters)
         {
             FAetherCharacterRecord TargetCharacter;
             if (Characters->FindCharacter(TargetCharacterId, TargetCharacter))
             {
-                if (AAetherNetworkGameMode* GameMode = GetWorld()->GetAuthGameMode<AAetherNetworkGameMode>())
+                if (AAetherNetworkGameState* NetworkState = GetWorld()
+                    ? GetWorld()->GetGameState<AAetherNetworkGameState>()
+                    : nullptr)
                 {
-                    (void)GameMode;
+                    for (APlayerState* PlayerStateBase : NetworkState->PlayerArray)
+                    {
+                        if (AAetherCharacterPlayerState* TargetState = Cast<AAetherCharacterPlayerState>(PlayerStateBase))
+                        {
+                            if (TargetState->GetCharacterId() == TargetCharacterId)
+                            {
+                                TargetState->SetCharacterIdentity(TargetCharacter);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
