@@ -3,11 +3,66 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 6 — Item and Inventory System (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Status:** Phase 7 — Progression System (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
 ---
+
+
+
+## Current execution phases
+
+The repository uses the following execution sequence for implementation continuity:
+
+- Phase 0 — Repository and Architecture Foundation — COMPLETE
+- Phase 1 — Unreal Project Foundation — COMPLETE at repository level; local Unreal validation pending
+- Phase 2 — Core Runtime — COMPLETE at repository level; local Unreal validation pending
+- Phase 3 — Networking Foundation — COMPLETE at repository level; local Unreal validation pending
+- Phase 4 — Accounts and Sessions — COMPLETE at repository level; local Unreal validation pending
+- Phase 5 — Character Foundation — COMPLETE at repository level; local Unreal validation pending
+- Phase 6 — Item and Inventory System — COMPLETE at repository level; local Unreal validation pending
+- Phase 7 — Progression System — COMPLETE at repository level; local Unreal validation pending
+- Phase 8 — Combat Runtime — NEXT
+- Phase 9 — World Runtime
+- Phase 10 — Quest/Mission
+- Phase 11 — Social
+- Phase 12 — Economy & Crafting
+- Phase 13 — Multiplayer & Server Authority
+- Phase 14 — Persistence & Backend
+- Phase 15 — Security & Anti-Cheat
+- Phase 16 — MMORPG Scale & Dedicated Server
+- Phase 17 — AI/GPT Integration
+- Phase 18 — Production & Live MMORPG
+
+The numbered item-content sections later in this document are retained as design/content milestones. They do not override the current execution sequence above.
+
+## Phase 7 — Progression System
+
+Repository implementation is COMPLETE.
+
+Implemented:
+
+- authoritative experience and level progression;
+- bounded data-driven XP curve;
+- maximum level 4000 by default;
+- multi-level advancement and rollover XP;
+- stat points per level;
+- Strength, Agility, Vitality, Energy and Command allocation;
+- configurable stat cap;
+- derived-stat recalculation;
+- CharacterID/AccountID ownership validation;
+- disabled/deleted lifecycle protection;
+- replicated level, XP, stat points, base stats and derived stats;
+- progression subsystem and CharacterService commit boundary;
+- progression Data Asset configuration contract;
+- server-authoritative stat allocation RPC;
+- automation tests for curve, level-up, rollover, multi-level progression, stat allocation, cap, invalid input and lifecycle.
+
+Deliverable: Docs/PHASE_7_PROGRESSION.md
+
+Local Unreal validation remains PENDING and is not represented as PASS.
+
 
 ## 1. Purpose of this roadmap
 
