@@ -262,7 +262,7 @@ bool FAetherSocialService::LeaveParty(const FAetherCharacterRecord& Character, F
     Out = FAetherSocialOperation();
     FAetherSocialPartyId PartyId;
     if (!IsInParty(Character.CharacterId, &PartyId)) { Out.Result = EAetherSocialResult::NotPartyMember; return false; }
-    FAetherSocialPartyState* Party = Parties.Find(PartyId);
+    FAetherPartyState* Party = Parties.Find(PartyId);
     if (!Party) { Out.Result = EAetherSocialResult::PartyNotFound; return false; }
 
     int32 Index = INDEX_NONE;
