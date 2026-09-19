@@ -42,3 +42,22 @@ bool FAetherQuestDialogueEventDeterminismTest::RunTest(const FString&)
 {
  FAetherQuestDialogueEventRegistry R;FString E;for(const FString&ID:{TEXT("Z"),TEXT("A"),TEXT("M")}){FAetherWorldEventDefinition X;X.DefinitionID=ID;X.DisplayName=ID;X.DurationSeconds=1;R.RegisterWorldEvent(X,E);}TArray<FString>IDs;R.GetDefinitionIDs(IDs);TestEqual(TEXT("count"),IDs.Num(),3);TestTrue(TEXT("sorted"),IDs[0]==TEXT("A")&&IDs[1]==TEXT("M")&&IDs[2]==TEXT("Z"));return true;
 }
+
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestDialogueEventCrossReferenceTest,"AgeOfAether.Data.QuestDialogueEvent.CrossReferences",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherQuestDialogueEventCrossReferenceTest::RunTest(const FString&)
+{
+ FAetherQuestDialogueEventRegistry R; FString E;
+ FAetherQuestDefinition Q; Q.DefinitionID=TEXT("Quest.Cross"); Q.DisplayName=TEXT("Cross"); Q.PrerequisiteQuestIDs.Add(TEXT("Quest.Missing")); FAetherQuestObjectiveDefinition O; O.ObjectiveID=TEXT("O"); Q.Objectives.Add(O); TestTrue(TEXT("register quest"),R.RegisterQuest(Q,E));
+ FAetherDialogueDefinition D; D.DefinitionID=TEXT("Dialogue.Cross"); D.DisplayName=TEXT("Cross"); D.StartNodeID=TEXT("N"); FAetherDialogueNodeDefinition N; N.NodeID=TEXT("N"); N.Type=EAetherDialogueNodeType::Line; N.Text=FText::FromString(TEXT("x")); N.NextNodeID=TEXT(""); N.Outcomes.Add(EAetherDialogueOutcomeType::StartEvent); N.OutcomeIDs.Add(TEXT("Event.Missing")); D.Nodes.Add(N); TestTrue(TEXT("register dialogue"),R.RegisterDialogue(D,E));
+ FAetherWorldEventDefinition Ev; Ev.DefinitionID=TEXT("Event.Cross"); Ev.DisplayName=TEXT("Cross"); Ev.DurationSeconds=1.0; Ev.TriggerType=EAetherWorldEventTriggerType::PreviousEvent; Ev.PreviousEventID=TEXT("Event.Missing"); TestTrue(TEXT("register event"),R.RegisterWorldEvent(Ev,E));
+ TArray<FAetherQuestDialogueEventValidationIssue> Issues; TestFalse(TEXT("cross validation fails"),R.Validate(Issues)); TestTrue(TEXT("issues reported"),Issues.Num()>=3); return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestDialogueEventConditionTest,"AgeOfAether.Data.QuestDialogueEvent.Conditions",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherQuestDialogueEventConditionTest::RunTest(const FString&)
+{
+ FAetherQuestDialogueEventRegistry R; FString E;
+ FAetherQuestDefinition Q; Q.DefinitionID=TEXT("Quest.Condition"); Q.DisplayName=TEXT("Condition"); FAetherQuestObjectiveDefinition O; O.ObjectiveID=TEXT("Timed"); O.Type=EAetherQuestObjectiveType::Timed; O.TimeLimitSeconds=0.0; Q.Objectives.Add(O); TestFalse(TEXT("timed objective needs limit"),R.RegisterQuest(Q,E));
+ Q.Objectives[0].Type=EAetherQuestObjectiveType::ReachArea; Q.Objectives[0].AreaTag=TEXT("Village"); TestTrue(TEXT("area objective valid"),R.RegisterQuest(Q,E)); return true;
+}
