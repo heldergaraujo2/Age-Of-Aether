@@ -115,3 +115,8 @@ const FAetherProgressionConfig& UAetherProgressionSubsystem::GetConfig() const
 {
     return ProgressionService.GetConfig();
 }
+
+bool UAetherProgressionSubsystem::ConfigureFromDataAsset(const UAetherProgressionConfigDataAsset* ConfigAsset)
+{
+    return ConfigAsset && ProgressionService.SetConfig(ConfigAsset->Config);
+}
