@@ -32,6 +32,9 @@ bool FAetherCharacterService::CreateCharacter(
     Character.Experience = 0;
     Character.BaseStats = FAetherBaseStats();
     Character.DerivedStats = CalculateDerivedStats(Character.BaseStats, Character.Level);
+    Character.CurrentHealth = Character.DerivedStats.MaxHealth;
+    Character.CurrentShield = 0.0f;
+    Character.CombatState = EAetherCharacterCombatState::Alive;
 
     Characters.Add(Character.CharacterId, Character);
     CharacterIdByName.Add(NormalizedName, Character.CharacterId);
@@ -225,6 +228,42 @@ bool FAetherCharacterService::ApplyProgressionState(
     Character->UnspentStatPoints = UpdatedCharacter.UnspentStatPoints;
     Character->BaseStats = UpdatedCharacter.BaseStats;
     Character->DerivedStats = UpdatedCharacter.DerivedStats;
+    Character->CurrentHealth = FMath::Clamp(UpdatedCharacter.CurrentHealth, 0.0f, Character->DerivedStats.MaxHealth);
+    Character->CurrentShield = FMath::Max(0.0f, UpdatedCharacter.CurrentShield);
+    Character->CombatState = Character->CurrentHealth > 0.0f
+        ? EAetherCharacterCombatState::Alive
+        : EAetherCharacterCombatState::Dead;
+    return true;
+}
+
+bool FAetherCharacterService::ApplyCombatState(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    const FAetherCharacterRecord& UpdatedCharacter)
+{
+    FAetherCharacterRecord* Character = Characters.Find(CharacterId);
+    if (!Character || Character->AccountId != AccountId
+        || UpdatedCharacter.CharacterId != CharacterId
+        || UpdatedCharacter.AccountId != AccountId)
+    {
+        return false;
+    }
+
+    if (Character->Status != EAetherCharacterStatus::Active
+        || Character->Status == EAetherCharacterStatus::Disabled
+        || Character->Status == EAetherCharacterStatus::Deleted)
+    {
+        return false;
+    }
+
+    Character->CurrentHealth = FMath::Clamp(
+        UpdatedCharacter.CurrentHealth,
+        0.0f,
+        Character->DerivedStats.MaxHealth);
+    Character->CurrentShield = FMath::Max(0.0f, UpdatedCharacter.CurrentShield);
+    Character->CombatState = Character->CurrentHealth > 0.0f
+        ? EAetherCharacterCombatState::Alive
+        : EAetherCharacterCombatState::Dead;
     return true;
 }
 
