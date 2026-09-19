@@ -90,3 +90,25 @@ bool FAetherSocialChatTest::RunTest(const FString&)
     TestEqual(TEXT("rate limited"),R,EAetherSocialResult::ChatRateLimited);
     return true;
 }
+
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialCleanupTest,"AgeOfAether.Social.Cleanup",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+bool FAetherSocialCleanupTest::RunTest(const FString&)
+{
+    FAetherSocialService S;
+    auto A=MakeCharacter(TEXT("A"));
+    auto B=MakeCharacter(TEXT("B"));
+    FAetherSocialOperation O;
+    TestTrue(TEXT("party"),S.CreateParty(A,O));
+    const FAetherSocialPartyId PartyId=O.Party.PartyId;
+    TestTrue(TEXT("guild"),S.CreateGuild(A,TEXT("PersistentGuild"),O));
+    S.ClearCharacterState(A.CharacterId);
+
+    FAetherPartyState Party;
+    TestFalse(TEXT("party removed on logout"),S.GetPartyForCharacter(A.CharacterId,Party));
+
+    FAetherGuildState Guild;
+    TestTrue(TEXT("guild membership persists"),S.GetGuildForCharacter(A.CharacterId,Guild));
+    TestEqual(TEXT("guild name"),Guild.Name,FString(TEXT("persistentguild")));
+    return true;
+}
