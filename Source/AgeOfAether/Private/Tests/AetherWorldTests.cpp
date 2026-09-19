@@ -173,7 +173,7 @@ bool FAetherWorldDisabledRulesTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("Source zone registers"), Service.RegisterZone(MakeZone(TEXT("A"), EAetherWorldZoneType::Safe, 1)));
     TestTrue(TEXT("Disabled target registers"), Service.RegisterZone(MakeZone(TEXT("B"), EAetherWorldZoneType::Event, 1, false)));
     TestTrue(TEXT("Spawn registers"), Service.RegisterSpawnPoint(MakeSpawn(TEXT("B-Spawn"), TEXT("B"), 200.0f)));
-    TestTrue(TEXT("Portal registers"), Service.RegisterPortal(MakePortal(TEXT("A-to-B"), TEXT("A"), TEXT("B")));
+    TestTrue(TEXT("Portal registers"), Service.RegisterPortal(MakePortal(TEXT("A-to-B"), TEXT("A"), TEXT("B"))));
 
     FAetherWorldTransitionResult Result;
     TestFalse(TEXT("Disabled zone is rejected"), Service.ResolveTransition(ZoneId(TEXT("A")), ZoneId(TEXT("B")), 1, Result));
