@@ -69,6 +69,14 @@ bool UAetherCharacterSubsystem::UpdateCharacterLocation(
     return CharacterService.UpdateCharacterLocation(AccountId, CharacterId, Location, Rotation);
 }
 
+bool UAetherCharacterSubsystem::ApplyCombatState(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    const FAetherCharacterRecord& UpdatedCharacter)
+{
+    return CharacterService.ApplyCombatState(AccountId, CharacterId, UpdatedCharacter);
+}
+
 bool UAetherCharacterSubsystem::GetSelectedCharacter(
     const FAetherAccountId& AccountId,
     FAetherCharacterRecord& OutCharacter) const
