@@ -507,11 +507,6 @@ void FAetherSocialService::ClearCharacterState(const FAetherCharacterId& Charact
         }
         PartyByCharacter.Remove(CharacterId);
     }
-    FAetherGuildId GuildId;
-    if(IsInGuild(CharacterId,&GuildId))
-    {
-        GuildByCharacter.Remove(CharacterId);
-    }
 }
 
 void FAetherSocialService::ClearAccountState(const FAetherAccountId& AccountId)
