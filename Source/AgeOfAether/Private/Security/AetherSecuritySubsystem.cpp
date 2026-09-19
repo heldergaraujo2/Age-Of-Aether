@@ -1,8 +1,8 @@
 #include "Security/AetherSecuritySubsystem.h"
 
-void UAetherSecuritySubsystem::Initialize(FSubsystemCollectionBase&)
+void UAetherSecuritySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-    Super::Initialize(nullptr);
+    Super::Initialize(Collection);
     FAetherSecurityConfig Config;
     Service.Initialize(Config);
 }
