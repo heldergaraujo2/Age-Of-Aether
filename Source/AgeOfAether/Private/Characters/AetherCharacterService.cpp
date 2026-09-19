@@ -70,7 +70,10 @@ void FAetherCharacterService::GetCharactersForAccount(
     {
         if (const FAetherCharacterRecord* Character = Characters.Find(CharacterId))
         {
-            OutCharacters.Add(*Character);
+            if (Character->Status != EAetherCharacterStatus::Deleted)
+            {
+                OutCharacters.Add(*Character);
+            }
         }
     }
 
