@@ -20,6 +20,9 @@ void AAetherCharacterPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimePro
     DOREPLIFETIME(AAetherCharacterPlayerState, UnspentStatPoints);
     DOREPLIFETIME(AAetherCharacterPlayerState, BaseStats);
     DOREPLIFETIME(AAetherCharacterPlayerState, DerivedStats);
+    DOREPLIFETIME(AAetherCharacterPlayerState, CurrentHealth);
+    DOREPLIFETIME(AAetherCharacterPlayerState, CurrentShield);
+    DOREPLIFETIME(AAetherCharacterPlayerState, CombatState);
 }
 
 void AAetherCharacterPlayerState::SetCharacterIdentity(const FAetherCharacterRecord& Character)
@@ -38,6 +41,9 @@ void AAetherCharacterPlayerState::SetCharacterIdentity(const FAetherCharacterRec
     UnspentStatPoints = Character.UnspentStatPoints;
     BaseStats = Character.BaseStats;
     DerivedStats = Character.DerivedStats;
+    CurrentHealth = Character.CurrentHealth;
+    CurrentShield = Character.CurrentShield;
+    CombatState = Character.CombatState;
     SetPlayerName(Character.Name);
 }
 
@@ -84,4 +90,19 @@ FAetherBaseStats AAetherCharacterPlayerState::GetBaseStats() const
 FAetherDerivedStats AAetherCharacterPlayerState::GetDerivedStats() const
 {
     return DerivedStats;
+}
+
+float AAetherCharacterPlayerState::GetCurrentHealth() const
+{
+    return CurrentHealth;
+}
+
+float AAetherCharacterPlayerState::GetCurrentShield() const
+{
+    return CurrentShield;
+}
+
+EAetherCharacterCombatState AAetherCharacterPlayerState::GetCombatState() const
+{
+    return CombatState;
 }
