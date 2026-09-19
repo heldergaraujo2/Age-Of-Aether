@@ -1260,8 +1260,7 @@ void AAetherNetworkPlayerController::ClientReceiveQuestList_Implementation(
     uint32 RequestId,
     const TArray<FAetherQuestState>& States)
 {
-    // Quest state is delivered through the operation delegate path; list consumers can query
-    // the replicated/runtime subsystem through their owning client integration.
+    OnQuestList.Broadcast(States);
 }
 
 void AAetherNetworkPlayerController::ClientReceiveQuestOperation_Implementation(
