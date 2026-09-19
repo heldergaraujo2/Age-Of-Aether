@@ -32,6 +32,19 @@ bool FAetherProgressionCurveTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("Level 1 requires 100 XP"), Service.ExperienceRequiredForNextLevel(1), 100LL);
     TestEqual(TEXT("Level 2 requires 125 XP"), Service.ExperienceRequiredForNextLevel(2), 125LL);
     TestEqual(TEXT("Level 4000 has no next-level requirement"), Service.ExperienceRequiredForNextLevel(4000), 0LL);
+
+    FAetherProgressionConfig CustomConfig = Service.GetConfig();
+    CustomConfig.MaxLevel = 10;
+    CustomConfig.BaseExperienceToLevel = 50;
+    CustomConfig.ExperienceGrowthPerLevel = 0.5f;
+    CustomConfig.StatPointsPerLevel = 3;
+    CustomConfig.MaxStatValue = 100;
+    TestTrue(TEXT("Valid configuration is accepted"), Service.SetConfig(CustomConfig));
+    TestEqual(TEXT("Injected base XP is used"), Service.ExperienceRequiredForNextLevel(1), 50LL);
+    TestEqual(TEXT("Injected curve is used"), Service.ExperienceRequiredForNextLevel(2), 75LL);
+
+    CustomConfig.MaxLevel = 0;
+    TestFalse(TEXT("Invalid configuration is rejected"), Service.SetConfig(CustomConfig));
     TestEqual(TEXT("Invalid level has no requirement"), Service.ExperienceRequiredForNextLevel(0), 0LL);
     return true;
 }
@@ -140,6 +153,9 @@ bool FAetherProgressionInvalidInputTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("Character remains level 1"), Character.Level, 1);
     TestEqual(TEXT("Character remains at zero XP"), Character.Experience, 0LL);
     TestEqual(TEXT("No stat points were created"), Character.UnspentStatPoints, 0);
+
+    Character.Level = Service.GetConfig().MaxLevel;
+    TestFalse(TEXT("Max level rejects additional XP"), Service.GrantExperience(Character, 100, Result));
     return true;
 }
 
