@@ -46,6 +46,15 @@ public:
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Progression")
     FAetherDerivedStats GetDerivedStats() const;
 
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|Combat")
+    float GetCurrentHealth() const;
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|Combat")
+    float GetCurrentShield() const;
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|Combat")
+    EAetherCharacterCombatState GetCombatState() const;
+
 protected:
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Character")
     FAetherAccountId AccountId;
@@ -73,4 +82,13 @@ protected:
 
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Progression")
     FAetherDerivedStats DerivedStats;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Combat")
+    float CurrentHealth = 100.0f;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Combat")
+    float CurrentShield = 0.0f;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Combat")
+    EAetherCharacterCombatState CombatState = EAetherCharacterCombatState::Alive;
 };
