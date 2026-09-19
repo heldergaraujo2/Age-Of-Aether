@@ -6,6 +6,7 @@
 #include "Items/AetherItemSubsystem.h"
 #include "Progression/AetherProgressionSubsystem.h"
 #include "Combat/AetherCombatSubsystem.h"
+#include "World/AetherWorldSubsystem.h"
 #include "Networking/AetherNetworkGameMode.h"
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
@@ -971,6 +972,99 @@ void AAetherNetworkPlayerController::ClientReceiveCombat_Implementation(
     const FAetherCombatResult& Result)
 {
     OnCombat.Broadcast(Result);
+}
+
+void AAetherNetworkPlayerController::RequestWorldTransition(const FAetherWorldZoneId& TargetZoneId)
+{
+    const uint32 RequestId = NextWorldRequestId++;
+    if (HasAuthority())
+    {
+        ServerRequestWorldTransition_Implementation(RequestId, TargetZoneId);
+        return;
+    }
+
+    ServerRequestWorldTransition(RequestId, TargetZoneId);
+}
+
+void AAetherNetworkPlayerController::ServerRequestWorldTransition_Implementation(
+    uint32 RequestId,
+    const FAetherWorldZoneId& TargetZoneId)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedWorldRequestId)
+    {
+        return;
+    }
+
+    FAetherWorldTransitionResult Result;
+    Result.Result = EAetherWorldTransitionResult::NotAuthenticated;
+
+    const AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>();
+    const FAetherCharacterId CharacterId = State
+        ? State->GetCharacterId()
+        : FAetherCharacterId();
+
+    UAetherWorldSubsystem* World = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherWorldSubsystem>()
+        : nullptr;
+
+    bool bAccepted = false;
+    if (World && bAccountAuthenticated && CharacterId.IsValid() && TargetZoneId.IsValid())
+    {
+        bAccepted = World->TransitionCharacter(
+            AuthenticatedAccountId,
+            CharacterId,
+            TargetZoneId,
+            Result);
+    }
+    else if (!bAccountAuthenticated)
+    {
+        Result.Result = EAetherWorldTransitionResult::NotAuthenticated;
+    }
+    else if (!CharacterId.IsValid())
+    {
+        Result.Result = EAetherWorldTransitionResult::CharacterNotSelected;
+    }
+    else
+    {
+        Result.Result = EAetherWorldTransitionResult::InvalidRequest;
+    }
+
+    LastProcessedWorldRequestId = RequestId;
+
+    if (bAccepted)
+    {
+        UAetherCharacterSubsystem* Characters = GetGameInstance()
+            ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+            : nullptr;
+
+        FAetherCharacterRecord Character;
+        if (Characters && Characters->FindCharacter(CharacterId, Character))
+        {
+            if (AAetherCharacterPlayerState* CharacterState = GetPlayerState<AAetherCharacterPlayerState>())
+            {
+                CharacterState->SetCharacterIdentity(Character);
+            }
+
+            if (APawn* Pawn = GetPawn())
+            {
+                Pawn->SetActorLocationAndRotation(
+                    Character.WorldLocation,
+                    Character.WorldRotation,
+                    false,
+                    nullptr,
+                    ETeleportType::TeleportPhysics);
+            }
+        }
+    }
+
+    ClientReceiveWorldTransition(RequestId, Result);
+}
+
+void AAetherNetworkPlayerController::ClientReceiveWorldTransition_Implementation(
+    uint32 RequestId,
+    const FAetherWorldTransitionResult& Result)
+{
+    OnWorldTransition.Broadcast(Result);
 }
 
 void AAetherNetworkPlayerController::AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount)
