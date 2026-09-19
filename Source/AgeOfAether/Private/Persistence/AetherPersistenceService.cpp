@@ -8,26 +8,43 @@ namespace
     {
         FString Payload;
         Payload.Reserve(4096);
-        Payload += FString::Printf(TEXT("schema=%d;revision=%llu;time=%.6f;account=%s;character=%s;name=%s;level=%d;xp=%lld;points=%d;"),
+        Payload += FString::Printf(TEXT("schema=%d;revision=%llu;time=%.6f;account=%s;character=%s;name=%s;class=%d;status=%d;level=%d;xp=%lld;points=%d;combat=%d;"),
             Snapshot.SchemaVersion,
             Snapshot.Revision,
             Snapshot.SavedAtUtcSeconds,
             *Snapshot.AccountId.Value,
             *Snapshot.Character.CharacterId.Value,
             *Snapshot.Character.Name,
+            static_cast<int32>(Snapshot.Character.CharacterClass),
+            static_cast<int32>(Snapshot.Character.Status),
             Snapshot.Character.Level,
             Snapshot.Character.Experience,
-            Snapshot.Character.UnspentStatPoints);
+            Snapshot.Character.UnspentStatPoints,
+            static_cast<int32>(Snapshot.Character.CombatState));
 
-        Payload += FString::Printf(TEXT("stats=%d,%d,%d,%d,%d;health=%.6f;shield=%.6f;zone=%s;"),
+        Payload += FString::Printf(TEXT("stats=%d,%d,%d,%d,%d;derived=%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f;health=%.6f;shield=%.6f;loc=%.6f,%.6f,%.6f;rot=%.6f,%.6f,%.6f;zone=%s:%d;"),
             Snapshot.Character.BaseStats.Strength,
             Snapshot.Character.BaseStats.Agility,
             Snapshot.Character.BaseStats.Vitality,
             Snapshot.Character.BaseStats.Energy,
             Snapshot.Character.BaseStats.Command,
+            Snapshot.Character.DerivedStats.MaxHealth,
+            Snapshot.Character.DerivedStats.MaxMana,
+            Snapshot.Character.DerivedStats.AttackMin,
+            Snapshot.Character.DerivedStats.AttackMax,
+            Snapshot.Character.DerivedStats.Defense,
+            Snapshot.Character.DerivedStats.Resistance,
+            Snapshot.Character.DerivedStats.MoveSpeed,
             Snapshot.Character.CurrentHealth,
             Snapshot.Character.CurrentShield,
-            *Snapshot.Character.CurrentZoneId.Value);
+            Snapshot.Character.WorldLocation.X,
+            Snapshot.Character.WorldLocation.Y,
+            Snapshot.Character.WorldLocation.Z,
+            Snapshot.Character.WorldRotation.Pitch,
+            Snapshot.Character.WorldRotation.Yaw,
+            Snapshot.Character.WorldRotation.Roll,
+            *Snapshot.Character.CurrentZoneId.Value,
+            static_cast<int32>(Snapshot.Character.CurrentZoneType));
 
         for (const FAetherInventorySlot& Slot : Snapshot.Inventory)
         {
@@ -240,6 +257,17 @@ bool FAetherPersistenceService::ValidateSnapshot(const FAetherCharacterPersisten
         }
     }
 
+    TSet<EAetherCurrency> CurrencyTypes;
+    for (const FAetherCurrencyBalance& Balance : Snapshot.Wallet.Balances)
+    {
+        if (CurrencyTypes.Contains(Balance.Currency))
+        {
+            return false;
+        }
+        CurrencyTypes.Add(Balance.Currency);
+    }
+    }
+
     TSet<FAetherQuestId> QuestIds;
     for (const FAetherQuestState& Quest : Snapshot.QuestStates)
     {
@@ -248,6 +276,22 @@ bool FAetherPersistenceService::ValidateSnapshot(const FAetherCharacterPersisten
             return false;
         }
         QuestIds.Add(Quest.QuestId);
+    }
+
+    if (Snapshot.Character.CurrentHealth > Snapshot.Character.DerivedStats.MaxHealth + KINDA_SMALL_NUMBER)
+    {
+        return false;
+    }
+
+    for (const FAetherQuestState& Quest : Snapshot.QuestStates)
+    {
+        for (const FAetherQuestObjectiveProgress& Objective : Quest.Objectives)
+        {
+            if (Objective.CurrentCount < 0 || Objective.RequiredCount < 0)
+            {
+                return false;
+            }
+        }
     }
 
     return true;
