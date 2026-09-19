@@ -93,23 +93,17 @@ bool UAetherPersistenceSubsystem::RefreshFromDisk()
         return true;
     }
 
-    if (bAlternateValid && (!bPrimaryValid || AlternateRevision > PrimaryRevision))
+    const TArray<FAetherCharacterPersistenceSnapshot>& SelectedSnapshots =
+        bAlternateValid && (!bPrimaryValid || AlternateRevision > PrimaryRevision)
+            ? AlternateSnapshots
+            : PrimarySnapshots;
+
+    bUsingAlternateSlot = bAlternateValid && (!bPrimaryValid || AlternateRevision > PrimaryRevision);
+    ActiveRevision = bUsingAlternateSlot ? AlternateRevision : PrimaryRevision;
+
+    for (const FAetherCharacterPersistenceSnapshot& Snapshot : SelectedSnapshots)
     {
-        bUsingAlternateSlot = true;
-        ActiveRevision = AlternateRevision;
-        for (const FAetherCharacterPersistenceSnapshot& Snapshot : AlternateSnapshots)
-        {
-            PersistenceService.ImportSnapshot(Snapshot);
-        }
-    }
-    else
-    {
-        bUsingAlternateSlot = false;
-        ActiveRevision = PrimaryRevision;
-        for (const FAetherCharacterPersistenceSnapshot& Snapshot : PrimarySnapshots)
-        {
-            PersistenceService.ImportSnapshot(Snapshot);
-        }
+        PersistenceService.ImportSnapshot(Snapshot);
     }
 
     bLoaded = true;
@@ -124,11 +118,6 @@ bool UAetherPersistenceSubsystem::PersistToDisk()
     const uint64 NextStorageRevision = ActiveRevision + 1;
     if (!WriteSlot(!bUsingAlternateSlot, Snapshots, NextStorageRevision))
     {
-        if (bHadPrevious)
-        {
-            PersistenceService.RestoreSnapshot(PreviousSnapshot);
-        }
-        OutResult = EAetherPersistenceResult::StorageFailure;
         return false;
     }
 
@@ -164,6 +153,7 @@ bool UAetherPersistenceSubsystem::SaveCharacterSnapshot(
     const uint64 NextStorageRevision = ActiveRevision + 1;
     TArray<FAetherCharacterPersistenceSnapshot> Snapshots;
     PersistenceService.GetSnapshots(Snapshots);
+
     if (!WriteSlot(!bUsingAlternateSlot, Snapshots, NextStorageRevision))
     {
         if (bHadPrevious)
@@ -221,8 +211,15 @@ bool UAetherPersistenceSubsystem::DeleteCharacterSnapshot(
     const uint64 NextStorageRevision = ActiveRevision + 1;
     TArray<FAetherCharacterPersistenceSnapshot> Snapshots;
     PersistenceService.GetSnapshots(Snapshots);
+
     if (!WriteSlot(!bUsingAlternateSlot, Snapshots, NextStorageRevision))
     {
+        if (bHadPrevious)
+        {
+            PersistenceService.RestoreSnapshot(PreviousSnapshot);
+        }
+
+        OutResult = EAetherPersistenceResult::StorageFailure;
         return false;
     }
 
