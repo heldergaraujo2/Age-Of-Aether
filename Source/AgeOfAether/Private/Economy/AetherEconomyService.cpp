@@ -96,6 +96,25 @@ bool FAetherEconomyService::GetWallet(const FAetherCharacterId& CharacterId, FAe
     return true;
 }
 
+bool FAetherEconomyService::CanRestoreWallet(const FAetherWallet& Wallet) const
+{
+    if (!Wallet.CharacterId.IsValid() || Wallet.Balances.Num() > 16)
+    {
+        return false;
+    }
+
+    TSet<EAetherCurrency> Currencies;
+    for (const FAetherCurrencyBalance& Balance : Wallet.Balances)
+    {
+        if (Balance.Amount < 0 || Balance.Currency != EAetherCurrency::Gold || Currencies.Contains(Balance.Currency))
+        {
+            return false;
+        }
+        Currencies.Add(Balance.Currency);
+    }
+    return true;
+}
+
 bool FAetherEconomyService::RestoreWallet(const FAetherWallet& Wallet)
 {
     if (!Wallet.CharacterId.IsValid() || Wallet.Balances.Num() > 16)
