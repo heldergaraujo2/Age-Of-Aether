@@ -1,0 +1,9 @@
+#pragma once
+#include "CoreMinimal.h"
+#include "AetherProductionTypes.generated.h"
+UENUM(BlueprintType) enum class EAetherProductionState:uint8{Starting,Ready,Draining,Degraded,Stopped};
+UENUM(BlueprintType) enum class EAetherProductionCheck:uint8{Configuration,Persistence,Security,Scale,Networking,AI,Content};
+USTRUCT(BlueprintType) struct FAetherProductionConfig{GENERATED_BODY() UPROPERTY(EditAnywhere,BlueprintReadOnly) FString BuildVersion=TEXT("0.1.0"); UPROPERTY(EditAnywhere,BlueprintReadOnly) FString Environment=TEXT("Development"); UPROPERTY(EditAnywhere,BlueprintReadOnly) int32 MaxAuditEvents=1000; UPROPERTY(EditAnywhere,BlueprintReadOnly) double HealthIntervalSeconds=5.0; UPROPERTY(EditAnywhere,BlueprintReadOnly) double GracefulShutdownSeconds=30.0; bool IsValid()const{return !BuildVersion.TrimStartAndEnd().IsEmpty()&&!Environment.TrimStartAndEnd().IsEmpty()&&MaxAuditEvents>=100&&HealthIntervalSeconds>0.0&&GracefulShutdownSeconds>=5.0;}};
+USTRUCT(BlueprintType) struct FAetherProductionMetric{GENERATED_BODY() UPROPERTY(BlueprintReadOnly) FString Name; UPROPERTY(BlueprintReadOnly) double Value=0.0; UPROPERTY(BlueprintReadOnly) double Timestamp=0.0;};
+USTRUCT(BlueprintType) struct FAetherProductionAuditEvent{GENERATED_BODY() UPROPERTY(BlueprintReadOnly) FString EventName; UPROPERTY(BlueprintReadOnly) FString Details; UPROPERTY(BlueprintReadOnly) double Timestamp=0.0; UPROPERTY(BlueprintReadOnly) bool bError=false;};
+USTRUCT(BlueprintType) struct FAetherProductionHealth{GENERATED_BODY() UPROPERTY(BlueprintReadOnly) EAetherProductionState State=EAetherProductionState::Starting; UPROPERTY(BlueprintReadOnly) bool bLiveness=false; UPROPERTY(BlueprintReadOnly) bool bReadiness=false; UPROPERTY(BlueprintReadOnly) TMap<EAetherProductionCheck,bool> Checks; UPROPERTY(BlueprintReadOnly) double Timestamp=0.0;};
