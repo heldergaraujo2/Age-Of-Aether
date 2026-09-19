@@ -110,6 +110,9 @@ struct FAetherQuestObjectiveProgress
     int32 RequiredCount = 0;
 
     UPROPERTY(BlueprintReadOnly)
+    bool bOptional = false;
+
+    UPROPERTY(BlueprintReadOnly)
     bool bCompleted = false;
 };
 
