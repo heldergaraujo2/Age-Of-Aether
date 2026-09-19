@@ -4,6 +4,8 @@
 #include "Characters/AetherCharacterPlayerState.h"
 #include "Characters/AetherCharacterSubsystem.h"
 #include "Items/AetherItemSubsystem.h"
+#include "Progression/AetherProgressionSubsystem.h"
+#include "Characters/AetherCharacterPlayerState.h"
 #include "Networking/AetherNetworkGameMode.h"
 #include "Engine/GameInstance.h"
 #include "HAL/PlatformTime.h"
@@ -878,6 +880,74 @@ void AAetherNetworkPlayerController::ClientReceiveInventory_Implementation(
     {
         OnInventory.Broadcast(Inventory);
     }
+}
+
+
+void AAetherNetworkPlayerController::AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount)
+{
+    const uint32 RequestId = NextProgressionRequestId++;
+    if (HasAuthority())
+    {
+        ServerAllocateStatPoints_Implementation(RequestId, Stat, Amount);
+        return;
+    }
+    ServerAllocateStatPoints(RequestId, Stat, Amount);
+}
+
+void AAetherNetworkPlayerController::ServerAllocateStatPoints_Implementation(
+    uint32 RequestId,
+    EAetherCharacterStat Stat,
+    int32 Amount)
+{
+    if (RequestId == 0 || RequestId <= LastProcessedProgressionRequestId)
+    {
+        return;
+    }
+
+    FAetherProgressionResult Result;
+    Result.Result = EAetherProgressionResult::NotOwned;
+
+    const AAetherCharacterPlayerState* StateBefore = GetPlayerState<AAetherCharacterPlayerState>();
+    const FAetherCharacterId CharacterId = StateBefore ? StateBefore->GetCharacterId() : FAetherCharacterId();
+
+    UAetherProgressionSubsystem* Progression = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherProgressionSubsystem>()
+        : nullptr;
+
+    const FAetherAccountId AccountId = GetAuthenticatedAccountId();
+    bool bAccepted = false;
+
+    if (Progression && AccountId.IsValid() && CharacterId.IsValid())
+    {
+        bAccepted = Progression->AllocateStatPoints(AccountId, CharacterId, Stat, Amount, Result);
+    }
+
+    LastProcessedProgressionRequestId = RequestId;
+
+    if (bAccepted)
+    {
+        if (AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>())
+        {
+            FAetherCharacterRecord Character;
+            UAetherCharacterSubsystem* Characters = GetGameInstance()
+                ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
+                : nullptr;
+
+            if (Characters && Characters->FindCharacter(CharacterId, Character))
+            {
+                State->SetCharacterIdentity(Character);
+            }
+        }
+    }
+
+    ClientReceiveProgression(RequestId, Result);
+}
+
+void AAetherNetworkPlayerController::ClientReceiveProgression_Implementation(
+    uint32 RequestId,
+    const FAetherProgressionResult& Result)
+{
+    OnProgression.Broadcast(Result);
 }
 
 bool AAetherNetworkPlayerController::ValidateRequest(const FAetherNetworkRequest& Request) const
