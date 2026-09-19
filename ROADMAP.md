@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 10 — Quest/Mission (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Status:** Phase 11 — Social (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -26,8 +26,8 @@ The repository uses the following execution sequence for implementation continui
 - Phase 8 — Combat Runtime — COMPLETE at repository level; local Unreal validation pending
 - Phase 9 — World Runtime — COMPLETE at repository level; local Unreal validation pending
 - Phase 10 — Quest/Mission — COMPLETE at repository level; local Unreal validation pending
-- Phase 11 — Social
-- Phase 12 — Economy & Crafting
+- Phase 11 — Social — COMPLETE at repository level; local Unreal validation pending
+- Phase 12 — Economy & Crafting — NEXT
 - Phase 13 — Multiplayer & Server Authority
 - Phase 14 — Persistence & Backend
 - Phase 15 — Security & Anti-Cheat
@@ -80,6 +80,53 @@ Unreal content boundary:
 - actual map, Data Layer, HLOD, terrain, collision and NavMesh authoring require Unreal Editor and remain local/content-stage work.
 
 Deliverable: Docs/PHASE_9_WORLD_RUNTIME.md
+
+## Phase 11 — Social
+
+Repository implementation is COMPLETE.
+
+Implemented:
+- Account-level friends and relationship requests;
+- accept/reject/remove friend operations;
+- block/unblock;
+- character-based party membership;
+- party leader, invitation, acceptance, leave, leader handoff and kick;
+- party capacity;
+- character-based guild membership;
+- guild creation with normalized unique names;
+- guild leader/officer/member roles;
+- guild invitations, acceptance, role changes and leave rules;
+- authoritative Local/Party/Guild/Whisper/System chat;
+- server-side message length and cooldown validation;
+- server-side blocked-account protection;
+- server-side recipient routing;
+- `FAetherSocialService`;
+- `UAetherSocialSubsystem`;
+- `UAetherSocialConfigDataAsset`;
+- social PlayerController RPCs and Blueprint delegates;
+- social automation tests.
+
+Security boundary:
+- AccountID comes from authenticated session state;
+- CharacterID comes from active Character PlayerState;
+- clients cannot self-assign party/guild roles;
+- clients cannot bypass membership or block rules;
+- chat delivery is decided by the server.
+
+External online-service boundary:
+- no EOS/Online Services dependency was introduced into core gameplay;
+- future provider integration can adapt Unreal Online Services Social/Sessions interfaces without replacing the authoritative social domain.
+
+Validation truth:
+- repository/static validation PASSED;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/network emulation/Automation Framework remain NOT VERIFIED;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Deliverable:
+- `Docs/PHASE_11_SOCIAL.md`
+
+Next implementation target:
+**PHASE 12 — Economy & Crafting**
 
 ## Phase 10 — Quest/Mission
 
