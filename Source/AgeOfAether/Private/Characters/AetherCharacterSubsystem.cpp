@@ -16,6 +16,13 @@ bool UAetherCharacterSubsystem::FindCharacter(
     return CharacterService.FindCharacter(CharacterId, OutCharacter);
 }
 
+void UAetherCharacterSubsystem::GetCharactersForAccount(
+    const FAetherAccountId& AccountId,
+    TArray<FAetherCharacterRecord>& OutCharacters) const
+{
+    CharacterService.GetCharactersForAccount(AccountId, OutCharacters);
+}
+
 bool UAetherCharacterSubsystem::SelectCharacter(
     const FAetherAccountId& AccountId,
     const FAetherCharacterId& CharacterId,
