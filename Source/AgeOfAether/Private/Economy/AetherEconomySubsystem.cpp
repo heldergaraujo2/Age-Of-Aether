@@ -4,6 +4,15 @@
 
 bool UAetherEconomySubsystem::RegisterShop(const FAetherShopDefinition& Shop) { return EconomyService.RegisterShop(Shop); }
 bool UAetherEconomySubsystem::RegisterRecipe(const FAetherCraftRecipe& Recipe) { return EconomyService.RegisterRecipe(Recipe); }
+bool UAetherEconomySubsystem::RegisterConfigAsset(const UAetherEconomyConfigDataAsset* ConfigAsset)
+{
+    if (!ConfigAsset) return false;
+    for (const FAetherShopDefinition& Shop : ConfigAsset->Shops)
+        if (!RegisterShop(Shop)) return false;
+    for (const FAetherCraftRecipe& Recipe : ConfigAsset->Recipes)
+        if (!RegisterRecipe(Recipe)) return false;
+    return true;
+}
 bool UAetherEconomySubsystem::FindShop(const FString& ShopId, FAetherShopDefinition& OutShop) const { return EconomyService.FindShop(ShopId, OutShop); }
 bool UAetherEconomySubsystem::FindRecipe(const FString& RecipeId, FAetherCraftRecipe& OutRecipe) const { return EconomyService.FindRecipe(RecipeId, OutRecipe); }
 int64 UAetherEconomySubsystem::GetBalance(const FAetherCharacterId& CharacterId, EAetherCurrency Currency) const { return EconomyService.GetBalance(CharacterId, Currency); }
