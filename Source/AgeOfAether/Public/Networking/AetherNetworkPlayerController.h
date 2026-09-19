@@ -5,6 +5,7 @@
 #include "Networking/AetherNetworkTypes.h"
 #include "Accounts/AetherAccountSessionTypes.h"
 #include "Characters/AetherCharacterTypes.h"
+#include "Items/AetherItemTypes.h"
 
 #include "AetherNetworkPlayerController.generated.h"
 
