@@ -2554,6 +2554,8 @@ Implemented:
 - loot entries with item references, quantity ranges, weight, chance and required tags;
 - RewardDefinition with experience, currencies, direct item rewards and nested loot-table references;
 - RespawnDefinition with world actor references, base timing, jitter, maximum alive count, enable state and world/spawn tags;
+- DropRuleDefinition linking source world actors to loot tables with trigger, chance, level bounds and tags;
+- SpawnGroupDefinition linking world actors to respawn definitions with initial/max counts and spawn/world tags;
 - global ID uniqueness, normalized resolution and deterministic enumeration;
 - cross-validation against Phase 19 Content Registry, Phase 21 Item Registry and Phase 22 World Actor Registry;
 - structural validation for probabilities, quantities, level ranges, reward non-emptiness and respawn timing;
