@@ -464,6 +464,15 @@ void AAetherNetworkPlayerController::ServerSessionHeartbeat_Implementation(
     const double Now = GetServerTimeSeconds();
     const bool bAuthorityHeartbeat = Multiplayer && Multiplayer->Heartbeat(GetUniqueID(), Now);
 
+    if (UAetherSecuritySubsystem* Security = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherSecuritySubsystem>() : nullptr)
+    {
+        if (const APawn* Pawn = GetPawn())
+        {
+            Security->ValidateMovement(GetUniqueID(), Pawn->GetActorLocation(), Now);
+        }
+    }
+
     FAetherAuthenticationResponse Response;
     Response.AccountId = AuthenticatedAccountId;
     Response.SessionId = InSessionId;
