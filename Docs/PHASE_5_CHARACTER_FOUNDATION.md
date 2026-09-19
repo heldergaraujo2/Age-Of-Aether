@@ -45,6 +45,8 @@ Names are:
 
 The runtime registry rejects duplicates independent of letter casing or surrounding whitespace.
 
+Character status transitions are controlled by the server-side service. Disabled and Deleted characters are excluded from selection, and Deleted characters are hidden from the account character list.
+
 ## Character limit
 
 The foundation currently permits five characters per account.
