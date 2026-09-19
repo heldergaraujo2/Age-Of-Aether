@@ -180,6 +180,16 @@ void AAetherNetworkPlayerController::ServerAuthenticateAccount_Implementation(
         return;
     }
 
+    if (bAccountAuthenticated)
+    {
+        FAetherAuthenticationResponse Response;
+        Response.Result = EAetherAuthenticationResult::AlreadyOnline;
+        Response.AccountId = AuthenticatedAccountId;
+        Response.SessionId = SessionId;
+        ClientReceiveAuthenticationResponse(RequestId, Response);
+        return;
+    }
+
     UAetherAccountSessionSubsystem* Sessions = GetGameInstance()
         ? GetGameInstance()->GetSubsystem<UAetherAccountSessionSubsystem>()
         : nullptr;
@@ -232,6 +242,16 @@ void AAetherNetworkPlayerController::ServerReconnectAccount_Implementation(
     {
         FAetherAuthenticationResponse Response;
         Response.Result = EAetherAuthenticationResult::InvalidRequest;
+        ClientReceiveReconnectResponse(RequestId, Response);
+        return;
+    }
+
+    if (bAccountAuthenticated)
+    {
+        FAetherAuthenticationResponse Response;
+        Response.Result = EAetherAuthenticationResult::AlreadyOnline;
+        Response.AccountId = AuthenticatedAccountId;
+        Response.SessionId = SessionId;
         ClientReceiveReconnectResponse(RequestId, Response);
         return;
     }
