@@ -67,7 +67,7 @@ EAetherSecurityResult FAetherSecurityService::AuthorizeRequest(
         return EAetherSecurityResult::Quarantined;
     }
 
-    uint32* LastRequestId = State.LastRequestIds.Find(Action);
+    uint32* LastRequestId = State.LastRequestIds.Find(static_cast<uint8>(Action));
     if (LastRequestId && RequestId <= *LastRequestId)
     {
         ++State.InvalidRequestCount;
