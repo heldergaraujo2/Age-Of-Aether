@@ -296,7 +296,7 @@ bool FAetherSocialService::KickFromParty(const FAetherCharacterRecord& Leader, c
     Out = FAetherSocialOperation();
     FAetherSocialPartyId PartyId;
     if (!IsInParty(Leader.CharacterId, &PartyId)) { Out.Result = EAetherSocialResult::NotPartyMember; return false; }
-    FAetherSocialPartyState* Party = Parties.Find(PartyId);
+    FAetherPartyState* Party = Parties.Find(PartyId);
     if (!Party) { Out.Result = EAetherSocialResult::PartyNotFound; return false; }
     FAetherPartyMember LeaderMember;
     if (!GetPartyMember(PartyId, Leader.CharacterId, LeaderMember) || LeaderMember.Role != EAetherPartyRole::Leader) { Out.Result = EAetherSocialResult::NotPartyLeader; return false; }
@@ -481,7 +481,7 @@ void FAetherSocialService::ClearCharacterState(const FAetherCharacterId& Charact
     FAetherSocialPartyId PartyId;
     if(IsInParty(CharacterId,&PartyId))
     {
-        FAetherSocialPartyState* Party=Parties.Find(PartyId);
+        FAetherPartyState* Party=Parties.Find(PartyId);
         if(Party)
         {
             for(int32 I=0; I<Party->Members.Num(); ++I)
