@@ -13,6 +13,23 @@ enum class EAetherCharacterClass : uint8
 };
 
 UENUM(BlueprintType)
+enum class EAetherCharacterOperationResult : uint8
+{
+    Accepted,
+    InvalidRequest,
+    NotAuthenticated,
+    CharacterNotFound,
+    NotOwned,
+    InvalidName,
+    NameUnavailable,
+    CharacterLimitReached,
+    CharacterDisabled,
+    CharacterDeleted,
+    AlreadySelected,
+    AnotherCharacterSelected
+};
+
+UENUM(BlueprintType)
 enum class EAetherCharacterStatus : uint8
 {
     Created,
