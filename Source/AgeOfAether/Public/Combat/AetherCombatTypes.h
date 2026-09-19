@@ -92,6 +92,15 @@ struct FAetherCombatResult
     float TargetHealthAfter = 0.0f;
 
     UPROPERTY(BlueprintReadOnly)
+    float TargetShieldBefore = 0.0f;
+
+    UPROPERTY(BlueprintReadOnly)
+    float ShieldDamageApplied = 0.0f;
+
+    UPROPERTY(BlueprintReadOnly)
+    float TargetShieldAfter = 0.0f;
+
+    UPROPERTY(BlueprintReadOnly)
     float TargetMaxHealth = 0.0f;
 
     UPROPERTY(BlueprintReadOnly)
