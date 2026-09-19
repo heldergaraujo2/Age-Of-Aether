@@ -7,6 +7,7 @@
 #include "Characters/AetherCharacterTypes.h"
 #include "Items/AetherItemTypes.h"
 #include "Progression/AetherProgressionTypes.h"
+#include "Combat/AetherCombatTypes.h"
 
 #include "AetherNetworkPlayerController.generated.h"
 
@@ -18,6 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCharacterListEvent, const TAr
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryEvent, const TArray<FAetherInventorySlot>&, Inventory);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryOperationEvent, EAetherInventoryOperationResult, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherProgressionEvent, const FAetherProgressionResult&, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCombatEvent, const FAetherCombatResult&, Result);
 
 UCLASS()
 class AGEOFAETHER_API AAetherNetworkPlayerController : public APlayerController
@@ -72,6 +74,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Progression")
     void AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount);
 
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Combat")
+    void BasicAttack(const FAetherCharacterId& TargetCharacterId);
+
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Accounts")
     bool IsAccountAuthenticated() const;
 
@@ -104,6 +109,9 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Progression")
     FAetherProgressionEvent OnProgression;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Combat")
+    FAetherCombatEvent OnCombat;
 
 protected:
     UFUNCTION(Server, Reliable)
@@ -178,6 +186,12 @@ protected:
     UFUNCTION(Client, Reliable)
     void ClientReceiveProgression(uint32 RequestId, const FAetherProgressionResult& Result);
 
+    UFUNCTION(Server, Reliable)
+    void ServerBasicAttack(uint32 RequestId, const FAetherCharacterId& TargetCharacterId);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveCombat(uint32 RequestId, const FAetherCombatResult& Result);
+
     virtual void BeginPlay() override;
 
 private:
@@ -197,6 +211,8 @@ private:
     uint32 LastProcessedInventoryRequestId = 0;
     uint32 NextProgressionRequestId = 1;
     uint32 LastProcessedProgressionRequestId = 0;
+    uint32 NextCombatRequestId = 1;
+    uint32 LastProcessedCombatRequestId = 0;
 
     FAetherAccountId AuthenticatedAccountId;
     FAetherSessionId SessionId;
