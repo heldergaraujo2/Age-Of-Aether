@@ -52,6 +52,11 @@ public:
         const FAetherCharacterId& CharacterId,
         const FAetherCharacterRecord& UpdatedCharacter);
 
+    bool ApplyCombatState(
+        const FAetherAccountId& AccountId,
+        const FAetherCharacterId& CharacterId,
+        const FAetherCharacterRecord& UpdatedCharacter);
+
     int32 NumCharacters() const;
     int32 NumCharactersForAccount(const FAetherAccountId& AccountId) const;
 
