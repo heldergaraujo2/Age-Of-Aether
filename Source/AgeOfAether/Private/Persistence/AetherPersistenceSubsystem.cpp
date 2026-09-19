@@ -99,12 +99,7 @@ bool UAetherPersistenceSubsystem::RefreshFromDisk()
         ActiveRevision = AlternateRevision;
         for (const FAetherCharacterPersistenceSnapshot& Snapshot : AlternateSnapshots)
         {
-            if (FAetherPersistenceService::ValidateSnapshot(Snapshot)
-                && FAetherPersistenceService::VerifyChecksum(Snapshot))
-            {
-                FAetherPersistenceOperation Ignored;
-                PersistenceService.SaveSnapshot(Snapshot, 0, Ignored);
-            }
+            PersistenceService.ImportSnapshot(Snapshot);
         }
     }
     else
@@ -113,12 +108,7 @@ bool UAetherPersistenceSubsystem::RefreshFromDisk()
         ActiveRevision = PrimaryRevision;
         for (const FAetherCharacterPersistenceSnapshot& Snapshot : PrimarySnapshots)
         {
-            if (FAetherPersistenceService::ValidateSnapshot(Snapshot)
-                && FAetherPersistenceService::VerifyChecksum(Snapshot))
-            {
-                FAetherPersistenceOperation Ignored;
-                PersistenceService.SaveSnapshot(Snapshot, 0, Ignored);
-            }
+            PersistenceService.ImportSnapshot(Snapshot);
         }
     }
 
@@ -129,12 +119,17 @@ bool UAetherPersistenceSubsystem::RefreshFromDisk()
 bool UAetherPersistenceSubsystem::PersistToDisk()
 {
     TArray<FAetherCharacterPersistenceSnapshot> Snapshots;
-    for (const FAetherCharacterId& CharacterId : TArray<FAetherCharacterId>())
+    PersistenceService.GetSnapshots(Snapshots);
+
+    const uint64 NextStorageRevision = ActiveRevision + 1;
+    if (!WriteSlot(!bUsingAlternateSlot, Snapshots, NextStorageRevision))
     {
-        (void)CharacterId;
+        return false;
     }
 
-    return false;
+    bUsingAlternateSlot = !bUsingAlternateSlot;
+    ActiveRevision = NextStorageRevision;
+    return true;
 }
 
 bool UAetherPersistenceSubsystem::SaveCharacterSnapshot(
@@ -156,6 +151,7 @@ bool UAetherPersistenceSubsystem::SaveCharacterSnapshot(
 
     const uint64 NextStorageRevision = ActiveRevision + 1;
     TArray<FAetherCharacterPersistenceSnapshot> Snapshots;
+    PersistenceService.GetSnapshots(Snapshots);
     if (!WriteSlot(!bUsingAlternateSlot, Snapshots, NextStorageRevision))
     {
         EAetherPersistenceResult IgnoredResult;
@@ -200,6 +196,7 @@ bool UAetherPersistenceSubsystem::DeleteCharacterSnapshot(
 
     const uint64 NextStorageRevision = ActiveRevision + 1;
     TArray<FAetherCharacterPersistenceSnapshot> Snapshots;
+    PersistenceService.GetSnapshots(Snapshots);
     if (!WriteSlot(!bUsingAlternateSlot, Snapshots, NextStorageRevision))
     {
         return false;
