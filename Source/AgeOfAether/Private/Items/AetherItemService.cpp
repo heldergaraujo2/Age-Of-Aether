@@ -27,11 +27,7 @@ bool FAetherItemService::RegisterDefinition(const FAetherItemDefinition& Definit
 bool FAetherItemService::FindDefinition(const FAetherItemDefinitionId& DefinitionId, FAetherItemDefinition& OutDefinition) const
 {
     const FAetherItemDefinition* Found = Definitions.Find(DefinitionId);
-    if (!Found)
-    {
-        return false;
-    }
-
+    if (!Found) return false;
     OutDefinition = *Found;
     return true;
 }
@@ -42,10 +38,7 @@ bool FAetherItemService::GetInventory(const FAetherCharacterId& CharacterId, TAr
     if (!Found)
     {
         OutSlots.SetNum(MaxInventorySlots);
-        for (int32 Index = 0; Index < OutSlots.Num(); ++Index)
-        {
-            OutSlots[Index].SlotIndex = Index;
-        }
+        for (int32 Index = 0; Index < OutSlots.Num(); ++Index) OutSlots[Index].SlotIndex = Index;
         return true;
     }
 
@@ -60,10 +53,7 @@ bool FAetherItemService::CreateItemInstance(
     FAetherItemInstance& OutItem) const
 {
     const FAetherItemDefinition* Definition = Definitions.Find(DefinitionId);
-    if (!CharacterId.IsValid() || !Definition || Quantity <= 0 || Quantity > Definition->MaxStack)
-    {
-        return false;
-    }
+    if (!CharacterId.IsValid() || !Definition || Quantity <= 0 || Quantity > Definition->MaxStack) return false;
 
     OutItem = FAetherItemInstance();
     OutItem.InstanceId = FAetherItemInstanceId::NewId();
@@ -83,38 +73,24 @@ bool FAetherItemService::AddItem(
     TArray<FAetherInventorySlot>& OutInventory)
 {
     const FAetherItemDefinition* Definition = Definitions.Find(DefinitionId);
-    if (!CharacterId.IsValid() || !Definition || Quantity <= 0)
-    {
-        return false;
-    }
+    if (!CharacterId.IsValid() || !Definition || Quantity <= 0) return false;
 
-    TArray<FAetherInventorySlot>& Inventory = Inventories.FindOrAdd(CharacterId);
-    Inventory.SetNum(MaxInventorySlots);
-    for (int32 Index = 0; Index < Inventory.Num(); ++Index)
-    {
-        Inventory[Index].SlotIndex = Index;
-    }
+    TArray<FAetherInventorySlot> Working;
+    GetInventory(CharacterId, Working);
 
     int32 Remaining = Quantity;
 
-    for (FAetherInventorySlot& Slot : Inventory)
+    for (FAetherInventorySlot& Slot : Working)
     {
-        if (!Slot.IsOccupied() || Slot.Item.DefinitionId != DefinitionId)
-        {
-            continue;
-        }
-
-        if (Slot.Item.Quantity >= Definition->MaxStack)
-        {
-            continue;
-        }
+        if (!Slot.IsOccupied() || Slot.Item.DefinitionId != DefinitionId || Slot.Item.Quantity >= Definition->MaxStack) continue;
 
         const int32 Added = FMath::Min(Remaining, Definition->MaxStack - Slot.Item.Quantity);
         Slot.Item.Quantity += Added;
         Remaining -= Added;
         if (Remaining == 0)
         {
-            OutInventory = Inventory;
+            Inventories.Add(CharacterId, Working);
+            OutInventory = Working;
             return true;
         }
     }
@@ -122,9 +98,9 @@ bool FAetherItemService::AddItem(
     while (Remaining > 0)
     {
         int32 EmptySlot = INDEX_NONE;
-        for (int32 Index = 0; Index < Inventory.Num(); ++Index)
+        for (int32 Index = 0; Index < Working.Num(); ++Index)
         {
-            if (!Inventory[Index].IsOccupied())
+            if (!Working[Index].IsOccupied())
             {
                 EmptySlot = Index;
                 break;
@@ -133,7 +109,7 @@ bool FAetherItemService::AddItem(
 
         if (EmptySlot == INDEX_NONE)
         {
-            OutInventory = Inventory;
+            OutInventory = Working;
             return false;
         }
 
@@ -141,16 +117,17 @@ bool FAetherItemService::AddItem(
         FAetherItemInstance NewItem;
         if (!CreateItemInstance(CharacterId, DefinitionId, StackQuantity, NewItem))
         {
-            OutInventory = Inventory;
+            OutInventory = Working;
             return false;
         }
 
-        Inventory[EmptySlot].SlotIndex = EmptySlot;
-        Inventory[EmptySlot].Item = NewItem;
+        Working[EmptySlot].SlotIndex = EmptySlot;
+        Working[EmptySlot].Item = NewItem;
         Remaining -= StackQuantity;
     }
 
-    OutInventory = Inventory;
+    Inventories.Add(CharacterId, Working);
+    OutInventory = Working;
     return true;
 }
 
@@ -161,17 +138,11 @@ bool FAetherItemService::RemoveItem(
     TArray<FAetherInventorySlot>& OutInventory)
 {
     int32 SlotIndex = INDEX_NONE;
-    if (Quantity <= 0 || !FindSlot(CharacterId, InstanceId, SlotIndex))
-    {
-        return false;
-    }
+    if (Quantity <= 0 || !FindSlot(CharacterId, InstanceId, SlotIndex)) return false;
 
     TArray<FAetherInventorySlot>& Inventory = Inventories[CharacterId];
     FAetherInventorySlot& Slot = Inventory[SlotIndex];
-    if (Quantity > Slot.Item.Quantity)
-    {
-        return false;
-    }
+    if (Quantity > Slot.Item.Quantity) return false;
 
     Slot.Item.Quantity -= Quantity;
     if (Slot.Item.Quantity == 0)
@@ -191,10 +162,7 @@ bool FAetherItemService::MoveItem(
     TArray<FAetherInventorySlot>& OutInventory)
 {
     int32 SourceSlot = INDEX_NONE;
-    if (!FindSlot(CharacterId, InstanceId, SourceSlot) || !IsSlotValid(TargetSlot))
-    {
-        return false;
-    }
+    if (!FindSlot(CharacterId, InstanceId, SourceSlot) || !IsSlotValid(TargetSlot)) return false;
 
     TArray<FAetherInventorySlot>& Inventory = Inventories[CharacterId];
     if (SourceSlot == TargetSlot)
@@ -203,10 +171,7 @@ bool FAetherItemService::MoveItem(
         return true;
     }
 
-    if (Inventory[TargetSlot].IsOccupied())
-    {
-        return false;
-    }
+    if (Inventory[TargetSlot].IsOccupied()) return false;
 
     Swap(Inventory[SourceSlot], Inventory[TargetSlot]);
     Inventory[SourceSlot].SlotIndex = SourceSlot;
@@ -223,18 +188,11 @@ bool FAetherItemService::SplitStack(
     TArray<FAetherInventorySlot>& OutInventory)
 {
     int32 SourceSlot = INDEX_NONE;
-    if (!FindSlot(CharacterId, InstanceId, SourceSlot) || !IsSlotValid(TargetSlot) || Quantity <= 0)
-    {
-        return false;
-    }
+    if (!FindSlot(CharacterId, InstanceId, SourceSlot) || !IsSlotValid(TargetSlot) || Quantity <= 0) return false;
 
     TArray<FAetherInventorySlot>& Inventory = Inventories[CharacterId];
     FAetherInventorySlot& Source = Inventory[SourceSlot];
-
-    if (Inventory[TargetSlot].IsOccupied() || Quantity >= Source.Item.Quantity)
-    {
-        return false;
-    }
+    if (Inventory[TargetSlot].IsOccupied() || Quantity >= Source.Item.Quantity) return false;
 
     FAetherItemInstance NewItem = Source.Item;
     NewItem.InstanceId = FAetherItemInstanceId::NewId();
@@ -257,10 +215,7 @@ bool FAetherItemService::MergeStacks(
     int32 TargetSlot = INDEX_NONE;
     if (!FindSlot(CharacterId, SourceInstanceId, SourceSlot)
         || !FindSlot(CharacterId, TargetInstanceId, TargetSlot)
-        || SourceSlot == TargetSlot)
-    {
-        return false;
-    }
+        || SourceSlot == TargetSlot) return false;
 
     TArray<FAetherInventorySlot>& Inventory = Inventories[CharacterId];
     FAetherItemInstance& Source = Inventory[SourceSlot].Item;
@@ -269,10 +224,7 @@ bool FAetherItemService::MergeStacks(
     FAetherItemDefinition Definition;
     if (!FindDefinition(Target.DefinitionId, Definition)
         || !SameStack(Source, Target)
-        || Target.Quantity >= Definition.MaxStack)
-    {
-        return false;
-    }
+        || Target.Quantity >= Definition.MaxStack) return false;
 
     const int32 Moved = FMath::Min(Definition.MaxStack - Target.Quantity, Source.Quantity);
     Target.Quantity += Moved;
@@ -296,16 +248,10 @@ int32 FAetherItemService::NumDefinitions() const
 int32 FAetherItemService::NumOccupiedSlots(const FAetherCharacterId& CharacterId) const
 {
     const TArray<FAetherInventorySlot>* Inventory = Inventories.Find(CharacterId);
-    if (!Inventory)
-    {
-        return 0;
-    }
+    if (!Inventory) return 0;
 
     int32 Count = 0;
-    for (const FAetherInventorySlot& Slot : *Inventory)
-    {
-        Count += Slot.IsOccupied() ? 1 : 0;
-    }
+    for (const FAetherInventorySlot& Slot : *Inventory) Count += Slot.IsOccupied() ? 1 : 0;
     return Count;
 }
 
@@ -315,10 +261,7 @@ bool FAetherItemService::FindSlot(
     int32& OutSlot) const
 {
     const TArray<FAetherInventorySlot>* Inventory = Inventories.Find(CharacterId);
-    if (!Inventory)
-    {
-        return false;
-    }
+    if (!Inventory) return false;
 
     for (int32 Index = 0; Index < Inventory->Num(); ++Index)
     {
