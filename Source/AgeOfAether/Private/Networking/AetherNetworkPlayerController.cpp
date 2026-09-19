@@ -15,6 +15,7 @@
 #include "HAL/PlatformTime.h"
 #include "Networking/AetherNetworkGameState.h"
 #include "Multiplayer/AetherMultiplayerSubsystem.h"
+#include "Security/AetherSecuritySubsystem.h"
 
 
 namespace
@@ -1612,6 +1613,29 @@ void AAetherNetworkPlayerController::ClientReceiveProgression_Implementation(
     const FAetherProgressionResult& Result)
 {
     OnProgression.Broadcast(Result);
+}
+
+bool AAetherNetworkPlayerController::AuthorizeSecurityRequest(uint32 RequestId, EAetherSecurityAction Action) const
+{
+    if (!GetGameInstance())
+    {
+        return false;
+    }
+
+    const UAetherSecuritySubsystem* Security =
+        GetGameInstance()->GetSubsystem<UAetherSecuritySubsystem>();
+
+    if (!Security)
+    {
+        return false;
+    }
+
+    return Security->GetService().AuthorizeRequest(
+        GetUniqueID(),
+        RequestId,
+        Action,
+        bAccountAuthenticated,
+        GetServerTimeSeconds()) == EAetherSecurityResult::Accepted;
 }
 
 bool AAetherNetworkPlayerController::ValidateRequest(const FAetherNetworkRequest& Request) const
