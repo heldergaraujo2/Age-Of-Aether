@@ -24,6 +24,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherProgressionEvent, const FAeth
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCombatEvent, const FAetherCombatResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherWorldTransitionEvent, const FAetherWorldTransitionResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherQuestEvent, const FAetherQuestOperation&, Operation);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherQuestListEvent, const TArray<FAetherQuestState>&, States);
 
 UCLASS()
 class AGEOFAETHER_API AAetherNetworkPlayerController : public APlayerController
@@ -137,6 +138,9 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Quest")
     FAetherQuestEvent OnQuestOperation;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Quest")
+    FAetherQuestListEvent OnQuestList;
 
 protected:
     UFUNCTION(Server, Reliable)
