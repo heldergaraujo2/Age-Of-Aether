@@ -100,7 +100,6 @@ bool FAetherSocialCleanupTest::RunTest(const FString&)
     auto B=MakeCharacter(TEXT("B"));
     FAetherSocialOperation O;
     TestTrue(TEXT("party"),S.CreateParty(A,O));
-    const FAetherSocialPartyId PartyId=O.Party.PartyId;
     TestTrue(TEXT("guild"),S.CreateGuild(A,TEXT("PersistentGuild"),O));
     S.ClearCharacterState(A.CharacterId);
 
