@@ -117,22 +117,28 @@ bool FAetherCombatService::ResolveBasicAttack(
     const float DamageAfterDefense = MitigationDenominator > 0.0f
         ? RawDamage * (Config.DefenseMitigationScale / MitigationDenominator)
         : RawDamage;
-    const float DamageApplied = FMath::Clamp(
-        DamageAfterDefense,
-        0.0f,
-        Target.CurrentHealth);
+    const float ResistancePercent = FMath::Clamp(Target.DerivedStats.Resistance, 0.0f, 75.0f);
+    const float DamageAfterResistance = DamageAfterDefense * (1.0f - ResistancePercent / 100.0f);
+    const float TotalDamage = FMath::Max(0.0f, DamageAfterResistance);
+    const float ShieldBefore = FMath::Max(0.0f, Target.CurrentShield);
+    const float ShieldDamage = FMath::Min(ShieldBefore, TotalDamage);
+    const float HealthDamage = FMath::Min(
+        FMath::Max(0.0f, Target.CurrentHealth),
+        TotalDamage - ShieldDamage);
 
     OutResult.TargetHealthBefore = Target.CurrentHealth;
+    OutResult.TargetShieldBefore = ShieldBefore;
     OutResult.RawDamage = RawDamage;
-    OutResult.DamageApplied = DamageApplied;
+    OutResult.ShieldDamageApplied = ShieldDamage;
+    OutResult.DamageApplied = ShieldDamage + HealthDamage;
     OutResult.bCritical = bCritical;
     OutResult.Outcome = bCritical
         ? EAetherCombatOutcome::CriticalHit
         : EAetherCombatOutcome::Hit;
     OutResult.Result = EAetherCombatResultCode::Accepted;
 
-    Target.CurrentHealth = FMath::Max(0.0f, Target.CurrentHealth - DamageApplied);
-    Target.CurrentShield = FMath::Max(0.0f, Target.CurrentShield);
+    Target.CurrentShield = FMath::Max(0.0f, ShieldBefore - ShieldDamage);
+    Target.CurrentHealth = FMath::Max(0.0f, Target.CurrentHealth - HealthDamage);
     if (Target.CurrentHealth <= 0.0f)
     {
         Target.CurrentHealth = 0.0f;
@@ -141,6 +147,7 @@ bool FAetherCombatService::ResolveBasicAttack(
     }
 
     OutResult.TargetHealthAfter = Target.CurrentHealth;
+    OutResult.TargetShieldAfter = Target.CurrentShield;
     OutResult.TargetMaxHealth = Target.DerivedStats.MaxHealth;
     return true;
 }
