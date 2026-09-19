@@ -14,7 +14,9 @@ public:
     bool FindRecipe(const FString& RecipeId, FAetherCraftRecipe& OutRecipe) const;
 
     int64 GetBalance(const FAetherCharacterId& CharacterId, EAetherCurrency Currency) const;
+    bool GetWallet(const FAetherCharacterId& CharacterId, FAetherWallet& OutWallet) const;
     bool SetBalance(const FAetherCharacterId& CharacterId, EAetherCurrency Currency, int64 Amount);
+    bool RestoreWallet(const FAetherWallet& Wallet);
     bool AddCurrency(const FAetherCharacterId& CharacterId, EAetherCurrency Currency, int64 Amount, FAetherEconomyTransaction& OutTransaction);
     bool RemoveCurrency(const FAetherCharacterId& CharacterId, EAetherCurrency Currency, int64 Amount, FAetherEconomyTransaction& OutTransaction);
 
