@@ -102,7 +102,7 @@ Health, shield and combat state replicate through Character PlayerState.
 
 The server updates the affected PlayerState from authoritative CharacterService state. This keeps critical state in replicated properties rather than using multicast RPCs for persistent health.
 
-Unreal's multiplayer model is server-authoritative, and replicated properties are the appropriate mechanism for persistent state synchronization; RPCs are used here only for the client request and request-specific result. citeturn0search4turn0search5
+Unreal's multiplayer model is server-authoritative, and replicated properties are the appropriate mechanism for persistent state synchronization; RPCs are used here only for the client request and request-specific result.
 
 ## Files
 
@@ -164,7 +164,7 @@ When Unreal 5.8.1 is available:
 17. Verify clients cannot alter damage, attacker identity, target health, cooldown or stats.
 18. Run the full Automation Framework suite.
 
-Unreal documents that server RPCs execute on the server when called by the owning client, while replicated properties synchronize authoritative state to clients. Unreal's multiplayer programming examples also use replicated health for server-side damage state. citeturn0search4turn1search8
+Unreal documents that server RPCs execute on the server when called by the owning client, while replicated properties synchronize authoritative state to clients. Unreal's multiplayer programming examples also use replicated health for server-side damage state.
 
 ## Explicitly deferred
 
