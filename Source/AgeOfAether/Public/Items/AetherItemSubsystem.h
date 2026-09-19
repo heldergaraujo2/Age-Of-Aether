@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Items/AetherItemService.h"
+#include "Items/AetherItemDefinitionDataAsset.h"
 #include "Items/AetherItemSubsystem.generated.h"
 
 UCLASS()
@@ -11,7 +12,7 @@ class AGEOFAETHER_API UAetherItemSubsystem : public UGameInstanceSubsystem
     GENERATED_BODY()
 
 public:
-    bool RegisterDefinition(const FAetherItemDefinition& Definition);
+    bool RegisterDefinition(const FAetherItemDefinition& Definition);\n    bool RegisterDefinitionAsset(const UAetherItemDefinitionDataAsset* DefinitionAsset);
     bool FindDefinition(const FAetherItemDefinitionId& DefinitionId, FAetherItemDefinition& OutDefinition) const;
     bool GetInventory(const FAetherCharacterId& CharacterId, TArray<FAetherInventorySlot>& OutInventory) const;
 
