@@ -882,3 +882,100 @@ Validation:
 - no CI pipeline exists to substitute for Unreal validation.
 
 **NEXT:** roadmap phases are exhausted. Further work is environment-driven Unreal validation, content, deployment and live-service operations.
+## 36. DATA-DRIVEN CONTENT & CLIENT ROADMAP — ADDED 2026-09-19
+
+The repository roadmap phases 0–18 are complete at source/repository level. The next implementation program is defined in:
+
+**`ROADMAP_CONTENT_AND_CLIENT.md`**
+
+This document is now the canonical detailed plan for Phases 19–30.
+
+### Phase 19 — Universal Data Model & Content Registry
+Establish stable IDs, schema versions, metadata, registry, dependency resolution and content validation. New content must not require gameplay C++ rewrites.
+
+### Phase 20 — Asset Pipeline & Visual Asset Registry
+Establish the complete source-asset pipeline:
+**FBX/source -> Unreal import -> UAsset -> asset registry -> stable Asset/Definition ID -> client presentation.**
+The server sends stable gameplay/content identities rather than Unreal visual paths. Client owns visual assets and resolves IDs locally.
+
+### Phase 21 — Complete Item, Equipment & Enhancement Data
+Expand item definitions, equipment slots, restrictions, durability, binding, visuals, options and data-driven enhancement paths.
+
+### Phase 22 — Monster, NPC, Boss & AI Content
+Create configurable monster/NPC/boss definitions including stats, attacks, skills, AI profiles, loot, rewards, respawn, visuals, dialogue and services.
+
+### Phase 23 — Skills, Effects, Buffs, Debuffs & Status
+Create a reusable ability/effect system shared by players, monsters and bosses. Damage, healing, control effects, durations, stacks and cooldowns remain server-authoritative.
+
+### Phase 24 — Loot, Drop, Reward & World Spawn
+Create data-driven loot tables, weighted/guaranteed/conditional drops, spawn groups, respawn and event/world population rules.
+
+### Phase 25 — Quest, Event, Dialogue & World Content Authoring
+Expand quests into chains, branches, dialogue, timed/world objectives, rewards, reputation and configurable world events.
+
+### Phase 26 — Crafting, Mixing, Forge & Recipe Authoring
+Create the fully configurable recipe system requested by the project:
+- ingredients and quantities;
+- outputs and quantities;
+- success percentage;
+- failure behavior;
+- level/skill/station requirements;
+- currency;
+- catalysts/protection;
+- unlocks/limits.
+The client displays recipes and requirements; the server validates, consumes inputs atomically, rolls the result and creates the output.
+
+### Phase 27 — World, Map, Interaction & Streaming Content
+Connect definitions to Unreal World Partition, zones, cities, PvP/safe areas, dungeons, portals, spawns, NPCs, resources, Data Layers, HLOD, NavMesh and streaming.
+
+### Phase 28 — Client Core Architecture
+Begin the actual client architecture only after the data/content contracts are stable. Planned modules include ClientCore, UI, Input, Presentation, Assets, Audio, Camera, Interaction and Effects.
+
+### Phase 29 — Complete MMORPG UI/UX
+Implement the complete client interface contract:
+- Login;
+- character selection/creation;
+- HUD;
+- inventory;
+- equipment;
+- skills;
+- crafting;
+- NPC/shop;
+- quests;
+- social;
+- map;
+- settings;
+- notifications/chat.
+
+### Phase 30 — Client Presentation, Performance & Final Integration
+Connect replicated state to meshes, equipment visuals, animation, camera, VFX/SFX and UI. Validate launch through dedicated-server gameplay, combat, inventory, equipment, loot, crafting, NPCs, quests, social, persistence, reconnect and security.
+
+### Final client/server contract
+
+`Input -> Client Request -> Server Validation -> Authoritative Service -> State Mutation -> Persistence -> Replication -> Client Presentation -> UI/Animation/VFX`
+
+### Final visual asset contract
+
+`FBX/Source -> Unreal Import -> UAsset -> Asset Registry -> Stable Asset/Definition ID -> Client Resolver -> Mesh/Material/Animation/VFX/SFX`
+
+### Final content-authoring principle
+
+A normal new item, monster, NPC or recipe should be addable through **data + assets + validation**, without rewriting the underlying gameplay engine.
+
+### Continuity rule for these phases
+
+No phase may be marked complete merely because files were created. The project must continue using the mandatory status format:
+
+- STATUS
+- IMPLEMENTADO
+- COMPILADO
+- TESTADO
+- VALIDADO
+- FALHAS
+- PENDÊNCIAS
+- RISCOS
+- PRÓXIMO PASSO
+
+The repository still has the existing Unreal limitation: Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/dedicated-server runtime is not executable in this environment. Repository/static validation must not be represented as Unreal runtime validation.
+
+**NEXT IMPLEMENTATION TARGET: PHASE 19 — UNIVERSAL DATA MODEL & CONTENT REGISTRY.**
