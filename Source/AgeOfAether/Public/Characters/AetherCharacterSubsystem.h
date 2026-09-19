@@ -28,6 +28,11 @@ public:
         const FAetherCharacterId& CharacterId,
         FAetherCharacterRecord& OutCharacter);
 
+    bool UpdateCharacterStatus(
+        const FAetherAccountId& AccountId,
+        const FAetherCharacterId& CharacterId,
+        EAetherCharacterStatus Status);
+
     bool DeselectCharacter(
         const FAetherAccountId& AccountId,
         const FAetherCharacterId& CharacterId);
