@@ -242,10 +242,10 @@ bool FAetherEconomyService::Sell(const FAetherCharacterId& CharacterId, const FS
     if (!IsPositiveQuantity(Quantity) || Quantity > Entry->MaxQuantityPerTransaction || Quantity > FoundSlot.Item.Quantity) { OutTransaction.Result = EAetherEconomyResult::InvalidQuantity; return false; }
     if (Entry->SellPrice > MAX_int64 / Quantity) { OutTransaction.Result = EAetherEconomyResult::Overflow; return false; }
     const int64 Total = Entry->SellPrice * Quantity;
+    int64 NewBalance = 0;
+    if (!CheckedAddInt64(GetBalance(CharacterId, EAetherCurrency::Gold), Total, NewBalance)) { OutTransaction.Result = EAetherEconomyResult::Overflow; return false; }
     TArray<FAetherInventorySlot> Updated;
     if (!Items.RemoveItem(CharacterId, InstanceId, Quantity, Updated)) { OutTransaction.Result = EAetherEconomyResult::InvalidRequest; return false; }
-    int64 NewBalance = 0;
-    if (!CheckedAddInt64(GetBalance(CharacterId, EAetherCurrency::Gold), Total, NewBalance)) return false;
     SetBalance(CharacterId, EAetherCurrency::Gold, NewBalance);
     OutTransaction.Result = EAetherEconomyResult::Accepted;
     OutTransaction.Currency = EAetherCurrency::Gold;
