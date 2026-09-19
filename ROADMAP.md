@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 13 — Multiplayer & Server Authority (repository implementation complete; Unreal compilation/runtime validation pending local validation)  
+**Status:** Phase 14 — Persistence & Backend (repository implementation complete; Unreal compilation/runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -29,7 +29,8 @@ The repository uses the following execution sequence for implementation continui
 - Phase 11 — Social — COMPLETE at repository level; local Unreal validation pending
 - Phase 12 — Economy & Crafting — COMPLETE at repository level; local Unreal validation pending
 - Phase 13 — Multiplayer & Server Authority — COMPLETE at repository level; local Unreal validation pending
-- Phase 14 — Persistence & Backend — NEXT
+- Phase 14 — Persistence & Backend — COMPLETE at repository level; local Unreal persistence validation pending
+- Phase 15 — Security & Anti-Cheat — NEXT
 - Phase 13 — Multiplayer & Server Authority
 - Phase 14 — Persistence & Backend
 - Phase 15 — Security & Anti-Cheat
@@ -2130,3 +2131,58 @@ Deliverable:
 
 Next implementation target:
 **PHASE 13 — MULTIPLAYER & SERVER AUTHORITY**
+
+
+## Phase 14 — Persistence & Backend
+
+Repository implementation is COMPLETE.
+
+Implemented:
+- versioned FAetherCharacterPersistenceSnapshot contract;
+- persistent CharacterID/AccountID identity binding;
+- character progression, combat and world-state snapshot;
+- inventory snapshot;
+- economy wallet snapshot;
+- quest-state snapshot;
+- checksum generation and verification;
+- snapshot validation and schema migration boundary;
+- optimistic-concurrency revision control;
+- rollback-safe snapshot restoration;
+- FAetherPersistenceService;
+- UAetherPersistenceSaveGame;
+- UAetherPersistenceSubsystem;
+- alternating durable SaveGame slots;
+- disk recovery by highest valid storage revision;
+- runtime save/load orchestration across Character, Item, Economy and Quest services;
+- stable character identity restoration;
+- inventory/economy/quest restore preflight validation;
+- persistence automation coverage.
+
+Security boundary:
+- client cannot author persistent snapshots;
+- AccountID/CharacterID are validated server-side;
+- stale writes are rejected;
+- corrupted/tampered snapshots are rejected by validation/checksum;
+- item ownership and quantity are revalidated on restore;
+- currency cannot restore to a negative or duplicate balance;
+- quest IDs/objective state are revalidated against server definitions.
+
+Durability boundary:
+- the current adapter is a real Unreal SaveGame-backed server persistence implementation;
+- two alternating slots provide basic crash-tolerant last-good-state recovery;
+- no fake external database provider was introduced;
+- the service boundary allows a production database/API repository to replace the local adapter later.
+
+Validation truth:
+- repository/static validation PASSED;
+- changed-source delimiter audit PASSED;
+- escaped-newline audit PASSED;
+- persistence rollback audit PASSED;
+- Unreal 5.8.1 UHT/UBT/Editor/Automation/disk round-trip/dedicated-server runtime remain NOT VERIFIED because Unreal is unavailable in this environment;
+- no CI pipeline exists to substitute for local Unreal validation.
+
+Deliverable:
+- Docs/PHASE_14_PERSISTENCE_BACKEND.md
+
+Next implementation target:
+**PHASE 15 — SECURITY & ANTI-CHEAT**
