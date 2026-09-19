@@ -35,6 +35,14 @@ public:
         const FVector& Location,
         const FRotator& Rotation);
 
+    bool UpdateCharacterWorldState(
+        const FAetherAccountId& AccountId,
+        const FAetherCharacterId& CharacterId,
+        const FAetherWorldZoneId& ZoneId,
+        EAetherWorldZoneType ZoneType,
+        const FVector& Location,
+        const FRotator& Rotation);
+
     bool UpdateCharacterStatus(
         const FAetherAccountId& AccountId,
         const FAetherCharacterId& CharacterId,
