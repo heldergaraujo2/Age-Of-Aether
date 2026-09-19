@@ -27,11 +27,11 @@ bool FAetherEconomyService::ValidateShop(const FAetherShopDefinition& Shop)
 
 bool FAetherEconomyService::ValidateRecipe(const FAetherCraftRecipe& Recipe)
 {
-    if (!Recipe.IsValid() || Recipe.CurrencyCost < 0 || Recipe.RequiredLevel < 1) return false;
+    if (!Recipe.IsValid() || Recipe.Currency != EAetherCurrency::Gold || Recipe.CurrencyCost < 0 || Recipe.RequiredLevel < 1) return false;
     TSet<FAetherItemDefinitionId> SeenInputs;
     for (const FAetherCraftIngredient& Ingredient : Recipe.Ingredients)
     {
-        if (!Ingredient.ItemDefinitionId.IsValid() || Ingredient.Quantity <= 0) return false;
+        if (!Ingredient.ItemDefinitionId.IsValid() || Ingredient.Quantity <= 0 || SeenInputs.Contains(Ingredient.ItemDefinitionId)) return false;
         SeenInputs.Add(Ingredient.ItemDefinitionId);
     }
     for (const FAetherCraftIngredient& Output : Recipe.Outputs)
