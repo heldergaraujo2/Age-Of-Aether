@@ -171,6 +171,8 @@ bool UAetherPersistenceSubsystem::SaveCharacterSnapshot(
         }
 
         OutOperation.Result = EAetherPersistenceResult::StorageFailure;
+        OutOperation.Snapshot = bHadPrevious ? PreviousSnapshot : FAetherCharacterPersistenceSnapshot{};
+        OutOperation.Revision = bHadPrevious ? PreviousSnapshot.Revision : 0;
         return false;
     }
 
