@@ -70,7 +70,6 @@ struct FAetherRewardItem
 };
 
 USTRUCT(BlueprintType)
-USTRUCT(BlueprintType)
 struct FAetherDropRuleDefinition
 {
     GENERATED_BODY()
