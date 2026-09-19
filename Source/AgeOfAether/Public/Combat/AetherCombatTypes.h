@@ -5,13 +5,6 @@
 #include "Combat/AetherCombatTypes.generated.h"
 
 UENUM(BlueprintType)
-enum class EAetherCharacterCombatState : uint8
-{
-    Alive,
-    Dead
-};
-
-UENUM(BlueprintType)
 enum class EAetherCombatResultCode : uint8
 {
     Accepted,
