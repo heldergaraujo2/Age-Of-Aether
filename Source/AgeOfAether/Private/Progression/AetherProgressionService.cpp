@@ -14,6 +14,21 @@ const FAetherProgressionConfig& FAetherProgressionService::GetConfig() const
     return Config;
 }
 
+bool FAetherProgressionService::SetConfig(const FAetherProgressionConfig& NewConfig)
+{
+    if (NewConfig.MaxLevel < 1
+        || NewConfig.BaseExperienceToLevel < 1
+        || NewConfig.ExperienceGrowthPerLevel < 0.0f
+        || NewConfig.StatPointsPerLevel < 0
+        || NewConfig.MaxStatValue < 1)
+    {
+        return false;
+    }
+
+    Config = NewConfig;
+    return true;
+}
+
 int64 FAetherProgressionService::ExperienceRequiredForNextLevel(int32 CurrentLevel) const
 {
     if (CurrentLevel < 1 || CurrentLevel >= Config.MaxLevel)
