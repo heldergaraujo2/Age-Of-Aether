@@ -201,6 +201,33 @@ bool FAetherCharacterService::UpdateCharacterStatus(
     return true;
 }
 
+bool FAetherCharacterService::ApplyProgressionState(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    const FAetherCharacterRecord& UpdatedCharacter)
+{
+    FAetherCharacterRecord* Character = Characters.Find(CharacterId);
+    if (!Character || Character->AccountId != AccountId
+        || UpdatedCharacter.CharacterId != CharacterId
+        || UpdatedCharacter.AccountId != AccountId)
+    {
+        return false;
+    }
+
+    if (Character->Status == EAetherCharacterStatus::Disabled ||
+        Character->Status == EAetherCharacterStatus::Deleted)
+    {
+        return false;
+    }
+
+    Character->Level = UpdatedCharacter.Level;
+    Character->Experience = UpdatedCharacter.Experience;
+    Character->UnspentStatPoints = UpdatedCharacter.UnspentStatPoints;
+    Character->BaseStats = UpdatedCharacter.BaseStats;
+    Character->DerivedStats = UpdatedCharacter.DerivedStats;
+    return true;
+}
+
 bool FAetherCharacterService::GetSelectedCharacter(
     const FAetherAccountId& AccountId,
     FAetherCharacterRecord& OutCharacter) const
