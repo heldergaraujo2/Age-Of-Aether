@@ -35,6 +35,9 @@ public:
 
     bool ValidateChat(const FAetherCharacterRecord& Character,EAetherSocialChannel Channel,const FAetherAccountId& Target,const FString& Message,double ServerTime,FAetherChatMessage& OutMessage,EAetherSocialResult& OutResult);
 
+    void ClearCharacterState(const FAetherCharacterId& CharacterId);
+    void ClearAccountState(const FAetherAccountId& AccountId);
+
 private:
     FAetherSocialService SocialService;
 };
