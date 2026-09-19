@@ -1,6 +1,10 @@
 #include "Persistence/AetherPersistenceSubsystem.h"
 
 #include "Persistence/AetherPersistenceSaveGame.h"
+#include "Characters/AetherCharacterSubsystem.h"
+#include "Items/AetherItemSubsystem.h"
+#include "Economy/AetherEconomySubsystem.h"
+#include "Quests/AetherQuestSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 
 namespace
@@ -172,6 +176,115 @@ bool UAetherPersistenceSubsystem::SaveCharacterSnapshot(
 
     bUsingAlternateSlot = !bUsingAlternateSlot;
     ActiveRevision = NextStorageRevision;
+    return true;
+}
+
+bool UAetherPersistenceSubsystem::SaveCharacterState(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    uint64 ExpectedRevision,
+    FAetherPersistenceOperation& OutOperation)
+{
+    if (!GetGameInstance())
+    {
+        OutOperation = FAetherPersistenceOperation{};
+        OutOperation.Result = EAetherPersistenceResult::StorageFailure;
+        return false;
+    }
+
+    UAetherCharacterSubsystem* Characters = GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>();
+    UAetherItemSubsystem* Items = GetGameInstance()->GetSubsystem<UAetherItemSubsystem>();
+    UAetherEconomySubsystem* Economy = GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>();
+    UAetherQuestSubsystem* Quests = GetGameInstance()->GetSubsystem<UAetherQuestSubsystem>();
+
+    if (!Characters || !Items || !Economy || !Quests)
+    {
+        OutOperation = FAetherPersistenceOperation{};
+        OutOperation.Result = EAetherPersistenceResult::StorageFailure;
+        return false;
+    }
+
+    FAetherCharacterRecord Character;
+    if (!Characters->FindCharacter(CharacterId, Character) || Character.AccountId != AccountId)
+    {
+        OutOperation = FAetherPersistenceOperation{};
+        OutOperation.Result = EAetherPersistenceResult::NotFound;
+        return false;
+    }
+
+    FAetherCharacterPersistenceSnapshot Snapshot;
+    Snapshot.AccountId = AccountId;
+    Snapshot.Character = Character;
+    Snapshot.SavedAtUtcSeconds = FDateTime::UtcNow().ToUnixTimestamp();
+
+    if (!Items->GetInventory(CharacterId, Snapshot.Inventory)
+        || !Economy->GetEconomyService().GetWallet(CharacterId, Snapshot.Wallet)
+        || !Quests->GetQuestStates(CharacterId, Snapshot.QuestStates))
+    {
+        OutOperation = FAetherPersistenceOperation{};
+        OutOperation.Result = EAetherPersistenceResult::InvalidSnapshot;
+        return false;
+    }
+
+    return SaveCharacterSnapshot(Snapshot, ExpectedRevision, OutOperation);
+}
+
+bool UAetherPersistenceSubsystem::LoadCharacterState(
+    const FAetherAccountId& AccountId,
+    const FAetherCharacterId& CharacterId,
+    FAetherPersistenceOperation& OutOperation)
+{
+    OutOperation = FAetherPersistenceOperation{};
+
+    if (!GetGameInstance())
+    {
+        OutOperation.Result = EAetherPersistenceResult::StorageFailure;
+        return false;
+    }
+
+    if (!bLoaded && !RefreshFromDisk())
+    {
+        OutOperation.Result = EAetherPersistenceResult::StorageFailure;
+        return false;
+    }
+
+    EAetherPersistenceResult LoadResult = EAetherPersistenceResult::InvalidRequest;
+    FAetherCharacterPersistenceSnapshot Snapshot;
+    if (!PersistenceService.LoadSnapshot(CharacterId, Snapshot, LoadResult))
+    {
+        OutOperation.Result = LoadResult;
+        return false;
+    }
+
+    if (Snapshot.AccountId != AccountId)
+    {
+        OutOperation.Result = EAetherPersistenceResult::InvalidSnapshot;
+        return false;
+    }
+
+    UAetherCharacterSubsystem* Characters = GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>();
+    UAetherItemSubsystem* Items = GetGameInstance()->GetSubsystem<UAetherItemSubsystem>();
+    UAetherEconomySubsystem* Economy = GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>();
+    UAetherQuestSubsystem* Quests = GetGameInstance()->GetSubsystem<UAetherQuestSubsystem>();
+
+    if (!Characters || !Items || !Economy || !Quests)
+    {
+        OutOperation.Result = EAetherPersistenceResult::StorageFailure;
+        return false;
+    }
+
+    if (!Characters->RestoreCharacter(Snapshot.Character)
+        || !Items->GetItemService().RestoreInventory(CharacterId, Snapshot.Inventory)
+        || !Economy->GetEconomyService().RestoreWallet(Snapshot.Wallet)
+        || !Quests->GetQuestService().RestoreQuestStates(CharacterId, Snapshot.QuestStates))
+    {
+        OutOperation.Result = EAetherPersistenceResult::InvalidSnapshot;
+        return false;
+    }
+
+    OutOperation.Result = EAetherPersistenceResult::Accepted;
+    OutOperation.Revision = Snapshot.Revision;
+    OutOperation.Snapshot = Snapshot;
     return true;
 }
 
