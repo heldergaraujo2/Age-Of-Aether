@@ -144,6 +144,36 @@ bool FAetherQuestService::ArePrerequisitesMet(const FAetherCharacterId& Characte
     return true;
 }
 
+bool FAetherQuestService::CanRestoreQuestStates(const FAetherCharacterId& CharacterId, const TArray<FAetherQuestState>& States) const
+{
+    if (!CharacterId.IsValid() || States.Num() > Config.MaxDefinitions)
+    {
+        return false;
+    }
+
+    TSet<FAetherQuestId> QuestIds;
+    for (const FAetherQuestState& State : States)
+    {
+        const FAetherQuestDefinition* Definition = Definitions.Find(State.QuestId);
+        if (!Definition || !State.QuestId.IsValid() || QuestIds.Contains(State.QuestId))
+        {
+            return false;
+        }
+
+        TSet<FString> ObjectiveIds;
+        for (const FAetherQuestObjectiveProgress& Objective : State.Objectives)
+        {
+            if (Objective.ObjectiveId.IsEmpty() || Objective.CurrentCount < 0 || Objective.RequiredCount < 0 || ObjectiveIds.Contains(Objective.ObjectiveId))
+            {
+                return false;
+            }
+            ObjectiveIds.Add(Objective.ObjectiveId);
+        }
+        QuestIds.Add(State.QuestId);
+    }
+    return true;
+}
+
 bool FAetherQuestService::RestoreQuestStates(const FAetherCharacterId& CharacterId, const TArray<FAetherQuestState>& States)
 {
     if (!CharacterId.IsValid() || States.Num() > Config.MaxDefinitions)
