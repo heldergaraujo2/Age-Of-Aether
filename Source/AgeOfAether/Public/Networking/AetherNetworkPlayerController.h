@@ -255,6 +255,50 @@ protected:
     void ClientReceiveWorldTransition(uint32 RequestId, const FAetherWorldTransitionResult& Result);
 
     UFUNCTION(Server, Reliable)
+    void ServerRequestFriends(uint32 RequestId);
+    UFUNCTION(Server, Reliable)
+    void ServerSendFriendRequest(uint32 RequestId, const FAetherAccountId& Target);
+    UFUNCTION(Server, Reliable)
+    void ServerAcceptFriendRequest(uint32 RequestId, const FAetherAccountId& Sender);
+    UFUNCTION(Server, Reliable)
+    void ServerRejectFriendRequest(uint32 RequestId, const FAetherAccountId& Sender);
+    UFUNCTION(Server, Reliable)
+    void ServerRemoveFriend(uint32 RequestId, const FAetherAccountId& Friend);
+    UFUNCTION(Server, Reliable)
+    void ServerBlockAccount(uint32 RequestId, const FAetherAccountId& Target);
+    UFUNCTION(Server, Reliable)
+    void ServerUnblockAccount(uint32 RequestId, const FAetherAccountId& Target);
+    UFUNCTION(Server, Reliable)
+    void ServerCreateParty(uint32 RequestId);
+    UFUNCTION(Server, Reliable)
+    void ServerInviteToParty(uint32 RequestId, const FAetherAccountId& Target);
+    UFUNCTION(Server, Reliable)
+    void ServerAcceptPartyInvite(uint32 RequestId, const FAetherSocialPartyId& PartyId);
+    UFUNCTION(Server, Reliable)
+    void ServerLeaveParty(uint32 RequestId);
+    UFUNCTION(Server, Reliable)
+    void ServerKickFromParty(uint32 RequestId, const FAetherCharacterId& Target);
+    UFUNCTION(Server, Reliable)
+    void ServerCreateGuild(uint32 RequestId, const FString& Name);
+    UFUNCTION(Server, Reliable)
+    void ServerInviteToGuild(uint32 RequestId, const FAetherAccountId& Target);
+    UFUNCTION(Server, Reliable)
+    void ServerAcceptGuildInvite(uint32 RequestId, const FAetherGuildId& GuildId);
+    UFUNCTION(Server, Reliable)
+    void ServerLeaveGuild(uint32 RequestId);
+    UFUNCTION(Server, Reliable)
+    void ServerSetGuildRole(uint32 RequestId, const FAetherCharacterId& Target, EAetherGuildRole Role);
+    UFUNCTION(Server, Reliable)
+    void ServerSendChat(uint32 RequestId, EAetherSocialChannel Channel, const FAetherAccountId& Target, const FString& Message);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveSocialOperation(uint32 RequestId, const FAetherSocialOperation& Operation);
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveFriends(uint32 RequestId, const TArray<FAetherSocialRelation>& Friends);
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveChat(uint32 RequestId, const FAetherChatMessage& Message);
+
+    UFUNCTION(Server, Reliable)
     void ServerRequestQuestList(uint32 RequestId);
 
     UFUNCTION(Server, Reliable)
