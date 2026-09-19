@@ -17,8 +17,7 @@ void AAetherNetworkPlayerController::SendNetworkRequest(EAetherNetworkRequestTyp
     FAetherNetworkRequest Request;
     Request.RequestId = NextRequestId++;
     Request.Type = Type;
-    Request.ProtocolVersion.Major = 1;
-    Request.ProtocolVersion.Minor = 0;
+    Request.ProtocolVersion = FAetherProtocolVersion::Current();
 
     if (HasAuthority())
     {
@@ -33,8 +32,7 @@ void AAetherNetworkPlayerController::ServerSubmitRequest_Implementation(const FA
 {
     FAetherNetworkResponse Response;
     Response.RequestId = Request.RequestId;
-    Response.ProtocolVersion.Major = 1;
-    Response.ProtocolVersion.Minor = 0;
+    Response.ProtocolVersion = FAetherProtocolVersion::Current();
 
     if (!ValidateRequest(Request))
     {
@@ -54,6 +52,7 @@ void AAetherNetworkPlayerController::ServerSubmitRequest_Implementation(const FA
         return;
     }
 
+    LastProcessedRequestId = Request.RequestId;
     Response.Result = EAetherNetworkResultCode::Accepted;
     Response.AuthoritativeStateRevision = NetworkState->GetAuthoritativeStateRevision();
 
@@ -76,14 +75,17 @@ void AAetherNetworkPlayerController::ClientReceiveResponse_Implementation(const 
 
 bool AAetherNetworkPlayerController::ValidateRequest(const FAetherNetworkRequest& Request) const
 {
-    FAetherProtocolVersion ServerProtocol;
-    ServerProtocol.Major = 1;
-    ServerProtocol.Minor = 0;
+    const FAetherProtocolVersion ServerProtocol = FAetherProtocolVersion::Current();
 
     if (!Request.ProtocolVersion.IsCompatibleWith(ServerProtocol))
     {
         return false;
     }
 
-    return Request.RequestId != 0;
+    if (Request.RequestId == 0 || Request.RequestId <= LastProcessedRequestId)
+    {
+        return false;
+    }
+
+    return true;
 }
