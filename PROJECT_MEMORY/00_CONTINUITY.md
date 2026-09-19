@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 9 — World Runtime (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Current stage:** Phase 9 — World Runtime (repository implementation complete; repository/static validation passed; Unreal compilation/network runtime validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
