@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 7 — Progression System (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
+**Status:** Phase 9 — World Runtime (repository implementation complete; Unreal compilation/network runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -23,9 +23,9 @@ The repository uses the following execution sequence for implementation continui
 - Phase 5 — Character Foundation — COMPLETE at repository level; local Unreal validation pending
 - Phase 6 — Item and Inventory System — COMPLETE at repository level; local Unreal validation pending
 - Phase 7 — Progression System — COMPLETE at repository level; local Unreal validation pending
-- Phase 8 — Combat Runtime — NEXT
-- Phase 9 — World Runtime
-- Phase 10 — Quest/Mission
+- Phase 8 — Combat Runtime — COMPLETE at repository level; local Unreal validation pending
+- Phase 9 — World Runtime — COMPLETE at repository level; local Unreal validation pending
+- Phase 10 — Quest/Mission — NEXT
 - Phase 11 — Social
 - Phase 12 — Economy & Crafting
 - Phase 13 — Multiplayer & Server Authority
@@ -36,6 +36,50 @@ The repository uses the following execution sequence for implementation continui
 - Phase 18 — Production & Live MMORPG
 
 The numbered item-content sections later in this document are retained as design/content milestones. They do not override the current execution sequence above.
+
+## Phase 9 — World Runtime
+
+Repository implementation is COMPLETE.
+
+Implemented:
+
+- authoritative world zones;
+- Safe, PvP, Event, Dungeon and City zone types;
+- zone enable/disable state;
+- minimum-level requirements;
+- zone combat-policy metadata;
+- deterministic spawn-point resolution;
+- spawn minimum-level requirements;
+- directed portal definitions;
+- portal enable/disable state;
+- portal minimum-level requirements;
+- authoritative initial character spawn;
+- authoritative portal transition;
+- character CurrentZoneId and CurrentZoneType;
+- CharacterService world-state commit boundary;
+- replicated PlayerState world identity;
+- server-side pawn teleport on accepted transition;
+- authoritative GameState revision advancement;
+- world configuration Data Asset;
+- atomic world-definition loading;
+- automation tests for configuration, definitions, spawns, portal rules, level rules, disabled zones, character spawn and transitions.
+
+Security boundary:
+
+- client cannot set world coordinates;
+- client cannot set rotation;
+- client cannot select an arbitrary spawn;
+- client cannot bypass portal rules;
+- client cannot bypass level requirements;
+- server resolves the target spawn.
+
+Unreal content boundary:
+
+- no fake .umap assets;
+- World Partition is the intended large-world system;
+- actual map, Data Layer, HLOD, terrain, collision and NavMesh authoring require Unreal Editor and remain local/content-stage work.
+
+Deliverable: Docs/PHASE_9_WORLD_RUNTIME.md
 
 ## Phase 7 — Progression System
 
