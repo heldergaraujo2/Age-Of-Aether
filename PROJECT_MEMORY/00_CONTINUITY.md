@@ -1380,3 +1380,35 @@ Validation truth:
 
 Next target:
 PHASE 46 — MONSTERS, NPCs & BOSSES
+
+
+## Phase 46 — Monsters, NPCs & Bosses — COMPLETE AT REPOSITORY LEVEL
+
+Implemented:
+- FAetherCreatureDefinition and FAetherCreatureSpawnDefinition with stable IDs and bounded values.
+- Monster/NPC/Boss roles and generic AI profiles.
+- LootTableID, QuestActorID, DialogueID, ShopID and InteractionID contracts.
+- Optional skeletal mesh, Animation Blueprint, attack montage, VFX and SFX references.
+- FAetherCreatureRegistry with normalized IDs, duplicate protection and reference validation.
+- AAetherCreatureActor as the reusable Unreal presentation shell.
+- UAetherCreatureSubsystem as the World Subsystem for data-driven spawn/despawn and MaxAlive enforcement.
+- UAetherCreatureCatalog Data Asset for low-bureaucracy content authoring.
+- Automation tests and Unreal setup documentation.
+- No fake .uasset/.umap/FBX/animation/VFX/audio binaries.
+
+Low-bureaucracy visual rule:
+- One catalog + one reusable creature actor.
+- One real skeletal FBX is enough for the first visual vertical slice.
+- Additional creatures are data + optional asset assignments, not new C++ classes.
+
+Authority boundary:
+- Creature definition/spawn/presentation foundation is implemented without inventing a second combat authority.
+- Existing server-authoritative combat remains the authority; creature combat/AI integration can consume these stable records in the later integration stages.
+
+Validation truth:
+- Repository/source implementation is complete.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime is NOT VERIFIED in this environment.
+- Real FBX/Animation Blueprint/VFX/SFX import, spawn, replication and Dedicated Server acceptance remain local Unreal work.
+
+Next target:
+**PHASE 47 — WORLD, MAPS & STREAMING**
