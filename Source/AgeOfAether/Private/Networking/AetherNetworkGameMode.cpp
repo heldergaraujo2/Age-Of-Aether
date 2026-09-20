@@ -13,7 +13,6 @@
 #include "World/AetherDevelopmentWorldActor.h"
 #include "HAL/PlatformTime.h"
 #include "EngineUtils.h"
-#include "GameFramework/PlayerStart.h"
 
 void AAetherNetworkGameMode::PostLogin(APlayerController* NewPlayer)
 {
