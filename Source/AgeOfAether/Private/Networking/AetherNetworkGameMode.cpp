@@ -13,6 +13,7 @@
 #include "World/AetherDevelopmentWorldActor.h"
 #include "HAL/PlatformTime.h"
 #include "EngineUtils.h"
+#include "GameFramework/PlayerStart.h"
 
 void AAetherNetworkGameMode::PostLogin(APlayerController* NewPlayer)
 {
@@ -78,18 +79,40 @@ void AAetherNetworkGameMode::InitGame(const FString& MapName, const FString& Opt
         return;
     }
 
+    bool bHasDevelopmentGround = false;
     for (TActorIterator<AAetherDevelopmentWorldActor> It(GetWorld()); It; ++It)
     {
-        return;
+        bHasDevelopmentGround = true;
+        break;
     }
 
     FActorSpawnParameters SpawnParameters;
     SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-    GetWorld()->SpawnActor<AAetherDevelopmentWorldActor>(
-        AAetherDevelopmentWorldActor::StaticClass(),
-        FVector::ZeroVector,
-        FRotator::ZeroRotator,
-        SpawnParameters);
+
+    if (!bHasDevelopmentGround)
+    {
+        GetWorld()->SpawnActor<AAetherDevelopmentWorldActor>(
+            AAetherDevelopmentWorldActor::StaticClass(),
+            FVector::ZeroVector,
+            FRotator::ZeroRotator,
+            SpawnParameters);
+    }
+
+    bool bHasPlayerStart = false;
+    for (TActorIterator<APlayerStart> It(GetWorld()); It; ++It)
+    {
+        bHasPlayerStart = true;
+        break;
+    }
+
+    if (!bHasPlayerStart)
+    {
+        GetWorld()->SpawnActor<APlayerStart>(
+            APlayerStart::StaticClass(),
+            FVector(0.0f, 0.0f, 96.0f),
+            FRotator::ZeroRotator,
+            SpawnParameters);
+    }
 }
 
 
