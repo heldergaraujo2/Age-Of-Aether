@@ -1277,3 +1277,15 @@ Validation truth:
 
 Next implementation target:
 **PHASE 42 — EQUIPMENT & ITEM VISUALS**
+
+
+## Phase 42 implementation status — COMPLETE at repository/source level
+- Added UAetherEquipmentVisualProfile with stable visual/item IDs, equipment slot, visual type, mesh references, socket, transform and material overrides.
+- Added UAetherEquipmentVisualComponent with apply, remove, clear and lookup operations.
+- Integrated the component into AAetherCharacter.
+- Presentation is client-side and Dedicated Server avoids visual asset loading.
+- Existing item definitions remain the source of item identity; gameplay authority/equipment state remains separate and will be integrated in Phase 49.
+- Added Automation tests and phase documentation.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here.
+- No fake .uasset/.umap/FBX/mesh binaries.
+- Next implementation target: **PHASE 43 — FIVE CLASSES & 25 EVOLUTIONS PRESENTATION**.
