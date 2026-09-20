@@ -9,6 +9,7 @@ public:
  bool SetActiveProfile(const FString& ProfileID,FString& OutError);
  bool SetFallbackProfile(const FString& ProfileID,FString& OutError);
  bool Resolve(const FString& ProfileID,const FString& ClassID,const FString& EvolutionID,bool bPvP,FAetherClassBalanceModifiers& OutModifiers,FString& OutError) const;
+ bool ResolveActive(const FString& ClassID,const FString& EvolutionID,bool bPvP,FAetherClassBalanceModifiers& OutModifiers,FString& OutError) const;
  bool Validate(TArray<FAetherBalanceValidationIssue>& OutIssues,const FAetherClassRegistry* ClassRegistry=nullptr) const;
  void Reset();
  int32 NumProfiles() const;
