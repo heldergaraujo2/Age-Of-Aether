@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Data/AetherClassBalanceRegistry.h"
+#include "AetherClassBalanceSimulation.generated.h"
 
 USTRUCT(BlueprintType)
 struct FAetherBalanceSimulationCase
