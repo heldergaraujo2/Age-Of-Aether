@@ -82,6 +82,8 @@ private:
     void SprintStarted(const struct FInputActionValue& Value);
     void SprintStopped(const struct FInputActionValue& Value);
     void CameraZoom(const struct FInputActionValue& Value);
+    UFUNCTION(Server, Reliable)
+    void ServerSetSprinting(bool bNewSprinting);
 
     UPROPERTY(Transient)
     TObjectPtr<UInputMappingContext> RuntimeInputContext;
