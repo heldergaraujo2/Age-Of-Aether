@@ -1162,10 +1162,10 @@ Validation truth:
 Next implementation target:
 **PHASE 34 — CLASS/COMBAT INTEGRATION & SERVER AUTHORITY**
 
-# PHASE 34 — CLASS/COMBAT INTEGRATION & SERVER AUTHORITY — PLANNED
+# PHASE 34 — CLASS/COMBAT INTEGRATION & SERVER AUTHORITY — COMPLETE AT REPOSITORY LEVEL
 
 Purpose:
-Connect class/evolution identity and balance configuration to the existing authoritative combat, progression, item, skill and character systems.
+Connect class/evolution identity and balance configuration to the existing authoritative combat and character state systems.
 
 Scope:
 - class ownership on Character;
@@ -1198,6 +1198,18 @@ Input
 -> client presentation.
 
 No client-side class multiplier may become authoritative.
+
+Implementation status:
+- Stable ClassID/EvolutionID added to authoritative character state.
+- PvE/PvP balance context integrated into deterministic combat calculation.
+- Server-side class/evolution and balance resolution added.
+- Client class/evolution spoof claims rejected.
+- Evolution transition validation added.
+- Repository automation tests added for authority, context separation, spoofing, evolution transitions and finite combat results.
+- Unreal 5.8.1 compile/runtime remains NOT VERIFIED.
+
+Next implementation target:
+**PHASE 35 — PVE/PVP BALANCE SIMULATION & AUTOMATED VALIDATION**
 
 ---
 
