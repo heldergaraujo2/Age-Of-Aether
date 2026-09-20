@@ -1058,3 +1058,15 @@ Next target:
 - Unreal 5.8.1 runtime remains NOT VERIFIED; local acceptance is required for actual asset import, spawn, replication and Dedicated Server behavior.
 
 Next target: **Phase 47 — World, Maps & Streaming**
+
+
+## Phase 47 — World, Maps & Streaming — COMPLETE at repository/source level
+
+- Added stable map definitions and Persistent/Streamed/Instance load modes.
+- Added map registry, validated streaming links and active-map gating.
+- Added Data Asset catalog for low-bureaucracy map authoring.
+- Added Automation tests and Unreal setup documentation.
+- No fake .umap/.uasset assets.
+- Unreal 5.8.1 runtime remains NOT VERIFIED; real maps, streaming and multiplayer tests are local acceptance.
+
+Next target: **Phase 48 — Interaction, NPC, Quest & Events**
