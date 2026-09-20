@@ -23,6 +23,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Visual")
     bool ApplyProfileAsset(UAetherPlayableCharacterVisualProfile* InProfile);
 
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Animation")
+    bool ApplyAnimationProfile(class UAetherCharacterAnimationProfile* InAnimationProfile);
+
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Visual")
     UAetherPlayableCharacterVisualProfile* GetProfile() const { return Profile; }
 
