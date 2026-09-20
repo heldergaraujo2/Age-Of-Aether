@@ -1030,3 +1030,14 @@ Important files:
 - Initial committed values are neutral 1.0 and are not a production balance claim.
 - Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server remains unverified.
 - Next implementation target: Phase 34 — Class/Combat Integration & Server Authority.
+
+
+## Phase 34 implementation status — COMPLETE at repository level
+- Added stable ClassID/EvolutionID fields to authoritative character state while retaining legacy class enum compatibility.
+- Character creation and restoration preserve stable class/evolution IDs.
+- Added PvE/PvP combat context and authoritative class balance application to the existing deterministic combat service.
+- Added server-side class/evolution/balance resolution through FAetherClassCombatIntegration.
+- Added client class/evolution claim rejection and authoritative evolution-transition validation.
+- Added automation coverage for authority, PvE/PvP separation, spoof rejection, evolution transition rules and finite combat results.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server remains unverified.
+- Next implementation target: Phase 35 — PvE/PvP Balance Simulation & Automated Validation.
