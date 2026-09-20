@@ -28,7 +28,7 @@ protected:
     FVector GroundScale = FVector(25.0, 25.0, 0.25);
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Foundation")
-    float GroundZ = 0.0f;
+    float GroundZ = -12.5f;
 
 private:
     void ConfigureGround();
