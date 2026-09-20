@@ -74,6 +74,15 @@ struct FAetherCreatureDefinition
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Creature")
     FString QuestActorID;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Creature|Interaction")
+    FString DialogueID;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Creature|Interaction")
+    FString ShopID;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Creature|Interaction")
+    FString InteractionID;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Creature")
     TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
 
@@ -117,6 +126,9 @@ struct FAetherCreatureSpawnDefinition
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Spawn")
     int32 MaxAlive = 1;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Spawn")
+    float RespawnSeconds = 0.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Spawn")
     bool bEnabled = true;
