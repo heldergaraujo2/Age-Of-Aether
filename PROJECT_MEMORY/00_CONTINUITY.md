@@ -1052,3 +1052,16 @@ Important files:
 - Simulation never mutates or promotes production balance.
 - Unreal 5.8.1 compile/runtime remains unverified.
 - Next implementation target: Phase 36 — Class Presentation, Assets & Runtime Acceptance.
+
+
+## Phase 36 — Class Presentation, Assets & Runtime Acceptance — COMPLETE at repository level
+- Added data-driven class/evolution presentation contract.
+- Added deterministic presentation registry and 25-entry catalog generated from canonical evolutions.
+- Added client-local class presentation subsystem with explicit load states.
+- Added safe same-class fallback behavior and validation.
+- Added automation tests for registry, fallback, subsystem and 25-entry catalog.
+- Corrected Phase 35 simulation fixture to register the evolution rows used by its target cases.
+- Extended repository validation for Phase 36 deliverables.
+- Unreal 5.8.1 UHT/UBT/Automation/PIE/multiplayer/dedicated-server runtime remains NOT VERIFIED.
+- Real FBX import, animations, VFX/SFX, materials, icons, sockets and performance acceptance remain local Unreal-content work.
+- Next gate: execute Unreal 5.8.1 runtime acceptance and integrate real class assets.
