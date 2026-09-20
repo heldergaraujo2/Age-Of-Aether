@@ -6,7 +6,10 @@ const FAetherItemDefinition* UAetherInventorySubsystem::ResolveDefinition(const 
 {
     if (!ItemRegistry) return nullptr;
     FAetherItemDefinition Def;
-    return ItemRegistry->Resolve(DefinitionID, Def) ? nullptr : nullptr;
+    if (!ItemRegistry->Resolve(DefinitionID, Def)) return nullptr;
+    static thread_local FAetherItemDefinition CachedDefinition;
+    CachedDefinition = MoveTemp(Def);
+    return &CachedDefinition;
 }
 
 FAetherInventoryItem* UAetherInventorySubsystem::FindItem(FAetherInventoryState& State,const FString& InstanceID)
