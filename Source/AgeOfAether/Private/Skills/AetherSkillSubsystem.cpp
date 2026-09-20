@@ -11,6 +11,29 @@ namespace
     }
 }
 
+void UAetherSkillSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+    Super::Initialize(Collection);
+
+    FAetherSkillDefinition Training;
+    Training.SkillID = TEXT("aether.skill.training_strike");
+    Training.DisplayName = TEXT("Training Strike");
+    Training.TargetMode = EAetherSkillTargetMode::SingleTarget;
+    Training.CooldownSeconds = 1.0f;
+    Training.Range = 300.0f;
+    FAetherSkillEffect Damage;
+    Damage.Type = EAetherSkillEffectType::Damage;
+    Damage.Magnitude = 20.0f;
+    Training.Effects.Add(Damage);
+    RegisterSkill(Training);
+}
+
+void UAetherSkillSubsystem::Deinitialize()
+{
+    ResetRegistry();
+    Super::Deinitialize();
+}
+
 bool UAetherSkillSubsystem::RegisterSkill(const FAetherSkillDefinition& Definition)
 {
     return Registry.Register(Definition);
@@ -110,6 +133,8 @@ bool UAetherSkillSubsystem::CastSkill(const FAetherAccountId& AccountId, const F
     if (!FindCharacter(this, AttackerId, Attacker)) { OutResult.Result = EAetherSkillResultCode::NotOwned; return false; }
     if (!FindCharacter(this, TargetId, Target)) { OutResult.Result = EAetherSkillResultCode::InvalidTarget; return false; }
     if (Attacker.AccountId != AccountId) { OutResult.Result = EAetherSkillResultCode::NotOwned; return false; }
+    if (!Skill->ClassID.IsEmpty() && !Attacker.ClassID.Equals(Skill->ClassID, ESearchCase::IgnoreCase))
+    { OutResult.Result = EAetherSkillResultCode::NotOwned; return false; }
     if (Attacker.CombatState == EAetherCharacterCombatState::Dead) { OutResult.Result = EAetherSkillResultCode::AttackerDead; return false; }
     if (Target.CombatState == EAetherCharacterCombatState::Dead && Skill->TargetMode != EAetherSkillTargetMode::Self)
     { OutResult.Result = EAetherSkillResultCode::TargetDead; return false; }
