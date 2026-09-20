@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 29 — Complete MMORPG UI/UX (repository implementation complete; Unreal runtime/UI validation pending local validation)  
+**Current stage:** Phase 30 — Client Presentation, Performance & Final Integration (repository implementation complete; Unreal runtime validation pending local validation). Next implementation target: Phase 31 — Universal Player Class & Evolution System.  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -998,99 +998,3 @@ Implemented:
 
 Important files:
 - Source/AgeOfAether/Public/Data/AetherContentTypes.h
-
----
-
-# CLASS SYSTEM ROADMAP — ADDED 2026-09-20
-
-The project now has an explicit post-Phase-30 class/progression/balance roadmap.
-
-## Current class design
-
-Five base player classes, each with five evolution stages:
-
-- ARQUEIRO — Caminho da Precisão
-  - Batedor
-  - Rastreador
-  - Caçador Espectral
-  - Atirador Fantasma
-  - Olho de Deus / Juiz dos Ventos
-
-- GUERREIRO — Caminho da Fúria
-  - Recruta
-  - Berserker
-  - Campeão de Guerra
-  - Lorde das Lâminas
-  - Avatar da Guerra
-
-- MAGO — Caminho do Arcano
-  - Aprendiz
-  - Feiticeiro Elemental
-  - Arquimago
-  - Tecelão do Éter
-  - Senhor do Caos Primordial
-
-- TANK — Caminho da Muralha
-  - Guardião
-  - Fortaleza de Aço
-  - Colosso
-  - Bastião Imortal
-  - Titã Ancestral
-
-- HEALER — Caminho da Luz
-  - Iniciado
-  - Clérigo da Luz
-  - Oráculo Sagrado
-  - Serafim
-  - Avatar da Vida Eterna
-
-## New implementation sequence
-
-### Phase 31 — Universal Player Class & Evolution System
-Create stable ClassID/EvolutionID contracts, progression graph, prerequisites, role metadata, class capabilities, restrictions and registry validation.
-
-### Phase 32 — Five Base Classes & 25 Evolution Definitions
-Turn the agreed roster into data-driven definitions and connect each evolution to skills, effects, equipment and presentation assets by stable IDs.
-
-### Phase 33 — Configurable PvE/PvP Class Balance System
-Create versioned balance configuration outside gameplay code. Support class/evolution modifiers for damage, criticals, defense, healing, shields, AOE, CC, mobility, threat, resource and other relevant combat dimensions. Include Development, Testing and Production profiles with safe fallback and validation.
-
-### Phase 34 — Class/Combat Integration & Server Authority
-Integrate class/evolution state into Character, Progression, Equipment, Skills, Combat, Persistence and Replication while preserving server authority.
-
-### Phase 35 — PvE/PvP Balance Simulation & Automated Validation
-Create deterministic simulations, reproducible seeds, matchup/encounter scenarios, metrics, regression baselines, balance-budget diagnostics and invalid-configuration protection.
-
-### Phase 36 — Class Presentation, Assets & Runtime Acceptance
-Integrate class selection/progression UI, actual Unreal assets, animations, VFX/SFX, attachments, async loading, performance and multiplayer/dedicated-server acceptance.
-
-## Balance architecture decisions
-
-- Class balance values must not be hard-coded into combat rules.
-- Balance must be data-driven and versioned.
-- PvE and PvP modifiers must be separable.
-- Client never provides authoritative class/balance values.
-- Extreme fantasy abilities must expose counterplay/tuning parameters such as cooldown, duration, range, target count, resistance or PvP scaling.
-- "Map-wide hit" and permanent "group immortality" are not unconditional mechanics; their fantasy can be preserved through bounded, configurable effects.
-- A balance simulator is diagnostic and must not automatically rewrite production configuration.
-- The architecture must support future classes and alternate evolution branches without engine rewrites.
-- Stable IDs must not change when display names/localization change.
-
-## Immediate next construction point
-
-**Start Phase 31 — Universal Player Class & Evolution System.**
-
-The class system is now part of project continuity and must be treated as a first-class data domain alongside Items, Skills, Quests, World, Recipes and Presentation.
-
-For every future class phase, use the mandatory completion format:
-- STATUS
-- IMPLEMENTADO
-- COMPILADO
-- TESTADO
-- VALIDADO
-- FALHAS
-- PENDÊNCIAS
-- RISCOS
-- PRÓXIMO PASSO
-
-Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime remains an explicit validation gate and must never be claimed as PASS without execution.
