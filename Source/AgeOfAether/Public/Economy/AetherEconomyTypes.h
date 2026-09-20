@@ -95,7 +95,10 @@ struct FAetherShopDefinition
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     TArray<FAetherShopEntry> Entries;
 
-    bool IsValid() const { return !ShopId.TrimStartAndEnd().IsEmpty(); }
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    bool bEnabled = true;
+
+    bool IsValid() const { return bEnabled && !ShopId.TrimStartAndEnd().IsEmpty(); }
 };
 
 USTRUCT(BlueprintType)
@@ -136,7 +139,10 @@ struct FAetherCraftRecipe
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     bool bEnabled = true;
 
-    bool IsValid() const { return !RecipeId.TrimStartAndEnd().IsEmpty() && Ingredients.Num() > 0 && Outputs.Num() > 0; }
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    FString CraftingStationID;
+
+    bool IsValid() const { return !RecipeId.TrimStartAndEnd().IsEmpty() && Ingredients.Num() > 0 && Outputs.Num() > 0 && RequiredLevel >= 1 && CurrencyCost >= 0; }
 };
 
 USTRUCT(BlueprintType)

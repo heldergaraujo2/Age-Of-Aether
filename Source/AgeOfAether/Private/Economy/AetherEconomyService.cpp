@@ -43,25 +43,27 @@ bool FAetherEconomyService::ValidateRecipe(const FAetherCraftRecipe& Recipe)
 
 bool FAetherEconomyService::RegisterShop(const FAetherShopDefinition& Shop)
 {
-    if (!ValidateShop(Shop) || Shops.Contains(Shop.ShopId.TrimStartAndEnd())) return false;
+    const FString ShopKey = Shop.ShopId.TrimStartAndEnd().ToLower();
+    if (!ValidateShop(Shop) || ShopKey.IsEmpty() || Shops.Contains(ShopKey)) return false;
     FAetherShopDefinition Copy = Shop;
-    Copy.ShopId = Copy.ShopId.TrimStartAndEnd();
+    Copy.ShopId = ShopKey;
     Shops.Add(Copy.ShopId, Copy);
     return true;
 }
 
 bool FAetherEconomyService::RegisterRecipe(const FAetherCraftRecipe& Recipe)
 {
-    if (!ValidateRecipe(Recipe) || Recipes.Contains(Recipe.RecipeId.TrimStartAndEnd())) return false;
+    const FString RecipeKey = Recipe.RecipeId.TrimStartAndEnd().ToLower();
+    if (!ValidateRecipe(Recipe) || RecipeKey.IsEmpty() || Recipes.Contains(RecipeKey)) return false;
     FAetherCraftRecipe Copy = Recipe;
-    Copy.RecipeId = Copy.RecipeId.TrimStartAndEnd();
+    Copy.RecipeId = RecipeKey;
     Recipes.Add(Copy.RecipeId, Copy);
     return true;
 }
 
 bool FAetherEconomyService::FindShop(const FString& ShopId, FAetherShopDefinition& OutShop) const
 {
-    const FAetherShopDefinition* Found = Shops.Find(ShopId.TrimStartAndEnd());
+    const FAetherShopDefinition* Found = Shops.Find(ShopId.TrimStartAndEnd().ToLower());
     if (!Found) return false;
     OutShop = *Found;
     return true;
@@ -69,7 +71,7 @@ bool FAetherEconomyService::FindShop(const FString& ShopId, FAetherShopDefinitio
 
 bool FAetherEconomyService::FindRecipe(const FString& RecipeId, FAetherCraftRecipe& OutRecipe) const
 {
-    const FAetherCraftRecipe* Found = Recipes.Find(RecipeId.TrimStartAndEnd());
+    const FAetherCraftRecipe* Found = Recipes.Find(RecipeId.TrimStartAndEnd().ToLower());
     if (!Found) return false;
     OutRecipe = *Found;
     return true;
