@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 36 — Class Presentation, Assets & Runtime Acceptance (repository implementation complete; Unreal runtime validation pending local validation)  
+**Status:** Phase 37 — Unreal Visual Foundation (repository implementation complete; Unreal 5.8.1 runtime acceptance pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -1395,3 +1395,35 @@ The first phase must begin only after the Unreal 5.8.1 runtime foundation gate i
 Next visual/playable target after the Unreal gate:
 
 **PHASE 37 — UNREAL VISUAL FOUNDATION**
+
+
+## Phase 37 — Unreal Visual Foundation — REPOSITORY IMPLEMENTATION COMPLETE
+
+Implemented the first low-friction Unreal visual/playable foundation:
+- explicit Enhanced Input plugin and module dependency;
+- UAetherGameInstance and project GameInstance configuration;
+- UAetherAssetManager and AetherVisual primary asset scan;
+- UAetherVisualFoundationDataAsset with stable AssetID/DefinitionID/fallback/version;
+- AAetherCharacter third-person camera, movement and runtime-created Enhanced Input bootstrap;
+- AAetherDevelopmentWorldActor temporary ground;
+- automatic PlayerStart creation for an empty development level;
+- lightweight native AAetherFoundationHUD;
+- AetherInteract, AetherTarget and AetherMovement trace channels;
+- Phase 37 Automation tests and repository validation.
+
+Safety/authority:
+- server remains authoritative over character existence and replicated movement;
+- visual/input bootstrap does not mutate authoritative gameplay state;
+- no fake .uasset/.umap files were added;
+- real FBX, skeleton, materials, animations, VFX and production UI remain asset/editor work for later phases.
+
+Validation truth:
+- repository/static validation is the only validation executed in the current environment;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime is still NOT VERIFIED;
+- the final Phase 37 runtime gate requires creating one empty development map in Unreal, setting it as Game Default Map, then testing character spawn, WASD, mouse camera, jump, HUD, 2-client PIE and Dedicated Server.
+
+Detailed report:
+**Docs/PHASE_37_UNREAL_VISUAL_FOUNDATION.md**
+
+Next implementation target after the runtime gate:
+**PHASE 38 — REAL ASSET PIPELINE**
