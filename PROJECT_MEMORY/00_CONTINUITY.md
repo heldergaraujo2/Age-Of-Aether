@@ -1141,6 +1141,38 @@ Next:
 **Phase 24 — Loot, Drop, Reward & Respawn.**
 
 
+## PHASE 26 — CRAFTING, MIXING, FORGE & RECIPE AUTHORING — COMPLETED 2026-09-19
+
+Repository implementation is complete.
+
+Implemented:
+- RecipeDefinition with ingredients, outputs, failure outputs and quantity ranges.
+- Success chance, failure behavior, required character level, required skill, station and currency.
+- Cooldown plus daily/weekly limits.
+- Unlock conditions for level, quest, item, world tag, content and skill.
+- Catalyst and protection item support.
+- Guaranteed-result/pity threshold configuration.
+- Stable IDs, normalized resolution, duplicate rejection and deterministic enumeration.
+- Cross-validation against Phase 19 content, Phase 21 items, Phase 23 skills, Phase 25 quests and Phase 22 world actors/stations.
+- Automation tests for registration, resolution, invalid data, failure modes, limits, duplicates, determinism, references and unlock conditions.
+
+Validation truth:
+- repository/static validation is complete;
+- GitHub Actions validation is configured for Phase 26;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation remain NOT VERIFIED because Unreal is unavailable;
+- no compilation success is claimed.
+
+Important files:
+- Source/AgeOfAether/Public/Data/AetherRecipeTypes.h
+- Source/AgeOfAether/Private/Data/AetherRecipeTypes.cpp
+- Source/AgeOfAether/Public/Data/AetherRecipeRegistry.h
+- Source/AgeOfAether/Private/Data/AetherRecipeRegistry.cpp
+- Source/AgeOfAether/Private/Tests/AetherRecipeRegistryTests.cpp
+- Docs/PHASE_26_CRAFTING_MIXING_FORGE_RECIPE_AUTHORING.md
+
+Next:
+**Phase 27 — World, Map, Interaction & Streaming Content.**
+
 ## PHASE 25 — QUEST, EVENT, DIALOGUE & WORLD CONTENT AUTHORING — COMPLETED 2026-09-19
 
 Repository implementation is complete.
