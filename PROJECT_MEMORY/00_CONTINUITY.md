@@ -7,9 +7,9 @@
 **Name:** AGE OF AETHER  
 **Technical project:** AgeOfAether  
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
-**Branch:** phase39-playable-base-character  
+**Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 39 — Playable Base Character (repository implementation complete; Unreal 5.8.1 visual/runtime acceptance pending local validation). Next implementation target: Phase 40 — Input, Movement & Camera.  
+**Current stage:** Phase 43 — Five Classes & 25 Evolutions Presentation (repository implementation merged; Unreal 5.8.1 visual/runtime acceptance pending local validation). Next implementation target: Phase 44 — Playable Combat.  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
