@@ -17,6 +17,13 @@ FAetherClassBalanceRegistry BuildNeutralRegistry()
         FAetherClassBalanceDefinition D;
         D.DefinitionID = FString(C) + TEXT(".base"); D.ClassID = C;
         P.Definitions.Add(D);
+        for (int32 Stage=1; Stage<=5; ++Stage)
+        {
+            FAetherClassBalanceDefinition E;
+            E.DefinitionID = FString::Printf(TEXT("%s.%02d"),C,Stage);
+            E.ClassID=C; E.EvolutionID=E.DefinitionID;
+            P.Definitions.Add(E);
+        }
     }
     FString E; R.RegisterProfile(P,E); R.SetActiveProfile(TEXT("testing"),E); R.SetFallbackProfile(TEXT("testing"),E);
     return R;
@@ -41,7 +48,6 @@ bool FAetherBalanceSimulationNeutralTest::RunTest(const FString&)
     TestEqual(TEXT("five cases"),Report.CasesExecuted,5); TestEqual(TEXT("neutral damage"),Results[0].EffectiveDamage,26.6666666667,1e-6);
     TestTrue(TEXT("finite"),Report.bFinite); TestTrue(TEXT("safe"),Report.bSafetyBoundsPassed); return true;
 }
-
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherBalanceSimulationBothContextsTest,"AgeOfAether.BalanceSimulation.BothContexts",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherBalanceSimulationBothContextsTest::RunTest(const FString&)
 {
@@ -49,28 +55,23 @@ bool FAetherBalanceSimulationBothContextsTest::RunTest(const FString&)
     TestTrue(TEXT("both contexts pass"),FAetherClassBalanceSimulation::SimulateBothContexts(R,Cases(),Results,A,B));
     TestEqual(TEXT("ten results"),Results.Num(),10); return true;
 }
-
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherBalanceSimulationDeterminismTest,"AgeOfAether.BalanceSimulation.Determinism",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherBalanceSimulationDeterminismTest::RunTest(const FString&)
 {
     auto R=BuildNeutralRegistry(); FString E; TestTrue(TEXT("deterministic"),FAetherClassBalanceSimulation::ValidateSymmetryAndDeterminism(R,Cases(),E)); return true;
 }
-
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherBalanceSimulationInvalidInputTest,"AgeOfAether.BalanceSimulation.InvalidInput",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherBalanceSimulationInvalidInputTest::RunTest(const FString&)
 {
     auto R=BuildNeutralRegistry(); auto C=Cases(); C[0].BaseDamage=-1.0; TArray<FAetherBalanceSimulationResult> Results; FAetherBalanceSimulationReport Report;
     TestFalse(TEXT("negative damage rejected"),FAetherClassBalanceSimulation::Simulate(R,C,false,Results,Report)); TestTrue(TEXT("failure recorded"),Report.Failures>0); return true;
 }
-
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherBalanceSimulationExtremeMultiplierTest,"AgeOfAether.BalanceSimulation.ExtremeMultiplier",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherBalanceSimulationExtremeMultiplierTest::RunTest(const FString&)
 {
     auto R=BuildNeutralRegistry(); TArray<FAetherBalanceSimulationCase> C=Cases(); FString E;
-    TestTrue(TEXT("extreme validation"),FAetherClassBalanceSimulation::ValidateExtremeMultipliers(R,C,false,E));
-    return true;
+    TestTrue(TEXT("extreme validation"),FAetherClassBalanceSimulation::ValidateExtremeMultipliers(R,C,false,E)); return true;
 }
-
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherBalanceSimulationExtremeSafetyTest,"AgeOfAether.BalanceSimulation.ExtremeSafety",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherBalanceSimulationExtremeSafetyTest::RunTest(const FString&)
 {
@@ -79,7 +80,6 @@ bool FAetherBalanceSimulationExtremeSafetyTest::RunTest(const FString&)
     for(const auto& X:Results){TestTrue(TEXT("finite result"),X.bFinite);TestTrue(TEXT("safe result"),X.bWithinSafetyBounds);}
     return true;
 }
-
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherBalanceSimulationMissingDefinitionTest,"AgeOfAether.BalanceSimulation.MissingDefinition",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherBalanceSimulationMissingDefinitionTest::RunTest(const FString&)
 {
