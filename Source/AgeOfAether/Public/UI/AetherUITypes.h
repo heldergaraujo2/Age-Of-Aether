@@ -40,6 +40,20 @@ enum class EAetherUIWindowMode : uint8
     Modal
 };
 
+
+USTRUCT(BlueprintType)
+struct FAetherUIClassEntry
+{
+    GENERATED_BODY()
+    UPROPERTY(BlueprintReadOnly) FString ClassID;
+    UPROPERTY(BlueprintReadOnly) FString EvolutionID;
+    UPROPERTY(BlueprintReadOnly) FString DisplayName;
+    UPROPERTY(BlueprintReadOnly) FString PathTitle;
+    UPROPERTY(BlueprintReadOnly) FString IconAssetID;
+    UPROPERTY(BlueprintReadOnly) bool bSelected = false;
+    UPROPERTY(BlueprintReadOnly) bool bUnlocked = false;
+};
+
 USTRUCT(BlueprintType)
 struct FAetherUIItemEntry
 {
@@ -166,6 +180,7 @@ struct FAetherUIRuntimeSnapshot
     UPROPERTY(BlueprintReadOnly) bool bModalOpen = false;
     UPROPERTY(BlueprintReadOnly) FString ModalID;
     UPROPERTY(BlueprintReadOnly) int32 InventoryCapacity = 0;
+    UPROPERTY(BlueprintReadOnly) TArray<FAetherUIClassEntry> ClassSelection;
     UPROPERTY(BlueprintReadOnly) TArray<FAetherUIItemEntry> Inventory;
     UPROPERTY(BlueprintReadOnly) TArray<FAetherUIEquipmentEntry> Equipment;
     UPROPERTY(BlueprintReadOnly) TArray<FAetherUISkillEntry> Skills;
