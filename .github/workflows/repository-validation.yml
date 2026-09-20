@@ -66,7 +66,7 @@ jobs:
           if failures:
               print("\\n".join(failures)); raise SystemExit(1)
           print(f"Validated {len(files)} source/documentation files.")
-      - name: Validate Phase 22 through Phase 31 deliverables
+      - name: Validate Phase 22 through Phase 32 deliverables
         shell: bash
         run: |
           set -euo pipefail
@@ -130,5 +130,14 @@ jobs:
           grep -q "Repository implementation complete" Docs/PHASE_31_UNIVERSAL_PLAYER_CLASS_EVOLUTION.md
           grep -q "Phase 31" ROADMAP.md
           grep -q "Phase 31" PROJECT_MEMORY/00_CONTINUITY.md
+          test -f Source/AgeOfAether/Public/Data/AetherClassCatalog.h
+          test -f Source/AgeOfAether/Private/Data/AetherClassCatalog.cpp
+          test -f Source/AgeOfAether/Private/Tests/AetherClassCatalogTests.cpp
+          test -f Docs/PHASE_32_FIVE_BASE_CLASSES_25_EVOLUTIONS.md
+          grep -q "FAetherClassCatalog" Source/AgeOfAether/Public/Data/AetherClassCatalog.h
+          grep -q "FAetherClassCatalogCountTest" Source/AgeOfAether/Private/Tests/AetherClassCatalogTests.cpp
+          grep -q "Repository/source level" Docs/PHASE_32_FIVE_BASE_CLASSES_25_EVOLUTIONS.md
+          grep -q "Phase 32" ROADMAP.md
+          grep -q "Phase 32" PROJECT_MEMORY/00_CONTINUITY.md
       - name: Report
         run: echo "Repository static validation completed successfully."
