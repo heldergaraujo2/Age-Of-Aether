@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 20 — Asset Pipeline & Visual Asset Registry (repository implementation complete; Unreal runtime validation pending local validation)  
+**Current stage:** Phase 29 — Complete MMORPG UI/UX (repository implementation complete; Unreal runtime/UI validation pending local validation)  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -1294,3 +1294,34 @@ Validation truth:
 
 Next implementation target:
 **PHASE 29 — COMPLETE MMORPG UI/UX.**
+
+
+## PHASE 29 — COMPLETE MMORPG UI/UX — COMPLETED 2026-09-20
+
+Repository implementation is complete.
+
+Implemented:
+- centralized UI screen taxonomy for all required MMORPG screens;
+- UAetherUISubsystem navigation/history and modal safety;
+- UI view-model contracts for inventory, equipment, skills, quests and social;
+- notification lifecycle;
+- UI settings validation;
+- Blueprint-callable state/event boundary;
+- reset-safe UI lifecycle;
+- six Unreal Automation test definitions.
+
+Important files:
+- Source/AgeOfAether/Public/UI/AetherUITypes.h
+- Source/AgeOfAether/Private/UI/AetherUITypes.cpp
+- Source/AgeOfAether/Public/UI/AetherUISubsystem.h
+- Source/AgeOfAether/Private/UI/AetherUISubsystem.cpp
+- Source/AgeOfAether/Private/Tests/AetherUISubsystemTests.cpp
+- Docs/PHASE_29_COMPLETE_MMO_UI_UX.md
+
+Validation truth:
+- repository/static validation: pending final GitHub Actions run;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/UI rendering/localization/performance runtime: NOT VERIFIED because Unreal is unavailable;
+- no compilation success claimed.
+
+Next implementation target:
+**PHASE 30 — CLIENT PRESENTATION, PERFORMANCE & FINAL INTEGRATION.**
