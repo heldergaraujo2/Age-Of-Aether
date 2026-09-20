@@ -2,7 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "Characters/AetherCharacterTypes.h"
+#include "Data/AetherClassBalanceTypes.h"
 #include "Combat/AetherCombatTypes.generated.h"
+
+UENUM(BlueprintType)
+enum class EAetherCombatMode : uint8
+{
+    PvE,
+    PvP
+};
 
 UENUM(BlueprintType)
 enum class EAetherCombatResultCode : uint8
@@ -30,6 +38,20 @@ enum class EAetherCombatOutcome : uint8
     CriticalHit,
     Miss,
     Defeated
+};
+
+USTRUCT(BlueprintType)
+struct FAetherCombatBalanceContext
+{
+    GENERATED_BODY()
+    UPROPERTY(BlueprintReadOnly) EAetherCombatMode Mode = EAetherCombatMode::PvE;
+    UPROPERTY(BlueprintReadOnly) FAetherClassBalanceModifiers AttackerModifiers;
+    UPROPERTY(BlueprintReadOnly) FAetherClassBalanceModifiers TargetModifiers;
+    UPROPERTY(BlueprintReadOnly) bool bAuthoritative = false;
+    static FAetherCombatBalanceContext Neutral(EAetherCombatMode InMode)
+    {
+        FAetherCombatBalanceContext Context; Context.Mode = InMode; Context.bAuthoritative = true; return Context;
+    }
 };
 
 USTRUCT(BlueprintType)
