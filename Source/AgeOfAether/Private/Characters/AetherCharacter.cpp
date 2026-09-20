@@ -256,7 +256,7 @@ void AAetherCharacter::SprintStarted(const FInputActionValue& Value)
 {
     if (!Value.Get<bool>()) return;
     bSprinting = true;
-    if (HasAuthority()) ServerSetSprinting(true); else ServerSetSprinting(true);
+    if (!HasAuthority()) ServerSetSprinting(true);
     if (UCharacterMovementComponent* Movement = GetCharacterMovement())
         Movement->MaxWalkSpeed = MovementCameraProfile ? MovementCameraProfile->SprintSpeed : FoundationWalkSpeed * 1.5f;
 }
