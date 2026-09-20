@@ -1042,3 +1042,19 @@ Next target:
 - No fake Unreal binaries were committed.
 - Unreal 5.8.1 runtime import/attachment/PIE/Dedicated Server remains a local acceptance gate.
 - Next target: Phase 43 — Five Classes & 25 Evolutions Presentation.
+
+
+## Phase 46 — Monsters, NPCs & Bosses — COMPLETE at repository/source level
+
+- Added stable data-driven creature definitions for Monster, NPC and Boss roles.
+- Added generic AI profile and bounded creature stats.
+- Added dialogue/shop/quest/interaction IDs for later world systems.
+- Added optional mesh/animation/montage/VFX/SFX presentation references.
+- Added spawn definitions with zone, transform, MaxAlive and bounded respawn timing.
+- Added normalized creature registry and UAetherCreatureSubsystem World Subsystem.
+- Added reusable AAetherCreatureActor and UAetherCreatureCatalog Data Asset.
+- Added Automation tests and Unreal setup documentation.
+- No fake Unreal binary assets.
+- Unreal 5.8.1 runtime remains NOT VERIFIED; local acceptance is required for actual asset import, spawn, replication and Dedicated Server behavior.
+
+Next target: **Phase 47 — World, Maps & Streaming**
