@@ -38,6 +38,42 @@ bool UAetherPlayableCharacterVisualComponent::ApplyProfile()
     return ApplyLoadedProfile(Profile);
 }
 
+bool UAetherPlayableCharacterVisualComponent::ApplyAnimationProfile(UAetherCharacterAnimationProfile* InAnimationProfile)
+{
+    if (!InAnimationProfile || GetNetMode() == NM_DedicatedServer)
+    {
+        return false;
+    }
+
+    USkeletalMeshComponent* MeshComponent = GetMeshComponent();
+    if (!MeshComponent)
+    {
+        return false;
+    }
+
+    FString ValidationError;
+    if (!InAnimationProfile->ValidateProfile(ValidationError))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Aether animation profile rejected: %s"), *ValidationError);
+        return false;
+    }
+
+    if (!InAnimationProfile->AnimationClass.IsNull())
+    {
+        if (UClass* AnimClass = InAnimationProfile->AnimationClass.LoadSynchronous())
+        {
+            MeshComponent->SetAnimInstanceClass(AnimClass);
+        }
+    }
+
+    if (UAetherBaseAnimInstance* AnimInstance = Cast<UAetherBaseAnimInstance>(MeshComponent->GetAnimInstance()))
+    {
+        AnimInstance->AnimationProfile = InAnimationProfile;
+    }
+
+    return true;
+}
+
 bool UAetherPlayableCharacterVisualComponent::ApplyProfileAsset(UAetherPlayableCharacterVisualProfile* InProfile)
 {
     if (!InProfile)

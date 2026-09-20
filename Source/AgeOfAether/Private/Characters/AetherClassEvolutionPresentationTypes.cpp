@@ -1,0 +1,2 @@
+#include "Characters/AetherClassEvolutionPresentationTypes.h"
+bool FAetherClassEvolutionPresentationDefinition::IsIdentityValid() const { return !ClassID.IsNone() && !EvolutionID.IsNone() && EvolutionStage>=1 && EvolutionStage<=5; }

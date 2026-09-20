@@ -1289,3 +1289,19 @@ Next implementation target:
 - Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here.
 - No fake .uasset/.umap/FBX/mesh binaries.
 - Next implementation target: **PHASE 43 — FIVE CLASSES & 25 EVOLUTIONS PRESENTATION**.
+
+
+## Phase 43 — Five Classes & 25 Evolutions Presentation — COMPLETE at repository/source level
+
+Implemented:
+- Added `FAetherClassEvolutionPresentationDefinition` with stable ClassID/EvolutionID, stage, path/display data and optional visual/animation/icon/VFX/SFX references.
+- Added `UAetherClassEvolutionPresentationCatalog` with exactly the 25 requested class/evolution entries.
+- Added same-class stage-1 fallback when an evolution has no authored presentation assets.
+- Added `UAetherClassEvolutionPresentationComponent` and integrated it into `AAetherCharacter`.
+- Added Phase 43 Automation coverage and Unreal setup/documentation.
+- Presentation remains client-side; Dedicated Server rejects presentation application.
+- No fake Unreal binaries were committed.
+- Low-bureaucracy workflow: one catalog + reusable visual/animation profiles; no per-class C++ or 25 custom Blueprints.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime remains NOT VERIFIED in this environment.
+- Real FBX, animation, icon, VFX and SFX assignment remains local Unreal acceptance work.
+- Next implementation target: **Phase 44 — Playable Combat**.
