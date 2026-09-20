@@ -73,3 +73,17 @@ bool FAetherUIResetTest::RunTest(const FString&)
     TestEqual(TEXT("reset notifications"),S->GetSnapshot().Notifications.Num(),0);
     return true;
 }
+
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUIClassSelectionTest,"AgeOfAether.UI.ClassSelection",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherUIClassSelectionTest::RunTest(const FString&)
+{
+    UAetherUISubsystem* S=NewObject<UAetherUISubsystem>();
+    TArray<FAetherUIClassEntry> Entries;
+    FAetherUIClassEntry A; A.ClassID=TEXT("archer"); A.EvolutionID=TEXT("archer.01"); A.DisplayName=TEXT("Batedor"); A.bUnlocked=true; A.bSelected=true; Entries.Add(A);
+    S->SetClassSelection(Entries);
+    TestEqual(TEXT("one class entry"),S->GetSnapshot().ClassSelection.Num(),1);
+    TestEqual(TEXT("stable class id"),S->GetSnapshot().ClassSelection[0].ClassID,FString(TEXT("archer")));
+    TestTrue(TEXT("unlocked"),S->GetSnapshot().ClassSelection[0].bUnlocked);
+    return true;
+}
