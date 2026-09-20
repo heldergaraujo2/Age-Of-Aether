@@ -26,6 +26,16 @@ bool FAetherClassBalanceRegistry::Resolve(const FString& P,const FString& C,cons
  if(!O.IsFinite()){E=TEXT("Resolved balance is not finite.");return false;}
  return true;
 }
+bool FAetherClassBalanceRegistry::ResolveActive(const FString& ClassID,const FString& EvolutionID,bool bPvP,FAetherClassBalanceModifiers& OutModifiers,FString& OutError) const
+{
+ const FString Primary=ActiveProfileID.IsEmpty()?FallbackProfileID:ActiveProfileID;
+ if(Resolve(Primary,ClassID,EvolutionID,bPvP,OutModifiers,OutError)) return true;
+ if(!FallbackProfileID.IsEmpty()&&Normalize(Primary)!=Normalize(FallbackProfileID))
+ {
+  return Resolve(FallbackProfileID,ClassID,EvolutionID,bPvP,OutModifiers,OutError);
+ }
+ return false;
+}
 bool FAetherClassBalanceRegistry::Validate(TArray<FAetherBalanceValidationIssue>&I,const FAetherClassRegistry* R) const
 {
  I.Reset();if(Profiles.Num()==0){AddIssue(I,TEXT("registry"),TEXT("empty"),TEXT("No balance profiles registered."));return false;}
