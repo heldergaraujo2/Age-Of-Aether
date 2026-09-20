@@ -9,6 +9,7 @@ class FAetherWorldActorRegistry;
 class FAetherLootRewardRegistry;
 class FAetherQuestDialogueEventRegistry;
 class FAetherRecipeRegistry;
+class FAetherSkillEffectRegistry;
 
 class FAetherWorldContentRegistry
 {
@@ -23,7 +24,8 @@ public:
         const FAetherWorldActorRegistry* WorldActorRegistry = nullptr,
         const FAetherLootRewardRegistry* LootRewardRegistry = nullptr,
         const FAetherQuestDialogueEventRegistry* QuestRegistry = nullptr,
-        const FAetherRecipeRegistry* RecipeRegistry = nullptr) const;
+        const FAetherRecipeRegistry* RecipeRegistry = nullptr,
+        const FAetherSkillEffectRegistry* SkillRegistry = nullptr) const;
     void GetMapIDs(TArray<FString>& OutIDs) const;
     int32 NumMaps() const { return Maps.Num(); }
     void Reset();
