@@ -1539,5 +1539,30 @@ Validation truth:
 - Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime is NOT VERIFIED here.
 - Local acceptance remains required for real montage import, target collision, server combat result/cooldown and multiplayer behavior.
 
+## Phase 45 — Skills, Buffs, Debuffs & VFX — COMPLETE at repository/source level
+
+Implemented:
+- data-driven SkillID definitions with bounded cooldown/range/resource/effect values;
+- deterministic normalized skill registry with duplicate rejection and atomic batch registration;
+- server-authoritative CastSkill request through the existing security/combat gateway;
+- class compatibility validation;
+- authoritative damage/heal effects;
+- runtime buff/debuff status records with stable EffectID;
+- reusable client-only skill presentation component with optional montage/VFX/SFX references;
+- automatic safe training skill for first vertical-slice validation;
+- Automation tests and Unreal setup documentation;
+- no fake Unreal binaries.
+
+Validation truth:
+- repository/source implementation complete;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here;
+- real VFX/SFX/montage import and visual acceptance remain local Unreal work.
+
+Low-bureaucracy workflow:
+- one generic skill pipeline;
+- one reusable visual component;
+- new skills are data + optional assets, not new C++ classes;
+- visuals are optional and never authoritative.
+
 Next target:
-**PHASE 45 — SKILLS, BUFFS, DEBUFFS & VFX**
+**PHASE 46 — MONSTERS, NPCs & BOSSES**
