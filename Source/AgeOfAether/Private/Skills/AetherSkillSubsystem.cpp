@@ -142,6 +142,19 @@ bool UAetherSkillSubsystem::CastSkill(const FAetherAccountId& AccountId, const F
     if (Skill->TargetMode == EAetherSkillTargetMode::Self && TargetId != AttackerId)
     { OutResult.Result = EAetherSkillResultCode::InvalidTarget; return false; }
 
+    if (Skill->ResourceCost > 0.0f)
+    { OutResult.Result = EAetherSkillResultCode::ResourceInsufficient; return false; }
+
+    for (const FAetherSkillEffect& Effect : Skill->Effects)
+    {
+        if (!FMath::IsFinite(Effect.Magnitude) || !FMath::IsFinite(Effect.DurationSeconds) ||
+            !FMath::IsFinite(Effect.TickIntervalSeconds))
+        { OutResult.Result = EAetherSkillResultCode::InvalidDefinition; return false; }
+        if ((Effect.Type == EAetherSkillEffectType::Buff || Effect.Type == EAetherSkillEffectType::Debuff) &&
+            Effect.DurationSeconds <= 0.0f)
+        { OutResult.Result = EAetherSkillResultCode::InvalidDefinition; return false; }
+    }
+
     const float Distance = FVector::Dist(Attacker.WorldLocation, Target.WorldLocation);
     if (Distance > Skill->Range)
     { OutResult.Result = EAetherSkillResultCode::OutOfRange; return false; }
