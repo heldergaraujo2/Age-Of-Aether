@@ -6,6 +6,7 @@
 
 class UAnimInstance;
 class UAnimSequenceBase;
+class UAnimMontage;
 
 UENUM(BlueprintType)
 enum class EAetherAnimationMovementState : uint8
@@ -49,6 +50,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Age of Aether|Animation")
     TSoftObjectPtr<UAnimSequenceBase> FallAnimation;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Animation|Combat")
+    TSoftObjectPtr<UAnimMontage> BasicAttackMontage;
 
     UFUNCTION(BlueprintPure, Category="Age of Aether|Animation")
     bool IsConfigured() const;
