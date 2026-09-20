@@ -2,6 +2,8 @@
 
 #include "Characters/AetherCharacter.h"
 #include "Characters/AetherPlayableCharacterVisualProfile.h"
+#include "Characters/AetherCharacterAnimationProfile.h"
+#include "Characters/AetherBaseAnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
 #include "Materials/MaterialInterface.h"
@@ -78,11 +80,25 @@ bool UAetherPlayableCharacterVisualComponent::ApplyLoadedProfile(UAetherPlayable
     MeshComponent->SetSkeletalMesh(Mesh);
     MeshComponent->SetRelativeTransform(InProfile->MeshRelativeTransform);
 
-    if (!InProfile->AnimationClass.IsNull())
+    TSoftClassPtr<UAnimInstance> AnimationClass = InProfile->AnimationClass;
+    if (AnimationClass.IsNull() && InProfile->AnimationProfile)
     {
-        if (UClass* AnimClass = InProfile->AnimationClass.LoadSynchronous())
+        AnimationClass = InProfile->AnimationProfile->AnimationClass;
+    }
+
+    if (!AnimationClass.IsNull())
+    {
+        if (UClass* AnimClass = AnimationClass.LoadSynchronous())
         {
             MeshComponent->SetAnimInstanceClass(AnimClass);
+        }
+    }
+
+    if (InProfile->AnimationProfile)
+    {
+        if (UAetherBaseAnimInstance* AnimInstance = Cast<UAetherBaseAnimInstance>(MeshComponent->GetAnimInstance()))
+        {
+            AnimInstance->AnimationProfile = InProfile->AnimationProfile;
         }
     }
 
