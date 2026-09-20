@@ -87,3 +87,9 @@ bool FAetherClassBalanceMismatchTest::RunTest(const FString&)
 {
  FAetherBalanceConfig C;FString E;TestTrue(TEXT("parse"),FAetherClassBalanceConfigLoader::Parse(Sample(),C,E));C.Profiles[0].Definitions[1].ClassID=TEXT("warrior");FAetherClassBalanceRegistry R;TestTrue(TEXT("build registry"),FAetherClassBalanceConfigLoader::BuildRegistry(C,R,E));FAetherClassRegistry Classes;TestTrue(TEXT("class catalog"),FAetherClassCatalog::BuildRegistry(Classes,E));TArray<FAetherBalanceValidationIssue>I;TestFalse(TEXT("class/evolution mismatch rejected"),R.Validate(I,&Classes));return true;
 }
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceFileLoadTest,"AgeOfAether.ClassBalance.FileLoad",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassBalanceFileLoadTest::RunTest(const FString&)
+{
+ FAetherBalanceConfig C;FString E;TestFalse(TEXT("missing external file is rejected safely"),FAetherClassBalanceConfigLoader::LoadFile(TEXT("/__age_of_aether_balance_file_that_does_not_exist__"),C,E));TestTrue(TEXT("diagnostic is provided"),!E.IsEmpty());return true;
+}
