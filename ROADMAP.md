@@ -1427,3 +1427,40 @@ Detailed report:
 
 Next implementation target after the runtime gate:
 **PHASE 38 — REAL ASSET PIPELINE**
+
+
+## Phase 38 — Real Asset Pipeline — COMPLETE AT REPOSITORY LEVEL
+
+Implemented:
+- FAetherAssetImportProfile;
+- FAetherAssetSourceMetadata;
+- FAetherAssetPipelineRecord;
+- FAetherAssetPipelineRegistry;
+- EAetherAssetValidationStatus;
+- stable lowercase AssetID normalization;
+- source/origin/license/author/version/revision metadata;
+- Unreal asset path contract;
+- skeleton/fallback/dependency references;
+- dependency cycle detection;
+- missing dependency/fallback detection;
+- canonical FBX 2020.2 bootstrap profile;
+- /Game/Aether content folder convention;
+- Phase 38 automation tests;
+- CI validation for the full asset pipeline contract.
+
+Simplification:
+- the first real asset can be imported and validated one at a time;
+- no mass asset production before the first asset passes;
+- no fake .uasset/.umap binaries are committed;
+- visual assets remain client-side presentation and never become gameplay authority.
+
+Validation truth:
+- repository/static CI: PASS;
+- real Unreal 5.8.1 FBX import: NOT VERIFIED in this environment;
+- first local acceptance asset should be one simple skeletal FBX.
+
+Detailed report:
+Docs/PHASE_38_REAL_ASSET_PIPELINE.md
+
+Next implementation target:
+**PHASE 39 — PLAYABLE BASE CHARACTER**
