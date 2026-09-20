@@ -8,8 +8,6 @@ bool ParseMod(const TArray<FString>& P,int32 S,FAetherClassBalanceModifiers&O)
  double* V[]={&O.Damage,&O.CriticalDamage,&O.Defense,&O.Healing,&O.Shield,&O.AreaDamage,&O.CrowdControl,&O.CrowdControlResistance,&O.MovementSpeed,&O.AttackSpeed,&O.CastSpeed,&O.Threat,&O.LifeSteal,&O.Regeneration,&O.BuffEffectiveness,&O.DebuffEffectiveness,&O.OutgoingDamage,&O.IncomingDamage,&O.ResourceCost,&O.ResourceRecovery};
  for(int32 I=0;I<20;++I)if(!Number(P,S+I,*V[I]))return false;return true;
 }
-void Append(TArray<FString>&P,double V){P.Add(FString::SanitizeFloat(V));}
-void WriteMod(FString&L,const FAetherClassBalanceModifiers&M){const double V[]={M.Damage,M.CriticalDamage,M.Defense,M.Healing,M.Shield,M.AreaDamage,M.CrowdControl,M.CrowdControlResistance,M.MovementSpeed,M.AttackSpeed,M.CastSpeed,M.Threat,M.LifeSteal,M.Regeneration,M.BuffEffectiveness,M.DebuffEffectiveness,M.OutgoingDamage,M.IncomingDamage,M.ResourceCost,M.ResourceRecovery};for(double X:V)L+=TEXT("|")+FString::SanitizeFloat(X);}
 }
 bool FAetherClassBalanceConfigLoader::Parse(const FString& Text,FAetherBalanceConfig& O,FString&E)
 {
