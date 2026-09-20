@@ -16,14 +16,14 @@ bool FAetherClassPresentationRegistry::ResolveWithFallback(const FString& ClassI
 {
     bOutFallback=false;
     if(Resolve(ClassID,EvolutionID,OutDefinition)) return true;
-    const FString Requested=Key(ClassID,EvolutionID);
-    for(const auto& Pair:Definitions)
-    {
-        const auto& D=Pair.Value;
-        if(Key(D.ClassID,D.EvolutionID)!=Requested && Normalize(D.FallbackPresentationID)==Requested)
-        { OutDefinition=D; bOutFallback=true; return true; }
-    }
-    return false;
+    const FString ClassKey=Normalize(ClassID);
+    TArray<FString> Candidates;
+    for(const auto& Pair:Definitions) if(Normalize(Pair.Value.ClassID)==ClassKey) Candidates.Add(Pair.Key);
+    Candidates.Sort();
+    if(Candidates.Num()==0) return false;
+    const auto* D=Definitions.Find(Candidates[0]);
+    if(!D) return false;
+    OutDefinition=*D; bOutFallback=true; return true;
 }
 bool FAetherClassPresentationRegistry::Validate(TArray<FAetherClassPresentationValidationIssue>& OutIssues) const
 {
