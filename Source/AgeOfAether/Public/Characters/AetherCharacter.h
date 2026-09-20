@@ -10,6 +10,7 @@ class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
+class UAetherPlayableCharacterVisualComponent;
 
 UCLASS()
 class AGEOFAETHER_API AAetherCharacter : public ACharacter
@@ -32,6 +33,9 @@ public:
     USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Visual")
+    UAetherPlayableCharacterVisualComponent* GetVisualComponent() const { return VisualComponent; }
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|Visual")
     UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
     void InitializeCharacterIdentity(const FAetherCharacterId& InCharacterId);
@@ -42,6 +46,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Visual")
     TObjectPtr<UCameraComponent> FollowCamera;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Visual")
+    TObjectPtr<UAetherPlayableCharacterVisualComponent> VisualComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
     float FoundationWalkSpeed = 420.0f;
