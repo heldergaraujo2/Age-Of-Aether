@@ -1,0 +1,4 @@
+#include "Interaction/AetherInteractionCatalog.h"
+#include "Interaction/AetherInteractionSubsystem.h"
+bool UAetherInteractionCatalog::IsValid(TArray<FString>&E)const{E.Reset();TSet<FString>I,Q,V;for(auto&X:Interactions){if(!X.IsValid())E.Add(TEXT("Invalid interaction"));auto K=X.InteractionID.TrimStartAndEnd().ToLower();if(I.Contains(K))E.Add(TEXT("Duplicate interaction: ")+K);I.Add(K);}for(auto&X:Quests){if(!X.IsValid())E.Add(TEXT("Invalid quest"));auto K=X.QuestID.TrimStartAndEnd().ToLower();if(Q.Contains(K))E.Add(TEXT("Duplicate quest: ")+K);Q.Add(K);}for(auto&X:Events){if(!X.IsValid())E.Add(TEXT("Invalid event"));auto K=X.EventID.TrimStartAndEnd().ToLower();if(V.Contains(K))E.Add(TEXT("Duplicate event: ")+K);V.Add(K);}return E.IsEmpty();}
+void UAetherInteractionCatalog::RegisterInto(UAetherInteractionSubsystem*S)const{if(!S)return;for(auto&X:Interactions)S->RegisterInteraction(X);for(auto&X:Quests)S->RegisterQuest(X);for(auto&X:Events)S->RegisterEvent(X);}
