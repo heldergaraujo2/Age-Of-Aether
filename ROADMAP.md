@@ -1213,10 +1213,19 @@ Next implementation target:
 
 ---
 
-# PHASE 35 — PVE/PVP BALANCE SIMULATION & AUTOMATED VALIDATION — PLANNED
+# PHASE 35 — PVE/PVP BALANCE SIMULATION & AUTOMATED VALIDATION — COMPLETE AT REPOSITORY LEVEL
 
 Purpose:
 Build a deterministic simulation/test layer capable of exercising class matchups and PvE encounters before practical Unreal gameplay testing.
+
+Implementation status:
+- Deterministic non-mutating PvE/PvP simulation service added.
+- Independent attacker/target class/evolution balance resolution added.
+- Finite and safety-bound diagnostics added.
+- Determinism and extreme-value validation added.
+- Simulation cannot write or promote production balance.
+- Automation coverage added for neutral, both-context, deterministic, invalid-input, missing-definition and extreme scenarios.
+- Unreal 5.8.1 runtime remains NOT VERIFIED.
 
 Scope:
 - deterministic combat simulation inputs;
