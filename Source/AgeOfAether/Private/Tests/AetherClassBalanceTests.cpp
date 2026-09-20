@@ -40,7 +40,7 @@ bool FAetherClassBalanceInvalidTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceSafetyTest,"AgeOfAether.ClassBalance.Safety",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherClassBalanceSafetyTest::RunTest(const FString&)
 {
- FAetherClassBalanceModifiers M;FString E;M.Damage=11.0;TestFalse(TEXT("upper bound rejected"),M.IsWithinSafetyBounds(E));M.Damage=0.0;TestTrue(TEXT("zero is structurally safe"),M.IsWithinSafetyBounds(E));M.Damage=1.0/0.0;TestFalse(TEXT("non-finite rejected"),M.IsWithinSafetyBounds(E));return true;
+ FAetherClassBalanceModifiers M;FString E;M.Damage=11.0;TestFalse(TEXT("upper bound rejected"),M.IsWithinSafetyBounds(E));M.Damage=0.0;TestTrue(TEXT("zero is structurally safe"),M.IsWithinSafetyBounds(E));M.Damage=FMath::NaN();TestFalse(TEXT("non-finite rejected"),M.IsWithinSafetyBounds(E));return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceProfileTest,"AgeOfAether.ClassBalance.ProfileSafety",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
