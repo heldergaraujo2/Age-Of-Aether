@@ -1,0 +1,2 @@
+# NPC
+NPC visual assets.
