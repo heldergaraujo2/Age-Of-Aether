@@ -102,6 +102,15 @@ jobs:
           grep -q "UAetherClientSubsystem" Source/AgeOfAether/Public/Client/AetherClientSubsystem.h
           grep -q "FAetherClientRequestLifecycleTest" Source/AgeOfAether/Private/Tests/AetherClientSubsystemTests.cpp
           grep -q "Repository implementation" Docs/PHASE_28_CLIENT_CORE_ARCHITECTURE.md
+          test -f Source/AgeOfAether/Public/UI/AetherUITypes.h
+          test -f Source/AgeOfAether/Public/UI/AetherUISubsystem.h
+          test -f Source/AgeOfAether/Private/Tests/AetherUISubsystemTests.cpp
+          test -f Docs/PHASE_29_COMPLETE_MMO_UI_UX.md
+          grep -q "UAetherUISubsystem" Source/AgeOfAether/Public/UI/AetherUISubsystem.h
+          grep -q "FAetherUINavigationTest" Source/AgeOfAether/Private/Tests/AetherUISubsystemTests.cpp
+          grep -q "Repository implementation" Docs/PHASE_29_COMPLETE_MMO_UI_UX.md
+          grep -q "Phase 29" ROADMAP.md
+          grep -q "Phase 29" PROJECT_MEMORY/00_CONTINUITY.md
           grep -q "Repository implementation" Docs/PHASE_25_QUEST_EVENT_DIALOGUE_WORLD_CONTENT.md
       - name: Report
         run: echo "Repository static validation completed successfully."
