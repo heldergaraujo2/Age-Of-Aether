@@ -8,13 +8,13 @@ namespace
 {
 FString SampleBalance()
 {
-    FString Text = TEXT("config|1|testing|testing\\nprofile|testing|1\\n");
+    FString Text = TEXT("config|1|testing|testing\nprofile|testing|1\n");
     auto Add = [&Text](const TCHAR* DefinitionID, const TCHAR* ClassID, const TCHAR* EvolutionID, double PvEDamage, double PvPDamage)
     {
         Text += FString::Printf(TEXT("balance|testing|%s|%s|%s"), DefinitionID, ClassID, EvolutionID);
         for (int32 I = 0; I < 20; ++I) Text += FString::Printf(TEXT("|%s"), I == 0 ? *FString::SanitizeFloat(PvEDamage) : TEXT("1"));
         for (int32 I = 0; I < 20; ++I) Text += FString::Printf(TEXT("|%s"), I == 0 ? *FString::SanitizeFloat(PvPDamage) : TEXT("1"));
-        Text += TEXT("\\n");
+        Text += TEXT("\n");
     };
     Add(TEXT("archer.base"), TEXT("archer"), TEXT(""), 2.0, 2.0);
     Add(TEXT("archer.01"), TEXT("archer"), TEXT("archer.01"), 1.5, 1.25);
@@ -31,9 +31,9 @@ namespace
 {
 FString SampleBalance()
 {
-    return TEXT("config|1|testing|testing\\n")
-        TEXT("profile|testing|1\\n")
-        TEXT("balance|testing|archer.base|archer||2|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|2|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1\\n")
+    return TEXT("config|1|testing|testing\n")
+        TEXT("profile|testing|1\n")
+        TEXT("balance|testing|archer.base|archer||2|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|2|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1\n")
         TEXT("balance|testing|archer.01|archer|archer.01|1.5|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1");
 }
 
