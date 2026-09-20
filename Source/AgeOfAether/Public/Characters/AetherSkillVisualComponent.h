@@ -5,6 +5,8 @@
 #include "Skills/AetherSkillTypes.h"
 #include "AetherSkillVisualComponent.generated.h"
 
+class UAnimMontage;
+
 USTRUCT(BlueprintType)
 struct FAetherSkillVisualProfile
 {
