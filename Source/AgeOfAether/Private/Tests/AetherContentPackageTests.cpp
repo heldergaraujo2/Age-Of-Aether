@@ -1,0 +1,6 @@
+#include "Content/AetherContentPackageTypes.h"
+#include "Content/AetherContentPackageRegistry.h"
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherContentPackageValidationTest,"AgeOfAether.Content.PackageValidation",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+bool FAetherContentPackageValidationTest::RunTest(const FString&){UAetherContentPackage* P=NewObject<UAetherContentPackage>();P->PackageID=TEXT("starter");P->DisplayName=TEXT("Starter");FAetherContentPackageEntry E;E.ContentID=TEXT("training.zone");E.DisplayName=TEXT("Training Zone");P->Entries.Add(E); Errors.Reset(); TestTrue(TEXT("Valid package"),P->Validate(Errors));P->Entries.Add(E);TArray<FString> Errors;TestFalse(TEXT("Duplicate rejected"),P->Validate(Errors));return true;}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherContentPackageRegistryTest,"AgeOfAether.Content.PackageRegistry",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+bool FAetherContentPackageRegistryTest::RunTest(const FString&){FAetherContentPackageRegistry R;UAetherContentPackage* P=NewObject<UAetherContentPackage>();P->PackageID=TEXT("starter");P->DisplayName=TEXT("Starter");TestTrue(TEXT("Register"),R.Register(P));TestFalse(TEXT("Duplicate"),R.Register(P));TestNotNull(TEXT("Lookup"),R.Find(TEXT("STARTER")));return true;}
