@@ -1,0 +1,8 @@
+#include "Interaction/AetherInteractionSubsystem.h"
+static FString AK(const FString&V){return V.TrimStartAndEnd().ToLower();}
+bool UAetherInteractionSubsystem::StartQuest(const FString&ID,int32 Level){auto*Q=R.FindQuest(ID);if(!Q||Level<Q->MinimumLevel)return false;auto K=AK(ID);auto&S=States.FindOrAdd(K);if(S.State==EAetherQuestState::Active)return false;if(S.State==EAetherQuestState::Completed&&!Q->bRepeatable)return false;S={};S.QuestID=K;S.RequiredCount=Q->RequiredCount;S.State=EAetherQuestState::Active;return true;}
+bool UAetherInteractionSubsystem::AdvanceQuest(const FString&ID,int32 Amount){if(Amount<=0)return false;auto*S=States.Find(AK(ID));auto*Q=R.FindQuest(ID);if(!S||!Q||S->State!=EAetherQuestState::Active)return false;S->Progress=FMath::Clamp(S->Progress+Amount,0,Q->RequiredCount);return true;}
+bool UAetherInteractionSubsystem::CompleteQuest(const FString&ID){auto*S=States.Find(AK(ID));auto*Q=R.FindQuest(ID);if(!S||!Q||S->State!=EAetherQuestState::Active||S->Progress<Q->RequiredCount)return false;S->State=EAetherQuestState::Completed;return true;}
+EAetherQuestState UAetherInteractionSubsystem::GetQuestState(const FString&ID)const{if(auto*S=States.Find(AK(ID)))return S->State;return EAetherQuestState::Locked;}
+int32 UAetherInteractionSubsystem::GetQuestProgress(const FString&ID)const{if(auto*S=States.Find(AK(ID)))return S->Progress;return 0;}
+bool UAetherInteractionSubsystem::CanInteract(const FString&ID,int32 Level)const{auto*I=R.FindInteraction(ID);return I&&I->bEnabled&&Level>=I->MinimumLevel&&(I->RequiredQuestID.IsEmpty()||GetQuestState(I->RequiredQuestID)==EAetherQuestState::Completed);}
