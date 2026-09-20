@@ -1470,3 +1470,11 @@ Next implementation target:
 
 
 - Phase 40 — Input, Movement & Camera — COMPLETE at repository/source level; Unreal 5.8.1 runtime validation pending local.
+
+
+## Phase 41 — Animation System — COMPLETE at repository/source level
+- Added reusable animation profile and base AnimInstance state contract.
+- Added Idle/Walk/Run/Jump/Fall state derivation plus speed, direction, vertical velocity and sprint presentation values.
+- Linked animation profile directly to the existing playable visual profile so one Data Asset can configure the visual slice.
+- Added Automation coverage and no fake Unreal binaries.
+- Unreal 5.8.1 runtime remains unverified; next target Phase 42 — Equipment & Item Visuals.
