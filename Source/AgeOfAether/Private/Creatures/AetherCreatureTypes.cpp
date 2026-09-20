@@ -25,5 +25,5 @@ bool FAetherCreatureSpawnDefinition::IsValid() const
     return !SpawnID.TrimStartAndEnd().IsEmpty() &&
         !CreatureID.TrimStartAndEnd().IsEmpty() &&
         ZoneID.IsValid() &&
-        MaxAlive > 0 && MaxAlive <= 10000;
+        MaxAlive > 0 && MaxAlive <= 10000 && FMath::IsFinite(RespawnSeconds) && RespawnSeconds >= 0.0f && RespawnSeconds <= 86400.0f;
 }
