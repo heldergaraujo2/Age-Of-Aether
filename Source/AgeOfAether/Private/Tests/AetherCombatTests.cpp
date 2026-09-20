@@ -2,6 +2,7 @@
 
 #include "Misc/AutomationTest.h"
 #include "Combat/AetherCombatService.h"
+#include "Combat/AetherClassCombatIntegration.h"
 
 namespace
 {
@@ -257,3 +258,26 @@ bool FAetherCombatConfigValidationTest::RunTest(const FString& Parameters)
 }
 
 #endif
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FAetherCombatAuthoritativeClassBalanceTest,
+    "AgeOfAether.Combat.AuthoritativeClassBalance",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FAetherCombatAuthoritativeClassBalanceTest::RunTest(const FString& Parameters)
+{
+    FAetherCombatService Service;
+    TestTrue(TEXT("Config accepted"), Service.SetConfig(MakeDeterministicConfig()));
+    FAetherCharacterRecord Attacker = MakeCombatant(TEXT("Attacker"), 0.0f);
+    FAetherCharacterRecord Target = MakeCombatant(TEXT("Target"), 100.0f);
+    Attacker.ClassID = TEXT("archer"); Attacker.EvolutionID = TEXT("archer.01");
+    Target.ClassID = TEXT("warrior"); Target.EvolutionID = TEXT("warrior.01");
+    FAetherCombatBalanceContext Context = FAetherCombatBalanceContext::Neutral(EAetherCombatMode::PvE);
+    Context.AttackerModifiers.Damage = 3.0;
+    Context.TargetModifiers.IncomingDamage = 1.0;
+    FAetherCombatResult Result;
+    TestTrue(TEXT("Authoritative class balance attack resolves"), Service.ResolveBasicAttackAuthoritative(Attacker, Target, 1, 0.0, Context, Result));
+    TestEqual(TEXT("Class/evolution damage multiplier is applied"), Result.DamageApplied, 60.0f);
+    TestTrue(TEXT("Result is finite"), FMath::IsFinite(Result.DamageApplied));
+    return true;
+}
