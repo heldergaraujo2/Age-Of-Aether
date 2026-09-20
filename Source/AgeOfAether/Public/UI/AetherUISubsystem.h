@@ -44,6 +44,9 @@ public:
     FAetherUIRuntimeSnapshot GetSnapshot() const { return Snapshot; }
 
     UFUNCTION(BlueprintCallable, Category="Age of Aether|UI")
+    void SetClassSelection(const TArray<FAetherUIClassEntry>& Entries);
+
+    UFUNCTION(BlueprintCallable, Category="Age of Aether|UI")
     void SetInventory(const TArray<FAetherUIItemEntry>& Entries, int32 Capacity);
 
     UFUNCTION(BlueprintCallable, Category="Age of Aether|UI")
