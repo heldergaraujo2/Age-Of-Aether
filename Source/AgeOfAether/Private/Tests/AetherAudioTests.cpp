@@ -1,0 +1,3 @@
+#include "Audio/AetherAudioRegistry.h"
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherAudioValidationTest,"AgeOfAether.Audio.Validation",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+bool FAetherAudioValidationTest::RunTest(const FString&){FAetherAudioRegistry R; FAetherAudioDefinition D; D.AudioID=TEXT("world.rain"); D.Sound= TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/Aether/Audio/Placeholder.Placeholder"))); TestTrue(TEXT("Definition validates structurally"),D.IsValid()); TestTrue(TEXT("Register succeeds"),R.Register(D)); TestFalse(TEXT("Duplicate rejected"),R.Register(D)); return true;}
