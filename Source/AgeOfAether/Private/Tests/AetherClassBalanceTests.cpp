@@ -73,3 +73,16 @@ bool FAetherClassBalanceFallbackTest::RunTest(const FString&)
 {
  FAetherBalanceConfig C;FString E;TestTrue(TEXT("parse"),FAetherClassBalanceConfigLoader::Parse(Sample(),C,E));FAetherClassBalanceRegistry R;TestTrue(TEXT("build"),FAetherClassBalanceConfigLoader::BuildRegistry(C,R,E));TestTrue(TEXT("active resolution"),R.SetActiveProfile(TEXT("testing"),E));FAetherClassBalanceModifiers M;TestTrue(TEXT("active resolves"),R.ResolveActive(TEXT("archer"),TEXT("archer.01"),false,M,E));TestEqual(TEXT("active value"),M.Damage,2.0);return true;
 }
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceSchemaTest,"AgeOfAether.ClassBalance.Schema",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassBalanceSchemaTest::RunTest(const FString&)
+{
+ const FString Bad=TEXT("config|1|testing|production\nprofile|testing|1\nbalance|testing|archer.base|archer||1");
+ FAetherBalanceConfig C;FString E;TestFalse(TEXT("short balance row rejected"),FAetherClassBalanceConfigLoader::Parse(Bad,C,E));return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceMismatchTest,"AgeOfAether.ClassBalance.ReferenceMismatch",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassBalanceMismatchTest::RunTest(const FString&)
+{
+ FAetherBalanceConfig C;FString E;TestTrue(TEXT("parse"),FAetherClassBalanceConfigLoader::Parse(Sample(),C,E));C.Profiles[0].Definitions[1].ClassID=TEXT("warrior");FAetherClassBalanceRegistry R;TestTrue(TEXT("build registry"),FAetherClassBalanceConfigLoader::BuildRegistry(C,R,E));FAetherClassRegistry Classes;TestTrue(TEXT("class catalog"),FAetherClassCatalog::BuildRegistry(Classes,E));TArray<FAetherBalanceValidationIssue>I;TestFalse(TEXT("class/evolution mismatch rejected"),R.Validate(I,&Classes));return true;
+}
