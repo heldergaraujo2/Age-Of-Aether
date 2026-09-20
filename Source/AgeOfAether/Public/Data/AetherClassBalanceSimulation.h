@@ -37,6 +37,7 @@ struct FAetherBalanceSimulationReport
     bool bDeterministic = true;
     bool bFinite = true;
     bool bSafetyBoundsPassed = true;
+    bool bProductionMutationAttempted = false;
     TArray<FString> Issues;
 };
 
@@ -56,6 +57,8 @@ public:
         TArray<FAetherBalanceSimulationResult>& OutResults,
         FAetherBalanceSimulationReport& OutPvEReport,
         FAetherBalanceSimulationReport& OutPvPReport);
+
+    static bool ValidateExtremeMultipliers(const FAetherClassBalanceRegistry& Registry, const TArray<FAetherBalanceSimulationCase>& Cases, bool bPvP, FString& OutError);
 
     static bool ValidateSymmetryAndDeterminism(
         const FAetherClassBalanceRegistry& Registry,
