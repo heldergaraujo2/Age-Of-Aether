@@ -12,6 +12,9 @@ class AGEOFAETHER_API UAetherSkillSubsystem : public UGameInstanceSubsystem
     GENERATED_BODY()
 
 public:
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+    virtual void Deinitialize() override;
+
     bool RegisterSkill(const FAetherSkillDefinition& Definition);
     bool RegisterSkills(const TArray<FAetherSkillDefinition>& Definitions);
     bool CastSkill(const FAetherAccountId& AccountId, const FAetherCharacterId& AttackerId,
