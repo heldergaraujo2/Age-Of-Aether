@@ -1,0 +1,6 @@
+#include "UI/AetherUIPresentationTypes.h"
+#include "Blueprint/UserWidget.h"
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUIPresentationValidationTest,"AgeOfAether.UI.PresentationValidation",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+bool FAetherUIPresentationValidationTest::RunTest(const FString&){FAetherUIScreenPresentation Entry; TestFalse(TEXT("None screen is invalid"),Entry.IsValid()); Entry.Screen=EAetherUIScreen::HUD; TestFalse(TEXT("Missing widget class is invalid"),Entry.IsValid()); return true;}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUICatalogDuplicateTest,"AgeOfAether.UI.CatalogDuplicateValidation",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+bool FAetherUICatalogDuplicateTest::RunTest(const FString&){UAetherUIPresentationCatalog* Catalog=NewObject<UAetherUIPresentationCatalog>(); FAetherUIScreenPresentation A; A.Screen=EAetherUIScreen::HUD; A.WidgetClass=TSoftClassPtr<UUserWidget>(FSoftObjectPath(TEXT("/Game/Aether/UI/WBP_HUD.WBP_HUD_C"))); Catalog->Screens.Add(A); Catalog->Screens.Add(A); TArray<FString> Errors; TestFalse(TEXT("Duplicate screen rejected"),Catalog->IsValid(Errors)); TestTrue(TEXT("Validation reports an error"),Errors.Num()>0); return true;}
