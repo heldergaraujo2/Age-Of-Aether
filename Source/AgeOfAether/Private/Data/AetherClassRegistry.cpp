@@ -52,7 +52,24 @@ bool FAetherClassRegistry::Validate(TArray<FAetherClassValidationIssue>& O,const
     for(const auto& P:Evolutions){
         const auto& E=P.Value;
         for(const auto& Q:Evolutions) if(P.Key!=Q.Key && E.ClassID==Q.Value.ClassID && E.Stage==Q.Value.Stage){AddIssue(O,E.EvolutionID,TEXT("DuplicateStage"),FString::FromInt(E.Stage));Good=false;break;}
+        if(E.Stage==1 && E.PrerequisiteEvolutionIDs.Num()>0){AddIssue(O,E.EvolutionID,TEXT("UnexpectedStagePrerequisite"),TEXT("Stage 1 cannot require a prior evolution."));Good=false;}
         if(E.Stage>1 && E.PrerequisiteEvolutionIDs.Num()==0){AddIssue(O,E.EvolutionID,TEXT("MissingStagePrerequisite"),TEXT("Stage > 1 requires a prerequisite evolution."));Good=false;}
+        for(const FString& R:E.PrerequisiteEvolutionIDs){
+            const FString RID=Normalize(R); const auto* RP=Evolutions.Find(RID);
+            if(RP && (RP->ClassID!=E.ClassID || RP->Stage>=E.Stage)){AddIssue(O,E.EvolutionID,TEXT("InvalidPrerequisiteOrder"),R);Good=false;}
+        }
+    }
+    for(const auto& P:Evolutions){
+        TSet<FString> Visiting; TSet<FString> Visited;
+        TFunction<bool(const FString&)> Visit = [&](const FString& ID){
+            if(Visiting.Contains(ID)) return false;
+            if(Visited.Contains(ID)) return true;
+            const auto* Node=Evolutions.Find(ID); if(!Node) return true;
+            Visiting.Add(ID);
+            for(const FString& R:Node->PrerequisiteEvolutionIDs) if(!Visit(Normalize(R))) return false;
+            Visiting.Remove(ID); Visited.Add(ID); return true;
+        };
+        if(!Visit(P.Key)){AddIssue(O,P.Value.EvolutionID,TEXT("EvolutionCycle"),TEXT("Evolution prerequisite graph contains a cycle."));Good=false;}
     }
     return Good;
 }
