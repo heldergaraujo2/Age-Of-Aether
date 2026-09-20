@@ -66,7 +66,7 @@ jobs:
           if failures:
               print("\\n".join(failures)); raise SystemExit(1)
           print(f"Validated {len(files)} source/documentation files.")
-      - name: Validate Phase 22 through Phase 33 deliverables
+      - name: Validate Phase 22 through Phase 34 deliverables
         shell: bash
         run: |
           set -euo pipefail
@@ -152,6 +152,15 @@ jobs:
           grep -q "FAetherClassBalanceParseTest" Source/AgeOfAether/Private/Tests/AetherClassBalanceTests.cpp
           grep -q "Phase 33" ROADMAP.md
           grep -q "Phase 33" PROJECT_MEMORY/00_CONTINUITY.md
+          test -f Source/AgeOfAether/Public/Combat/AetherClassCombatIntegration.h
+          test -f Source/AgeOfAether/Private/Combat/AetherClassCombatIntegration.cpp
+          test -f Source/AgeOfAether/Private/Tests/AetherClassCombatIntegrationTests.cpp
+          grep -q "FAetherClassCombatIntegration" Source/AgeOfAether/Public/Combat/AetherClassCombatIntegration.h
+          grep -q "FAetherClassCombatAuthoritativeResolutionTest" Source/AgeOfAether/Private/Tests/AetherClassCombatIntegrationTests.cpp
+          grep -q "FAetherCombatAuthoritativeClassBalanceTest" Source/AgeOfAether/Private/Tests/AetherCombatTests.cpp
+          test -f Docs/PHASE_34_CLASS_COMBAT_INTEGRATION_SERVER_AUTHORITY.md
+          grep -q "Phase 34" ROADMAP.md
+          grep -q "Phase 34" PROJECT_MEMORY/00_CONTINUITY.md
           python - <<'PY'
           from pathlib import Path
           p=Path("Config/Balance/ClassBalanceProfiles.aetherbalance")
