@@ -1247,3 +1247,33 @@ Validation truth:
 
 Next implementation target:
 **PHASE 41 — ANIMATION SYSTEM**
+
+
+## Phase 41 — Animation System — COMPLETE at repository/source level
+
+Implemented:
+- UAetherCharacterAnimationProfile Data Asset with stable ID, optional Animation Blueprint class, thresholds and optional animation sequence references;
+- UAetherBaseAnimInstance reusable across the playable character, five classes and 25 evolutions;
+- Idle, Walk, Run, Jump and Fall movement states derived from CharacterMovement;
+- Blueprint-facing GroundSpeed, Direction, VerticalSpeed, bIsInAir, bIsSprinting and MovementState;
+- existing visual profile now accepts an AnimationProfile and automatically applies its Animation Blueprint class and profile to the base AnimInstance;
+- Automation tests for identity, threshold ordering and finite numeric safety;
+- animation configuration file and Phase 41 documentation;
+- no fake .uasset/.umap/FBX/animation binaries.
+
+Low-bureaucracy Unreal workflow:
+1. import one skeletal FBX;
+2. create one AetherCharacterAnimationProfile;
+3. create one Animation Blueprint based on UAetherBaseAnimInstance;
+4. create a tiny five-state locomotion graph;
+5. assign the AnimationProfile to the existing AetherPlayableCharacterVisualProfile;
+6. Play and reuse the same system for all classes/evolutions.
+
+Validation truth:
+- repository/source changes complete;
+- GitHub Actions is the available automated gate;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/2-client/Dedicated Server animation runtime remains NOT VERIFIED here;
+- real FBX/skeleton/animation assets and Animation Blueprint graph require local Unreal acceptance.
+
+Next implementation target:
+**PHASE 42 — EQUIPMENT & ITEM VISUALS**
