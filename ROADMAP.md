@@ -1566,3 +1566,34 @@ Low-bureaucracy workflow:
 
 Next target:
 **PHASE 46 — MONSTERS, NPCs & BOSSES**
+
+
+## Phase 46 — Monsters, NPCs & Bosses — COMPLETE at repository/source level
+
+Implemented:
+- data-driven Monster/NPC/Boss creature definitions;
+- generic AI profiles: Passive, Guard, Patrol, Aggressive and Boss;
+- bounded health, attack, defense, movement speed and level validation;
+- loot, quest, dialogue, shop and interaction content IDs;
+- optional skeletal mesh, Animation Blueprint, attack montage, VFX and SFX references;
+- stable spawn definitions with zone, transform, MaxAlive and bounded respawn time;
+- normalized creature registry with duplicate/reference validation;
+- UAetherCreatureSubsystem World Subsystem for deterministic data-driven spawning/despawning;
+- reusable AAetherCreatureActor presentation shell;
+- UAetherCreatureCatalog Data Asset for authoring content without new C++;
+- Automation coverage and Unreal setup documentation;
+- no fake Unreal binary assets.
+
+Low-bureaucracy workflow:
+- one catalog;
+- one reusable creature actor;
+- one real skeletal FBX can validate the whole visual pipeline;
+- additional monsters/NPCs/bosses are data rows plus optional asset assignments.
+
+Validation truth:
+- repository/source implementation complete;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here;
+- real FBX/animation/VFX/SFX import and runtime spawn/replication remain local Unreal acceptance work.
+
+Next target:
+**PHASE 47 — WORLD, MAPS & STREAMING**
