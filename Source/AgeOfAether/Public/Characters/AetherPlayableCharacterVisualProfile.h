@@ -5,6 +5,7 @@
 #include "AetherPlayableCharacterVisualProfile.generated.h"
 
 class UAnimInstance;
+class UAetherCharacterAnimationProfile;
 class UMaterialInterface;
 class USkeletalMesh;
 
@@ -26,6 +27,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Animation")
     TSoftClassPtr<UAnimInstance> AnimationClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Animation")
+    TObjectPtr<UAetherCharacterAnimationProfile> AnimationProfile;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Visual")
     TArray<TSoftObjectPtr<UMaterialInterface>> MaterialOverrides;
