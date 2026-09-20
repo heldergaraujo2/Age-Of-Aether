@@ -1644,3 +1644,30 @@ Validation truth:
 
 Next target:
 **PHASE 49 — INVENTORY, LOOT & EQUIPMENT GAMEPLAY**
+
+
+## Phase 49 — Inventory, Loot & Equipment Gameplay — COMPLETE at repository/source level
+
+Implemented:
+- reusable server-side inventory state with capacity, stacking, splitting, removal and reset;
+- stable item instance IDs;
+- authoritative equipment slot state and equip/unequip validation;
+- data-driven loot tables and bounded loot rolls;
+- inventory grant pipeline;
+- Automation tests and Unreal setup documentation;
+- existing equipment visual component remains the single presentation bridge;
+- no fake Unreal binary assets.
+
+Low-bureaucracy workflow:
+- keep the existing item registry/catalog;
+- create one item definition + optional equipment visual profile;
+- reuse the inventory/equipment systems for every item;
+- loot is a data table, not custom code per monster/item.
+
+Validation truth:
+- repository/source implementation complete;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here;
+- real item Data Assets, UI, socket attachment and multiplayer acceptance remain local Unreal work.
+
+Next target:
+**PHASE 50 — CRAFTING, FORGE, ECONOMY & SHOPS**

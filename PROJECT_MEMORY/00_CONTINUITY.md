@@ -1468,3 +1468,33 @@ Validation truth:
 
 Next target:
 **PHASE 49 — INVENTORY, LOOT & EQUIPMENT GAMEPLAY**
+
+
+## Phase 49 — Inventory, Loot & Equipment Gameplay — COMPLETE AT REPOSITORY LEVEL
+
+Implemented:
+- FAetherInventoryItem, FAetherInventoryState and FAetherEquipmentState.
+- UAetherInventorySubsystem with stacking, capacity, split, remove, equip, unequip and reset.
+- Stable item instance IDs and item-definition resolution through FAetherItemRegistry.
+- UAetherLootTable and bounded FAetherLootEntry.
+- UAetherLootSubsystem for deterministic pipeline ownership with inventory grants.
+- Automation tests and Unreal setup documentation.
+- Existing UAetherEquipmentVisualComponent remains the reusable client presentation bridge.
+- No fake .uasset/.umap/FBX/animation/VFX/audio binaries.
+
+Low-bureaucracy rule:
+- New items are data rows plus optional visual profiles.
+- New equipment does not require a new character C++ class or Blueprint.
+- Loot tables are data assets; inventory/equipment logic is generic.
+
+Authority:
+- Mutation APIs are intended for the authenticated server path; UI/Blueprint should request operations rather than author state.
+- Existing NetworkPlayerController inventory path remains the established multiplayer gateway; this phase adds the reusable inventory domain foundation without replacing that gateway blindly.
+
+Validation truth:
+- Repository/source implementation is complete.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime is NOT VERIFIED in this environment.
+- Local acceptance remains required for real item assets, equipment socket presentation, inventory UI, loot pickup and multiplayer persistence integration.
+
+Next target:
+**PHASE 50 — CRAFTING, FORGE, ECONOMY & SHOPS**
