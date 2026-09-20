@@ -998,353 +998,99 @@ Implemented:
 
 Important files:
 - Source/AgeOfAether/Public/Data/AetherContentTypes.h
-- Source/AgeOfAether/Public/Data/AetherContentRegistry.h
-- Source/AgeOfAether/Private/Data/AetherContentRegistry.cpp
-- Source/AgeOfAether/Private/Tests/AetherContentRegistryTests.cpp
-- Docs/PHASE_19_DATA_MODEL_CONTENT_REGISTRY.md
-
-Validation truth:
-- repository/static validation: PASS;
-- source review: PASS;
-- Unreal 5.8.1 UHT/UBT/Automation runtime: NOT VERIFIED because Unreal is unavailable in this environment;
-- no CI pipeline exists to substitute for Unreal validation.
-
-Hardening performed:
-- batch registration diagnostics are preserved separately from post-registration validation diagnostics;
-- ID resolution normalizes surrounding whitespace;
-- dependency traversal is deterministic;
-- invalid references fail validation rather than being silently ignored.
-
-Next implementation target:
-**PHASE 20 — ASSET PIPELINE & VISUAL ASSET REGISTRY.**
-
-
-## 38. PHASE 20 — ASSET PIPELINE & VISUAL ASSET REGISTRY — COMPLETED 2026-09-19
-
-Phase 20 is complete at repository/source level.
-
-Implemented:
-- \`EAetherAssetType\` and visual asset identity contract;
-- \`FAetherAssetReference\`;
-- \`FAetherAssetDefinition\`;
-- \`FAetherAssetRegistry\`;
-- stable AssetID independent of Unreal package paths;
-- fallback, skeleton, animation, material, icon, VFX and SFX references;
-- source/import metadata for FBX -> Unreal UAsset workflow;
-- finite positive scale validation;
-- required skeleton/fallback validation;
-- duplicate AssetID rejection;
-- cross-reference validation;
-- deterministic asset enumeration;
-- Automation tests for registration, normalization, duplicates, fallback, skeleton, numeric constraints, dependency graph and deterministic ordering.
-
-Important files:
-- Source/AgeOfAether/Public/Data/AetherAssetTypes.h
-- Source/AgeOfAether/Public/Data/AetherAssetRegistry.h
-- Source/AgeOfAether/Private/Data/AetherAssetRegistry.cpp
-- Source/AgeOfAether/Private/Tests/AetherAssetRegistryTests.cpp
-- Docs/PHASE_20_ASSET_PIPELINE_VISUAL_REGISTRY.md
-
-Validation truth:
-- repository/static validation: PASS;
-- Unreal 5.8.1 UHT/UBT/Editor/Automation/FBX import/runtime rendering: NOT VERIFIED because Unreal is unavailable in this environment;
-- no CI workflow is available as a substitute.
-
-Next implementation target:
-**PHASE 21 — COMPLETE ITEM, EQUIPMENT & ENHANCEMENT DATA.**
-
-
-## 39. PHASE 21 — COMPLETE ITEM, EQUIPMENT & ENHANCEMENT DATA — COMPLETED 2026-09-19
-
-Repository implementation is complete.
-
-Implemented:
-- data-driven ItemDefinition with stable IDs;
-- item category, rarity, level and class requirements;
-- equipment slot taxonomy including weapons, off-hand, shield, armor pieces, accessories, wings, mounts and cosmetics;
-- stack, weight and durability contracts;
-- binding, trade, drop, shop and craft eligibility;
-- buy/sell economy values and currency identifiers;
-- icon/world/equipped visual asset references;
-- modular stats, options, effects and tags;
-- enhancement levels with materials, currency, success chance, failure behavior, protection items, stat scaling and visual changes;
-- ItemInstanceSnapshot separation from definition data;
-- item registry duplicate detection, normalized lookup and deterministic ordering;
-- cross-validation against Phase 19 content IDs and Phase 20 asset IDs;
-- automation tests for valid/invalid item data, equipment rules, enhancements, cross references and determinism.
-
-Validation truth:
-- repository/static validation is complete;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation Framework remain NOT VERIFIED because Unreal is unavailable in this environment;
-- no compilation success is claimed.
-
-Documentation:
-- Docs/PHASE_21_ITEM_EQUIPMENT_ENHANCEMENT.md
-
-Current execution stage:
-**Phase 21 — Complete Item, Equipment & Enhancement Data (repository implementation complete; Unreal runtime validation pending local validation)**
-
-Next implementation target:
-**PHASE 22 — Monster, NPC, Boss & AI Content**
-
-
-## 40. PHASE 22 — MONSTER, NPC, BOSS & AI CONTENT — COMPLETED 2026-09-19
-
-Repository implementation is complete.
-
-Implemented:
-- data-driven MonsterDefinition, NPCDefinition and BossDefinition;
-- combat stats and reward contracts;
-- configurable AI behavior profiles, aggro/leash/attack ranges, flee thresholds, skills, effects and target priorities;
-- NPC faction, dialogue, quest, shop and service references;
-- boss multi-phase triggers, phase skills, adds, effects and visuals;
-- stable presentation asset IDs;
-- global ID uniqueness across monster/NPC/boss registries;
-- deterministic enumeration and normalized resolution;
-- validation against Phase 19 content and Phase 20 asset registries;
-- automation tests for valid/invalid combat and AI data, boss phases, cross references, duplicates and deterministic ordering.
-
-Validation truth:
-- repository/static validation is complete;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation Framework remain NOT VERIFIED because Unreal is unavailable in this environment;
-- no compilation success is claimed.
-
-Documentation:
-- Docs/PHASE_22_MONSTER_NPC_BOSS_AI.md
-
-Current execution stage:
-**Phase 22 — Monster, NPC, Boss & AI Content (repository implementation complete; Unreal runtime validation pending local validation)**
-
-Next implementation target:
-**PHASE 23 — Skills, Effects, Buffs, Debuffs & Status**
-
-
-## PHASE 23 — SKILLS, EFFECTS, BUFFS, DEBUFFS & STATUS — COMPLETED 2026-09-19
-
-Repository implementation complete.
-
-Implemented:
-- SkillDefinition, EffectDefinition and StatusDefinition data contracts;
-- targeting/delivery modes, cast/cooldown/range/radius and resource costs;
-- effect duration/tick/stack/dispel/conflict metadata;
-- asset references and cross-registry validation;
-- global ID uniqueness and deterministic enumeration;
-- automation tests for core registration, invalid data, cross references, duplicates and determinism.
-
-Validation:
-- repository/static validation PASS;
-- GitHub Actions static validation PASS;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation NOT VERIFIED;
-- no compilation success claimed.
-
-Next:
-**Phase 24 — Loot, Drop, Reward & Respawn.**
-
-
-## PHASE 26 — CRAFTING, MIXING, FORGE & RECIPE AUTHORING — COMPLETED 2026-09-19
-
-Repository implementation is complete.
-
-Implemented:
-- RecipeDefinition with ingredients, outputs, failure outputs and quantity ranges.
-- Success chance, failure behavior, required character level, required skill, station and currency.
-- Cooldown plus daily/weekly limits.
-- Unlock conditions for level, quest, item, world tag, content and skill.
-- Catalyst and protection item support.
-- Guaranteed-result/pity threshold configuration.
-- Stable IDs, normalized resolution, duplicate rejection and deterministic enumeration.
-- Cross-validation against Phase 19 content, Phase 21 items, Phase 23 skills, Phase 25 quests and Phase 22 world actors/stations.
-- Automation tests for registration, resolution, invalid data, failure modes, limits, duplicates, determinism, references and unlock conditions.
-
-Validation truth:
-- repository/static validation is complete;
-- GitHub Actions validation is configured for Phase 26;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation remain NOT VERIFIED because Unreal is unavailable;
-- no compilation success is claimed.
-
-Important files:
-- Source/AgeOfAether/Public/Data/AetherRecipeTypes.h
-- Source/AgeOfAether/Private/Data/AetherRecipeTypes.cpp
-- Source/AgeOfAether/Public/Data/AetherRecipeRegistry.h
-- Source/AgeOfAether/Private/Data/AetherRecipeRegistry.cpp
-- Source/AgeOfAether/Private/Tests/AetherRecipeRegistryTests.cpp
-- Docs/PHASE_26_CRAFTING_MIXING_FORGE_RECIPE_AUTHORING.md
-
-Next:
-**Phase 27 — World, Map, Interaction & Streaming Content.**
-
-## PHASE 25 — QUEST, EVENT, DIALOGUE & WORLD CONTENT AUTHORING — COMPLETED 2026-09-19
-
-Repository implementation is complete.
-
-Implemented:
-- data-driven quests with kill, collect, interact, talk, reach-area, escort, craft, timed and world-event objectives;
-- objective counts, level bounds, optional objectives and reusable prerequisite conditions;
-- quest chains through prerequisite and next-quest references;
-- data-driven dialogues with localization-ready text, nodes, choices, conditions and outcomes;
-- dialogue graph validation with missing-edge rejection and intentional cycle tolerance;
-- world events with trigger modes, duration, cooldown, zone, participant, objective, reward and announcement metadata;
-- world-content definitions connecting actors, quests, dialogues, events and spawn groups;
-- global ID uniqueness, normalized lookup and deterministic enumeration;
-- cross-validation against Phase 19 content, Phase 21 items, Phase 22 world actors and Phase 24 loot/reward data.
-
-Validation truth:
-- repository/static validation is complete;
-- GitHub Actions Phase 25 validation configured and must pass;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation remain NOT VERIFIED because Unreal is unavailable;
-- no compilation success is claimed.
-
-Important files:
-- Source/AgeOfAether/Public/Data/AetherQuestDialogueEventTypes.h
-- Source/AgeOfAether/Public/Data/AetherQuestDialogueEventRegistry.h
-- Source/AgeOfAether/Private/Data/AetherQuestDialogueEventTypes.cpp
-- Source/AgeOfAether/Private/Data/AetherQuestDialogueEventRegistry.cpp
-- Source/AgeOfAether/Private/Tests/AetherQuestDialogueEventRegistryTests.cpp
-- Docs/PHASE_25_QUEST_EVENT_DIALOGUE_WORLD_CONTENT.md
-
-Next:
-**Phase 26 — Crafting, Mixing, Forge & Recipe Authoring.**
-
-## PHASE 24 — LOOT, DROP, REWARD & RESPAWN — COMPLETED 2026-09-19
-
-Repository implementation complete.
-
-Implemented:
-- LootTableDefinition with weighted, guaranteed, random-count and chance-each selection modes;
-- RewardDefinition with experience, currency, direct item and nested loot-table rewards;
-- RespawnDefinition with world actor reference, timing, jitter, max-alive and spawn/world tags;
-- DropRuleDefinition linking source world actors to loot tables with trigger, chance, level bounds and tags;
-- SpawnGroupDefinition linking world actors to respawn definitions with initial/max counts and spawn/world tags;
-- global ID uniqueness, normalized lookup and deterministic enumeration;
-- cross-validation against Phase 19, Phase 21 and Phase 22 registries;
-- structural validation and Automation coverage for invalid quantities, weights, empty rewards, respawn timing, missing references, duplicate IDs and determinism.
-
-Validation:
-- repository/static validation PASS;
-- GitHub Actions Phase 24 validation configured;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation NOT VERIFIED;
-- no compilation success claimed.
-
-Important files:
-- Source/AgeOfAether/Public/Data/AetherLootRewardTypes.h
-- Source/AgeOfAether/Public/Data/AetherLootRewardRegistry.h
-- Source/AgeOfAether/Private/Data/AetherLootRewardTypes.cpp
-- Source/AgeOfAether/Private/Data/AetherLootRewardRegistry.cpp
-- Source/AgeOfAether/Private/Tests/AetherLootRewardRegistryTests.cpp
-- Docs/PHASE_24_LOOT_DROP_REWARD_RESPAWN.md
-
-Next:
-**Phase 25 — Quest, Event, Dialogue & World Content Authoring.**
-
-
-## PHASE 27 — WORLD, MAP, INTERACTION & STREAMING CONTENT — COMPLETED 2026-09-19
-
-Phase 27 is complete at repository/source level.
-
-Implemented:
-- data-driven map, zone, streaming-cell, world-point, connection, actor-placement and interaction definitions;
-- map bounds, level bounds, combat/safe-zone metadata and streaming constraints;
-- stable IDs, normalized lookup, duplicate nested-content detection and deterministic map enumeration;
-- graph validation for map connections and teleports; cycles are allowed, dangling references are rejected;
-- cross-registry validation against Phase 19 content, Phase 20 assets, Phase 21 items, Phase 22 world actors, Phase 23 skills, Phase 24 loot/spawn, Phase 25 quests/events/dialogues and Phase 26 recipes;
-- automation tests for invalid data, duplicates, bounds, streaming, graph cycles, interactions, references, teleports and determinism.
-
-Important files:
-- Source/AgeOfAether/Public/Data/AetherWorldContentTypes.h
-- Source/AgeOfAether/Private/Data/AetherWorldContentTypes.cpp
-- Source/AgeOfAether/Public/Data/AetherWorldContentRegistry.h
-- Source/AgeOfAether/Private/Data/AetherWorldContentRegistry.cpp
-- Source/AgeOfAether/Private/Tests/AetherWorldContentRegistryTests.cpp
-- Docs/PHASE_27_WORLD_MAP_INTERACTION_STREAMING.md
-
-Validation truth:
-- repository/static validation: PASS;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime: NOT VERIFIED because Unreal is unavailable in this environment;
-- no compilation success claimed.
-
-Next implementation target:
-**PHASE 28 — CLIENT CORE ARCHITECTURE.**
-
-
-## PHASE 28 — CLIENT CORE ARCHITECTURE — COMPLETED 2026-09-20
-
-Implemented:
-- UAetherClientSubsystem as the client application-state boundary;
-- connection/screen state;
-- account/session/character/map/zone identity snapshot;
-- monotonic request lifecycle and timeout handling;
-- stale server-revision rejection;
-- identity validation and reset;
-- Blueprint event boundaries;
-- stable AssetID binding without exposing Unreal package paths;
-- automation tests for request lifecycle, revision ordering, reset, invalid identity, state transitions and asset binding.
-
-Important files:
-- Source/AgeOfAether/Public/Client/AetherClientTypes.h
-- Source/AgeOfAether/Private/Client/AetherClientTypes.cpp
-- Source/AgeOfAether/Public/Client/AetherClientSubsystem.h
-- Source/AgeOfAether/Private/Client/AetherClientSubsystem.cpp
-- Source/AgeOfAether/Private/Tests/AetherClientSubsystemTests.cpp
-- Docs/PHASE_28_CLIENT_CORE_ARCHITECTURE.md
-
-Validation truth:
-- repository/static validation: pending final GitHub Actions run;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime: NOT VERIFIED because Unreal is unavailable;
-- no compilation success claimed.
-
-Next implementation target:
-**PHASE 29 — COMPLETE MMORPG UI/UX.**
-
-
-## PHASE 29 — COMPLETE MMORPG UI/UX — COMPLETED 2026-09-20
-
-Repository implementation is complete.
-
-Implemented:
-- centralized UI screen taxonomy for all required MMORPG screens;
-- UAetherUISubsystem navigation/history and modal safety;
-- UI view-model contracts for inventory, equipment, skills, quests and social;
-- notification lifecycle;
-- UI settings validation;
-- Blueprint-callable state/event boundary;
-- reset-safe UI lifecycle;
-- six Unreal Automation test definitions.
-
-Important files:
-- Source/AgeOfAether/Public/UI/AetherUITypes.h
-- Source/AgeOfAether/Private/UI/AetherUITypes.cpp
-- Source/AgeOfAether/Public/UI/AetherUISubsystem.h
-- Source/AgeOfAether/Private/UI/AetherUISubsystem.cpp
-- Source/AgeOfAether/Private/Tests/AetherUISubsystemTests.cpp
-- Docs/PHASE_29_COMPLETE_MMO_UI_UX.md
-
-Validation truth:
-- repository/static validation: pending final GitHub Actions run;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/UI rendering/localization/performance runtime: NOT VERIFIED because Unreal is unavailable;
-- no compilation success claimed.
-
-Next implementation target:
-**PHASE 30 — CLIENT PRESENTATION, PERFORMANCE & FINAL INTEGRATION.**
-
-
-## PHASE 30 — CLIENT PRESENTATION, PERFORMANCE & FINAL INTEGRATION — COMPLETED 2026-09-20
-
-Repository implementation complete.
-
-Added:
-- AetherPresentationTypes;
-- AetherPresentationSubsystem;
-- stable AssetID runtime binding and placeholder fallback;
-- actor presentation snapshots;
-- performance metrics/budgets;
-- 30-step acceptance matrix;
-- six Unreal Automation test definitions;
-- Phase 30 documentation;
-- CI validation gates through Phase 30.
-
-Validation truth:
-- repository/static validation: pending final GitHub Actions run;
-- Unreal 5.8.1 runtime/UHT/UBT/PIE/visual/performance acceptance: NOT VERIFIED because Unreal is unavailable.
-
-Next action:
-**Execute the 30-step runtime acceptance matrix in Unreal 5.8.1 and integrate real assets.**
+
+---
+
+# CLASS SYSTEM ROADMAP — ADDED 2026-09-20
+
+The project now has an explicit post-Phase-30 class/progression/balance roadmap.
+
+## Current class design
+
+Five base player classes, each with five evolution stages:
+
+- ARQUEIRO — Caminho da Precisão
+  - Batedor
+  - Rastreador
+  - Caçador Espectral
+  - Atirador Fantasma
+  - Olho de Deus / Juiz dos Ventos
+
+- GUERREIRO — Caminho da Fúria
+  - Recruta
+  - Berserker
+  - Campeão de Guerra
+  - Lorde das Lâminas
+  - Avatar da Guerra
+
+- MAGO — Caminho do Arcano
+  - Aprendiz
+  - Feiticeiro Elemental
+  - Arquimago
+  - Tecelão do Éter
+  - Senhor do Caos Primordial
+
+- TANK — Caminho da Muralha
+  - Guardião
+  - Fortaleza de Aço
+  - Colosso
+  - Bastião Imortal
+  - Titã Ancestral
+
+- HEALER — Caminho da Luz
+  - Iniciado
+  - Clérigo da Luz
+  - Oráculo Sagrado
+  - Serafim
+  - Avatar da Vida Eterna
+
+## New implementation sequence
+
+### Phase 31 — Universal Player Class & Evolution System
+Create stable ClassID/EvolutionID contracts, progression graph, prerequisites, role metadata, class capabilities, restrictions and registry validation.
+
+### Phase 32 — Five Base Classes & 25 Evolution Definitions
+Turn the agreed roster into data-driven definitions and connect each evolution to skills, effects, equipment and presentation assets by stable IDs.
+
+### Phase 33 — Configurable PvE/PvP Class Balance System
+Create versioned balance configuration outside gameplay code. Support class/evolution modifiers for damage, criticals, defense, healing, shields, AOE, CC, mobility, threat, resource and other relevant combat dimensions. Include Development, Testing and Production profiles with safe fallback and validation.
+
+### Phase 34 — Class/Combat Integration & Server Authority
+Integrate class/evolution state into Character, Progression, Equipment, Skills, Combat, Persistence and Replication while preserving server authority.
+
+### Phase 35 — PvE/PvP Balance Simulation & Automated Validation
+Create deterministic simulations, reproducible seeds, matchup/encounter scenarios, metrics, regression baselines, balance-budget diagnostics and invalid-configuration protection.
+
+### Phase 36 — Class Presentation, Assets & Runtime Acceptance
+Integrate class selection/progression UI, actual Unreal assets, animations, VFX/SFX, attachments, async loading, performance and multiplayer/dedicated-server acceptance.
+
+## Balance architecture decisions
+
+- Class balance values must not be hard-coded into combat rules.
+- Balance must be data-driven and versioned.
+- PvE and PvP modifiers must be separable.
+- Client never provides authoritative class/balance values.
+- Extreme fantasy abilities must expose counterplay/tuning parameters such as cooldown, duration, range, target count, resistance or PvP scaling.
+- "Map-wide hit" and permanent "group immortality" are not unconditional mechanics; their fantasy can be preserved through bounded, configurable effects.
+- A balance simulator is diagnostic and must not automatically rewrite production configuration.
+- The architecture must support future classes and alternate evolution branches without engine rewrites.
+- Stable IDs must not change when display names/localization change.
+
+## Immediate next construction point
+
+**Start Phase 31 — Universal Player Class & Evolution System.**
+
+The class system is now part of project continuity and must be treated as a first-class data domain alongside Items, Skills, Quests, World, Recipes and Presentation.
+
+For every future class phase, use the mandatory completion format:
+- STATUS
+- IMPLEMENTADO
+- COMPILADO
+- TESTADO
+- VALIDADO
+- FALHAS
+- PENDÊNCIAS
+- RISCOS
+- PRÓXIMO PASSO
+
+Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime remains an explicit validation gate and must never be claimed as PASS without execution.
