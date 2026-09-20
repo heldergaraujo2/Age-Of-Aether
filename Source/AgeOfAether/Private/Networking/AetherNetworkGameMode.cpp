@@ -9,7 +9,10 @@
 #include "Engine/GameInstance.h"
 #include "World/AetherWorldSubsystem.h"
 #include "Multiplayer/AetherMultiplayerSubsystem.h"
+#include "UI/AetherFoundationHUD.h"
+#include "World/AetherDevelopmentWorldActor.h"
 #include "HAL/PlatformTime.h"
+#include "EngineUtils.h"
 
 void AAetherNetworkGameMode::PostLogin(APlayerController* NewPlayer)
 {
@@ -57,7 +60,36 @@ AAetherNetworkGameMode::AAetherNetworkGameMode()
     PlayerControllerClass = AAetherNetworkPlayerController::StaticClass();
     PlayerStateClass = AAetherCharacterPlayerState::StaticClass();
     DefaultPawnClass = AAetherCharacter::StaticClass();
+    HUDClass = AAetherFoundationHUD::StaticClass();
     bStartPlayersAsSpectators = true;
+}
+
+void AAetherNetworkGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+    Super::InitGame(MapName, Options, ErrorMessage);
+
+    if (!HasAuthority() || !GetWorld())
+    {
+        return;
+    }
+
+    if (!GetWorld()->GetAuthGameMode())
+    {
+        return;
+    }
+
+    for (TActorIterator<AAetherDevelopmentWorldActor> It(GetWorld()); It; ++It)
+    {
+        return;
+    }
+
+    FActorSpawnParameters SpawnParameters;
+    SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+    GetWorld()->SpawnActor<AAetherDevelopmentWorldActor>(
+        AAetherDevelopmentWorldActor::StaticClass(),
+        FVector::ZeroVector,
+        FRotator::ZeroRotator,
+        SpawnParameters);
 }
 
 
