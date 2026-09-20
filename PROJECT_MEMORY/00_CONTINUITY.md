@@ -1305,3 +1305,20 @@ Implemented:
 - Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime remains NOT VERIFIED in this environment.
 - Real FBX, animation, icon, VFX and SFX assignment remains local Unreal acceptance work.
 - Next implementation target: **Phase 44 — Playable Combat**.
+
+
+## Phase 43 — Five Classes & 25 Evolutions Presentation — MERGED 2026-09-20
+
+- PR #6 merged to `main`; merge commit: `881e7f93ec744adbdc9acceee19fd7f736c5fa45`.
+- Added the canonical 5×5 presentation catalog with exactly 25 stable ClassID/EvolutionID entries.
+- Added requested class/evolution display names and path titles.
+- Added reusable class/evolution presentation component integrated into AAetherCharacter.
+- Added optional VisualProfile, AnimationProfile, Icon, VFX and SFX references.
+- Added same-class stage-1 fallback when later evolution presentation assets are not authored.
+- Added reusable animation-profile application without requiring a new Blueprint or C++ implementation per evolution.
+- Added Automation coverage and Phase 43 documentation.
+- No fake .uasset/.umap/FBX/animation binaries were committed.
+- GitHub combined status for the merge commit currently reports no status checks; no CI PASS is claimed for this phase.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/2-client/Dedicated Server runtime was not executable in this environment and therefore remains NOT VERIFIED.
+- Local Unreal acceptance still requires one real vertical-slice asset assignment, class/evolution presentation switch, fallback test, 2-client PIE and Dedicated Server + client.
+- Next implementation target: **Phase 44 — Playable Combat**.
