@@ -1,0 +1,7 @@
+#include "Interaction/AetherInteractionRegistry.h"
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherInteractionRegistryTest,"AgeOfAether.Interaction.Registry",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+bool FAetherInteractionRegistryTest::RunTest(const FString&){FAetherInteractionRegistry R;FAetherInteractionDefinition I;I.InteractionID="npc.shop";I.DisplayName="Shop";I.TargetID="merchant";TestTrue("register",R.RegisterInteraction(I));TestFalse("duplicate",R.RegisterInteraction(I));TestNotNull("lookup",R.FindInteraction("NPC.SHOP"));TArray<FString>E;TestTrue("valid",R.Validate(E));TestEqual("errors",E.Num(),0);return true;}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestFlowTest,"AgeOfAether.Interaction.QuestFlow",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+bool FAetherQuestFlowTest::RunTest(const FString&){FAetherQuestDefinition Q;Q.QuestID="quest.test";Q.DisplayName="Test";Q.StartNPCID="npc";Q.RequiredCount=3;TestTrue("definition valid",Q.IsValid());Q.RequiredCount=0;TestFalse("zero objective rejected",Q.IsValid());return true;}
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherEventValidationTest,"AgeOfAether.Interaction.EventValidation",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+bool FAetherEventValidationTest::RunTest(const FString&){FAetherEventDefinition E;E.EventID="event.test";E.DisplayName="Test";E.EventType="invasion";TestTrue("event valid",E.IsValid());E.DurationSeconds=-1;TestFalse("negative duration rejected",E.IsValid());return true;}
