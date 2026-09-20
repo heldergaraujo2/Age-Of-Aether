@@ -1084,3 +1084,14 @@ Next target: **Phase 48 — Interaction, NPC, Quest & Events**
 - Unreal 5.8.1 runtime remains NOT VERIFIED; local PIE/Dedicated Server acceptance is pending.
 
 Next target: **Phase 49 — Inventory, Loot & Equipment Gameplay**
+
+
+## Phase 49 — Inventory, Loot & Equipment Gameplay — COMPLETE at repository/source level
+- Added reusable inventory state, stacking, split/remove and capacity handling.
+- Added equipment slot state and authoritative equip/unequip validation.
+- Added data-driven loot tables and inventory grant pipeline.
+- Reused existing equipment visual presentation instead of introducing per-item Blueprints/C++.
+- Added tests/docs; no fake Unreal binaries.
+- Unreal 5.8.1 runtime remains NOT VERIFIED and needs local acceptance.
+
+Next target: **Phase 50 — Crafting, Forge, Economy & Shops**
