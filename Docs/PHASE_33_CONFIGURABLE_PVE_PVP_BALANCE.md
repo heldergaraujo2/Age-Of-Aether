@@ -43,7 +43,7 @@ COMPLETE at repository/source level.
 - Production is the committed fallback profile.
 
 ## TESTADO
-Eight Unreal Automation test cases:
+Twelve Unreal Automation test cases:
 1. external-format parsing;
 2. PvE/PvP resolution separation;
 3. class + evolution composition;
@@ -52,6 +52,10 @@ Eight Unreal Automation test cases:
 6. profile duplication/activation/fallback safety;
 7. serialization round trip;
 8. zero registry validation issues.
+9. cross-registry class/evolution validation;
+10. active-profile resolution with fallback;
+11. exact external schema rejection;
+12. class/evolution reference mismatch rejection.
 
 Static external-config audit:
 - 90 balance rows;
