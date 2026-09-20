@@ -4,6 +4,12 @@
 #include "World/AetherWorldTypes.h"
 #include "Creatures/AetherCreatureTypes.generated.h"
 
+class USkeletalMesh;
+class UAnimInstance;
+class UAnimMontage;
+class UObject;
+class USoundBase;
+
 UENUM(BlueprintType)
 enum class EAetherCreatureRole : uint8
 {
