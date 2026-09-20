@@ -998,3 +998,11 @@ Implemented:
 
 Important files:
 - Source/AgeOfAether/Public/Data/AetherContentTypes.h
+
+## Phase 31 implementation status — COMPLETE at repository level
+- Implemented `FAetherClassDefinition`, `FAetherClassEvolutionDefinition` and `FAetherClassRegistry`.
+- Added stable normalized ClassID/EvolutionID handling, progression prerequisites, role metadata, stat modifiers, starting/granted skills/effects, equipment tags and asset references.
+- Added cross-registry validation boundaries for Items, Skills/Effects, Quests, Content and Assets.
+- Added seven Automation test cases covering registration, invalid definitions, duplicates, deterministic enumeration, prerequisite graph validation, cross-reference validation and reset.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server remains unverified.
+- Next implementation target: Phase 32 — Five Base Classes & 25 Evolution Definitions.
