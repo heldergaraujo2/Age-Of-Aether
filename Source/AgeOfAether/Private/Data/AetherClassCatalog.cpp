@@ -1,5 +1,6 @@
 #include "Data/AetherClassCatalog.h"
 #include "Data/AetherClassRegistry.h"
+#include <initializer_list>
 
 namespace
 {
