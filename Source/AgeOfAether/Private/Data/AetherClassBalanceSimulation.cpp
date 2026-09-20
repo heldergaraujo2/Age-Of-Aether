@@ -44,9 +44,12 @@ bool FAetherClassBalanceSimulation::Simulate(
             continue;
         }
 
-        FAetherClassBalanceModifiers Modifiers;
+        FAetherClassBalanceModifiers AttackerModifiers;
+        FAetherClassBalanceModifiers TargetModifiers;
         FString Error;
-        if (!Registry.ResolveActive(Case.ClassID, Case.EvolutionID, bPvP, Modifiers, Error))
+        const FString TargetClassID = Case.TargetClassID.IsEmpty() ? Case.ClassID : Case.TargetClassID;
+        const FString TargetEvolutionID = Case.TargetEvolutionID.IsEmpty() ? Case.EvolutionID : Case.TargetEvolutionID;
+        if (!Registry.ResolveActive(Case.ClassID, Case.EvolutionID, bPvP, AttackerModifiers, Error))
         {
             OutReport.Failures++;
             OutReport.Issues.Add(Case.ClassID + TEXT(": ") + Error);
@@ -54,9 +57,16 @@ bool FAetherClassBalanceSimulation::Simulate(
             continue;
         }
 
-        Result.OutgoingMultiplier = Modifiers.Damage * Modifiers.OutgoingDamage;
-        Result.IncomingMultiplier = Modifiers.IncomingDamage;
-        Result.EffectiveDamage = ComputeDamage(Case.BaseDamage, Case.TargetDefense, Case.TargetResistancePercent, Modifiers, Modifiers);
+        if (!Registry.ResolveActive(TargetClassID, TargetEvolutionID, bPvP, TargetModifiers, Error))
+        {
+            OutReport.Failures++;
+            OutReport.Issues.Add(TargetClassID + TEXT(": ") + Error);
+            OutResults.Add(Result);
+            continue;
+        }
+        Result.OutgoingMultiplier = AttackerModifiers.Damage * AttackerModifiers.OutgoingDamage;
+        Result.IncomingMultiplier = TargetModifiers.IncomingDamage;
+        Result.EffectiveDamage = ComputeDamage(Case.BaseDamage, Case.TargetDefense, Case.TargetResistancePercent, AttackerModifiers, TargetModifiers);
         Result.bFinite = FMath::IsFinite(Result.EffectiveDamage);
         Result.bWithinSafetyBounds = Result.bFinite && IsSafeDamage(Result.EffectiveDamage);
 
