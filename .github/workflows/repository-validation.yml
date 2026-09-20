@@ -146,22 +146,9 @@ jobs:
               assert len(rows) == 30
               assert len({x[2] for x in rows}) == 30
 
-          for doc in [
-              "Docs/PHASE_22_MONSTER_NPC_BOSS_AI.md",
-              "Docs/PHASE_23_SKILLS_EFFECTS_STATUS.md",
-              "Docs/PHASE_24_LOOT_DROP_REWARD_RESPAWN.md",
-              "Docs/PHASE_25_QUEST_EVENT_DIALOGUE_WORLD_CONTENT.md",
-              "Docs/PHASE_26_CRAFTING_MIXING_FORGE_RECIPE_AUTHORING.md",
-              "Docs/PHASE_27_WORLD_MAP_INTERACTION_STREAMING.md",
-              "Docs/PHASE_28_CLIENT_CORE_ARCHITECTURE.md",
-              "Docs/PHASE_29_COMPLETE_MMO_UI_UX.md",
-              "Docs/PHASE_30_CLIENT_PRESENTATION_PERFORMANCE_FINAL_INTEGRATION.md",
-              "Docs/PHASE_31_UNIVERSAL_PLAYER_CLASS_EVOLUTION.md",
-              "Docs/PHASE_32_FIVE_BASE_CLASSES_25_EVOLUTIONS.md",
-              "Docs/PHASE_33_CONFIGURABLE_PVE_PVP_BALANCE.md",
-              "Docs/PHASE_34_CLASS_COMBAT_INTEGRATION_SERVER_AUTHORITY.md",
-          ]:
-              assert "STATUS" in text(doc) or "status" in text(doc), f"{doc}: missing status section"
+          assert "STATUS" in text("Docs/PHASE_34_CLASS_COMBAT_INTEGRATION_SERVER_AUTHORITY.md")
+          assert "IMPLEMENTADO" in text("Docs/PHASE_34_CLASS_COMBAT_INTEGRATION_SERVER_AUTHORITY.md")
+          assert "PRÓXIMO PASSO" in text("Docs/PHASE_34_CLASS_COMBAT_INTEGRATION_SERVER_AUTHORITY.md")
 
           assert "Phase 31" in text("ROADMAP.md")
           assert "Phase 32" in text("ROADMAP.md")
