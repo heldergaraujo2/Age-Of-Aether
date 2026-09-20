@@ -27,6 +27,14 @@ bool FAetherCharacterService::CreateCharacter(
     Character.AccountId = AccountId;
     Character.Name = NormalizedName;
     Character.CharacterClass = CharacterClass;
+    switch (CharacterClass)
+    {
+    case EAetherCharacterClass::Mage: Character.ClassID = TEXT("mage"); Character.EvolutionID = TEXT("mage.01"); break;
+    case EAetherCharacterClass::Archer: Character.ClassID = TEXT("archer"); Character.EvolutionID = TEXT("archer.01"); break;
+    case EAetherCharacterClass::Cleric: Character.ClassID = TEXT("healer"); Character.EvolutionID = TEXT("healer.01"); break;
+    case EAetherCharacterClass::Warrior:
+    default: Character.ClassID = TEXT("warrior"); Character.EvolutionID = TEXT("warrior.01"); break;
+    }
     Character.Status = EAetherCharacterStatus::Available;
     Character.Level = 1;
     Character.Experience = 0;
@@ -79,6 +87,9 @@ bool FAetherCharacterService::RestoreCharacter(const FAetherCharacterRecord& Per
         Existing->CurrentShield = FMath::Max(0.0f, PersistedCharacter.CurrentShield);
         Existing->CombatState = PersistedCharacter.CombatState;
         Existing->Level = PersistedCharacter.Level;
+        Existing->CharacterClass = PersistedCharacter.CharacterClass;
+        Existing->ClassID = PersistedCharacter.ClassID.IsEmpty() ? TEXT("warrior") : PersistedCharacter.ClassID.ToLower();
+        Existing->EvolutionID = PersistedCharacter.EvolutionID.IsEmpty() ? Existing->ClassID + TEXT(".01") : PersistedCharacter.EvolutionID.ToLower();
         Existing->Experience = PersistedCharacter.Experience;
         Existing->UnspentStatPoints = PersistedCharacter.UnspentStatPoints;
         Existing->BaseStats = PersistedCharacter.BaseStats;
@@ -99,6 +110,8 @@ bool FAetherCharacterService::RestoreCharacter(const FAetherCharacterRecord& Per
 
     FAetherCharacterRecord Restored = PersistedCharacter;
     Restored.Name = NormalizedName;
+    Restored.ClassID = Restored.ClassID.IsEmpty() ? TEXT("warrior") : Restored.ClassID.ToLower();
+    Restored.EvolutionID = Restored.EvolutionID.IsEmpty() ? Restored.ClassID + TEXT(".01") : Restored.EvolutionID.ToLower();
     Restored.Status = EAetherCharacterStatus::Offline;
     Characters.Add(Restored.CharacterId, Restored);
     CharacterIdByName.Add(Restored.Name, Restored.CharacterId);
