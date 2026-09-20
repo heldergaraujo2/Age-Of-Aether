@@ -136,6 +136,14 @@ struct FAetherCharacterRecord
     UPROPERTY(BlueprintReadOnly)
     EAetherCharacterClass CharacterClass = EAetherCharacterClass::Warrior;
 
+    // Stable data-driven class identity. CharacterClass is retained for legacy compatibility;
+    // gameplay authority resolves ClassID/EvolutionID through the class registry.
+    UPROPERTY(BlueprintReadOnly)
+    FString ClassID = TEXT("warrior");
+
+    UPROPERTY(BlueprintReadOnly)
+    FString EvolutionID = TEXT("warrior.01");
+
     UPROPERTY(BlueprintReadOnly)
     EAetherCharacterStatus Status = EAetherCharacterStatus::Created;
 
