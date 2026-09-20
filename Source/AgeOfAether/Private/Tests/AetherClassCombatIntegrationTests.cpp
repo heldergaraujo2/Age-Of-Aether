@@ -82,3 +82,14 @@ bool FAetherClassCombatInvalidAuthorityTest::RunTest(const FString&)
     TestFalse(TEXT("unknown authoritative class rejected"),I.ResolveAuthoritativeContext(A,T,EAetherCombatMode::PvE,Classes,Balance,C,E)); return true;
 }
 #endif
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassCombatEvolutionAuthorityTest,"AgeOfAether.ClassCombat.EvolutionAuthority",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassCombatEvolutionAuthorityTest::RunTest(const FString&)
+{
+    FAetherClassRegistry Classes; FString E; TestTrue(TEXT("catalog"),FAetherClassCatalog::BuildRegistry(Classes,E));
+    FAetherCharacterRecord C; MakeCharacter(C,TEXT("archer"),TEXT("archer.01")); FAetherClassCombatIntegration I;
+    TestTrue(TEXT("valid next evolution"),I.ValidateEvolutionTransition(C,TEXT("archer.02"),20,Classes,E));
+    TestFalse(TEXT("wrong class rejected"),I.ValidateEvolutionTransition(C,TEXT("mage.02"),20,Classes,E));
+    TestFalse(TEXT("insufficient level rejected"),I.ValidateEvolutionTransition(C,TEXT("archer.03"),20,Classes,E));
+    return true;
+}
