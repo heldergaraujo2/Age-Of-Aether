@@ -1,0 +1,27 @@
+#include "Misc/AutomationTest.h"
+#include "Data/AetherClassCatalog.h"
+#include "Data/AetherClassRegistry.h"
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassCatalogCountTest,"AgeOfAether.ClassCatalog.Count",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassCatalogCountTest::RunTest(const FString&){TArray<FAetherClassDefinition>C;TArray<FAetherClassEvolutionDefinition>E;FAetherClassCatalog::BuildBaseClasses(C);FAetherClassCatalog::BuildEvolutions(E);TestEqual(TEXT("five classes"),C.Num(),5);TestEqual(TEXT("twenty-five evolutions"),E.Num(),25);return true;}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassCatalogIdentityTest,"AgeOfAether.ClassCatalog.Identity",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassCatalogIdentityTest::RunTest(const FString&){FAetherClassRegistry R;FString X;TestTrue(TEXT("catalog builds"),FAetherClassCatalog::BuildRegistry(R,X));TestEqual(TEXT("classes"),R.NumClasses(),5);TestEqual(TEXT("evolutions"),R.NumEvolutions(),25);const TCHAR* C[]={TEXT("archer"),TEXT("warrior"),TEXT("mage"),TEXT("tank"),TEXT("healer")};for(const TCHAR* I:C){TArray<FString>V;R.GetEvolutionIDsForClass(I,V);TestEqual(TEXT("five evolutions per class"),V.Num(),5);}return true;}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassCatalogNamesTest,"AgeOfAether.ClassCatalog.Names",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassCatalogNamesTest::RunTest(const FString&){TArray<FAetherClassEvolutionDefinition>E;FAetherClassCatalog::BuildEvolutions(E);const TCHAR* N[]={TEXT("Batedor"),TEXT("Rastreador"),TEXT("Caçador Espectral"),TEXT("Atirador Fantasma"),TEXT("Olho de Deus"),TEXT("Recruta"),TEXT("Berserker"),TEXT("Campeão de Guerra"),TEXT("Lorde das Lâminas"),TEXT("Avatar da Guerra"),TEXT("Aprendiz"),TEXT("Feiticeiro Elemental"),TEXT("Arquimago"),TEXT("Tecelão do Éter"),TEXT("Senhor do Caos Primordial"),TEXT("Guardião"),TEXT("Fortaleza de Aço"),TEXT("Colosso"),TEXT("Bastião Imortal"),TEXT("Titã Ancestral"),TEXT("Iniciado"),TEXT("Clérigo da Luz"),TEXT("Oráculo Sagrado"),TEXT("Serafim"),TEXT("Avatar da Vida Eterna")};for(const TCHAR* S:N){bool Found=false;for(const auto&D:E)if(D.DisplayName==S){Found=true;break;}TestTrue(FString::Printf(TEXT("name exists: %s"),S),Found);}return true;}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassCatalogProgressionTest,"AgeOfAether.ClassCatalog.Progression",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassCatalogProgressionTest::RunTest(const FString&){FAetherClassRegistry R;FString X;FAetherClassCatalog::BuildRegistry(R,X);const TCHAR* C[]={TEXT("archer"),TEXT("warrior"),TEXT("mage"),TEXT("tank"),TEXT("healer")};for(const TCHAR* I:C){TArray<FString>V;R.GetEvolutionIDsForClass(I,V);for(int32 K=0;K<V.Num();++K){FAetherClassEvolutionDefinition D;TestTrue(TEXT("resolve"),R.ResolveEvolution(V[K],D));TestEqual(TEXT("stage 1..5"),D.Stage,K+1);if(K>0)TestEqual(TEXT("one prerequisite"),D.PrerequisiteEvolutionIDs.Num(),1);else TestEqual(TEXT("stage one no prerequisite"),D.PrerequisiteEvolutionIDs.Num(),0);}}return true;}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassCatalogNormalizationTest,"AgeOfAether.ClassCatalog.Normalization",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassCatalogNormalizationTest::RunTest(const FString&){FAetherClassRegistry R;FString X;FAetherClassCatalog::BuildRegistry(R,X);FAetherClassDefinition C;FAetherClassEvolutionDefinition E;TestTrue(TEXT("class normalization"),R.ResolveClass(TEXT(" ARCHER "),C));TestTrue(TEXT("evolution normalization"),R.ResolveEvolution(TEXT(" ARCHER.05 "),E));TestEqual(TEXT("stage five"),E.Stage,5);return true;}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassCatalogDeterminismTest,"AgeOfAether.ClassCatalog.Determinism",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassCatalogDeterminismTest::RunTest(const FString&){TArray<FAetherClassDefinition>A,B;TArray<FAetherClassEvolutionDefinition>C,D;FAetherClassCatalog::BuildBaseClasses(A);FAetherClassCatalog::BuildBaseClasses(B);FAetherClassCatalog::BuildEvolutions(C);FAetherClassCatalog::BuildEvolutions(D);for(int32 I=0;I<A.Num();++I)TestEqual(TEXT("class IDs deterministic"),A[I].ClassID,B[I].ClassID);for(int32 I=0;I<C.Num();++I)TestEqual(TEXT("evolution IDs deterministic"),C[I].EvolutionID,D[I].EvolutionID);return true;}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassCatalogValidationTest,"AgeOfAether.ClassCatalog.Validation",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassCatalogValidationTest::RunTest(const FString&){FAetherClassRegistry R;FString X;TestTrue(TEXT("catalog builds"),FAetherClassCatalog::BuildRegistry(R,X));TArray<FAetherClassValidationIssue>I;TestTrue(TEXT("registry validates"),R.Validate(I));TestEqual(TEXT("zero issues"),I.Num(),0);return true;}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassCatalogIsolationTest,"AgeOfAether.ClassCatalog.Isolation",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassCatalogIsolationTest::RunTest(const FString&){TArray<FAetherClassDefinition>A,B;FAetherClassCatalog::BuildBaseClasses(A);FAetherClassCatalog::BuildBaseClasses(B);A[0].DisplayName=TEXT("MUTATED");TestNotEqual(TEXT("catalog build returns independent values"),A[0].DisplayName,B[0].DisplayName);return true;}
