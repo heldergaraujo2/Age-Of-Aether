@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 27 — World, Map, Interaction & Streaming Content (repository implementation complete; Unreal runtime validation pending local validation)  
+**Status:** Phase 28 — Client Core Architecture (repository implementation complete; Unreal runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -43,7 +43,8 @@ The repository uses the following execution sequence for implementation continui
 - Phase 25 — Quest, Event, Dialogue & World Content Authoring — COMPLETE at repository level; local Unreal validation pending
 - Phase 26 — Crafting, Mixing, Forge & Recipe Authoring — COMPLETE at repository level; local Unreal validation pending
 - Phase 27 — World, Map, Interaction & Streaming Content — COMPLETE at repository level; local Unreal validation pending
-- Phase 28 — Client Core Architecture — NEXT
+- Phase 28 — Client Core Architecture — COMPLETE at repository level; Unreal runtime validation pending
+- Phase 29 — Complete MMORPG UI/UX — NEXT
 - Phase 13 — Multiplayer & Server Authority
 - Phase 14 — Persistence & Backend
 - Phase 15 — Security & Anti-Cheat
