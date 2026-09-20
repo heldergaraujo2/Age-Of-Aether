@@ -7,9 +7,9 @@
 **Name:** AGE OF AETHER  
 **Technical project:** AgeOfAether  
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
-**Branch:** main  
+**Branch:** phase39-playable-base-character  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 30 — Client Presentation, Performance & Final Integration (repository implementation complete; Unreal runtime validation pending local validation). Next implementation target: Phase 31 — Universal Player Class & Evolution System.  
+**Current stage:** Phase 39 — Playable Base Character (repository implementation complete; Unreal 5.8.1 visual/runtime acceptance pending local validation). Next implementation target: Phase 40 — Input, Movement & Camera.  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -1186,3 +1186,36 @@ Docs/PHASE_38_REAL_ASSET_PIPELINE.md
 
 Next target:
 **PHASE 39 — PLAYABLE BASE CHARACTER**
+
+
+## Phase 39 — Playable Base Character — COMPLETE at repository/source level
+
+Implemented:
+- added UAetherPlayableCharacterVisualProfile Data Asset for skeletal mesh, animation class, material overrides and mesh transform;
+- added visual profile validation with stable VisualProfileID and required skeletal mesh;
+- added UAetherPlayableCharacterVisualComponent as the reusable visual bridge attached to AAetherCharacter;
+- visual application is presentation-only and does not mutate authoritative gameplay state;
+- Dedicated Server avoids visual asset loading;
+- integrated the component directly into AAetherCharacter so ordinary character appearance changes do not require new gameplay C++;
+- added Phase 39 Automation tests for profile validation and character/component integration;
+- added Docs/PHASE_39_PLAYABLE_BASE_CHARACTER.md;
+- updated ROADMAP.md and ROADMAP_VISUAL_AND_PLAYABLE.md.
+
+Simplified visual workflow:
+1. import one real skeletal FBX;
+2. create one AetherPlayableCharacterVisualProfile;
+3. assign mesh;
+4. assign Animation Blueprint when available;
+5. optionally assign materials;
+6. assign the profile to the character Visual Component;
+7. Play.
+
+Validation truth:
+- repository/source implementation complete;
+- no fake .uasset/.umap/FBX/proprietary visual asset added;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime remains NOT VERIFIED here;
+- real FBX import, skeleton, Physics Asset, Character Blueprint instance, PIE, 2-client PIE, Dedicated Server + client and Output Log remain local acceptance gates.
+
+Next implementation target:
+**PHASE 40 — INPUT, MOVIMENTO E CÂMERA**
+
