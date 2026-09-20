@@ -1498,3 +1498,33 @@ Validation truth:
 
 Next target:
 **PHASE 50 — CRAFTING, FORGE, ECONOMY & SHOPS**
+
+
+## Phase 50 — Crafting, Forge, Economy & Shops — COMPLETE AT REPOSITORY LEVEL
+
+Implemented:
+- Existing FAetherEconomyService hardened/reused as the single economy domain service.
+- Wallet/Gold balances with overflow-safe mutation.
+- Data-driven shops with buy/sell rules and transaction quantity limits.
+- Data-driven crafting recipes with ingredients, outputs, cost, required level and enable state.
+- CraftingStationID metadata for forge/smith/alchemy station routing.
+- UAetherEconomySubsystem GameInstance bridge.
+- UAetherEconomyConfigDataAsset for low-bureaucracy authoring.
+- Buy/sell/craft integration with the existing item service and inventory.
+- Transaction result/ID contract.
+- Automation coverage for registration, wallet overflow, buy/sell, crafting, missing ingredients and inventory-capacity rejection.
+- Unreal setup documentation.
+- No fake .uasset/.umap/FBX/VFX/audio binaries.
+
+Important continuity rule:
+- Do not create a second economy/inventory implementation. Continue extending the existing FAetherEconomyService + FAetherItemService path.
+- UI/Blueprint is presentation/request wiring only; server-authoritative domain services own state mutation.
+- New merchants, recipes and forge stations should be data rows/config assets, not new C++ classes.
+
+Validation truth:
+- Repository/source implementation is complete.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime is NOT VERIFIED in this environment.
+- Real shop/forge UI, Data Asset authoring, visual presentation and multiplayer runtime acceptance remain local Unreal work.
+
+Next target:
+**PHASE 51 — COMPLETE MMORPG UI/UX**
