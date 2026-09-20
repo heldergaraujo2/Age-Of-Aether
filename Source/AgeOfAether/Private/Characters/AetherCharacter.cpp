@@ -1,4 +1,5 @@
 #include "Characters/AetherCharacter.h"
+#include "Characters/AetherPlayableCharacterVisualComponent.h"
 
 #include "Characters/AetherCharacterPlayerState.h"
 #include "Characters/AetherCharacterSubsystem.h"
@@ -44,6 +45,8 @@ AAetherCharacter::AAetherCharacter()
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
     FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
     FollowCamera->bUsePawnControlRotation = false;
+
+    VisualComponent = CreateDefaultSubobject<UAetherPlayableCharacterVisualComponent>(TEXT("VisualComponent"));
 }
 
 void AAetherCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

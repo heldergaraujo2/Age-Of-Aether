@@ -125,30 +125,37 @@ Regra: não criar referências para assets inexistentes.
 
 # PHASE 39 — PERSONAGEM BASE JOGÁVEL
 
-Objetivo: primeiro personagem realmente controlável.
+**Status:** COMPLETE at repository/source level; Unreal 5.8.1 visual/runtime acceptance pending local execution.
 
-Implementar:
-- Skeletal Mesh;
-- Skeleton;
-- Physics Asset;
-- Character Blueprint;
-- cápsula;
-- movimento;
-- gravidade;
-- chão e slopes;
-- colisão;
-- rotação;
-- câmera;
-- zoom;
-- identity;
-- health;
-- level;
-- ClassID/EvolutionID;
-- PlayerState;
-- HUD mínimo.
+Implementado:
+- visual profile Data Asset para Skeletal Mesh, Animation Blueprint e materiais;
+- visual component reutilizável integrado diretamente ao AAetherCharacter;
+- validação de perfil antes da aplicação;
+- proteção para não carregar apresentação no Dedicated Server;
+- testes de integração do componente;
+- preservação da cápsula, movimento, câmera, CharacterID e replicação já existentes.
 
-Milestone:
-Login → seleção → spawn → movimentação → câmera → estado replicado → logout → reconnect.
+Workflow visual simplificado:
+1. importar um FBX real;
+2. criar um AetherPlayableCharacterVisualProfile;
+3. apontar para o Skeletal Mesh;
+4. apontar para o Animation Blueprint quando disponível;
+5. opcionalmente aplicar materiais;
+6. atribuir o profile ao Visual Component;
+7. Play.
+
+Aceitação local pendente:
+- skeleton/Physics Asset reais;
+- Character Blueprint/instância no mapa;
+- movimento/câmera/jump;
+- PIE;
+- 2-client PIE;
+- Dedicated Server + client;
+- Automation;
+- logs.
+
+Detalhamento: Docs/PHASE_39_PLAYABLE_BASE_CHARACTER.md.
+
 
 ---
 
