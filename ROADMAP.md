@@ -1353,3 +1353,45 @@ No Phase 31+ phase should be marked complete merely because files exist. Each ph
 - PRÓXIMO PASSO
 
 Unreal 5.8.1 runtime validation remains a separate gate and cannot be inferred from GitHub/static CI success.
+
+
+---
+
+# VISUAL & PLAYABLE IMPLEMENTATION PROGRAM — PHASES 37–56
+
+The complete post-runtime visual/playable implementation roadmap is now maintained in:
+
+**ROADMAP_VISUAL_AND_PLAYABLE.md**
+
+This document is the canonical execution plan for transforming the repository/source foundation into the actual Unreal Engine 5.8.1 visual and playable MMORPG.
+
+Execution sequence:
+
+37. Unreal Visual Foundation  
+38. Real Asset Pipeline  
+39. Playable Base Character  
+40. Input, Movement & Camera  
+41. Animation System  
+42. Equipment & Item Visuals  
+43. Five Classes & 25 Evolutions Presentation  
+44. Playable Combat  
+45. Skills, Buffs, Debuffs & VFX  
+46. Monsters, NPCs & Bosses  
+47. World, Maps & Streaming  
+48. Interaction, NPC, Quest & Events  
+49. Inventory, Loot & Equipment Gameplay  
+50. Crafting, Forge, Economy & Shops  
+51. Complete MMORPG UI/UX  
+52. Audio & Ambience  
+53. Multiplayer, Dedicated Server & Persistence  
+54. Performance, Streaming & Scale  
+55. Initial Complete Content Package  
+56. Alpha, Beta & Release Candidate
+
+The new roadmap explicitly requires a vertical slice before mass content production and defines acceptance criteria for assets, gameplay systems, FBX imports, multiplayer, persistence, performance and final release.
+
+The first phase must begin only after the Unreal 5.8.1 runtime foundation gate is locally validated.
+
+Next visual/playable target after the Unreal gate:
+
+**PHASE 37 — UNREAL VISUAL FOUNDATION**
