@@ -1,6 +1,7 @@
 #include "Misc/AutomationTest.h"
 #include "Data/AetherClassBalanceConfig.h"
 #include "Data/AetherClassBalanceRegistry.h"
+#include "Data/AetherClassCatalog.h"
 
 namespace
 {
@@ -59,4 +60,16 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceConfigValidationTest,"AgeOfA
 bool FAetherClassBalanceConfigValidationTest::RunTest(const FString&)
 {
  FAetherBalanceConfig C;FString E;TestTrue(TEXT("parse"),FAetherClassBalanceConfigLoader::Parse(Sample(),C,E));FAetherClassBalanceRegistry R;TestTrue(TEXT("build"),FAetherClassBalanceConfigLoader::BuildRegistry(C,R,E));TArray<FAetherBalanceValidationIssue>I;TestTrue(TEXT("zero validation issues"),R.Validate(I));TestEqual(TEXT("no issues"),I.Num(),0);return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceCrossRegistryTest,"AgeOfAether.ClassBalance.CrossRegistry",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassBalanceCrossRegistryTest::RunTest(const FString&)
+{
+ FAetherBalanceConfig C;FString E;TestTrue(TEXT("parse"),FAetherClassBalanceConfigLoader::Parse(Sample(),C,E));FAetherClassBalanceRegistry R;TestTrue(TEXT("build"),FAetherClassBalanceConfigLoader::BuildRegistry(C,R,E));FAetherClassRegistry Classes;TestTrue(TEXT("class catalog"),FAetherClassCatalog::BuildRegistry(Classes,E));TArray<FAetherBalanceValidationIssue>I;TestTrue(TEXT("cross registry validation"),R.Validate(I,&Classes));TestEqual(TEXT("no cross registry issues"),I.Num(),0);return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceFallbackTest,"AgeOfAether.ClassBalance.Fallback",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassBalanceFallbackTest::RunTest(const FString&)
+{
+ FAetherBalanceConfig C;FString E;TestTrue(TEXT("parse"),FAetherClassBalanceConfigLoader::Parse(Sample(),C,E));FAetherClassBalanceRegistry R;TestTrue(TEXT("build"),FAetherClassBalanceConfigLoader::BuildRegistry(C,R,E));TestTrue(TEXT("active resolution"),R.SetActiveProfile(TEXT("testing"),E));FAetherClassBalanceModifiers M;TestTrue(TEXT("active resolves"),R.ResolveActive(TEXT("archer"),TEXT("archer.01"),false,M,E));TestEqual(TEXT("active value"),M.Damage,2.0);return true;
 }
