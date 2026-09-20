@@ -63,6 +63,58 @@ bool FAetherClassCombatIntegration::ResolveAuthoritativeContext(
     return true;
 }
 
+bool FAetherClassCombatIntegration::ValidateEvolutionTransition(
+    const FAetherCharacterRecord& Character,
+    const FString& TargetEvolutionID,
+    int32 CurrentLevel,
+    const FAetherClassRegistry& ClassRegistry,
+    FString& OutError) const
+{
+    OutError.Reset();
+    FAetherClassEvolutionDefinition Current;
+    FAetherClassEvolutionDefinition Target;
+    if (!ClassRegistry.ResolveEvolution(Character.EvolutionID, Current)
+        || Normalize(Current.ClassID) != Normalize(Character.ClassID))
+    {
+        OutError = TEXT("Current evolution is not authoritative for the character class.");
+        return false;
+    }
+    if (!ClassRegistry.ResolveEvolution(TargetEvolutionID, Target)
+        || Normalize(Target.ClassID) != Normalize(Character.ClassID))
+    {
+        OutError = TEXT("Target evolution does not belong to the character class.");
+        return false;
+    }
+    if (Target.Stage <= Current.Stage)
+    {
+        OutError = TEXT("Evolution must advance to a later stage.");
+        return false;
+    }
+    if (CurrentLevel < Target.RequiredLevel)
+    {
+        OutError = TEXT("Character level does not meet the evolution requirement.");
+        return false;
+    }
+    if (Target.PrerequisiteEvolutionIDs.Num() > 0)
+    {
+        bool bCurrentIsPrerequisite = false;
+        for (const FString& Prerequisite : Target.PrerequisiteEvolutionIDs)
+        {
+            if (Normalize(Prerequisite) == Normalize(Character.EvolutionID))
+            {
+                bCurrentIsPrerequisite = true;
+                break;
+            }
+        }
+        if (!bCurrentIsPrerequisite)
+        {
+            OutError = TEXT("Current evolution is not an allowed prerequisite for the target evolution.");
+            return false;
+        }
+    }
+    return true;
+}
+
 bool FAetherClassCombatIntegration::ValidateClientClassClaims(
     const FAetherCharacterRecord& AuthoritativeCharacter,
     const FString& ClientClassID,
