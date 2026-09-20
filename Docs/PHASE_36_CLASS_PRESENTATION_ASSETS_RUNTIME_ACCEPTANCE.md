@@ -70,3 +70,6 @@ Unreal runtime gate:
 - Persistence/reconnect.
 - Missing-asset fallback.
 - Performance budget validation.
+
+
+Repository CI validation branch created for final Phase 36 verification.
