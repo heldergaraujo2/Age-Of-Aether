@@ -66,7 +66,7 @@ jobs:
           if failures:
               print("\\n".join(failures)); raise SystemExit(1)
           print(f"Validated {len(files)} source/documentation files.")
-      - name: Validate Phase 22 through Phase 29 deliverables
+      - name: Validate Phase 22 through Phase 30 deliverables
         shell: bash
         run: |
           set -euo pipefail
@@ -104,6 +104,13 @@ jobs:
           grep -q "Repository implementation" Docs/PHASE_28_CLIENT_CORE_ARCHITECTURE.md
           test -f Source/AgeOfAether/Public/UI/AetherUITypes.h
           test -f Source/AgeOfAether/Public/UI/AetherUISubsystem.h
+          test -f Source/AgeOfAether/Public/Client/AetherPresentationTypes.h
+          test -f Source/AgeOfAether/Public/Client/AetherPresentationSubsystem.h
+          test -f Source/AgeOfAether/Private/Tests/AetherPresentationSubsystemTests.cpp
+          test -f Docs/PHASE_30_CLIENT_PRESENTATION_PERFORMANCE_FINAL_INTEGRATION.md
+          grep -q "UAetherPresentationSubsystem" Source/AgeOfAether/Public/Client/AetherPresentationSubsystem.h
+          grep -q "FAetherPresentationAcceptanceTest" Source/AgeOfAether/Private/Tests/AetherPresentationSubsystemTests.cpp
+          grep -q "Repository implementation complete" Docs/PHASE_30_CLIENT_PRESENTATION_PERFORMANCE_FINAL_INTEGRATION.md
           test -f Source/AgeOfAether/Private/Tests/AetherUISubsystemTests.cpp
           test -f Docs/PHASE_29_COMPLETE_MMO_UI_UX.md
           grep -q "UAetherUISubsystem" Source/AgeOfAether/Public/UI/AetherUISubsystem.h
