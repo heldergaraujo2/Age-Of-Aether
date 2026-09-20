@@ -6,12 +6,11 @@ namespace
 {
 FString Sample()
 {
-    return TEXT("config|1|testing|production\n"
-                "profile|testing|7\n"
-                "balance|testing|archer.base|archer||2|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|3|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1\n"
-                "balance|testing|archer.01|archer|archer.01|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1");
-}
-}
+    return TEXT("config|1|testing|production\\n"
+                "profile|testing|7\\n"
+                "balance|testing|archer.base|archer||2|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|3|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1\\n"
+                "balance|testing|archer.01|archer|archer.01|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1");
+}}
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceParseTest,"AgeOfAether.ClassBalance.Parse",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherClassBalanceParseTest::RunTest(const FString&)
