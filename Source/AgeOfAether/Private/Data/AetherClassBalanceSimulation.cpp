@@ -102,6 +102,23 @@ bool FAetherClassBalanceSimulation::SimulateBothContexts(
     return PvEOk && PvPOk;
 }
 
+bool FAetherClassBalanceSimulation::ValidateExtremeMultipliers(
+    const FAetherClassBalanceRegistry& Registry,
+    const TArray<FAetherBalanceSimulationCase>& Cases,
+    bool bPvP,
+    FString& OutError)
+{
+    OutError.Reset();
+    TArray<FAetherBalanceSimulationResult> Results;
+    FAetherBalanceSimulationReport Report;
+    if (!FAetherClassBalanceSimulation::Simulate(Registry, Cases, bPvP, Results, Report))
+    {
+        OutError = TEXT("Extreme multiplier simulation produced an unsafe or invalid result.");
+        return false;
+    }
+    return Report.bFinite && Report.bSafetyBoundsPassed;
+}
+
 bool FAetherClassBalanceSimulation::ValidateSymmetryAndDeterminism(
     const FAetherClassBalanceRegistry& Registry,
     const TArray<FAetherBalanceSimulationCase>& Cases,
