@@ -49,7 +49,7 @@ bool FAetherWorldPointDefinition::IsStructurallyValid(FString& E) const
 {
     E.Reset();
     if(!NonEmpty(DefinitionID)){E=TEXT("World point DefinitionID is required.");return false;}
-    if(!Location.ContainsNaN()&&!Location.ContainsInf()){return true;}
+    if(FMath::IsFinite(Location.X)&&FMath::IsFinite(Location.Y)&&FMath::IsFinite(Location.Z)){return true;}
     E=TEXT("World point location must be finite.");return false;
 }
 bool FAetherMapConnectionDefinition::IsStructurallyValid(FString& E) const
@@ -64,7 +64,7 @@ bool FAetherWorldActorPlacementDefinition::IsStructurallyValid(FString& E) const
 {
     E.Reset();
     if(!NonEmpty(DefinitionID)||!NonEmpty(WorldActorID)){E=TEXT("Actor placement requires DefinitionID and WorldActorID.");return false;}
-    const FVector L=Transform.GetLocation(); if(L.ContainsNaN()||L.ContainsInf()){E=TEXT("Actor placement transform must be finite.");return false;}
+    const FVector L=Transform.GetLocation(); if(!FMath::IsFinite(L.X)||!FMath::IsFinite(L.Y)||!FMath::IsFinite(L.Z)){E=TEXT("Actor placement transform must be finite.");return false;}
     return true;
 }
 bool FAetherInteractionDefinition::IsStructurallyValid(FString& E) const
