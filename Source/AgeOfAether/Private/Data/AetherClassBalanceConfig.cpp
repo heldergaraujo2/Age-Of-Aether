@@ -1,4 +1,5 @@
 #include "Data/AetherClassBalanceConfig.h"
+#include "Misc/FileHelper.h"
 namespace
 {
 bool Number(const TArray<FString>& P,int32 I,double&O){if(!P.IsValidIndex(I)||!LexTryParseString(O,*P[I]))return false;return FMath::IsFinite(O);}
@@ -21,6 +22,12 @@ bool FAetherClassBalanceConfigLoader::Parse(const FString& Text,FAetherBalanceCo
  }
  if(O.ConfigVersion<=0||O.ActiveProfileID.IsEmpty()||O.FallbackProfileID.IsEmpty()||O.Profiles.Num()==0){E=TEXT("Config requires version, active/fallback profiles and at least one profile.");return false;}
  return true;
+}
+bool FAetherClassBalanceConfigLoader::LoadFile(const FString& FilePath,FAetherBalanceConfig& O,FString&E)
+{
+ FString Text;
+ if(!FFileHelper::LoadFileToString(Text,*FilePath)){E=FString::Printf(TEXT("Unable to load balance configuration: %s"),*FilePath);return false;}
+ return Parse(Text,O,E);
 }
 FString FAetherClassBalanceConfigLoader::Serialize(const FAetherBalanceConfig&C)
 {
