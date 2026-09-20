@@ -17,6 +17,13 @@ public:
         FAetherCombatBalanceContext& OutContext,
         FString& OutError) const;
 
+    bool ValidateEvolutionTransition(
+        const FAetherCharacterRecord& Character,
+        const FString& TargetEvolutionID,
+        int32 CurrentLevel,
+        const FAetherClassRegistry& ClassRegistry,
+        FString& OutError) const;
+
     bool ValidateClientClassClaims(
         const FAetherCharacterRecord& AuthoritativeCharacter,
         const FString& ClientClassID,
