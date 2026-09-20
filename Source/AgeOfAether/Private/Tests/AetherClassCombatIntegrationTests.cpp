@@ -18,6 +18,8 @@ FString SampleBalance()
     };
     Add(TEXT("archer.base"), TEXT("archer"), TEXT(""), 2.0, 2.0);
     Add(TEXT("archer.01"), TEXT("archer"), TEXT("archer.01"), 1.5, 1.25);
+    Add(TEXT("warrior.base"), TEXT("warrior"), TEXT(""), 1.0, 1.0);
+    Add(TEXT("warrior.01"), TEXT("warrior"), TEXT("warrior.01"), 1.0, 1.0);
     return Text;
 }f WITH_DEV_AUTOMATION_TESTS
 #include "Misc/AutomationTest.h"
