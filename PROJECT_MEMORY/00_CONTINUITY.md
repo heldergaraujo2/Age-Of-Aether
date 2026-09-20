@@ -1412,3 +1412,28 @@ Validation truth:
 
 Next target:
 **PHASE 47 — WORLD, MAPS & STREAMING**
+
+
+## Phase 47 — World, Maps & Streaming — COMPLETE AT REPOSITORY LEVEL
+
+Implemented:
+- FAetherWorldMapDefinition and FAetherWorldStreamingLink.
+- Persistent/Streamed/Instance load mode contract.
+- FAetherWorldMapRegistry with normalized IDs, duplicate protection and reference validation.
+- UAetherWorldMapCatalog Data Asset for map/link authoring.
+- UAetherWorldMapSubsystem World Subsystem for active-map state and streaming-link gating.
+- Automation tests and Unreal setup documentation.
+- No fake .umap/.uasset binaries.
+
+Low-bureaucracy visual rule:
+- Two real Unreal maps are enough for the first vertical slice.
+- Code owns identity/validation/authority contracts; map assets own geometry, lighting, World Partition/streaming and visual presentation.
+- Additional maps are catalog rows plus real Unreal assets, not new C++ classes.
+
+Validation truth:
+- Repository/source implementation is complete.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime is NOT VERIFIED in this environment.
+- Real map creation, streaming execution, World Partition configuration and multiplayer acceptance remain local Unreal work.
+
+Next target:
+**PHASE 48 — INTERACTION, NPC, QUEST & EVENTS**
