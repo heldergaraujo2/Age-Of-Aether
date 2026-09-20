@@ -152,15 +152,23 @@ jobs:
           grep -q "FAetherClassBalanceParseTest" Source/AgeOfAether/Private/Tests/AetherClassBalanceTests.cpp
           grep -q "Phase 33" ROADMAP.md
           grep -q "Phase 33" PROJECT_MEMORY/00_CONTINUITY.md
-          test -f Source/AgeOfAether/Public/Combat/AetherClassCombatIntegration.h
-          test -f Source/AgeOfAether/Private/Combat/AetherClassCombatIntegration.cpp
-          test -f Source/AgeOfAether/Private/Tests/AetherClassCombatIntegrationTests.cpp
-          grep -q "FAetherClassCombatIntegration" Source/AgeOfAether/Public/Combat/AetherClassCombatIntegration.h
-          grep -q "FAetherClassCombatAuthoritativeResolutionTest" Source/AgeOfAether/Private/Tests/AetherClassCombatIntegrationTests.cpp
-          grep -q "FAetherCombatAuthoritativeClassBalanceTest" Source/AgeOfAether/Private/Tests/AetherCombatTests.cpp
-          test -f Docs/PHASE_34_CLASS_COMBAT_INTEGRATION_SERVER_AUTHORITY.md
-          grep -q "Phase 34" ROADMAP.md
-          grep -q "Phase 34" PROJECT_MEMORY/00_CONTINUITY.md
+          python - <<'PY'
+          from pathlib import Path
+          required = {
+              "Source/AgeOfAether/Public/Combat/AetherClassCombatIntegration.h": ["FAetherClassCombatIntegration"],
+              "Source/AgeOfAether/Private/Combat/AetherClassCombatIntegration.cpp": ["ResolveAuthoritativeContext", "ValidateEvolutionTransition"],
+              "Source/AgeOfAether/Private/Tests/AetherClassCombatIntegrationTests.cpp": ["FAetherClassCombatAuthoritativeResolutionTest", "FAetherClassCombatEvolutionAuthorityTest"],
+              "Source/AgeOfAether/Private/Tests/AetherCombatTests.cpp": ["FAetherCombatAuthoritativeClassBalanceTest"],
+              "Docs/PHASE_34_CLASS_COMBAT_INTEGRATION_SERVER_AUTHORITY.md": ["STATUS", "IMPLEMENTADO", "COMPILADO", "TESTADO", "VALIDADO", "FALHAS", "PENDÊNCIAS", "RISCOS", "PRÓXIMO PASSO"],
+              "ROADMAP.md": ["Phase 34"],
+              "PROJECT_MEMORY/00_CONTINUITY.md": ["Phase 34"],
+          }
+          for path, needles in required.items():
+              text = Path(path).read_text(encoding="utf-8")
+              for needle in needles:
+                  assert needle in text, f"{path}: missing {needle}"
+          print("Phase 34 repository contract audit passed.")
+          PY
           python - <<'PY'
           from pathlib import Path
           p=Path("Config/Balance/ClassBalanceProfiles.aetherbalance")
