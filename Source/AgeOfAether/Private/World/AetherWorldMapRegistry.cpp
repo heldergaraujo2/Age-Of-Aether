@@ -1,0 +1,7 @@
+#include "World/AetherWorldMapRegistry.h"
+bool FAetherWorldMapRegistry::RegisterMap(const FAetherWorldMapDefinition& M){if(!M.IsValid())return false;FString K=Normalize(M.MapID);if(Maps.Contains(K))return false;auto C=M;C.MapID=K;Maps.Add(K,MoveTemp(C));return true;}
+bool FAetherWorldMapRegistry::RegisterLink(const FAetherWorldStreamingLink& L){if(!L.IsValid())return false;FString K=Normalize(L.LinkID);FString S=Normalize(L.SourceMapID),T=Normalize(L.TargetMapID);if(Links.Contains(K)||!Maps.Contains(S)||!Maps.Contains(T))return false;auto C=L;C.LinkID=K;C.SourceMapID=S;C.TargetMapID=T;Links.Add(K,MoveTemp(C));return true;}
+const FAetherWorldMapDefinition* FAetherWorldMapRegistry::FindMap(const FString& ID)const{return Maps.Find(Normalize(ID));}
+const FAetherWorldStreamingLink* FAetherWorldMapRegistry::FindLink(const FString& ID)const{return Links.Find(Normalize(ID));}
+bool FAetherWorldMapRegistry::Validate(TArray<FString>& E)const{E.Reset();for(auto& P:Maps)if(!P.Value.IsValid())E.Add(TEXT("Invalid map: ")+P.Key);for(auto& P:Links){if(!P.Value.IsValid())E.Add(TEXT("Invalid link: ")+P.Key);if(!Maps.Contains(Normalize(P.Value.SourceMapID))||!Maps.Contains(Normalize(P.Value.TargetMapID)))E.Add(TEXT("Link references missing map: ")+P.Key);}return E.IsEmpty();}
+void FAetherWorldMapRegistry::Reset(){Maps.Reset();Links.Reset();}

@@ -1597,3 +1597,23 @@ Validation truth:
 
 Next target:
 **PHASE 47 — WORLD, MAPS & STREAMING**
+
+
+## Phase 47 — World, Maps & Streaming — COMPLETE at repository/source level
+
+Implemented:
+- data-driven map definitions with Persistent/Streamed/Instance modes;
+- stable MapID, zone linkage and Unreal asset path contracts;
+- validated map-to-map streaming links;
+- UAetherWorldMapCatalog Data Asset;
+- UAetherWorldMapSubsystem active-map and streaming-link gating;
+- Automation tests and Unreal setup documentation;
+- no fake .umap/.uasset binaries.
+
+Validation truth:
+- repository/source implementation complete;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here;
+- real map creation, World Partition/level streaming and multiplayer acceptance remain local Unreal work.
+
+Next target:
+**PHASE 48 — INTERACTION, NPC, QUEST & EVENTS**
