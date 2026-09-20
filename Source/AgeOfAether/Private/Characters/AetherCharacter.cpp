@@ -7,6 +7,7 @@
 #include "Characters/AetherCharacterPlayerState.h"
 #include "Characters/AetherCharacterSubsystem.h"
 #include "Networking/AetherNetworkPlayerController.h"
+#include "GameFramework/PlayerController.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -140,6 +141,7 @@ void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInput->BindAction(SprintAction, ETriggerEvent::Completed, this, &AAetherCharacter::SprintStopped);
         EnhancedInput->BindAction(SprintAction, ETriggerEvent::Canceled, this, &AAetherCharacter::SprintStopped);
         EnhancedInput->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &AAetherCharacter::CameraZoom);
+        EnhancedInput->BindAction(BasicAttackAction, ETriggerEvent::Started, this, &AAetherCharacter::BasicAttackPressed);
     }
 }
 
@@ -164,6 +166,7 @@ void AAetherCharacter::InitializeFoundationInput()
     JumpAction = NewObject<UInputAction>(this, TEXT("Jump"));
     SprintAction = NewObject<UInputAction>(this, TEXT("Sprint"));
     CameraZoomAction = NewObject<UInputAction>(this, TEXT("CameraZoom"));
+    BasicAttackAction = NewObject<UInputAction>(this, TEXT("BasicAttack"));
 
     MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
     MoveRightAction->ValueType = EInputActionValueType::Axis1D;
@@ -172,6 +175,7 @@ void AAetherCharacter::InitializeFoundationInput()
     JumpAction->ValueType = EInputActionValueType::Boolean;
     SprintAction->ValueType = EInputActionValueType::Boolean;
     CameraZoomAction->ValueType = EInputActionValueType::Axis1D;
+    BasicAttackAction->ValueType = EInputActionValueType::Boolean;
 
     RuntimeInputContext->MapKey(MoveForwardAction, EKeys::W);
     {
@@ -188,6 +192,7 @@ void AAetherCharacter::InitializeFoundationInput()
     RuntimeInputContext->MapKey(JumpAction, EKeys::SpaceBar);
     RuntimeInputContext->MapKey(SprintAction, EKeys::LeftShift);
     RuntimeInputContext->MapKey(CameraZoomAction, EKeys::MouseWheelAxis);
+    RuntimeInputContext->MapKey(BasicAttackAction, EKeys::LeftMouseButton);
 
     if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem =
         PC->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -291,5 +296,72 @@ void AAetherCharacter::ServerSetSprinting_Implementation(bool bNewSprinting)
         const float Walk = MovementCameraProfile ? MovementCameraProfile->WalkSpeed : FoundationWalkSpeed;
         const float Sprint = MovementCameraProfile ? MovementCameraProfile->SprintSpeed : FoundationWalkSpeed * 1.5f;
         Movement->MaxWalkSpeed = bSprinting ? Sprint : Walk;
+    }
+}
+
+
+void AAetherCharacter::BasicAttackPressed(const FInputActionValue& Value)
+{
+    if (Value.Get<bool>())
+    {
+        ExecuteBasicAttack();
+    }
+}
+
+void AAetherCharacter::ExecuteBasicAttack()
+{
+    if (!IsLocallyControlled())
+    {
+        return;
+    }
+
+    if (VisualComponent)
+    {
+        VisualComponent->PlayBasicAttackAnimation();
+    }
+
+    APlayerController* PC = Cast<APlayerController>(GetController());
+    if (!PC)
+    {
+        return;
+    }
+
+    FVector ViewLocation;
+    FRotator ViewRotation;
+    PC->GetPlayerViewPoint(ViewLocation, ViewRotation);
+
+    const FVector TraceEnd = ViewLocation + ViewRotation.Vector() * 300.0f;
+    FHitResult Hit;
+    FCollisionQueryParams Params(SCENE_QUERY_STAT(AetherBasicAttack), true, this);
+    Params.AddIgnoredActor(this);
+
+    if (GetWorld() && GetWorld()->LineTraceSingleByChannel(Hit, ViewLocation, TraceEnd, ECC_Pawn, Params))
+    {
+        if (AAetherCharacter* Target = Cast<AAetherCharacter>(Hit.GetActor()))
+        {
+            if (Target->GetCharacterId().IsValid())
+            {
+                ++LocalAttackSequence;
+                if (AAetherNetworkPlayerController* NetworkController = Cast<AAetherNetworkPlayerController>(PC))
+                {
+                    NetworkController->BasicAttack(Target->GetCharacterId());
+                }
+            }
+        }
+    }
+}
+
+void AAetherCharacter::ServerRequestBasicAttack_Implementation(const FAetherCharacterId& TargetCharacterId)
+{
+    // The network controller remains the authoritative combat request gateway.
+    // This RPC is intentionally not used for direct damage mutation.
+    if (!HasAuthority() || !TargetCharacterId.IsValid())
+    {
+        return;
+    }
+
+    if (AAetherNetworkPlayerController* Controller = Cast<AAetherNetworkPlayerController>(GetController()))
+    {
+        Controller->BasicAttack(TargetCharacterId);
     }
 }
