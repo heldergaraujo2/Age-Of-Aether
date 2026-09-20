@@ -6,6 +6,7 @@
 #include "Characters/AetherBaseAnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
+#include "Animation/AnimMontage.h"
 #include "Materials/MaterialInterface.h"
 
 UAetherPlayableCharacterVisualComponent::UAetherPlayableCharacterVisualComponent()
@@ -21,6 +22,32 @@ void UAetherPlayableCharacterVisualComponent::BeginPlay()
     {
         ApplyProfile();
     }
+}
+
+bool UAetherPlayableCharacterVisualComponent::PlayBasicAttackAnimation()
+{
+    if (GetNetMode() == NM_DedicatedServer)
+    {
+        return false;
+    }
+
+    USkeletalMeshComponent* MeshComponent = GetMeshComponent();
+    if (!MeshComponent)
+    {
+        return false;
+    }
+
+    if (!Profile || !Profile->AnimationProfile || Profile->AnimationProfile->BasicAttackMontage.IsNull())
+    {
+        return false;
+    }
+
+    if (UAnimMontage* Montage = Profile->AnimationProfile->BasicAttackMontage.LoadSynchronous())
+    {
+        return MeshComponent->GetAnimInstance() && MeshComponent->GetAnimInstance()->Montage_Play(Montage) > 0.0f;
+    }
+
+    return false;
 }
 
 bool UAetherPlayableCharacterVisualComponent::ApplyProfile()

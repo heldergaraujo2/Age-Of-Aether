@@ -96,8 +96,13 @@ private:
     void SprintStarted(const struct FInputActionValue& Value);
     void SprintStopped(const struct FInputActionValue& Value);
     void CameraZoom(const struct FInputActionValue& Value);
+    void BasicAttackPressed(const struct FInputActionValue& Value);
+    void ExecuteBasicAttack();
     UFUNCTION(Server, Reliable)
     void ServerSetSprinting(bool bNewSprinting);
+
+    UFUNCTION(Server, Reliable)
+    void ServerRequestBasicAttack(const FAetherCharacterId& TargetCharacterId);
 
     UPROPERTY(Transient)
     TObjectPtr<UInputMappingContext> RuntimeInputContext;
@@ -119,4 +124,5 @@ private:
     UPROPERTY(Transient) TObjectPtr<UInputAction> SprintAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraZoomAction;
     bool bSprinting = false;
+    uint32 LocalAttackSequence = 0;
 };
