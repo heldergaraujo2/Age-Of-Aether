@@ -27,7 +27,7 @@ TArray<FAetherBalanceSimulationCase> Cases()
     const TCHAR* Classes[] = {TEXT("archer"),TEXT("warrior"),TEXT("mage"),TEXT("tank"),TEXT("healer")};
     for (const TCHAR* C : Classes)
     {
-        FAetherBalanceSimulationCase X; X.ClassID=C; X.BaseDamage=100.0; X.TargetDefense=100.0; X.TargetResistancePercent=20.0; Out.Add(X);
+        FAetherBalanceSimulationCase X; X.ClassID=C; X.BaseDamage=100.0; X.TargetDefense=100.0; X.TargetResistancePercent=20.0; X.TargetClassID=TEXT("tank"); X.TargetEvolutionID=TEXT("tank.01"); Out.Add(X);
     }
     return Out;
 }
@@ -61,6 +61,14 @@ bool FAetherBalanceSimulationInvalidInputTest::RunTest(const FString&)
 {
     auto R=BuildNeutralRegistry(); auto C=Cases(); C[0].BaseDamage=-1.0; TArray<FAetherBalanceSimulationResult> Results; FAetherBalanceSimulationReport Report;
     TestFalse(TEXT("negative damage rejected"),FAetherClassBalanceSimulation::Simulate(R,C,false,Results,Report)); TestTrue(TEXT("failure recorded"),Report.Failures>0); return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherBalanceSimulationExtremeMultiplierTest,"AgeOfAether.BalanceSimulation.ExtremeMultiplier",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherBalanceSimulationExtremeMultiplierTest::RunTest(const FString&)
+{
+    auto R=BuildNeutralRegistry(); TArray<FAetherBalanceSimulationCase> C=Cases(); FString E;
+    TestTrue(TEXT("extreme validation"),FAetherClassBalanceSimulation::ValidateExtremeMultipliers(R,C,false,E));
+    return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherBalanceSimulationExtremeSafetyTest,"AgeOfAether.BalanceSimulation.ExtremeSafety",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
