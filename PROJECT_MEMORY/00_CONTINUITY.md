@@ -1337,3 +1337,18 @@ Implemented:
 - Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED in this environment.
 - Local acceptance requires one real attack montage, target collision, cooldown/range tests and multiplayer/Dedicated Server testing.
 - Next implementation target: **Phase 45 — Skills, Buffs, Debuffs & VFX**.
+
+
+## Phase 44 — Playable Combat — MERGED 2026-09-20
+
+- PR #7 merged to `main`; merge commit: `f6c72807ffc3e74d4a9990a3abc286ae5f305860`.
+- Reused the existing server-authoritative combat service/gateway.
+- Added left-mouse basic attack input and camera-forward Pawn target acquisition.
+- Client submits only the target CharacterID; server remains authoritative for combat.
+- Added optional data-driven BasicAttackMontage to the reusable animation profile.
+- Added presentation-only attack montage playback.
+- No fake Unreal binaries.
+- No CI status checks were reported for the merge commit, so no CI PASS is claimed.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here.
+- Local Unreal acceptance remains required for the first real attack montage, target collision, cooldown/range and multiplayer tests.
+- Next implementation target: **Phase 45 — Skills, Buffs, Debuffs & VFX**.
