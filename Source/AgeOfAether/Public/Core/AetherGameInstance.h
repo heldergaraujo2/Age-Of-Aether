@@ -5,7 +5,7 @@
 
 #include "AetherGameInstance.generated.h"
 
-UCLASS()
+UCLASS(Config=Game)
 class AGEOFAETHER_API UAetherGameInstance : public UGameInstance
 {
     GENERATED_BODY()
