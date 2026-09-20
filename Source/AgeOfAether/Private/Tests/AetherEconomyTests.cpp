@@ -49,8 +49,12 @@ bool FAetherEconomyRegistrationTest::RunTest(const FString&)
 
     TestTrue(TEXT("shop registers"), Economy.RegisterShop(Shop));
     TestFalse(TEXT("duplicate shop rejected"), Economy.RegisterShop(Shop));
+    FAetherShopDefinition NormalizedShop;
+    TestTrue(TEXT("shop lookup is case-insensitive"), Economy.FindShop(TEXT("GENERAL"), NormalizedShop));
     TestTrue(TEXT("recipe registers"), Economy.RegisterRecipe(Recipe));
     TestFalse(TEXT("duplicate recipe rejected"), Economy.RegisterRecipe(Recipe));
+    FAetherCraftRecipe NormalizedRecipe;
+    TestTrue(TEXT("recipe lookup is case-insensitive"), Economy.FindRecipe(TEXT("POTIONRECIPE"), NormalizedRecipe));
     return true;
 }
 
