@@ -1519,3 +1519,25 @@ Docs/PHASE_43_FIVE_CLASSES_25_EVOLUTIONS_PRESENTATION.md
 
 Next target:
 **PHASE 44 — PLAYABLE COMBAT**
+
+
+## Phase 44 — Playable Combat — COMPLETE at repository/source level
+
+Implemented:
+- Reused the existing server-authoritative combat subsystem/service.
+- Added left-mouse basic attack input to AAetherCharacter.
+- Added camera-forward Pawn target acquisition.
+- Client submits only target CharacterID through the authenticated combat gateway.
+- Added optional data-driven BasicAttackMontage to the reusable animation profile.
+- Added visual component attack montage trigger.
+- Dedicated Server never loads/plays the presentation montage.
+- Added Phase 44 documentation.
+- No fake Unreal binaries.
+
+Validation truth:
+- Source/repository implementation complete.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime is NOT VERIFIED here.
+- Local acceptance remains required for real montage import, target collision, server combat result/cooldown and multiplayer behavior.
+
+Next target:
+**PHASE 45 — SKILLS, BUFFS, DEBUFFS & VFX**
