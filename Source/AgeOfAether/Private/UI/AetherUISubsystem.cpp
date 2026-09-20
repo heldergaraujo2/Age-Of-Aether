@@ -90,6 +90,12 @@ void UAetherUISubsystem::CloseModal()
     OnStateChanged.Broadcast();
 }
 
+void UAetherUISubsystem::SetClassSelection(const TArray<FAetherUIClassEntry>& Entries)
+{
+    Snapshot.ClassSelection = Entries;
+    OnStateChanged.Broadcast();
+}
+
 void UAetherUISubsystem::SetInventory(const TArray<FAetherUIItemEntry>& Entries, int32 Capacity)
 {
     Snapshot.Inventory = Entries;
