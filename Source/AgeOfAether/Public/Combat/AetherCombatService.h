@@ -19,6 +19,14 @@ public:
         double ServerTimeSeconds,
         FAetherCombatResult& OutResult);
 
+    bool ResolveBasicAttackAuthoritative(
+        const FAetherCharacterRecord& Attacker,
+        FAetherCharacterRecord& Target,
+        uint32 AttackSequence,
+        double ServerTimeSeconds,
+        const FAetherCombatBalanceContext& BalanceContext,
+        FAetherCombatResult& OutResult);
+
     bool IsAttackOnCooldown(
         const FAetherCharacterId& CharacterId,
         double ServerTimeSeconds,
