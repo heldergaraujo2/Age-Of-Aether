@@ -1235,3 +1235,32 @@ Important files:
 
 Next:
 **Phase 25 — Quest, Event, Dialogue & World Content Authoring.**
+
+
+## PHASE 27 — WORLD, MAP, INTERACTION & STREAMING CONTENT — COMPLETED 2026-09-19
+
+Phase 27 is complete at repository/source level.
+
+Implemented:
+- data-driven map, zone, streaming-cell, world-point, connection, actor-placement and interaction definitions;
+- map bounds, level bounds, combat/safe-zone metadata and streaming constraints;
+- stable IDs, normalized lookup, duplicate nested-content detection and deterministic map enumeration;
+- graph validation for map connections and teleports; cycles are allowed, dangling references are rejected;
+- cross-registry validation against Phase 19 content, Phase 20 assets, Phase 21 items, Phase 22 world actors, Phase 23 skills, Phase 24 loot/spawn, Phase 25 quests/events/dialogues and Phase 26 recipes;
+- automation tests for invalid data, duplicates, bounds, streaming, graph cycles, interactions, references, teleports and determinism.
+
+Important files:
+- Source/AgeOfAether/Public/Data/AetherWorldContentTypes.h
+- Source/AgeOfAether/Private/Data/AetherWorldContentTypes.cpp
+- Source/AgeOfAether/Public/Data/AetherWorldContentRegistry.h
+- Source/AgeOfAether/Private/Data/AetherWorldContentRegistry.cpp
+- Source/AgeOfAether/Private/Tests/AetherWorldContentRegistryTests.cpp
+- Docs/PHASE_27_WORLD_MAP_INTERACTION_STREAMING.md
+
+Validation truth:
+- repository/static validation: PASS;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime: NOT VERIFIED because Unreal is unavailable in this environment;
+- no compilation success claimed.
+
+Next implementation target:
+**PHASE 28 — CLIENT CORE ARCHITECTURE.**
