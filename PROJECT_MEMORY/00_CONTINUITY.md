@@ -9,7 +9,7 @@
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Branch:** main  
 **Target Unreal:** 5.8.1  
-**Current stage:** Phase 43 — Five Classes & 25 Evolutions Presentation (repository implementation merged; Unreal 5.8.1 visual/runtime acceptance pending local validation). Next implementation target: Phase 44 — Playable Combat.  
+**Current stage:** Phase 45 — Skills, Buffs, Debuffs & VFX (repository implementation complete; Unreal 5.8.1 visual/runtime acceptance pending local validation). Next implementation target: Phase 46 — Monsters, NPCs & Bosses.  
 **Roadmap:** ROADMAP.md
 
 AGE OF AETHER is a persistent MMORPG built around Unreal Engine, C++, Blueprint and a server-authoritative architecture.
@@ -1352,3 +1352,31 @@ Implemented:
 - Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here.
 - Local Unreal acceptance remains required for the first real attack montage, target collision, cooldown/range and multiplayer tests.
 - Next implementation target: **Phase 45 — Skills, Buffs, Debuffs & VFX**.
+
+
+## Phase 45 — Skills, Buffs, Debuffs & VFX — COMPLETE AT REPOSITORY LEVEL
+
+Implemented:
+- FAetherSkillDefinition, FAetherSkillEffect, runtime status and skill result contracts.
+- Stable normalized FAetherSkillRegistry with duplicate rejection, validation and atomic batch registration.
+- UAetherSkillSubsystem with server-side skill ownership, class compatibility, target, range, cooldown and dead-state validation.
+- Authoritative damage and healing effects.
+- Runtime buff/debuff status records with stable EffectID, magnitude and duration.
+- AAetherNetworkPlayerController CastSkill/server RPC/client result delegate.
+- Reusable UAetherSkillVisualComponent attached to AAetherCharacter, with optional cast/impact VFX, SFX and montage references.
+- Safe auto-registered aether.skill.training_strike for the first vertical slice.
+- Automation tests and Unreal setup documentation.
+- No fake Unreal binaries.
+
+Low-bureaucracy rule:
+- One generic skill pipeline; new skills are data + optional assets.
+- No per-skill C++ or per-skill character Blueprint.
+- Presentation remains client-only and never becomes gameplay authority.
+
+Validation truth:
+- Repository/source implementation is complete.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime is NOT VERIFIED in this environment.
+- Real montage/VFX/SFX import and runtime acceptance remain local Unreal work.
+
+Next target:
+PHASE 46 — MONSTERS, NPCs & BOSSES

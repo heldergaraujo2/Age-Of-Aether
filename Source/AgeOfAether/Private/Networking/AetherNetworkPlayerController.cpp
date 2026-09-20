@@ -6,6 +6,7 @@
 #include "Items/AetherItemSubsystem.h"
 #include "Progression/AetherProgressionSubsystem.h"
 #include "Combat/AetherCombatSubsystem.h"
+#include "Skills/AetherSkillSubsystem.h"
 #include "World/AetherWorldSubsystem.h"
 #include "Quests/AetherQuestSubsystem.h"
 #include "Social/AetherSocialSubsystem.h"
@@ -1099,6 +1100,61 @@ void AAetherNetworkPlayerController::ClientReceiveCombat_Implementation(
     const FAetherCombatResult& Result)
 {
     OnCombat.Broadcast(Result);
+}
+
+void AAetherNetworkPlayerController::CastSkill(const FString& SkillID, const FAetherCharacterId& TargetCharacterId)
+{
+    const uint32 RequestId = NextSkillRequestId++;
+    if (HasAuthority())
+    {
+        ServerCastSkill_Implementation(RequestId, SkillID, TargetCharacterId);
+        return;
+    }
+    ServerCastSkill(RequestId, SkillID, TargetCharacterId);
+}
+
+void AAetherNetworkPlayerController::ServerCastSkill_Implementation(
+    uint32 RequestId, const FString& SkillID, const FAetherCharacterId& TargetCharacterId)
+{
+    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Combat))
+        return;
+    if (RequestId == 0 || RequestId <= LastProcessedSkillRequestId)
+        return;
+
+    FAetherSkillResult Result;
+    Result.RequestId = RequestId;
+
+    UAetherSkillSubsystem* Skills = GetGameInstance()
+        ? GetGameInstance()->GetSubsystem<UAetherSkillSubsystem>()
+        : nullptr;
+
+    const AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>();
+    const FAetherCharacterId AttackerId = State ? State->GetCharacterId() : FAetherCharacterId();
+
+    if (Skills && bAccountAuthenticated && AttackerId.IsValid() && TargetCharacterId.IsValid())
+    {
+        Skills->CastSkill(
+            AuthenticatedAccountId,
+            AttackerId,
+            TargetCharacterId,
+            SkillID,
+            RequestId,
+            GetServerTimeSeconds(),
+            Result);
+    }
+    else
+    {
+        Result.Result = EAetherSkillResultCode::NotAuthenticated;
+    }
+
+    LastProcessedSkillRequestId = RequestId;
+    ClientReceiveSkill(RequestId, Result);
+}
+
+void AAetherNetworkPlayerController::ClientReceiveSkill_Implementation(
+    uint32 RequestId, const FAetherSkillResult& Result)
+{
+    OnSkill.Broadcast(Result);
 }
 
 void AAetherNetworkPlayerController::RequestWorldTransition(const FAetherWorldZoneId& TargetZoneId)

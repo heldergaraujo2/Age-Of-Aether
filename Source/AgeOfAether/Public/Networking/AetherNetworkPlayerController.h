@@ -8,6 +8,7 @@
 #include "Items/AetherItemTypes.h"
 #include "Progression/AetherProgressionTypes.h"
 #include "Combat/AetherCombatTypes.h"
+#include "Skills/AetherSkillTypes.h"
 #include "World/AetherWorldTypes.h"
 #include "Quests/AetherQuestTypes.h"
 #include "Social/AetherSocialTypes.h"
@@ -25,6 +26,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryEvent, const TArray<
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherInventoryOperationEvent, EAetherInventoryOperationResult, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherProgressionEvent, const FAetherProgressionResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherCombatEvent, const FAetherCombatResult&, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherSkillEvent, const FAetherSkillResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherWorldTransitionEvent, const FAetherWorldTransitionResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherQuestEvent, const FAetherQuestOperation&, Operation);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAetherQuestListEvent, const TArray<FAetherQuestState>&, States);
@@ -88,6 +90,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Combat")
     void BasicAttack(const FAetherCharacterId& TargetCharacterId);
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Skills")
+    void CastSkill(const FString& SkillID, const FAetherCharacterId& TargetCharacterId);
 
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|World")
     void RequestWorldTransition(const FAetherWorldZoneId& TargetZoneId);
@@ -158,6 +163,9 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Combat")
     FAetherCombatEvent OnCombat;
+
+    UPROPERTY(BlueprintAssignable, Category = "Age of Aether|Skills")
+    FAetherSkillEvent OnSkill;
 
     UPROPERTY(BlueprintAssignable, Category = "Age of Aether|World")
     FAetherWorldTransitionEvent OnWorldTransition;
@@ -248,6 +256,12 @@ protected:
 
     UFUNCTION(Server, Reliable)
     void ServerBasicAttack(uint32 RequestId, const FAetherCharacterId& TargetCharacterId);
+
+    UFUNCTION(Server, Reliable)
+    void ServerCastSkill(uint32 RequestId, const FString& SkillID, const FAetherCharacterId& TargetCharacterId);
+
+    UFUNCTION(Client, Reliable)
+    void ClientReceiveSkill(uint32 RequestId, const FAetherSkillResult& Result);
 
     UFUNCTION(Client, Reliable)
     void ClientReceiveCombat(uint32 RequestId, const FAetherCombatResult& Result);
@@ -351,6 +365,8 @@ private:
     uint32 NextProgressionRequestId = 1;
     uint32 LastProcessedProgressionRequestId = 0;
     uint32 NextCombatRequestId = 1;
+    uint32 LastProcessedSkillRequestId = 0;
+    uint32 NextSkillRequestId = 1;
     uint32 LastProcessedCombatRequestId = 0;
     uint32 NextWorldRequestId = 1;
     uint32 LastProcessedWorldRequestId = 0;
