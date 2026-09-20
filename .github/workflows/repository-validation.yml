@@ -104,6 +104,13 @@ jobs:
               "Source/AgeOfAether/Private/Data/AetherClassBalanceSimulation.cpp",
               "Source/AgeOfAether/Private/Tests/AetherClassBalanceSimulationTests.cpp",
               "Docs/PHASE_35_PVE_PVP_BALANCE_SIMULATION.md",
+              "Source/AgeOfAether/Public/Presentation/AetherClassPresentationTypes.h",
+              "Source/AgeOfAether/Public/Presentation/AetherClassPresentationRegistry.h",
+              "Source/AgeOfAether/Public/Presentation/AetherClassPresentationCatalog.h",
+              "Source/AgeOfAether/Public/Presentation/AetherClassPresentationSubsystem.h",
+              "Source/AgeOfAether/Private/Tests/AetherClassPresentationTests.cpp",
+              "Source/AgeOfAether/Private/Tests/AetherClassPresentationCatalogTests.cpp",
+              "Docs/PHASE_36_CLASS_PRESENTATION_ASSETS_RUNTIME_ACCEPTANCE.md",
           ]
           for path in required_files:
               assert Path(path).is_file(), f"missing file: {path}"
@@ -139,6 +146,11 @@ jobs:
               ("Source/AgeOfAether/Private/Tests/AetherCombatTests.cpp", "FAetherCombatAuthoritativeClassBalanceTest"),
               ("Source/AgeOfAether/Public/Data/AetherClassBalanceSimulation.h", "FAetherClassBalanceSimulation"),
               ("Source/AgeOfAether/Private/Tests/AetherClassBalanceSimulationTests.cpp", "FAetherBalanceSimulationNeutralTest"),
+              ("Source/AgeOfAether/Public/Presentation/AetherClassPresentationRegistry.h", "FAetherClassPresentationRegistry"),
+              ("Source/AgeOfAether/Public/Presentation/AetherClassPresentationCatalog.h", "FAetherClassPresentationCatalog"),
+              ("Source/AgeOfAether/Public/Presentation/AetherClassPresentationSubsystem.h", "UAetherClassPresentationSubsystem"),
+              ("Source/AgeOfAether/Private/Tests/AetherClassPresentationTests.cpp", "FAetherClassPresentationRegistryTest"),
+              ("Source/AgeOfAether/Private/Tests/AetherClassPresentationCatalogTests.cpp", "FAetherClassPresentationCatalogCountTest"),
           ]
           for path, needle in checks:
               assert needle in text(path), f"{path}: missing {needle}"
@@ -162,6 +174,9 @@ jobs:
           assert "Phase 34" in text("ROADMAP.md")
           assert "Phase 35" in text("ROADMAP.md")
           assert "Phase 35" in text("PROJECT_MEMORY/00_CONTINUITY.md")
+          assert "Phase 36" in text("PROJECT_MEMORY/00_CONTINUITY.md")
+          assert "STATUS" in text("Docs/PHASE_36_CLASS_PRESENTATION_ASSETS_RUNTIME_ACCEPTANCE.md")
+          assert "IMPLEMENTADO" in text("Docs/PHASE_36_CLASS_PRESENTATION_ASSETS_RUNTIME_ACCEPTANCE.md")
           assert "STATUS" in text("Docs/PHASE_35_PVE_PVP_BALANCE_SIMULATION.md")
           assert "IMPLEMENTADO" in text("Docs/PHASE_35_PVE_PVP_BALANCE_SIMULATION.md")
           assert "Phase 34" in text("PROJECT_MEMORY/00_CONTINUITY.md")
