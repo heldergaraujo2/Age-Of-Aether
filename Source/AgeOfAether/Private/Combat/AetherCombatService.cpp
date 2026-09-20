@@ -28,7 +28,25 @@ bool FAetherCombatService::ResolveBasicAttack(
     double ServerTimeSeconds,
     FAetherCombatResult& OutResult)
 {
+    return ResolveBasicAttackAuthoritative(Attacker, Target, AttackSequence, ServerTimeSeconds,
+        FAetherCombatBalanceContext::Neutral(EAetherCombatMode::PvE), OutResult);
+}
+
+bool FAetherCombatService::ResolveBasicAttackAuthoritative(
+    const FAetherCharacterRecord& Attacker,
+    FAetherCharacterRecord& Target,
+    uint32 AttackSequence,
+    double ServerTimeSeconds,
+    const FAetherCombatBalanceContext& BalanceContext,
+    FAetherCombatResult& OutResult)
+{
     OutResult = FAetherCombatResult();
+
+    if (!BalanceContext.bAuthoritative || !BalanceContext.AttackerModifiers.IsFinite() || !BalanceContext.TargetModifiers.IsFinite())
+    {
+        OutResult.Result = EAetherCombatResultCode::InvalidRequest;
+        return false;
+    }
 
     if (!Attacker.CharacterId.IsValid() || !Target.CharacterId.IsValid() || AttackSequence == 0)
     {
@@ -108,18 +126,27 @@ bool FAetherCombatService::ResolveBasicAttack(
     const float CriticalRoll = static_cast<float>(CriticalSeed % 10000u) / 10000.0f;
     const bool bCritical = CriticalRoll < Config.CriticalChance;
 
+    const double OutgoingDamageMultiplier = BalanceContext.AttackerModifiers.Damage * BalanceContext.AttackerModifiers.OutgoingDamage;
+    const double CriticalDamageMultiplier = BalanceContext.AttackerModifiers.CriticalDamage;
     const float RawDamage = FMath::Max(
         Config.MinimumDamage,
-        bCritical ? BaseDamage * Config.CriticalMultiplier : BaseDamage);
+        static_cast<float>((bCritical ? BaseDamage * Config.CriticalMultiplier * CriticalDamageMultiplier : BaseDamage) * OutgoingDamageMultiplier));
 
-    const float Defense = FMath::Max(0.0f, Target.DerivedStats.Defense);
+    const double TargetDefenseMultiplier = BalanceContext.TargetModifiers.Defense;
+    const float Defense = FMath::Max(0.0f, static_cast<float>(Target.DerivedStats.Defense * TargetDefenseMultiplier));
     const float MitigationDenominator = Config.DefenseMitigationScale + Defense;
     const float DamageAfterDefense = MitigationDenominator > 0.0f
         ? RawDamage * (Config.DefenseMitigationScale / MitigationDenominator)
         : RawDamage;
     const float ResistancePercent = FMath::Clamp(Target.DerivedStats.Resistance, 0.0f, 75.0f);
     const float DamageAfterResistance = DamageAfterDefense * (1.0f - ResistancePercent / 100.0f);
-    const float TotalDamage = FMath::Max(0.0f, DamageAfterResistance);
+    const double IncomingDamageMultiplier = BalanceContext.TargetModifiers.IncomingDamage;
+    const float TotalDamage = FMath::Max(0.0f, static_cast<float>(DamageAfterResistance * IncomingDamageMultiplier));
+    if (!FMath::IsFinite(TotalDamage))
+    {
+        OutResult.Result = EAetherCombatResultCode::DamageRejected;
+        return false;
+    }
     const float ShieldBefore = FMath::Max(0.0f, Target.CurrentShield);
     const float ShieldDamage = FMath::Min(ShieldBefore, TotalDamage);
     const float HealthDamage = FMath::Min(
