@@ -61,7 +61,7 @@ AAetherNetworkGameMode::AAetherNetworkGameMode()
     PlayerStateClass = AAetherCharacterPlayerState::StaticClass();
     DefaultPawnClass = AAetherCharacter::StaticClass();
     HUDClass = AAetherFoundationHUD::StaticClass();
-    bStartPlayersAsSpectators = true;
+    bStartPlayersAsSpectators = false;
 }
 
 void AAetherNetworkGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
