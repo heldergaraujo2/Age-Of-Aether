@@ -3,7 +3,7 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 33 — Configurable PvE/PvP Class Balance System (repository implementation complete; Unreal runtime validation pending local validation)  
+**Status:** Phase 36 — Class Presentation, Assets & Runtime Acceptance (repository implementation complete; Unreal runtime validation pending local validation)  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
 
@@ -49,9 +49,9 @@ The repository uses the following execution sequence for implementation continui
 - Phase 31 — Universal Player Class & Evolution System — COMPLETE at repository level; Unreal runtime validation pending local
 - Phase 32 — Five Base Classes & 25 Evolution Definitions — COMPLETE at repository level; Unreal runtime validation pending local
 - Phase 33 — Configurable PvE/PvP Class Balance System — COMPLETE at repository level; Unreal runtime validation pending local
-- Phase 34 — Class/Combat Integration & Server Authority — NEXT
-- Phase 35 — PvE/PvP Balance Simulation & Automated Validation — PLANNED
-- Phase 36 — Class Presentation, Assets & Runtime Acceptance — PLANNED
+- Phase 34 — Class/Combat Integration & Server Authority — COMPLETE at repository level; Unreal runtime validation pending local
+- Phase 35 — PvE/PvP Balance Simulation & Automated Validation — COMPLETE at repository level; Unreal runtime validation pending local
+- Phase 36 — Class Presentation, Assets & Runtime Acceptance — COMPLETE at repository level; Unreal runtime validation pending local
 - Phase 13 — Multiplayer & Server Authority
 - Phase 14 — Persistence & Backend
 - Phase 15 — Security & Anti-Cheat
