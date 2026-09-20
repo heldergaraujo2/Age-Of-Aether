@@ -20,7 +20,7 @@ COMPLETE at repository/source level.
 - HEALER — Caminho da Luz: Iniciado, Clérigo da Luz, Oráculo Sagrado, Serafim, Avatar da Vida Eterna.
 
 ## TESTADO
-Seven Automation test cases:
+Eight Automation test cases:
 - exact counts;
 - class/evolution membership;
 - all requested evolution names;
