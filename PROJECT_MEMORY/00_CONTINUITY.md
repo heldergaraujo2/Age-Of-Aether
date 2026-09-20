@@ -1105,3 +1105,47 @@ Important execution rule:
 
 Current visual/playable target after the Unreal gate:
 **PHASE 37 — UNREAL VISUAL FOUNDATION**
+
+
+## Phase 37 — Unreal Visual Foundation — IMPLEMENTATION COMPLETE AT REPOSITORY LEVEL
+
+Implemented:
+- explicit Enhanced Input plugin/dependency;
+- UAetherGameInstance;
+- UAetherAssetManager;
+- UAetherVisualFoundationDataAsset and AetherVisual primary asset scan;
+- AAetherCharacter camera, movement and runtime Enhanced Input bootstrap;
+- AAetherDevelopmentWorldActor temporary ground;
+- automatic PlayerStart for the development test world;
+- AAetherFoundationHUD;
+- custom trace channel names for interaction, targeting and movement;
+- Phase 37 Automation tests;
+- repository validation for all Phase 37 contracts.
+
+Simplification:
+- the first visual test does not require manually creating Character Blueprint, Input Actions, Mapping Context, floor mesh, PlayerStart or debug widget;
+- Unreal's built-in BasicShapes is used only as temporary development ground;
+- authored assets can replace the bootstrap path later without changing server authority.
+
+Validation:
+- repository/static validation: PASS when GitHub Actions completes;
+- no fake .uasset/.umap binaries committed;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime: NOT VERIFIED in this environment.
+
+Remaining local Unreal gate:
+1. open AgeOfAether.uproject in Unreal 5.8.1;
+2. compile modules;
+3. create Content/Aether/Maps/Aether_Development.umap;
+4. set it as Game Default Map;
+5. PIE single client;
+6. verify WASD/mouse/Space/HUD;
+7. run 2-client PIE;
+8. run Dedicated Server + client;
+9. run Phase 37 Automation tests;
+10. check Output Log for critical errors.
+
+Detailed report:
+Docs/PHASE_37_UNREAL_VISUAL_FOUNDATION.md
+
+Next target after the runtime gate:
+PHASE 38 — REAL ASSET PIPELINE.
