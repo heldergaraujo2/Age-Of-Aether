@@ -998,3 +998,37 @@ PERSISTÊNCIA = Backend/Repository
 VALIDAÇÃO = Automation + Unreal Runtime
 
 Assim, o crescimento do Age of AetheR será principalmente mais conteúdo, assets, mapas e experiências — e não reescrita do motor a cada novo conteúdo.
+
+
+## PHASE 40 — INPUT, MOVEMENT & CAMERA — COMPLETE AT REPOSITORY/SOURCE LEVEL
+
+Implemented:
+- optional AetherMovementCameraProfile Data Asset;
+- safe validation for movement/camera ranges;
+- configurable walk/sprint/jump/rotation values;
+- configurable camera zoom range/step and pitch limits;
+- W/A/S/D movement, mouse look, Space jump, Left Shift sprint, Mouse Wheel zoom;
+- server-authoritative sprint transition through a boolean-only RPC;
+- server chooses sprint speed from trusted profile/fallback;
+- camera pitch clamping;
+- Phase 40 Automation coverage;
+- character README and phase documentation updated.
+
+Low-bureaucracy workflow:
+1. keep the existing runtime-created Enhanced Input foundation;
+2. optionally create one movement/camera profile;
+3. tune values in the editor;
+4. place the character and press Play.
+
+No per-character input C++ is required.
+
+Validation truth:
+- repository/source implementation complete;
+- Unreal 5.8.1 UHT/UBT/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here;
+- no fake .uasset/.umap assets added.
+
+Detailed report:
+Docs/PHASE_40_INPUT_MOVEMENT_CAMERA.md
+
+Next target:
+**PHASE 41 — ANIMATION SYSTEM**

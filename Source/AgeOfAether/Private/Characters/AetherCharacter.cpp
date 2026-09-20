@@ -1,5 +1,6 @@
 #include "Characters/AetherCharacter.h"
 #include "Characters/AetherPlayableCharacterVisualComponent.h"
+#include "Characters/AetherMovementCameraProfile.h"
 
 #include "Characters/AetherCharacterPlayerState.h"
 #include "Characters/AetherCharacterSubsystem.h"
@@ -107,7 +108,9 @@ void AAetherCharacter::BeginPlay()
 
     if (UCharacterMovementComponent* Movement = GetCharacterMovement())
     {
-        Movement->MaxWalkSpeed = FoundationWalkSpeed;
+        Movement->MaxWalkSpeed = MovementCameraProfile ? MovementCameraProfile->WalkSpeed : FoundationWalkSpeed;
+        Movement->JumpZVelocity = MovementCameraProfile ? MovementCameraProfile->JumpVelocity : Movement->JumpZVelocity;
+        Movement->RotationRate = FRotator(0.0f, MovementCameraProfile ? MovementCameraProfile->RotationRate : 720.0f, 0.0f);
     }
 
     if (IsLocallyControlled())
@@ -129,6 +132,10 @@ void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInput->BindAction(LookYawAction, ETriggerEvent::Triggered, this, &AAetherCharacter::LookYaw);
         EnhancedInput->BindAction(LookPitchAction, ETriggerEvent::Triggered, this, &AAetherCharacter::LookPitch);
         EnhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &AAetherCharacter::JumpPressed);
+        EnhancedInput->BindAction(SprintAction, ETriggerEvent::Started, this, &AAetherCharacter::SprintStarted);
+        EnhancedInput->BindAction(SprintAction, ETriggerEvent::Completed, this, &AAetherCharacter::SprintStopped);
+        EnhancedInput->BindAction(SprintAction, ETriggerEvent::Canceled, this, &AAetherCharacter::SprintStopped);
+        EnhancedInput->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &AAetherCharacter::CameraZoom);
     }
 }
 
@@ -151,12 +158,16 @@ void AAetherCharacter::InitializeFoundationInput()
     LookYawAction = NewObject<UInputAction>(this, TEXT("LookYaw"));
     LookPitchAction = NewObject<UInputAction>(this, TEXT("LookPitch"));
     JumpAction = NewObject<UInputAction>(this, TEXT("Jump"));
+    SprintAction = NewObject<UInputAction>(this, TEXT("Sprint"));
+    CameraZoomAction = NewObject<UInputAction>(this, TEXT("CameraZoom"));
 
     MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
     MoveRightAction->ValueType = EInputActionValueType::Axis1D;
     LookYawAction->ValueType = EInputActionValueType::Axis1D;
     LookPitchAction->ValueType = EInputActionValueType::Axis1D;
     JumpAction->ValueType = EInputActionValueType::Boolean;
+    SprintAction->ValueType = EInputActionValueType::Boolean;
+    CameraZoomAction->ValueType = EInputActionValueType::Axis1D;
 
     RuntimeInputContext->MapKey(MoveForwardAction, EKeys::W);
     {
@@ -171,6 +182,8 @@ void AAetherCharacter::InitializeFoundationInput()
     RuntimeInputContext->MapKey(LookYawAction, EKeys::MouseX);
     RuntimeInputContext->MapKey(LookPitchAction, EKeys::MouseY);
     RuntimeInputContext->MapKey(JumpAction, EKeys::SpaceBar);
+    RuntimeInputContext->MapKey(SprintAction, EKeys::LeftShift);
+    RuntimeInputContext->MapKey(CameraZoomAction, EKeys::MouseWheelAxis);
 
     if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem =
         PC->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -210,7 +223,12 @@ void AAetherCharacter::LookYaw(const FInputActionValue& Value)
 
 void AAetherCharacter::LookPitch(const FInputActionValue& Value)
 {
-    AddControllerPitchInput(Value.Get<float>() * CameraTurnRate);
+    const float Input = Value.Get<float>() * CameraTurnRate;
+    const float MinPitch = MovementCameraProfile ? MovementCameraProfile->CameraMinPitch : -75.0f;
+    const float MaxPitch = MovementCameraProfile ? MovementCameraProfile->CameraMaxPitch : 35.0f;
+    const float CurrentPitch = FRotator::NormalizeAxis(GetControlRotation().Pitch);
+    const float NewPitch = FMath::Clamp(CurrentPitch + Input, MinPitch, MaxPitch);
+    AddControllerPitchInput(NewPitch - CurrentPitch);
 }
 
 void AAetherCharacter::JumpPressed(const FInputActionValue& Value)
@@ -232,4 +250,42 @@ void AAetherCharacter::InitializeCharacterIdentity(const FAetherCharacterId& InC
 FAetherCharacterId AAetherCharacter::GetCharacterId() const
 {
     return CharacterId;
+}
+
+void AAetherCharacter::SprintStarted(const FInputActionValue& Value)
+{
+    if (!Value.Get<bool>()) return;
+    bSprinting = true;
+    if (!HasAuthority()) ServerSetSprinting(true);
+    if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+        Movement->MaxWalkSpeed = MovementCameraProfile ? MovementCameraProfile->SprintSpeed : FoundationWalkSpeed * 1.5f;
+}
+
+void AAetherCharacter::SprintStopped(const FInputActionValue& Value)
+{
+    bSprinting = false;
+    if (!HasAuthority()) ServerSetSprinting(false);
+    if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+        Movement->MaxWalkSpeed = MovementCameraProfile ? MovementCameraProfile->WalkSpeed : FoundationWalkSpeed;
+}
+
+void AAetherCharacter::CameraZoom(const FInputActionValue& Value)
+{
+    if (!CameraBoom) return;
+    const float Step = MovementCameraProfile ? MovementCameraProfile->CameraZoomStep : 50.0f;
+    const float MinDistance = MovementCameraProfile ? MovementCameraProfile->MinCameraDistance : 250.0f;
+    const float MaxDistance = MovementCameraProfile ? MovementCameraProfile->MaxCameraDistance : 650.0f;
+    CameraBoom->TargetArmLength = FMath::Clamp(CameraBoom->TargetArmLength - Value.Get<float>() * Step, MinDistance, MaxDistance);
+}
+
+void AAetherCharacter::ServerSetSprinting_Implementation(bool bNewSprinting)
+{
+    if (!HasAuthority() || !GetController()) return;
+    bSprinting = bNewSprinting;
+    if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+    {
+        const float Walk = MovementCameraProfile ? MovementCameraProfile->WalkSpeed : FoundationWalkSpeed;
+        const float Sprint = MovementCameraProfile ? MovementCameraProfile->SprintSpeed : FoundationWalkSpeed * 1.5f;
+        Movement->MaxWalkSpeed = bSprinting ? Sprint : Walk;
+    }
 }

@@ -1467,3 +1467,6 @@ Docs/PHASE_38_REAL_ASSET_PIPELINE.md
 
 Next implementation target:
 **PHASE 39 — PLAYABLE BASE CHARACTER**
+
+
+- Phase 40 — Input, Movement & Camera — COMPLETE at repository/source level; Unreal 5.8.1 runtime validation pending local.

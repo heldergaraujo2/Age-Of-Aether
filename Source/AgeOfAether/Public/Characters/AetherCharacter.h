@@ -11,6 +11,7 @@ class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
 class UAetherPlayableCharacterVisualComponent;
+class UAetherMovementCameraProfile;
 
 UCLASS()
 class AGEOFAETHER_API AAetherCharacter : public ACharacter
@@ -38,6 +39,9 @@ public:
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Visual")
     UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|Movement")
+    UAetherMovementCameraProfile* GetMovementCameraProfile() const { return MovementCameraProfile; }
+
     void InitializeCharacterIdentity(const FAetherCharacterId& InCharacterId);
 
 protected:
@@ -52,6 +56,9 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
     float FoundationWalkSpeed = 420.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
+    TObjectPtr<UAetherMovementCameraProfile> MovementCameraProfile;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Camera")
     float CameraDistance = 450.0f;
@@ -72,6 +79,11 @@ private:
     void LookYaw(const struct FInputActionValue& Value);
     void LookPitch(const struct FInputActionValue& Value);
     void JumpPressed(const struct FInputActionValue& Value);
+    void SprintStarted(const struct FInputActionValue& Value);
+    void SprintStopped(const struct FInputActionValue& Value);
+    void CameraZoom(const struct FInputActionValue& Value);
+    UFUNCTION(Server, Reliable)
+    void ServerSetSprinting(bool bNewSprinting);
 
     UPROPERTY(Transient)
     TObjectPtr<UInputMappingContext> RuntimeInputContext;
@@ -90,4 +102,7 @@ private:
 
     UPROPERTY(Transient)
     TObjectPtr<UInputAction> JumpAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> SprintAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraZoomAction;
+    bool bSprinting = false;
 };

@@ -1219,3 +1219,31 @@ Validation truth:
 Next implementation target:
 **PHASE 40 — INPUT, MOVIMENTO E CÂMERA**
 
+
+
+## Phase 40 — Input, Movement & Camera — COMPLETE at repository/source level
+
+Implemented:
+- UAetherMovementCameraProfile optional Data Asset;
+- finite/safe validation for movement and camera tuning;
+- configurable walk, sprint, jump, rotation, zoom and pitch limits;
+- Enhanced Input controls: W/A/S/D, mouse, Space, Left Shift and Mouse Wheel;
+- server-authoritative sprint transition using a boolean-only Server RPC;
+- server-side speed selection from trusted profile/fallback;
+- camera pitch clamping;
+- Phase 40 Automation test;
+- Docs/PHASE_40_INPUT_MOVEMENT_CAMERA.md;
+- ROADMAP.md and ROADMAP_VISUAL_AND_PLAYABLE.md updated.
+
+Low-bureaucracy visual/playable workflow:
+- no mandatory authored Input Action or Mapping Context assets for the first slice;
+- one optional movement/camera profile can tune the whole character;
+- ordinary visual/animation assets remain data-driven and can be swapped without gameplay C++ changes.
+
+Validation truth:
+- repository/source implementation complete;
+- Unreal 5.8.1 UHT/UBT/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED here;
+- no fake .uasset/.umap/FBX assets added.
+
+Next implementation target:
+**PHASE 41 — ANIMATION SYSTEM**
