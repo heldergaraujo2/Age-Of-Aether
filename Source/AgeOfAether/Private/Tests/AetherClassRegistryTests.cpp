@@ -28,3 +28,17 @@ bool FAetherClassReferenceTest::RunTest(const FString&){FAetherClassRegistry R;F
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassResetTest,"AgeOfAether.Class.Reset",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherClassResetTest::RunTest(const FString&){FAetherClassRegistry R;FString E;R.RegisterClass(BaseClass(TEXT("A")),E);R.Reset();TestEqual(TEXT("reset classes"),R.NumClasses(),0);TestEqual(TEXT("reset evolutions"),R.NumEvolutions(),0);return true;}
+
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassGraphHardeningTest,"AgeOfAether.Class.GraphHardening",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
+bool FAetherClassGraphHardeningTest::RunTest(const FString&)
+{
+    FAetherClassRegistry R; FString E; R.RegisterClass(BaseClass(TEXT("A")),E);
+    auto A=Evo(TEXT("A.1"),TEXT("A"),1); auto B=Evo(TEXT("A.2"),TEXT("A"),2);
+    B.PrerequisiteEvolutionIDs.Reset(); B.PrerequisiteEvolutionIDs.Add(TEXT("A.3"));
+    auto C=Evo(TEXT("A.3"),TEXT("A"),3); C.PrerequisiteEvolutionIDs.Add(TEXT("A.2"));
+    R.RegisterEvolution(A,E); R.RegisterEvolution(B,E); R.RegisterEvolution(C,E);
+    TArray<FAetherClassValidationIssue> I;
+    TestFalse(TEXT("invalid forward prerequisite and cycle rejected"),R.Validate(I));
+    return true;
+}
