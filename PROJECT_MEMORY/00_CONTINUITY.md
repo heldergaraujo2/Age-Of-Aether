@@ -1322,3 +1322,18 @@ Implemented:
 - Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/2-client/Dedicated Server runtime was not executable in this environment and therefore remains NOT VERIFIED.
 - Local Unreal acceptance still requires one real vertical-slice asset assignment, class/evolution presentation switch, fallback test, 2-client PIE and Dedicated Server + client.
 - Next implementation target: **Phase 44 — Playable Combat**.
+
+
+## Phase 44 — Playable Combat — COMPLETE at repository/source level
+
+- Added left-mouse basic attack to `AAetherCharacter`.
+- Added camera-forward Pawn target acquisition; client sends only target CharacterID.
+- Reused the existing authenticated `AAetherNetworkPlayerController::BasicAttack` gateway and server-authoritative `UAetherCombatSubsystem`.
+- Added optional `BasicAttackMontage` to the reusable animation profile and `PlayBasicAttackAnimation()` to the visual component.
+- Combat animation is presentation-only; it never calculates or applies damage.
+- Dedicated Server does not load/play combat presentation assets.
+- Added Phase 44 documentation and roadmap update.
+- No fake Unreal binaries committed.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime remains NOT VERIFIED in this environment.
+- Local acceptance requires one real attack montage, target collision, cooldown/range tests and multiplayer/Dedicated Server testing.
+- Next implementation target: **Phase 45 — Skills, Buffs, Debuffs & VFX**.
