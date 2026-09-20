@@ -1149,3 +1149,40 @@ Docs/PHASE_37_UNREAL_VISUAL_FOUNDATION.md
 
 Next target after the runtime gate:
 PHASE 38 — REAL ASSET PIPELINE.
+
+
+## Phase 38 — Real Asset Pipeline — IMPLEMENTATION COMPLETE AT REPOSITORY LEVEL
+
+Implemented:
+- asset import profile and canonical FBX pipeline contract;
+- source provenance/license/version/revision metadata;
+- stable AssetID normalization;
+- UnrealAssetPath;
+- skeleton/fallback/dependency contracts;
+- dependency cycle detection;
+- missing dependency/fallback validation;
+- validation lifecycle: Draft, Imported, Validated, Approved, Rejected;
+- /Game/Aether content structure guidance;
+- Phase 38 Automation tests;
+- CI validation.
+
+Simplification for Unreal:
+1. import one real skeletal FBX;
+2. validate scale/orientation;
+3. validate skeleton;
+4. generate/check Physics Asset;
+5. verify material;
+6. register one stable AssetID;
+7. connect it to the existing presentation system;
+8. only then multiply assets.
+
+Validation:
+- repository/static CI: PASS;
+- Unreal 5.8.1 UHT/UBT/Editor/import/runtime: NOT VERIFIED here;
+- no fake .uasset/.umap assets added.
+
+Detailed report:
+Docs/PHASE_38_REAL_ASSET_PIPELINE.md
+
+Next target:
+**PHASE 39 — PLAYABLE BASE CHARACTER**
