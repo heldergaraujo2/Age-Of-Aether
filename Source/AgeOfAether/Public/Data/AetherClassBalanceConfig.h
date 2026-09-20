@@ -5,6 +5,7 @@ class FAetherClassBalanceConfigLoader
 {
 public:
  static bool Parse(const FString& Text,FAetherBalanceConfig& OutConfig,FString& OutError);
+ static bool LoadFile(const FString& FilePath,FAetherBalanceConfig& OutConfig,FString& OutError);
  static FString Serialize(const FAetherBalanceConfig& Config);
  static bool BuildRegistry(const FAetherBalanceConfig& Config,FAetherClassBalanceRegistry& OutRegistry,FString& OutError);
 };
