@@ -3,6 +3,7 @@
 #include "Characters/AetherCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Pawn.h"
+#include "Engine/Engine.h"
 
 void AAetherFoundationHUD::DrawHUD()
 {
