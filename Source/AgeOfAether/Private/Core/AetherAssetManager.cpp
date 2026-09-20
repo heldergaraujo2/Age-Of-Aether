@@ -12,12 +12,17 @@ UAetherAssetManager& UAetherAssetManager::Get()
         }
     }
 
-    return Fallback;
+    static UAetherAssetManager* Fallback = nullptr;
+    if (!Fallback)
+    {
+        Fallback = NewObject<UAetherAssetManager>(GetTransientPackage(), TEXT("AetherFallbackAssetManager"));
+        Fallback->AddToRoot();
+    }
+
+    return *Fallback;
 }
 
 void UAetherAssetManager::StartInitialLoading()
 {
     Super::StartInitialLoading();
 }
-
-static UAetherAssetManager Fallback;
