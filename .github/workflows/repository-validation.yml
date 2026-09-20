@@ -47,7 +47,7 @@ jobs:
         shell: python
         run: |
           from pathlib import Path
-          roots=[Path("Source"),Path("Docs"),Path("PROJECT_MEMORY")]
+          roots=[Path("Source"),Path("Docs"),Path("PROJECT_MEMORY"),Path("Config")]
           files=[p for root in roots if root.exists() for p in root.rglob("*") if p.is_file() and p.suffix.lower() in {".h",".hpp",".cpp",".md",".cs"}]
           if not files: raise SystemExit("No source/documentation files were found.")
           failures=[]
@@ -66,7 +66,7 @@ jobs:
           if failures:
               print("\\n".join(failures)); raise SystemExit(1)
           print(f"Validated {len(files)} source/documentation files.")
-      - name: Validate Phase 22 through Phase 32 deliverables
+      - name: Validate Phase 22 through Phase 33 deliverables
         shell: bash
         run: |
           set -euo pipefail
@@ -139,5 +139,31 @@ jobs:
           grep -q "Repository/source level" Docs/PHASE_32_FIVE_BASE_CLASSES_25_EVOLUTIONS.md
           grep -q "Phase 32" ROADMAP.md
           grep -q "Phase 32" PROJECT_MEMORY/00_CONTINUITY.md
+          test -f Source/AgeOfAether/Public/Data/AetherClassBalanceTypes.h
+          test -f Source/AgeOfAether/Private/Data/AetherClassBalanceTypes.cpp
+          test -f Source/AgeOfAether/Public/Data/AetherClassBalanceRegistry.h
+          test -f Source/AgeOfAether/Private/Data/AetherClassBalanceRegistry.cpp
+          test -f Source/AgeOfAether/Public/Data/AetherClassBalanceConfig.h
+          test -f Source/AgeOfAether/Private/Data/AetherClassBalanceConfig.cpp
+          test -f Source/AgeOfAether/Private/Tests/AetherClassBalanceTests.cpp
+          test -f Config/Balance/ClassBalanceProfiles.aetherbalance
+          test -f Docs/PHASE_33_CONFIGURABLE_PVE_PVP_BALANCE.md
+          grep -q "FAetherClassBalanceRegistry" Source/AgeOfAether/Public/Data/AetherClassBalanceRegistry.h
+          grep -q "FAetherClassBalanceParseTest" Source/AgeOfAether/Private/Tests/AetherClassBalanceTests.cpp
+          grep -q "Phase 33" ROADMAP.md
+          grep -q "Phase 33" PROJECT_MEMORY/00_CONTINUITY.md
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("Config/Balance/ClassBalanceProfiles.aetherbalance")
+          lines=[x for x in p.read_text(encoding="utf-8").splitlines() if x.startswith("balance|")]
+          assert len(lines)==90, len(lines)
+          assert all(len(x.split("|"))==45 for x in lines)
+          assert {x.split("|")[1] for x in lines}=={"development","testing","production"}
+          for profile in {"development","testing","production"}:
+              rows=[x.split("|") for x in lines if x.split("|")[1]==profile]
+              assert len(rows)==30, profile
+              assert len({x[2] for x in rows})==30
+          print("Phase 33 external balance config audit passed.")
+          PY
       - name: Report
         run: echo "Repository static validation completed successfully."
