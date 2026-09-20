@@ -1041,3 +1041,14 @@ Important files:
 - Added automation coverage for authority, PvE/PvP separation, spoof rejection, evolution transition rules and finite combat results.
 - Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server remains unverified.
 - Next implementation target: Phase 35 — PvE/PvP Balance Simulation & Automated Validation.
+
+
+## Phase 35 implementation status — COMPLETE at repository level
+- Added deterministic non-mutating PvE/PvP class balance simulation.
+- Simulation resolves attacker and target class/evolution modifiers independently from the server-side balance registry.
+- Added finite-result and diagnostic safety ceiling validation.
+- Added deterministic repeatability and extreme multiplier checks.
+- Added automation coverage for neutral baseline, both contexts, deterministic output, invalid inputs, missing definitions and extreme safety.
+- Simulation never mutates or promotes production balance.
+- Unreal 5.8.1 compile/runtime remains unverified.
+- Next implementation target: Phase 36 — Class Presentation, Assets & Runtime Acceptance.
