@@ -1264,3 +1264,33 @@ Validation truth:
 
 Next implementation target:
 **PHASE 28 — CLIENT CORE ARCHITECTURE.**
+
+
+## PHASE 28 — CLIENT CORE ARCHITECTURE — COMPLETED 2026-09-20
+
+Implemented:
+- UAetherClientSubsystem as the client application-state boundary;
+- connection/screen state;
+- account/session/character/map/zone identity snapshot;
+- monotonic request lifecycle and timeout handling;
+- stale server-revision rejection;
+- identity validation and reset;
+- Blueprint event boundaries;
+- stable AssetID binding without exposing Unreal package paths;
+- automation tests for request lifecycle, revision ordering, reset, invalid identity, state transitions and asset binding.
+
+Important files:
+- Source/AgeOfAether/Public/Client/AetherClientTypes.h
+- Source/AgeOfAether/Private/Client/AetherClientTypes.cpp
+- Source/AgeOfAether/Public/Client/AetherClientSubsystem.h
+- Source/AgeOfAether/Private/Client/AetherClientSubsystem.cpp
+- Source/AgeOfAether/Private/Tests/AetherClientSubsystemTests.cpp
+- Docs/PHASE_28_CLIENT_CORE_ARCHITECTURE.md
+
+Validation truth:
+- repository/static validation: pending final GitHub Actions run;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime: NOT VERIFIED because Unreal is unavailable;
+- no compilation success claimed.
+
+Next implementation target:
+**PHASE 29 — COMPLETE MMORPG UI/UX.**
