@@ -244,5 +244,56 @@ jobs:
           assert not list(Path(".").rglob("*.umap"))
 
           print("Phase 37 repository/config contract passed. Unreal runtime itself remains a local acceptance gate.")
+      - name: Validate Phase 38 real asset pipeline
+        shell: python
+        run: |
+          from pathlib import Path
+
+          required = [
+              "Source/AgeOfAether/Public/Data/AetherAssetPipelineTypes.h",
+              "Source/AgeOfAether/Private/Data/AetherAssetPipelineTypes.cpp",
+              "Source/AgeOfAether/Public/Data/AetherAssetPipelineRegistry.h",
+              "Source/AgeOfAether/Private/Data/AetherAssetPipelineRegistry.cpp",
+              "Source/AgeOfAether/Private/Tests/AetherAssetPipelineTests.cpp",
+              "Config/Assets/AetherAssetPipeline.ini",
+              "Docs/PHASE_38_REAL_ASSET_PIPELINE.md",
+              "Content/Aether/README.md",
+              "Content/Aether/Characters/README.md",
+              "Content/Aether/Classes/README.md",
+              "Content/Aether/Items/README.md",
+              "Content/Aether/Monsters/README.md",
+              "Content/Aether/NPC/README.md",
+              "Content/Aether/Maps/README.md",
+              "Content/Aether/UI/README.md",
+              "Content/Aether/Animations/README.md",
+              "Content/Aether/VFX/README.md",
+              "Content/Aether/Audio/README.md",
+              "Content/Aether/Materials/README.md",
+              "Content/Aether/Textures/README.md",
+              "Content/Aether/Testing/README.md",
+          ]
+          for path in required:
+              assert Path(path).is_file(), f"missing Phase 38 file: {path}"
+
+          cfg = Path("Config/Assets/AetherAssetPipeline.ini").read_text(encoding="utf-8")
+          assert "SourceFormat=FBX" in cfg
+          assert "ExpectedFBXVersion=2020.2" in cfg
+          assert "StableIDRule=lowercase" in cfg
+          assert "RuntimePathRoot=/Game/Aether" in cfg
+
+          types = Path("Source/AgeOfAether/Public/Data/AetherAssetPipelineTypes.h").read_text(encoding="utf-8")
+          registry = Path("Source/AgeOfAether/Private/Data/AetherAssetPipelineRegistry.cpp").read_text(encoding="utf-8")
+          assert "EAetherAssetValidationStatus" in types
+          assert "FAetherAssetSourceMetadata" in types
+          assert "DependencyCycle" in registry
+          assert "MissingDependency" in registry
+          assert "MissingFallback" in registry
+          assert "ToLowerInline" in registry
+
+          # Do not accidentally add binary Unreal assets to the source repository.
+          assert not list(Path("Content").rglob("*.uasset"))
+          assert not list(Path("Content").rglob("*.umap"))
+
+          print("Phase 38 repository asset-pipeline contract passed.")
       - name: Report
         run: echo "Repository static validation completed successfully."
