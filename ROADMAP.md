@@ -45,7 +45,13 @@ The repository uses the following execution sequence for implementation continui
 - Phase 27 — World, Map, Interaction & Streaming Content — COMPLETE at repository level; local Unreal validation pending
 - Phase 28 — Client Core Architecture — COMPLETE at repository level; Unreal runtime validation pending
 - Phase 29 — Complete MMORPG UI/UX — COMPLETE at repository level; Unreal runtime/UI validation pending
-- Phase 30 — Client Presentation, Performance & Final Integration — NEXT
+- Phase 30 — Client Presentation, Performance & Final Integration — COMPLETE at repository level; Unreal runtime validation pending local validation
+- Phase 31 — Universal Player Class & Evolution System — PLANNED
+- Phase 32 — Five Base Classes & 25 Evolution Definitions — PLANNED
+- Phase 33 — Configurable PvE/PvP Class Balance System — PLANNED
+- Phase 34 — Class/Combat Integration & Server Authority — PLANNED
+- Phase 35 — PvE/PvP Balance Simulation & Automated Validation — PLANNED
+- Phase 36 — Class Presentation, Assets & Runtime Acceptance — PLANNED
 - Phase 13 — Multiplayer & Server Authority
 - Phase 14 — Persistence & Backend
 - Phase 15 — Security & Anti-Cheat
@@ -998,1639 +1004,310 @@ The canonical pipeline will be:
 
 # 21. Full MMORPG roadmap
 
-## PHASE 0 — Repository and architecture foundation
-
-Deliver:
-
-- repository organization;
-- Unreal version decision;
-- source-of-truth policy;
-- Git strategy;
-- continuity system;
-- architecture documentation;
-- coding standards;
-- naming conventions;
-- branch strategy;
-- test strategy;
-- asset policy;
-- licensing/IP policy.
-
-Acceptance:
-
-- new agent can understand project from repository documentation.
 
 ---
 
-## PHASE 1 — Unreal project foundation
+# PHASE 31 — UNIVERSAL PLAYER CLASS & EVOLUTION SYSTEM — PLANNED
 
-Deliver:
+Purpose:
+Create the authoritative, data-driven class architecture that supports five base player classes, five evolution stages per class, future branches and additional classes without rewriting gameplay code.
 
-- clean Unreal project;
-- C++ project/module;
-- Config;
-- Source;
-- Content;
-- Plugins;
-- Tests;
-- Docs;
-- Project Memory;
-- proper ignore rules;
-- optional Git LFS for large binary assets;
-- reproducible local setup.
+Scope:
+- ClassDefinition and ClassEvolutionDefinition contracts;
+- stable ClassID and EvolutionID identity;
+- base-class to evolution graph;
+- evolution order and prerequisites;
+- level/quest/achievement/content unlock conditions;
+- role metadata;
+- base-stat modifiers and derived-stat modifiers;
+- allowed equipment/class restrictions;
+- starting equipment and starting skills references;
+- progression metadata;
+- class tags and gameplay capabilities;
+- normalized lookup, duplicate detection and deterministic enumeration;
+- cross-validation with existing item, skill, quest, world, content and asset registries;
+- server-authoritative class/evolution ownership and transition contract;
+- Automation coverage.
 
-Acceptance:
-
-- project opens;
-- C++ compiles;
-- baseline map loads;
-- clean repository clone can reproduce the project.
-
----
-
-## PHASE 2 — Core Runtime
-
-**Repository implementation status:** COMPLETE  
-**Local Unreal validation:** PENDING
-
-Implemented repository-side:
-- runtime lifecycle and health states;
-- server clock;
-- scheduler;
-- configuration;
-- service registry;
-- core logging;
-- Unreal runtime subsystem;
-- core automation tests.
-
-Validation that requires Unreal Engine 5.8.1, UHT/UBT and the local Editor remains pending and is not represented as PASS.
-
-Deliverable: Docs/PHASE_2_CORE_RUNTIME.md
-
-
-Deliver:
-
-- runtime state;
-- lifecycle;
-- server clock;
-- scheduler;
-- timer abstraction;
-- logging;
-- configuration;
-- service registry;
-- error handling;
-- health state.
-
-Acceptance:
-
-- runtime initializes/shuts down cleanly.
+Design rule:
+Classes are data. The C++ system defines how classes work; data defines which classes exist.
 
 ---
 
-## PHASE 3 — Networking foundation
+# PHASE 32 — FIVE BASE CLASSES & 25 EVOLUTION DEFINITIONS — PLANNED
 
-Deliver:
+Initial class roster:
 
-- client/server separation;
-- request/response foundation;
-- replication strategy;
-- authoritative server state;
-- network validation;
-- protocol/version abstraction.
+1. ARQUEIRO — Caminho da Precisão
+   1. Batedor
+   2. Rastreador
+   3. Caçador Espectral
+   4. Atirador Fantasma
+   5. Olho de Deus / Juiz dos Ventos
 
-Acceptance:
+2. GUERREIRO — Caminho da Fúria
+   1. Recruta
+   2. Berserker
+   3. Campeão de Guerra
+   4. Lorde das Lâminas
+   5. Avatar da Guerra
 
-- client can connect to server and receive authoritative state.
+3. MAGO — Caminho do Arcano
+   1. Aprendiz
+   2. Feiticeiro Elemental
+   3. Arquimago
+   4. Tecelão do Éter
+   5. Senhor do Caos Primordial
 
----
+4. TANK — Caminho da Muralha
+   1. Guardião
+   2. Fortaleza de Aço
+   3. Colosso
+   4. Bastião Imortal
+   5. Titã Ancestral
 
-## PHASE 4 — Accounts and sessions
+5. HEALER — Caminho da Luz
+   1. Iniciado
+   2. Clérigo da Luz
+   3. Oráculo Sagrado
+   4. Serafim
+   5. Avatar da Vida Eterna
 
-Deliver:
+Scope:
+- formalize the five identities above as content data;
+- preserve a consistent player-facing naming convention;
+- define role, fantasy, strengths, weaknesses and intended combat identity;
+- define evolution unlock progression without hard-coding individual classes;
+- reserve space for future alternate branches;
+- connect each evolution to skills, effects, items and visual assets through stable IDs;
+- create automated structural/content validation.
 
-- AccountID;
-- authentication abstraction;
-- session;
-- login;
-- logout;
-- reconnect;
-- timeout;
-- heartbeat;
-- permissions;
-- account status.
-
-Never store plaintext passwords.
-
----
-
-## PHASE 5 — Character foundation
-
-**Repository implementation status:** COMPLETE  
-**Local Unreal/network validation:** PENDING
-
-Implemented repository-side:
-- CharacterID identity contract;
-- account-to-character ownership;
-- normalized unique character names;
-- configurable character-per-account limit (5);
-- character classes: Warrior, Mage, Archer, Cleric;
-- character lifecycle states;
-- base stats;
-- derived stats;
-- authoritative world location/rotation;
-- character creation;
-- character listing;
-- character selection;
-- character deselection;
-- active-character ownership protection;
-- server-authoritative character PlayerState;
-- replicated character identity;
-- replicated character pawn;
-- authoritative character spawn after selection;
-- character location persistence in the runtime service;
-- logout cleanup of the active character;
-- automation coverage for creation, names, ownership, limits, selection, location authority and listing.
-
-Unreal integration:
-- AAetherCharacter derives from ACharacter;
-- AAetherCharacterPlayerState carries replicated character identity visible to clients;
-- AAetherNetworkGameMode uses the character pawn and character PlayerState;
-- players start as spectators and receive a character pawn only after server-side authentication and character selection;
-- character operations are exposed through server RPCs on AAetherNetworkPlayerController.
-
-Security boundary:
-- the client requests creation/selection;
-- the server validates authenticated account ownership and character state;
-- the client cannot select another account's character;
-- the client cannot choose authoritative character ownership or lifecycle state;
-- location is written to the character service only through server-side operations.
-
-Persistence boundary:
-- character data is runtime-only by design;
-- database persistence, migrations, durable character storage and crash recovery remain later backend/persistence work.
-
-Acceptance:
-- repository implementation and automation coverage complete;
-- Unreal UHT/UBT, Editor, PIE multiplayer, possession, replication, movement and logout cleanup require local Unreal 5.8.1 validation.
-
-Deliverable: Docs/PHASE_5_CHARACTER_FOUNDATION.md
-
-## PHASE 6 — Progression
-
-Deliver:
-
-- level;
-- XP;
-- MasterLevel;
-- XP calculator;
-- stat points;
-- reward service;
-- centralized progression rules.
+Balance constraint:
+No evolution receives an unconditional "map-wide hit" or permanent group immortality rule. Extreme fantasy abilities must expose tunable duration, cooldown, range, target count, resistance or PvP scaling parameters so the combat model remains configurable.
 
 ---
 
-## PHASE 6 — Item and Inventory System
+# PHASE 33 — CONFIGURABLE PVE/PVP CLASS BALANCE SYSTEM — PLANNED
 
-**Repository implementation status:** COMPLETE  
-**Local Unreal validation:** PENDING
+Purpose:
+Move class balance values out of gameplay code and into versioned, data-driven configuration so practical testing can change balance without rewriting combat rules.
 
-Implemented repository-side:
-
-- FAetherItemDefinition and stable definition identity;
-- FAetherItemInstance and separate instance identity;
-- CharacterID-owned inventory state;
-- fixed 64-slot inventory foundation;
-- stack accumulation and multi-stack grants;
-- remove;
-- move;
-- split;
-- merge;
-- transactional item grants with no partial mutation on capacity failure;
-- Primary Data Asset contract for item definitions;
-- inventory GameInstance subsystem boundary;
-- server-authoritative inventory RPCs;
-- authoritative inventory snapshots to the owning client;
-- automation tests for definitions, stacking, mutations, ownership isolation and transactional capacity failure.
-
-Security boundary:
-
-- client requests inventory operations;
-- server resolves the authenticated active CharacterID;
-- server validates item ownership through CharacterID-scoped inventory state;
-- client cannot submit authoritative ownership or item state;
-- item persistence remains deferred to later persistence/backend phases.
-
-Explicitly deferred:
-
-- equipment;
-- item modifiers/options;
-- sockets/enhancement;
-- drops/loot;
-- shops/trade/crafting;
-- persistent item repository/database;
-- production grid occupancy based on Width/Height.
-
-Deliverable: Docs/PHASE_6_ITEM_INVENTORY.md
-
-## PHASE 7 — Item Definition Registry
-
-This is the first major item milestone.
-
-Deliver:
-
-- ItemDefinition;
-- ItemDefinitionID;
-- categories;
-- subcategories;
-- tags;
-- item registry;
-- validation;
-- Data Asset/Table strategy;
-- class restrictions;
-- requirements;
-- equipment slots;
-- dimensions;
-- flags;
-- serialization.
-
-Acceptance:
-
-- server can load item definitions and validate them.
-
----
-
-## PHASE 8 — Item Instance system
-
-Deliver:
-
-- unique ItemInstanceID;
-- owner;
-- location;
-- quantity;
-- durability;
-- rarity;
-- quality;
-- enhancement level;
-- options;
-- sockets;
-- binding;
-- custom data.
-
-Acceptance:
-
-- two instances of the same definition can have different state.
-
----
-
-## PHASE 9 — Inventory
-
-Deliver:
-
-- grid;
-- dimensions;
-- stacking;
-- splitting;
-- moving;
-- swapping;
-- merging;
-- pickup;
-- drop;
-- destroy;
-- use;
-- validation;
-- UI.
-
-Acceptance:
-
-- all inventory operations are authoritative and transactional.
-
----
-
-## PHASE 10 — Equipment
-
-Deliver:
-
-- equipment slots;
-- requirements;
-- class validation;
-- equip/unequip;
-- two-handed handling;
-- derived stat recalculation;
-- visual representation.
-
----
-
-## PHASE 11 — Options and item effects
-
-Deliver:
-
-- OptionDefinition;
-- option generation;
-- stat modifiers;
-- conditional effects;
-- item effects;
-- stacking rules;
-- conflicts;
-- recalculation pipeline.
-
----
-
-## PHASE 12 — Enhancement
-
-Deliver:
-
-- +levels;
-- success/failure;
-- downgrade;
-- destruction;
-- preservation;
-- materials;
-- currency;
-- configurable rates;
-- audit.
-
----
-
-## PHASE 13 — Sockets / special item systems
-
-Deliver:
-
-- sockets;
-- socket materials;
-- socket effects;
-- unique item mechanics;
-- binding;
-- event-specific properties.
-
----
-
-## PHASE 14 — Drop Engine
-
-Deliver:
-
-- DropTable;
-- DropRule;
-- weighted selection;
-- guaranteed drops;
-- rare drops;
-- conditional drops;
-- loot ownership;
-- item generation;
-- anti-duplication.
-
----
-
-## PHASE 15 — World
-
-Deliver:
-
-- maps;
-- zones;
-- portals;
-- spawn system;
-- safe zones;
-- PvP zones;
-- event zones;
-- weather/world rules.
-
----
-
-## PHASE 16 — NPC and Monster systems
-
-Deliver:
-
-- NPC definitions;
-- capability system;
-- shops;
-- quests;
-- teleport;
-- banking;
-- crafting;
-- monster definitions;
-- AI states;
-- aggro;
-- respawn.
-
----
-
-## PHASE 17 — Combat
-
-Deliver:
-
-- attack validation;
-- target validation;
-- range;
-- cooldown;
-- accuracy;
+Planned configuration layers:
+- base class modifiers;
+- evolution modifiers;
+- PvE modifiers;
+- PvP modifiers;
 - damage;
+- critical damage;
 - defense;
-- resistance;
-- critical;
-- effects;
-- death;
-- rewards;
-- combat logs.
+- healing;
+- shields;
+- area damage;
+- crowd-control effectiveness;
+- crowd-control resistance;
+- movement speed;
+- attack/cast speed;
+- threat/aggro;
+- lifesteal/regeneration;
+- buff/debuff effectiveness;
+- resource costs/recovery;
+- incoming/outgoing damage scaling;
+- target-type modifiers where justified.
 
-Central pipeline:
+Profiles:
+- Development;
+- Testing;
+- Production.
 
-`Request`
-→ `Validate`
-→ `Target`
-→ `Range`
-→ `Cooldown`
-→ `Accuracy`
-→ `Damage`
-→ `Defense`
-→ `Resistance`
-→ `Critical`
-→ `Effects`
-→ `HP/Shield`
-→ `Death`
-→ `Reward`
-→ `Audit`
+The configuration must be versionable and validated before activation.
 
----
+Required safety:
+- finite numeric values;
+- bounded percentages/multipliers;
+- no negative damage/defense/healing modifiers unless explicitly modeled as a separate mechanic;
+- deterministic resolution;
+- safe fallback profile;
+- audit-friendly version identity;
+- server-authoritative activation;
+- client never supplies authoritative balance values.
 
-## PHASE 18 — Skills and effects
+Recommended data layout:
+Config/Balance/
+- Classes/
+- Evolutions/
+- CombatBalance/
 
-Deliver:
-
-- skill definitions;
-- skill requirements;
-- cooldown;
-- resource cost;
-- targeting;
-- buffs;
-- debuffs;
-- periodic effects;
-- dispel;
-- immunity;
-- stacking.
+The exact serialization format will be selected during implementation to remain compatible with Unreal 5.8.1 and the project's existing data pipeline.
 
 ---
 
-## PHASE 19 — Quests and rewards
+# PHASE 34 — CLASS/COMBAT INTEGRATION & SERVER AUTHORITY — PLANNED
 
-Deliver:
+Purpose:
+Connect class/evolution identity and balance configuration to the existing authoritative combat, progression, item, skill and character systems.
 
-- quest definitions;
-- objectives;
-- state machine;
-- progress;
-- rewards;
-- prerequisites;
-- branching;
-- repeatability.
+Scope:
+- class ownership on Character;
+- evolution transition validation;
+- class-derived stats;
+- equipment compatibility;
+- skill compatibility;
+- class/evolution modifiers in the combat calculation pipeline;
+- PvE versus PvP context resolution;
+- target-type and damage-category resolution;
+- buff/debuff/healing integration;
+- persistence and replication of class/evolution state;
+- request/replay/ordering protection;
+- audit trail for class changes and balance profile activation;
+- deterministic server-side calculations.
 
----
+Target combat flow:
 
-## PHASE 20 — Party and guild
+Input
+-> authenticated character
+-> class/evolution resolution
+-> combat context (PvE/PvP)
+-> skill/effect resolution
+-> balance profile
+-> target modifiers
+-> authoritative calculation
+-> state mutation
+-> persistence
+-> replication
+-> client presentation.
 
-Deliver:
-
-- party;
-- invitations;
-- roles;
-- loot rules;
-- XP distribution;
-- guild;
-- ranks;
-- permissions;
-- guild storage;
-- guild events;
-- guild wars.
-
----
-
-## PHASE 21 — Economy and trade
-
-Deliver:
-
-- currency;
-- NPC shop;
-- player shop;
-- marketplace abstraction;
-- transactional trade;
-- buy/sell;
-- economic audit;
-- duplication prevention.
-
-Trade pipeline:
-
-`Request`
-→ `Accept`
-→ `Lock`
-→ `Validate`
-→ `Confirm`
-→ `Transaction`
-→ `Commit`
-→ `Audit`
+No client-side class multiplier may become authoritative.
 
 ---
 
-## PHASE 22 — Crafting
+# PHASE 35 — PVE/PVP BALANCE SIMULATION & AUTOMATED VALIDATION — PLANNED
 
-Deliver:
+Purpose:
+Build a deterministic simulation/test layer capable of exercising class matchups and PvE encounters before practical Unreal gameplay testing.
 
-- recipes;
-- inputs;
-- requirements;
-- success/failure;
-- outputs;
-- stations;
-- profession rules;
-- economy integration.
+Scope:
+- deterministic combat simulation inputs;
+- reproducible seeds;
+- class-vs-class scenarios;
+- evolution-vs-evolution scenarios;
+- class-vs-monster scenarios;
+- boss scenarios;
+- party composition scenarios;
+- burst/sustain/survivability measurements;
+- time-to-kill;
+- damage/healing/mitigation statistics;
+- cooldown/resource pressure;
+- sample-size controls;
+- regression baselines;
+- balance-budget diagnostics;
+- outlier detection;
+- report generation.
 
----
+The simulator is a diagnostic tool. It must not automatically declare a class "best" or alter production balance without explicit configuration changes.
 
-## PHASE 23 — Events
-
-Deliver:
-
-- event framework;
-- schedules;
-- participation;
-- event zones;
-- objectives;
-- contribution;
-- rewards;
-- event bosses;
-- phases;
-- enrage;
-- event-specific loot.
-
----
-
-## PHASE 24 — Master progression
-
-Deliver:
-
-- MasterLevel;
-- achievements;
-- titles;
-- rankings;
-- resets/rebirth if desired;
-- long-term progression.
+Required tests:
+- deterministic replay;
+- invalid balance configuration rejection;
+- extreme-value protection;
+- PvE/PvP context separation;
+- class/evolution reference integrity;
+- regression detection;
+- reproducible simulation results.
 
 ---
 
-## PHASE 25 — Social
+# PHASE 36 — CLASS PRESENTATION, ASSETS & RUNTIME ACCEPTANCE — PLANNED
 
-Deliver:
+Purpose:
+Connect the class/evolution system to actual Unreal presentation and validate the complete player-class experience.
 
-- friends;
-- ignore;
-- chat;
-- notifications;
-- mail;
-- item/currency mail;
-- expiration;
-- read state.
+Scope:
+- class/evolution selection UI;
+- class identity and progression presentation;
+- class-specific skeletal meshes;
+- equipment restrictions and attachments;
+- animation sets;
+- class/evolution VFX/SFX;
+- skill presentation;
+- icons;
+- class transition effects;
+- async asset loading;
+- placeholder/fallback assets;
+- performance budgets;
+- multiplayer PIE validation;
+- dedicated-server validation;
+- persistence/reconnect validation;
+- complete class acceptance matrix.
 
----
-
-## PHASE 26 — Pets, mounts and companions
-
-Deliver:
-
-- pets;
-- companions;
-- summons;
-- mounts;
-- progression;
-- abilities;
-- equipment where applicable.
+Runtime acceptance must be performed in Unreal 5.8.1 and must not be marked PASS from repository/static validation alone.
 
 ---
 
-## PHASE 27 — Security and anti-cheat
+# CLASS SYSTEM — DESIGN RULES
 
-Validate:
+The five base classes are the initial roster, not a hard-coded engine limitation.
 
-- movement;
-- speed;
-- attack;
+The architecture must support:
+- adding a sixth class through data;
+- adding alternate evolution branches later;
+- changing evolution requirements without C++ rewrites;
+- changing balance values without recompiling gameplay code;
+- replacing visual assets without changing class identity;
+- testing experimental balance profiles safely.
+
+Player-facing names may follow the pattern:
+
+Base Class -> Evolution Title
+
+but the authoritative IDs must remain stable even if display names or localization change.
+
+The class system must separate:
+- ClassDefinition: what the archetype is;
+- EvolutionDefinition: how the archetype develops;
+- ClassBalanceDefinition: how its combat values are tuned;
+- Runtime Character Class State: what this player currently owns;
+- Presentation: how the class looks and feels.
+
+---
+
+# CLASS BALANCE PRINCIPLE
+
+Balance is not one percentage.
+
+A class is evaluated through a multidimensional contract:
 - damage;
-- cooldown;
-- inventory;
-- currency;
-- skills;
-- teleport;
-- trade;
-- rewards;
-- packets;
-- rate limits;
-- impossible states.
+- effective health;
+- mitigation;
+- mobility;
+- range;
+- area coverage;
+- control;
+- healing/support;
+- resource economy;
+- cooldown pressure;
+- threat;
+- utility;
+- counterplay.
 
-Add:
-
-- security logs;
-- suspicious-action detection;
-- server-side invariants;
-- audit trail.
+The project will use configurable values and deterministic simulations to expose imbalances during testing. Final production values remain a design decision and will not be hard-coded into the architecture.
 
 ---
 
-## PHASE 28 — Persistence hardening
-
-Deliver:
-
-- repositories;
-- transactional writes;
-- save policies;
-- logout saves;
-- periodic saves;
-- critical-operation saves;
-- crash recovery;
-- backup strategy;
-- rollback;
-- consistency checks.
-
-Never save the entire character every frame.
-
----
-
-## PHASE 29 — Dedicated server
-
-Deliver:
-
-- dedicated-server target;
-- no rendering;
-- no client-only UI;
-- server startup;
-- configuration;
-- deployment;
-- health checks;
-- logging.
-
----
-
-## PHASE 30 — Load and stress testing
-
-Test:
-
-- players;
-- inventory operations;
-- combat;
-- AI;
-- drops;
-- trades;
-- persistence;
-- database latency;
-- network traffic;
-- server tick;
-- memory;
-- CPU.
-
----
-
-## PHASE 31 — Optimization
-
-Optimize only after measurement.
-
-Targets:
-
-- CPU;
-- RAM;
-- network;
-- replication;
-- database;
-- AI;
-- ticks;
-- allocations;
-- content loading;
-- asset streaming.
-
----
-
-## PHASE 32 — Production readiness
-
-Deliver:
-
-- deployment pipeline;
-- versioning;
-- migrations;
-- backups;
-- monitoring;
-- alerting;
-- administration;
-- GM tools;
-- incident recovery;
-- security review;
-- load validation;
-- release checklist.
-
----
-
-# 22. Long-term multi-server architecture
-
-The architecture must allow future:
-
-- Login Server;
-- Gateway;
-- World Server;
-- Game Server;
-- Chat Server;
-- Instance Server;
-- Matchmaking;
-- regional servers;
-- channels;
-- sharding;
-- services;
-- database replicas;
-- caching;
-- queues.
-
-We will not prematurely implement all of these.
-
-We will preserve the boundaries that make them possible.
-
----
-
-# 23. Administration / GM
-
-Roles:
-
-- PLAYER
-- VIP
-- MODERATOR
-- GM
-- ADMIN
-- OWNER
-
-Permissions must be granular.
-
-Every administrative action must be auditable.
-
-Potential commands:
-
-- inspect player;
-- grant item;
-- remove item;
-- grant currency;
-- teleport;
-- spawn monster;
-- start event;
-- cancel event;
-- mute;
-- kick;
-- ban;
-- inspect audit;
-- inspect server health.
-
----
-
-# 24. Testing strategy
-
-Testing begins with the foundation.
-
-## Unit
-
-- item validation;
-- inventory;
-- equipment;
-- requirements;
-- stat calculation;
-- drop rolls;
-- reward calculation;
-- trade state machine.
-
-## Integration
-
-- character + inventory;
-- inventory + persistence;
-- item + equipment;
-- monster + drop;
-- combat + rewards;
-- trade + economy.
-
-## Security
-
-- forged item IDs;
-- forged ownership;
-- duplicated requests;
-- replay;
-- invalid quantities;
-- negative values;
-- impossible movement;
-- cooldown bypass;
-- trade race conditions.
-
-## Load
-
-- simultaneous players;
-- inventory activity;
-- combat activity;
-- events;
-- persistence.
-
----
-
-# 25. Documentation and continuity
-
-Every major implementation must update:
-
-- README;
-- roadmap status;
-- current state;
-- decisions;
-- tests;
-- continuity/handoff file.
-
-The canonical continuity file is:
-
-`PROJECT_MEMORY/00_CONTINUITY.md`
-
-Another agent must be able to start from that file and understand:
-
-- what AGE OF AETHER is;
-- repository;
-- architecture;
-- current phase;
-- completed work;
-- tests;
-- known failures;
-- pending work;
-- decisions;
-- risks;
-- exact next step;
-- relevant files;
-- commands required for validation.
-
----
-
-# 26. Mandatory status format
-
-After every major stage:
-
-### STATUS
-Current project state.
-
-### IMPLEMENTADO
-What was actually implemented.
-
-### COMPILADO
-Whether a clean build succeeded.
-
-### TESTADO
-Tests actually executed.
-
-### VALIDADO
-Behavior verified in Unreal/runtime.
-
-### FALHAS
-Known failures.
-
-### PENDÊNCIAS
-Remaining tasks.
-
-### RISCOS
-Known technical risks.
-
-### PRÓXIMO PASSO
-The next concrete action.
-
-No step may be marked completed merely because code was written.
-
----
-
-# 27. Development workflow
-
-The standard cycle is:
-
-1. Define phase.
-2. Inspect repository.
-3. Inspect existing implementation.
-4. Decide what is reusable.
-5. Implement smallest coherent increment.
-6. Compile.
-7. Run automated tests.
-8. Open/test in Unreal.
-9. Validate behavior.
-10. Document.
-11. Update continuity.
-12. Commit.
-13. Proceed.
-
-For editor-dependent actions, the user will execute the Unreal-side step when no editor automation/integration is available.
-
----
-
-# 28. Item creation workflow — final target
-
-A future developer should be able to add an item approximately like this:
-
-### Step 1
-Create ItemDefinition.
-
-### Step 2
-Choose category.
-
-### Step 3
-Set dimensions.
-
-### Step 4
-Set requirements.
-
-### Step 5
-Set base stats.
-
-### Step 6
-Assign equipment slot.
-
-### Step 7
-Assign allowed classes.
-
-### Step 8
-Assign options/effects.
-
-### Step 9
-Assign visual/icon.
-
-### Step 10
-Assign drop/shop availability.
-
-### Step 11
-Run validator.
-
-### Step 12
-Commit content.
-
-### Step 13
-Run item tests.
-
-### Step 14
-Launch server.
-
-### Step 15
-Test in Unreal.
-
-No modification of the inventory engine should be necessary for a normal new item.
-
----
-
-# 29. Item ID and content validation rules
-
-The future content validator must detect:
-
-- duplicate ItemDefinitionID;
-- missing display name;
-- invalid category;
-- invalid dimensions;
-- invalid slot;
-- missing visual reference;
-- invalid class reference;
-- invalid requirement;
-- negative invalid stats;
-- impossible stack size;
-- invalid option reference;
-- invalid drop reference;
-- invalid shop reference;
-- incompatible equipment configuration;
-- duplicate content aliases;
-- deprecated fields;
-- schema version mismatch.
-
----
-
-# 30. Data migration
-
-The item system must support schema evolution.
-
-Every persistent definition/state must have a migration strategy.
-
-Example:
-
-`ItemSchemaVersion = 1`
-
-→ later
-
-`ItemSchemaVersion = 2`
-
-Existing ItemInstances must remain loadable through migration.
-
-Never silently reinterpret persistent fields.
-
----
-
-# 31. Source/reference policy
-
-The supplied Item.txt is a **design reference**.
-
-Public MU documentation is a **research reference**.
-
-Neither becomes AGE OF AETHER source code.
-
-AGE OF AETHER must have:
-
-- original C++;
-- original Blueprint assets;
-- original game rules;
-- original data;
-- original art;
-- original world;
-- original networking;
-- original persistence;
-- original content.
-
-The project may use familiar MMORPG design patterns without reproducing another game's protected implementation or assets.
-
----
-
-# 32. Research references
-
-The initial research used public sources describing MU item configuration:
-
-- MUDevs example Item.txt structure: https://github.com/MUDevs-Emulator/Default-configuration/blob/master/Season%206/Data/Item/Item.txt
-- MU Online Help Forum — historical custom-item workflow: https://forum.muonlinehelp.com/topic170-how-to-add-new-items-to-your-mu-online-server.html
-- ViciadosMU — item/server/client configuration workflow: https://viciadosmu.com.br/tutoriais/adicionar-itens-no-servidor
-- ViciadosMU — custom ItemList: https://viciadosmu.com.br/en/tutoriais/criar-itens-customizados-itemlist
-- IGCN — client custom item workflow: https://www.igcn.mu/guides/client-customization/adding-custom-items-to-the-game-r14/
-
-These sources describe different MU versions/server implementations, so their exact fields and workflows must not be assumed universal.
-
----
-
-# 33. Immediate implementation order
-
-The next work is **not** to implement the entire MMORPG.
-
-The immediate sequence is:
-
-1. Establish clean Unreal project baseline.
-2. Establish Git/Git LFS policy where appropriate.
-3. Establish C++ module.
-4. Establish Core Runtime.
-5. Establish server authority foundation.
-6. Establish Data Registry.
-7. Establish ItemDefinition.
-8. Establish ItemInstance.
-9. Establish Inventory.
-10. Establish Equipment.
-11. Establish Item validation tests.
-12. Only then expand to combat/world/content.
-
----
-
-# 34. Definition of done
-
-A phase is complete only when:
-
-- implementation exists;
-- code compiles;
-- tests execute;
-- expected behavior is verified;
-- repository documentation is updated;
-- continuity is updated;
-- known risks are recorded;
-- next step is explicit.
-
-A placeholder must be explicitly labeled as a placeholder.
-
-No fake implementation.
-
-No "implemented" claim for a class that merely exists but does not perform its intended function.
-
----
-
-# 35. Current project state
-
-At roadmap creation:
-
-- Repository is connected and accessible.
-- Repository is currently at the initial/empty foundation stage.
-- The supplied Item.txt has been analyzed.
-- Public MU item-configuration workflows have been researched.
-- The target C++ + Blueprint + Data architecture has been defined.
-- The master roadmap has been established.
-- The continuity protocol has been established.
-- No MMORPG gameplay system is considered implemented yet.
-
-**Current implementation milestone: PHASE 4 — Accounts and Sessions.**
-
-
-## Phase 12 — Economy & Crafting
-
-Repository implementation is complete.
-
-Implemented:
-- character-owned Gold wallets using int64;
-- server-authoritative currency set/add/remove operations;
-- overflow and insufficient-funds validation;
-- data-driven shop definitions and entries;
-- fixed buy/sell prices and quantity limits;
-- authoritative buy/sell flows integrated with ItemService;
-- data-driven crafting recipes and ingredients/outputs;
-- crafting level, currency and ingredient requirements;
-- complete-output inventory preflight before ingredient consumption;
-- atomic Economy Config Data Asset registration;
-- economy transaction result contract;
-- economy PlayerController RPCs and Blueprint delegate;
-- dedicated economy request ordering guard;
-- automation tests for wallet, shops, buying, selling, crafting, validation and overflow.
-
-Security boundary:
-- client cannot author wallet balance;
-- client cannot author prices;
-- client cannot author recipe contents;
-- client cannot bypass inventory ownership;
-- client cannot bypass ingredient, currency, level or capacity rules;
-- active CharacterID is resolved from authenticated server state.
-
-Validation truth:
-- repository/static validation PASSED;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/multiplayer/Automation Framework/network emulation remain NOT VERIFIED because Unreal is unavailable here;
-- no CI pipeline exists to substitute for local Unreal validation.
-
-Deliverable:
-- Docs/PHASE_12_ECONOMY_CRAFTING.md
-
-Next implementation target:
-**PHASE 13 — MULTIPLAYER & SERVER AUTHORITY**
-
-
-## Phase 14 — Persistence & Backend
-
-Repository implementation is COMPLETE.
-
-Implemented:
-- versioned FAetherCharacterPersistenceSnapshot contract;
-- persistent CharacterID/AccountID identity binding;
-- character progression, combat and world-state snapshot;
-- inventory snapshot;
-- economy wallet snapshot;
-- quest-state snapshot;
-- checksum generation and verification;
-- snapshot validation and schema migration boundary;
-- optimistic-concurrency revision control;
-- rollback-safe snapshot restoration;
-- FAetherPersistenceService;
-- UAetherPersistenceSaveGame;
-- UAetherPersistenceSubsystem;
-- alternating durable SaveGame slots;
-- disk recovery by highest valid storage revision;
-- runtime save/load orchestration across Character, Item, Economy and Quest services;
-- stable character identity restoration;
-- inventory/economy/quest restore preflight validation;
-- persistence automation coverage.
-
-Security boundary:
-- client cannot author persistent snapshots;
-- AccountID/CharacterID are validated server-side;
-- stale writes are rejected;
-- corrupted/tampered snapshots are rejected by validation/checksum;
-- item ownership and quantity are revalidated on restore;
-- currency cannot restore to a negative or duplicate balance;
-- quest IDs/objective state are revalidated against server definitions.
-
-Durability boundary:
-- the current adapter is a real Unreal SaveGame-backed server persistence implementation;
-- two alternating slots provide basic crash-tolerant last-good-state recovery;
-- no fake external database provider was introduced;
-- the service boundary allows a production database/API repository to replace the local adapter later.
-
-Validation truth:
-- repository/static validation PASSED;
-- changed-source delimiter audit PASSED;
-- escaped-newline audit PASSED;
-- persistence rollback audit PASSED;
-- Unreal 5.8.1 UHT/UBT/Editor/Automation/disk round-trip/dedicated-server runtime remain NOT VERIFIED because Unreal is unavailable in this environment;
-- no CI pipeline exists to substitute for local Unreal validation.
-
-Deliverable:
-- Docs/PHASE_14_PERSISTENCE_BACKEND.md
-
-Next implementation target:
-**PHASE 15 — SECURITY & ANTI-CHEAT**
-
-
-## Phase 15 — Security & Anti-Cheat
-
-Repository implementation is COMPLETE at the source/repository level.
-
-Implemented:
-- FAetherSecurityConfig;
-- FAetherSecurityService;
-- UAetherSecuritySubsystem;
-- UAetherSecurityConfigDataAsset;
-- per-connection request token bucket;
-- category-aware request replay protection;
-- authentication gating;
-- temporary quarantine;
-- suspicion scoring;
-- bounded security audit trail;
-- authoritative movement anomaly sampling;
-- security gates on all 43 server RPC implementations in AAetherNetworkPlayerController;
-- hardened multiplayer request refill logic separating heartbeat time from request-token refill time;
-- security and multiplayer automation coverage.
-
-Security categories:
-- Authentication;
-- Session;
-- Character;
-- Inventory;
-- Progression;
-- Combat;
-- World;
-- Quest;
-- Social;
-- Economy;
-- Generic networking.
-
-Validation truth:
-- source/static validation PASSED;
-- 43/43 server RPC security-gate audit PASSED;
-- replay-window audit PASSED;
-- delimiter audit PASSED;
-- escaped-newline audit PASSED;
-- multiplayer refill isolation audit PASSED;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/network-emulation/dedicated-server attack runtime remain NOT VERIFIED because Unreal is unavailable in this environment;
-- no CI pipeline exists to substitute for local Unreal validation.
-
-Important boundary:
-- the security layer is a defense-in-depth layer and does not replace gameplay-service authority;
-- permanent bans, persistent moderation evidence, external anti-cheat, distributed reputation and production security ingestion remain future backend work.
-
-Deliverable:
-- Docs/PHASE_15_SECURITY_ANTI_CHEAT.md
-
-Next implementation target:
-**PHASE 16 — MMORPG SCALE & DEDICATED SERVER**
-
-
-## Phase 16 — MMORPG Scale & Dedicated Server
-
-Repository implementation is COMPLETE.
-
-Implemented:
-- restored/verified Unreal project foundation required for UBT targets;
-- dedicated server target using TargetType.Server;
-- FAetherScaleConfig and data-driven scale limits;
-- server-node identity and lifecycle;
-- accepting/draining admission;
-- node health heartbeat;
-- load snapshots and load score;
-- automatic drain at hard load;
-- cross-server transfer request contract with expiration;
-- scale subsystem and Data Asset;
-- scale automation tests.
-
-Architecture:
-- Phase 13 remains the connection-level multiplayer authority;
-- Phase 16 adds node-level capacity and lifecycle above connection admission;
-- gameplay state remains server-authoritative;
-- transfer state cannot be authored by clients;
-- no cloud provider, gateway or production database is fabricated.
-
-Replication boundary:
-- Replication Graph is documented as the intended scalable Unreal replication option;
-- no unverified engine/plugin dependency was hard-wired before local UE 5.8.1 validation.
-
-World boundary:
-- World Partition remains the intended large-world streaming technology;
-- real maps, Data Layers, HLOD, terrain, collision, NavMesh and streaming sources require Unreal Editor.
-
-Validation truth:
-- repository/static validation PASSED;
-- dedicated-server target/source inspection PASSED;
-- delimiter and escaped-newline audits PASSED;
-- Unreal 5.8.1 UHT/UBT/Editor/Automation/dedicated-server cook/runtime/multi-client load/Replication Graph/World Partition remain NOT VERIFIED because Unreal is unavailable;
-- no CI pipeline exists to substitute for local Unreal validation.
-
-Deliverable:
-- Docs/PHASE_16_SCALE_DEDICATED_SERVER.md
-
-Next implementation target:
-**PHASE 17 — AI/GPT INTEGRATION**
-
-
-## Phase 17 — AI/GPT Integration
-
-Repository implementation is COMPLETE.
-
-Implemented:
-- provider-agnostic AI contracts;
-- AI request/result/tool contracts;
-- server-side AI service;
-- GameInstance AI subsystem;
-- data-driven AI configuration;
-- per-account rate limiting;
-- per-account replay protection;
-- bounded context/output;
-- character-scoped bounded runtime memory;
-- provider failure handling;
-- output leakage defense-in-depth;
-- tool proposal validation;
-- automation tests.
-
-Authority boundary:
-- AI may produce dialogue and bounded proposals;
-- AI never directly mutates gameplay state;
-- quest, economy, world, combat, social and persistence systems remain authoritative;
-- tool proposals must be validated by the corresponding gameplay subsystem.
-
-Provider boundary:
-- no API key;
-- no provider secret;
-- no client-side OpenAI dependency;
-- live provider adapter remains a server/backend concern.
-
-Validation truth:
-- repository/static validation PASSED;
-- Unreal 5.8.1 UHT/UBT/Editor/Automation/live provider/network validation remains NOT VERIFIED;
-- no CI pipeline exists to substitute for Unreal validation.
-
-Deliverable:
-- Docs/PHASE_17_AI_GPT_INTEGRATION.md
-
-Next implementation target:
-**PHASE 18 — Production & Live MMORPG**
-
-
-## Phase 18 — Production & Live MMORPG
-
-Repository implementation is COMPLETE at source/repository level. Production lifecycle hardening also completed: drain state is preserved while checks update, and shutdown/readiness semantics are covered by tests.
-
-Implemented:
-- FAetherProductionConfig;
-- production lifecycle/readiness state;
-- startup health gates;
-- graceful draining;
-- bounded operational metrics;
-- bounded operational audit events;
-- production GameInstance subsystem;
-- production Data Asset;
-- production automation tests;
-- production release gate documentation.
-
-Operational boundary:
-- a node starts non-ready;
-- readiness requires all declared checks;
-- draining keeps liveness while removing readiness;
-- metrics/events are bounded in memory;
-- no fake cloud, Kubernetes, database, billing, launcher, CDN or external observability service was fabricated.
-
-Validation truth:
-- repository/static implementation review PASSED;
-- test source audit PASSED after correcting invalid void-return assertion;
-- Unreal 5.8.1 UHT/UBT/Editor/Automation/dedicated-server cook/runtime/load/soak/backup/restore remain NOT VERIFIED because Unreal is unavailable;
-- no CI exists to substitute for local Unreal validation.
-
-Deliverable:
-- Docs/PHASE_18_PRODUCTION_LIVE_MMO.md
-
-Roadmap status:
-**ALL 18 IMPLEMENTATION PHASES ARE COMPLETE AT REPOSITORY LEVEL.**
-
-Future work is production hardening against the real Unreal 5.8.1 environment and live operational infrastructure.
- 
-# 29. Content Pipeline & Client Program (Phases 19–30)
-
-The original implementation roadmap (Phases 0–18) is complete at repository/source level. The next program is documented in **`ROADMAP_CONTENT_AND_CLIENT.md`** and is incorporated into project continuity.
-
-Execution order:
-
-- Phase 19 — Universal Data Model & Content Registry
-- Phase 20 — Asset Pipeline & Visual Asset Registry
-- Phase 21 — Complete Item, Equipment & Enhancement Data
-- Phase 22 — Monster, NPC, Boss & AI Content
-- Phase 23 — Skills, Effects, Buffs, Debuffs & Status
-- Phase 24 — Loot, Drop, Reward & World Spawn
-- Phase 25 — Quest, Event, Dialogue & World Content Authoring
-- Phase 26 — Crafting, Mixing, Forge & Recipe Authoring
-- Phase 27 — World, Map, Interaction & Streaming Content
-- Phase 28 — Client Core Architecture
-- Phase 29 — Complete MMORPG UI/UX
-- Phase 30 — Client Presentation, Performance & Final Integration
-
-The client must not become the authority for gameplay state. Stable definition IDs are the bridge between server gameplay data and client visual/presentation assets.
-
-**Next implementation target: Unreal 5.8.1 runtime acceptance and asset integration.**
-
-## Phase 19 — Universal Data Model & Content Registry
-
-**Status: COMPLETE at repository/source level.**
-
-Implemented:
-- stable content definition IDs and shared metadata;
-- generic data-driven definition contract;
-- central content registry;
-- duplicate ID detection;
-- missing-reference validation;
-- circular dependency detection;
-- explicit numeric/probability/non-negative validation;
-- deterministic definition enumeration;
-- structured validation diagnostics;
-- Unreal Automation test coverage.
-
-Validation truth:
-- repository/static validation: PASS;
-- Unreal 5.8.1 UHT/UBT/Automation runtime: NOT VERIFIED because Unreal is unavailable in this environment.
-
-Deliverable:
-- `Docs/PHASE_19_DATA_MODEL_CONTENT_REGISTRY.md`
-
-Implementation files:
-- `Source/AgeOfAether/Public/Data/AetherContentTypes.h`
-- `Source/AgeOfAether/Public/Data/AetherContentRegistry.h`
-- `Source/AgeOfAether/Private/Data/AetherContentRegistry.cpp`
-- `Source/AgeOfAether/Private/Tests/AetherContentRegistryTests.cpp`
-
-**Next implementation target: Phase 20 — Asset Pipeline & Visual Asset Registry.**
-
-
-## Phase 20 — Asset Pipeline & Visual Asset Registry
-
-**Status: COMPLETE at repository/source level.**
-
-Implemented:
-- stable AssetID identity;
-- visual asset type contract;
-- asset descriptors for Unreal path, fallback, skeleton, animation, material, icon, VFX and SFX;
-- source/import metadata for FBX workflow;
-- registry with deterministic enumeration;
-- duplicate and cross-reference validation;
-- structural validation;
-- Automation tests.
-
-Validation truth:
-- repository/static validation: PASS;
-- Unreal 5.8.1 UHT/UBT/Editor/Automation/FBX import/runtime rendering: NOT VERIFIED because Unreal is unavailable in this environment.
-
-Deliverable:
-- \`Docs/PHASE_20_ASSET_PIPELINE_VISUAL_REGISTRY.md\`
-
-**Next implementation target: Phase 21 — Complete Item, Equipment & Enhancement Data.**
-
-
-## Phase 21 — Complete Item, Equipment & Enhancement Data
-
-Repository implementation is COMPLETE.
-
-Implemented:
-- stable ItemDefinition IDs and immutable definition contract;
-- item category, rarity, level, class requirements and equipment slots;
-- stack limits, weight and durability;
-- binding/trade/drop/shop/craft rules;
-- buy/sell economy and currency IDs;
-- icon/world/equipped visual asset IDs;
-- modular stats, options, effects and tags;
-- enhancement levels, materials, currency, success chance, failure behavior, protection items, stat scaling and visual assets;
-- ItemInstanceSnapshot separation from definition data;
-- deterministic item registry and duplicate detection;
-- Phase 19 content and Phase 20 asset cross-reference validation;
-- automation tests for valid/invalid data, equipment, enhancement, cross-reference and deterministic behavior.
-
-Validation truth:
-- repository/static validation PASSED;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation Framework remain NOT VERIFIED because Unreal is unavailable in this environment;
-- no compilation success is claimed.
-
-Deliverable:
-- Docs/PHASE_21_ITEM_EQUIPMENT_ENHANCEMENT.md
-
-Next implementation target:
-**PHASE 22 — Monster, NPC, Boss & AI Content**
-
-
-## Phase 22 — Monster, NPC, Boss & AI Content
-
-Repository implementation is COMPLETE.
-
-Implemented:
-- MonsterDefinition, NPCDefinition and BossDefinition;
-- combat statistics, rewards and respawn contracts;
-- configurable AI behavior profiles and targeting data;
-- NPC faction/dialogue/quest/shop/service references;
-- boss multi-phase triggers and phase content;
-- stable presentation asset IDs;
-- cross-reference validation against Phase 19 content and Phase 20 assets;
-- global ID uniqueness and deterministic registry ordering;
-- automation tests for validation, cross references, duplicates and determinism.
-
-Validation truth:
-- repository/static validation PASSED;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation Framework remain NOT VERIFIED because Unreal is unavailable in this environment;
-- no compilation success is claimed.
-
-Deliverable:
-- Docs/PHASE_22_MONSTER_NPC_BOSS_AI.md
-
-Next implementation target:
-**PHASE 23 — Skills, Effects, Buffs, Debuffs & Status**
-
-
-## 41. PHASE 23 — SKILLS, EFFECTS, BUFFS, DEBUFFS & STATUS — COMPLETED 2026-09-19
-
-Repository implementation is complete.
-
-Implemented:
-- data-driven SkillDefinition, EffectDefinition and StatusDefinition;
-- target and delivery modes;
-- cast time, cooldown, range, radius and resource costs;
-- effect durations, ticks, magnitudes, stacks and stack policies;
-- dispel rules, tags and conflicting effects;
-- skill animation/visual asset references;
-- global ID uniqueness, normalized resolution and deterministic enumeration;
-- cross-validation against Phase 19 Content Registry and Phase 20 Asset Registry;
-- automation tests for registration, invalid data, missing effect references, duplicate IDs and deterministic ordering.
-
-Validation truth:
-- repository/static validation is complete;
-- GitHub Actions static validation is operational and passing;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation Framework remain NOT VERIFIED because Unreal is unavailable in this environment;
-- no compilation success is claimed.
-
-Documentation:
-- Docs/PHASE_23_SKILLS_EFFECTS_STATUS.md
-
-Current execution stage:
-**Phase 23 — Skills, Effects, Buffs, Debuffs & Status (repository implementation complete; Unreal runtime validation pending local validation)**
-
-Next implementation target:
-**PHASE 24 — Loot, Drop, Reward & Respawn**
-
-
-## 42. PHASE 24 — LOOT, DROP, REWARD & RESPAWN — COMPLETED 2026-09-19
-
-Repository implementation is complete.
-
-Implemented:
-- data-driven LootTableDefinition with weighted, guaranteed, random-count and chance-each selection modes;
-- loot entries with item references, quantity ranges, weight, chance and required tags;
-- RewardDefinition with experience, currencies, direct item rewards and nested loot-table references;
-- RespawnDefinition with world actor references, base timing, jitter, maximum alive count, enable state and world/spawn tags;
-- DropRuleDefinition linking source world actors to loot tables with trigger, chance, level bounds and tags;
-- SpawnGroupDefinition linking world actors to respawn definitions with initial/max counts and spawn/world tags;
-- global ID uniqueness, normalized resolution and deterministic enumeration;
-- cross-validation against Phase 19 Content Registry, Phase 21 Item Registry and Phase 22 World Actor Registry;
-- structural validation for probabilities, quantities, level ranges, reward non-emptiness and respawn timing;
-- automation tests for registration, invalid data, missing item/world-actor references, duplicate IDs and deterministic ordering.
-
-Validation truth:
-- repository/static validation is complete;
-- GitHub Actions static validation is configured to include Phase 24 deliverables;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation Framework remain NOT VERIFIED because Unreal is unavailable in this environment;
-- no compilation success is claimed.
-
-Documentation:
-- Docs/PHASE_24_LOOT_DROP_REWARD_RESPAWN.md
-
-Current execution stage:
-**Phase 24 — Loot, Drop, Reward & Respawn (repository implementation complete; Unreal runtime validation pending local validation)**
-
-Next implementation target:
-**PHASE 25 — Quest, Event, Dialogue & World Content Authoring**
-
-
-## PHASE 29 — COMPLETE MMORPG UI/UX — COMPLETED 2026-09-20
-
-Repository implementation is complete.
-
-Implemented:
-- centralized UI screen taxonomy covering login, character selection, loading, HUD, character, inventory, equipment, skills, crafting, NPC, quests, social, map and settings;
-- centralized UI navigation/history through UAetherUISubsystem;
-- modal state and navigation blocking;
-- data-driven UI view models for inventory, equipment, skills, quests, social and notifications;
-- notification lifecycle and expiration;
-- UI settings validation including scale and language;
-- Blueprint-callable UI state operations and Blueprint event boundaries;
-- reset-safe UI lifecycle;
-- six Unreal Automation test definitions covering validation, navigation, modal safety, data views, notifications and reset.
-
-Important files:
-- Source/AgeOfAether/Public/UI/AetherUITypes.h
-- Source/AgeOfAether/Private/UI/AetherUITypes.cpp
-- Source/AgeOfAether/Public/UI/AetherUISubsystem.h
-- Source/AgeOfAether/Private/UI/AetherUISubsystem.cpp
-- Source/AgeOfAether/Private/Tests/AetherUISubsystemTests.cpp
-- Docs/PHASE_29_COMPLETE_MMO_UI_UX.md
-
-Validation truth:
-- repository/static validation: pending final GitHub Actions run;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/UI rendering/gamepad/localization/performance runtime: NOT VERIFIED because Unreal is unavailable;
-- no compilation success is claimed.
-
-**Next implementation target: Phase 30 — Client Presentation, Performance & Final Integration.**
-
-
-## PHASE 30 — CLIENT PRESENTATION, PERFORMANCE & FINAL INTEGRATION — COMPLETED 2026-09-20
-
-Repository implementation complete.
-
-Implemented:
-- client presentation subsystem;
-- stable AssetID runtime binding;
-- safe placeholder fallback;
-- actor presentation snapshots/state;
-- deterministic performance samples and budgets;
-- 30-step client acceptance matrix;
-- six Unreal Automation test definitions;
-- Phase 30 documentation and CI gates.
-
-Validation truth:
-- repository/static validation: PASS;
-- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/runtime rendering/performance: NOT VERIFIED because Unreal is unavailable;
-- no runtime acceptance step is claimed as passed without execution.
-
-Next action:
-**Run the 30-step runtime acceptance matrix in Unreal 5.8.1 and integrate actual imported visual assets.**
+# CLASS ROADMAP CONTINUITY
+
+After Phase 30, the implementation sequence is:
+
+**31 -> Class Architecture -> 32 -> 25 Class/Evolution Data -> 33 -> Balance Configuration -> 34 -> Combat Integration -> 35 -> Simulation/Automated Balance Validation -> 36 -> Unreal Presentation & Runtime Acceptance**
+
+No Phase 31+ phase should be marked complete merely because files exist. Each phase must report:
+- STATUS
+- IMPLEMENTADO
+- COMPILADO
+- TESTADO
+- VALIDADO
+- FALHAS
+- PENDÊNCIAS
+- RISCOS
+- PRÓXIMO PASSO
+
+Unreal 5.8.1 runtime validation remains a separate gate and cannot be inferred from GitHub/static CI success.
