@@ -1116,3 +1116,29 @@ Next target: **Phase 50 — Crafting, Forge, Economy & Shops**
 - Recommended first visual slice: HUD, Inventory, Character, Skills only.
 - No fake Unreal binary assets; runtime UMG acceptance remains local.
 - Next: Phase 52 — Audio & Ambience.
+
+
+## Phase 52 — Audio & Ambience — COMPLETE at repository/source level
+
+Implemented:
+- Stable AudioID registry and data-driven audio definitions.
+- Music, ambience, UI, combat, creature and voice bus contracts.
+- One-shot and loop playback through a reusable GameInstance audio subsystem.
+- Bounded volume/pitch/distance validation.
+- UAetherAudioCatalog Data Asset for low-bureaucracy authoring.
+- Dedicated Server presentation guard.
+- Automation coverage and Unreal setup documentation.
+- No fake audio assets.
+
+Low-bureaucracy rule:
+- One catalog + one generic subsystem.
+- New sounds are data rows plus real Unreal audio assets.
+- No per-sound C++ or per-map audio manager.
+- Normal SoundWave/SoundCue assets are sufficient for the first slice; MetaSounds remain optional.
+
+Validation truth:
+- Repository/source implementation is complete.
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/2-client/Dedicated Server runtime is NOT VERIFIED here.
+- Real audio import and runtime playback remain local Unreal acceptance work.
+
+Next target: **PHASE 53 — MULTIPLAYER, DEDICATED SERVER & PERSISTENCE**
