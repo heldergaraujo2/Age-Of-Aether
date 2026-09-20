@@ -1065,3 +1065,43 @@ Important files:
 - Unreal 5.8.1 UHT/UBT/Automation/PIE/multiplayer/dedicated-server runtime remains NOT VERIFIED.
 - Real FBX import, animations, VFX/SFX, materials, icons, sockets and performance acceptance remain local Unreal-content work.
 - Next gate: execute Unreal 5.8.1 runtime acceptance and integrate real class assets.
+
+
+## PHASES 37–56 — VISUAL & PLAYABLE IMPLEMENTATION ROADMAP ADDED 2026-09-20
+
+A dedicated roadmap was added for the post-runtime implementation of the actual visual and playable Unreal game:
+
+**ROADMAP_VISUAL_AND_PLAYABLE.md**
+
+Sequence:
+37 Unreal Visual Foundation
+38 Real Asset Pipeline
+39 Playable Base Character
+40 Input, Movement & Camera
+41 Animation
+42 Equipment & Item Visuals
+43 Five Classes & 25 Evolutions Presentation
+44 Playable Combat
+45 Skills, Buffs, Debuffs & VFX
+46 Monsters, NPCs & Bosses
+47 World, Maps & Streaming
+48 Interaction, NPC, Quest & Events
+49 Inventory, Loot & Equipment Gameplay
+50 Crafting, Forge, Economy & Shops
+51 Complete MMORPG UI/UX
+52 Audio & Ambience
+53 Multiplayer, Dedicated Server & Persistence
+54 Performance, Streaming & Scale
+55 Initial Complete Content Package
+56 Alpha, Beta & Release Candidate
+
+Important execution rule:
+- Phase 37 starts only after the Unreal Engine 5.8.1 foundation/runtime gate is locally validated.
+- A vertical slice is required before mass asset/content production.
+- Each phase must be implemented, compiled, tested, validated, documented and reflected in ROADMAP.md and this continuity file.
+- Visual assets never become gameplay authority.
+- C++ remains the rules/authority layer, Data remains content, Blueprint/Unreal remains presentation/composition, and the server remains authoritative.
+- Real FBX assets, maps, animations, VFX, SFX, UI widgets, multiplayer runtime and hardware performance must be validated in Unreal and cannot be inferred from GitHub/static CI.
+
+Current visual/playable target after the Unreal gate:
+**PHASE 37 — UNREAL VISUAL FOUNDATION**
