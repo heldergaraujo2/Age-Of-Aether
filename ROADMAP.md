@@ -1488,3 +1488,34 @@ Next implementation target:
 - No fake Unreal binaries were committed.
 - Unreal 5.8.1 runtime import/attachment/PIE/Dedicated Server remains a local acceptance gate.
 - Next target: Phase 43 — Five Classes & 25 Evolutions Presentation.
+
+
+## Phase 43 — Five Classes & 25 Evolutions Presentation — COMPLETE at repository/source level
+
+Implemented:
+- canonical 5×5 class/evolution presentation catalog with exactly 25 stable entries;
+- requested class names, evolution names and path titles;
+- reusable class/evolution presentation component integrated into AAetherCharacter;
+- optional visual profile, animation profile, icon, VFX and SFX references per evolution;
+- same-class stage-1 fallback for entries without authored presentation data;
+- Dedicated Server presentation guard;
+- Automation coverage for catalog size, identities, display data and fallback;
+- Unreal setup documentation designed around one catalog and one reusable visual/animation pipeline.
+
+Low-bureaucracy workflow:
+- no per-class C++;
+- no 25 custom character Blueprints;
+- first vertical slice can use only warrior.01 with real assets;
+- later evolutions require data assignment only.
+
+Validation truth:
+- repository/source implementation complete;
+- no fake .uasset/.umap/FBX/animation binaries added;
+- Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime remains NOT VERIFIED here;
+- actual FBX/animation/icon/VFX/SFX assignment remains local Unreal content work.
+
+Detailed report:
+Docs/PHASE_43_FIVE_CLASSES_25_EVOLUTIONS_PRESENTATION.md
+
+Next target:
+**PHASE 44 — PLAYABLE COMBAT**
