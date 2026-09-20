@@ -60,7 +60,7 @@ bool FAetherRecipeDeterminismTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherRecipeReferenceTest,"AgeOfAether.Data.Recipe.References",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherRecipeReferenceTest::RunTest(const FString&)
 {
-    FAetherRecipeRegistry R;FString E;auto A=MakeRecipe(TEXT("Recipe.Ref"));A.RequiredSkillID=TEXT("Skill.Missing");A.RequiredSkillLevel=1;A.RequiredStationID=TEXT("Station.Missing");A.UnlockConditions.Add({EAetherRecipeUnlockConditionType::QuestCompleted,TEXT("Quest.Missing"),0,TEXT("")});TestTrue(TEXT("register structurally"),R.RegisterRecipe(A,E));
+    FAetherRecipeRegistry R;FString E;auto A=MakeRecipe(TEXT("Recipe.Ref"));A.RequiredSkillID=TEXT("Skill.Missing");A.RequiredSkillLevel=1;A.RequiredStationID=TEXT("Station.Missing");FAetherRecipeUnlockCondition Qc; Qc.Type=EAetherRecipeUnlockConditionType::QuestCompleted; Qc.ReferenceID=TEXT("Quest.Missing"); A.UnlockConditions.Add(Qc);TestTrue(TEXT("register structurally"),R.RegisterRecipe(A,E));
     TArray<FAetherRecipeValidationIssue> Issues;TestFalse(TEXT("validation detects missing refs"),R.Validate(Issues));TestTrue(TEXT("issues"),Issues.Num()>=3);return true;
 }
 
