@@ -939,3 +939,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This confirms the error is emitted by the actual UHT implementation, not by a wrapper or unrelated compiler component.
 - The surrounding assembly strings also include `include found after` diagnostics, indicating UHT has explicit generated-header/include-order validation logic.
 - Next action: inspect the assembly's surrounding strings for the exact preceding/following diagnostics and determine what condition triggers this message; avoid source changes until the trigger is understood.
+
+
+## U0.5 — Investigation checkpoint
+- User confirmed to continue the U0.5 investigation.
+- Current objective remains to determine the concrete trigger for the five UHT generated-header ordering errors before applying a source change.
+- The active UHT assembly and diagnostic have been identified; source headers have passed encoding, line-ending, attribute, manifest, and visible include-order checks.
