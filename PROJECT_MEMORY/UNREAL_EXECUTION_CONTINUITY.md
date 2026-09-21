@@ -1881,3 +1881,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
   12. AetherWorldStreamingCoordinator.cpp obtains the subsystem as const while calling non-const SetMapActive.
 - AetherWorldContentRegistry.cpp issues previously fixed remain absent from this build.
 - Next action is inspection of the first structural blocker, EAetherAssetType, before editing.
+
+
+## 2026-09-21 — EAetherAssetType occurrence scan
+- Local source scan found EAetherAssetType references in the pipeline implementation/tests and its public type headers; the defining header is `Public\\Data\\AetherAssetTypes.h`.
+- The scan confirms the unresolved build symbol is not an unknown project-wide name; it is specifically a visibility/include-resolution issue in `AetherAssetPipelineTypes.h` or a declaration-order/dependency issue.
+- No source files were modified by this diagnostic.
+- Next action: inspect the exact `EAetherAssetType` definition and the include list/top of `AetherAssetPipelineTypes.h` before making the minimal visibility fix.
