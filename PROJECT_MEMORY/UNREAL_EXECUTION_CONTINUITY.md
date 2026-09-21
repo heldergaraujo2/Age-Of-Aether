@@ -18,3 +18,9 @@
 - `Set-Content` then wrote the unchanged content back; the malformed literal backtick sequence remains exactly once.
 - No intended source correction occurred yet.
 - Next action: use `String.Replace` with explicit old/new string variables, avoiding `-replace` operator parsing.
+
+## 2026-09-21 — Character account include repaired and verified
+- `AetherCharacterTypes.h` now has `#include "Accounts/AetherAccountSessionTypes.h"` on its own physical line before the generated header.
+- Verification: the account include occurs exactly once and the literal backtick-r/backtick-n sequence count is zero.
+- The earlier PowerShell escaping issue is fully resolved locally.
+- Next action: inspect the remaining `TNumericLimits` API mismatch against the installed UE 5.8 headers before modifying the test.
