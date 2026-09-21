@@ -1351,3 +1351,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The old runtime symbols that remain in their runtime directories are correct and should not be renamed.
 - The Data-side new symbols are present in their expected Data headers/registries/tests.
 - No compilation was run after the rename because the audit found scope leakage that must be corrected first.
+
+
+## 2026-09-21 — Scope leakage confirmed; targeted repair required
+- Inspection confirms runtime Item APIs in Items remain FAetherItemDefinition, so the three FAetherDataItemDefinition occurrences in EconomyService.cpp are unintended and must be reverted to FAetherItemDefinition.
+- Inspection confirms Quests runtime DataAsset remains FAetherQuestDefinition; the Interaction runtime types/registry now contain FAetherDataQuestDefinition due to the broad replacement and must be reverted to FAetherQuestDefinition.
+- The Data-domain declarations themselves remain correctly renamed.
+- No other files from this inspection require changes.
+- Next action: perform only these targeted reversions, then re-audit affected symbols.
