@@ -1837,3 +1837,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Therefore the project diagnostics are caused by the old/incorrect qualified spelling. Existing tests can preserve their intended application-context semantics by replacing EAutomationTestFlags::ApplicationContextMask with EAutomationTestFlags_ApplicationContextMask; existing EngineFilter/ProductFilter choices remain unchanged.
 - No project source was modified yet.
 - Next action: count all project occurrences before performing the controlled replacement.
+
+
+## 2026-09-21 — Automation flag occurrence count
+- Local source scan found exactly 101 occurrences of EAutomationTestFlags::ApplicationContextMask under Source.
+- The replacement target is confirmed as the UE 5.8 namespace-level EAutomationTestFlags_ApplicationContextMask.
+- No source modification performed in this step.
+- Next action: list the 101 occurrences by file so the controlled replacement scope can be verified before editing.
