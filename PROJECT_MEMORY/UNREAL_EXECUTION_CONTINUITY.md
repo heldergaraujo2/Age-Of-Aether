@@ -1656,3 +1656,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Build still returns FAILED (OtherCompilationError); no new UHT type/shadowing errors are shown in the supplied output. The four Category warnings are the only surfaced diagnostics and must be inspected before changing anything.
 - No runtime/editor PASS is claimed.
 - Next action: inspect the exact AetherNetworkGameState.h declarations around lines 20–42 to determine whether Category should be removed from native-only properties, preserving Replicated/other functional metadata.
+
+
+## 2026-09-21 — NetworkGameState warning declarations inspected
+- Exact lines 30–40 confirm four replicated native-only UPROPERTY fields carry Category metadata but no editor/Blueprint exposure keyword: ProtocolVersion, AuthoritativeStateRevision, ConnectedPlayerCount, and bAcceptingConnections.
+- The warnings are therefore correctly explained by UHT's Category validation; they are not Blueprint integer blockers.
+- GetAuthoritativeStateRevision() is already native-only and remains unchanged.
+- The safe cleanup is to remove only the redundant Category metadata from these four native-only replicated properties, preserving Replicated, types, defaults, and runtime behavior.
+- No source changes were made by this inspection.
+- Next action: remove only those four Category clauses and verify the declarations before rebuilding.
