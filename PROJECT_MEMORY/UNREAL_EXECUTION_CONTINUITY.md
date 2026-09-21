@@ -768,3 +768,17 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Result: no matches returned.
 - Interpretation: the installed UE 5.8 source tree does not expose those exact strings/symbols in the searched files, so the previous hypothesis cannot be confirmed from this search. No project files were changed by this step.
 - Next action must use a different, evidence-driven inspection path for the UHT diagnostic before modifying the five headers.
+
+
+## U0.5 — Verbose UHT/UBT confirmation
+- Editor build was rerun with `-Verbose` and output captured to a temporary log.
+- UHT starts normally (`UHT compiled-in object format Default`), then reports the same five errors, all at line 1:
+  - `Economy/AetherEconomySubsystem.h`
+  - `Items/AetherItemSubsystem.h`
+  - `Multiplayer/AetherMultiplayerSubsystem.h`
+  - `Persistence/AetherPersistenceSubsystem.h`
+  - `Progression/AetherProgressionSubsystem.h`
+- Exact diagnostic remains: the `*.generated.h` include must appear at the top of the header following all other includes.
+- No additional UHT diagnostic was exposed by verbose mode; build stops with `Failed (OtherCompilationError)` in 2.31s.
+- The five headers were previously inspected and visibly place `*.generated.h` after their normal includes, so blindly reordering includes is not yet justified.
+- Next step: inspect the exact raw bytes/line structure of the five failing headers versus a known-good UCLASS header to detect hidden encoding, whitespace, or preprocessor differences before editing.
