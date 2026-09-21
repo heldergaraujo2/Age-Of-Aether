@@ -1484,3 +1484,15 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The command then stopped because the inspection range exceeded the actual file length for the first subsequent file, producing a null-value Trim error. No source files were modified.
 - The remaining affected declarations still need inspection before applying the repair; no assumptions will be made about their exact surrounding UCLASS/UFUNCTION metadata.
 - Next action: inspect the ClientSubsystem declaration block separately with safe bounds.
+
+
+## 2026-09-21 — ClientSubsystem Blueprint blockers inspected
+- Helder's safe inspection completed successfully for AetherClientSubsystem.h.
+- BeginRequest is UFUNCTION(BlueprintCallable) returning uint32.
+- CompleteRequest is UFUNCTION(BlueprintCallable) with uint32 RequestID parameter.
+- GetRequest is UFUNCTION(BlueprintPure) with uint32 RequestID parameter.
+- ExpireRequests already returns int32 and is not an integer-type blocker.
+- ApplyIdentity uses int64 but was not reported by UHT in the current blocker list, so it is not part of this repair batch.
+- No source changes were made.
+- These three uint32 request-management functions should be considered native-only candidates; before changing them, their C++ call sites/Blueprint exposure usage must be checked to avoid removing an intentional public API.
+- Next action: inspect the corresponding implementations and call sites for BeginRequest, CompleteRequest and GetRequest in a compact repository search.
