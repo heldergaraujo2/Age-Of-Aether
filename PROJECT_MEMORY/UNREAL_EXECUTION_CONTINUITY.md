@@ -1720,3 +1720,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Because the failing compiler diagnostics were unable to resolve module-relative includes such as `Accounts/...`, `AI/...`, `Data/...`, `Networking/...`, and even `AgeOfAether.h`, the missing include root is a strong configuration candidate.
 - No Build.cs changes were made yet.
 - Next action: inspect the target module declarations and exact Source directory structure to confirm the intended module/public/private roots before modifying include paths.
+
+
+## 2026-09-21 — Source module directory structure confirmed
+- The local `Source` tree contains exactly one module directory: `Source\\AgeOfAether`.
+- That module contains `Private` and `Public`, matching the header layout implicated by the include failures.
+- The supplied result did not include the requested Target.cs contents, so target configuration has not yet been verified from this command.
+- No files were modified.
+- Next action: read the three Target.cs files directly and verify their module declarations before deciding the minimal Build.cs include-path fix.
