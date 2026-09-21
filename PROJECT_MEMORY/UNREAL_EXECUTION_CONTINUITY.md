@@ -505,3 +505,18 @@ Analysis:
 - The conflict therefore appears related to the UE 5.8 shared `UnrealEditor` build environment/defaults rather than an obvious project rule override.
 - Because UBT explicitly offered `BuildEnvironment = TargetBuildEnvironment.Unique` as the targeted remedy, the safest next step is to inspect the exact generated `.target` receipt and UBT log for the editor target before changing source.
 Next: inspect the generated `Binaries\\Win64\\AgeOfAetherEditor.target` receipt and relevant UBT log lines for the four warning-level properties.
+
+## Entry 024 — U0.4
+Status: DIAGNOSTIC CONFIRMED — SHARED BUILD ENVIRONMENT CONFLICT
+
+Evidence:
+- Generated `AgeOfAetherEditor.target` receipt reports `TargetBuildEnvironment: Shared`.
+- UBT log line 105 explicitly reports four property differences: `UndefinedIdentifierWarningLevel: Off != Error`, `UnreachableCodeWarningLevel: Off != Error`, `ReturnTypeWarningLevel: Off != Error`, `DanglingWarningLevel: Off != Error`.
+- UBT explicitly recommends either removing the modified setting, setting `BuildEnvironment = TargetBuildEnvironment.Unique;`, or forcing the override.
+- The project target/module source inspected so far does not explicitly set these properties.
+
+Analysis:
+- The issue is confirmed as a shared-build-environment compatibility conflict, not a missing target file or failed project-file generation.
+- The generated receipt is partial and must not be treated as proof of a successful editor build.
+- Before modifying source, inspect whether these properties are being supplied through project config (`.ini`) or another rules/configuration file. This avoids adding a workaround when the underlying setting can be removed.
+Next: search project configuration/source text for the four exact property names and related warning/build-environment settings.
