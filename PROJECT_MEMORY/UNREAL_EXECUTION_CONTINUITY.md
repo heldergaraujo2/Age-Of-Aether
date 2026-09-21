@@ -555,3 +555,20 @@ Analysis:
 - The broad search produced line locations but not enough surrounding context to determine the exact default/override flow.
 - No engine files were modified.
 Next: read the focused sections around the two `UEBuildTarget.cs` matches and the `TargetRules.cs` matches that define `TargetBuildEnvironment` and warning properties.
+
+## Entry 027 — U0.4
+Status: ROOT CAUSE IDENTIFIED
+
+Evidence from UE 5.8 source:
+- `BuildSettingsVersion.V6` introduced `UndefinedIdentifierWarningLevel = Error` as a default.
+- `BuildSettingsVersion.V7` (5.8) introduced `ReturnTypeWarningLevel`, `DanglingWarningLevel`, and `UnreachableCodeWarningLevel` as `Error` defaults.
+- `Latest = V7` in this engine.
+- `TargetRules.BuildEnvironment` defaults to `Shared` for installed engines or non-monolithic targets unless explicitly overridden.
+- UBT's `ValidateSharedEnvironment` rejects a shared target when its rules differ from the vanilla target in properties that require a unique environment.
+
+Interpretation:
+- The project explicitly uses `DefaultBuildSettings = BuildSettingsVersion.V5`, while UE 5.8's current defaults are V7. That is the source of the four `Off != Error` differences reported during generation.
+- This is a project target configuration issue, not an engine installation failure.
+- The cleanest compatibility correction is to move the three project targets from V5 to the UE 5.8 current defaults (V7/Latest), rather than forcing a unique build environment and retaining stale warning defaults.
+- This should be applied consistently to Game, Editor, and Server targets.
+Next: inspect the exact current target files once more only if needed; then make the minimal source change from `BuildSettingsVersion.V5` to `BuildSettingsVersion.V7` in all three targets, regenerate project files, and verify the conflict disappears before compiling.
