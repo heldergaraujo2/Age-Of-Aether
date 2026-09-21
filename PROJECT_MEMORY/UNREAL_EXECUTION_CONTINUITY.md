@@ -1665,3 +1665,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The safe cleanup is to remove only the redundant Category metadata from these four native-only replicated properties, preserving Replicated, types, defaults, and runtime behavior.
 - No source changes were made by this inspection.
 - Next action: remove only those four Category clauses and verify the declarations before rebuilding.
+
+
+## 2026-09-21 — NetworkGameState Category cleanup verified
+- Local verification confirms all four native-only replicated properties in `AetherNetworkGameState.h` now use `UPROPERTY(Replicated)` with no Category metadata.
+- Preserved fields/types/defaults: `ProtocolVersion`, `AuthoritativeStateRevision`, `ConnectedPlayerCount`, `bAcceptingConnections`.
+- Verification reports `UPROPERTY Replicated + Category restantes: 0`.
+- The previous UHT Category warnings are therefore addressed at source level.
+- Next action: rerun the authoritative `AgeOfAetherEditor Win64 Development` build to expose the next remaining compile/UHT issue, if any.
