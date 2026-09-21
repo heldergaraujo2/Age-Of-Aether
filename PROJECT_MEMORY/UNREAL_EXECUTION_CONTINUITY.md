@@ -1202,3 +1202,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The directory-qualified generated-header form is now the strongest source-level lead and matches the unusual UHT diagnostic about where the generated include must appear.
 - No source modification has been made yet.
 - Next action: inventory all project headers that include a `.generated.h` with a directory path, so the fix scope can be limited to the affected pattern before editing.
+
+
+## U0.5 — Qualified generated-header inventory
+- Directory-qualified `.generated.h` includes are not unique to the five failing subsystem headers.
+- Known-good reflected headers also use the qualified form, including `Characters/AetherCharacterTypes.generated.h`, `Combat/AetherCombatTypes.generated.h`, `Creatures/AetherCreatureTypes.generated.h`, `Items/AetherItemTypes.generated.h`, `Progression/AetherProgressionTypes.generated.h`, `Skills/AetherSkillTypes.generated.h`, and `World/AetherWorldTypes.generated.h`.
+- Therefore the qualified generated-header path itself is not sufficient to explain the five UHT failures and should not be mass-changed.
+- No source modification made.
+- Next action: identify known-good `UCLASS` headers that are also `UGameInstanceSubsystem` subclasses and compare their exact include/declaration structure with the five failing subsystem headers.
