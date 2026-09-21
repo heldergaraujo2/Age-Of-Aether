@@ -717,3 +717,10 @@ STATUS: INVESTIGATION CONTINUES
 - Their `.generated.h` includes are visibly last among the include directives, matching standard Unreal conventions.
 - The previous output did not include the requested inventory of all generated-header files, so no source-level comparison with a known-good project header was established yet.
 - No edits made in this step.
+
+
+## U0.5 — UCLASS/generated header inventory
+STATUS: PARTIAL RESULT
+- The project contains 73 headers under `Public` matching both `UCLASS()` and a `.generated.h` include.
+- The detailed table output was not included in the returned terminal result, so it is not sufficient to identify a known-good comparison file from this command alone.
+- No source changes made.
