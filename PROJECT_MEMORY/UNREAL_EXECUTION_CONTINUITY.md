@@ -75,3 +75,5 @@
 - `Private/Tests/AetherClassBalanceTests.cpp` includes BalanceConfig, BalanceRegistry and ClassCatalog, but not `Data/AetherClassRegistry.h`.
 - `FAetherClassRegistry` is a concrete class declared by `Public/Data/AetherClassRegistry.h`, so the missing direct include explains the incomplete/undefined type errors in this test.
 - Next repair: add `#include "Data/AetherClassRegistry.h"` to the test include block, then rebuild.
+
+- Applied direct include `Data/AetherClassRegistry.h` to `Private/Tests/AetherClassBalanceTests.cpp`; local verification shows the include present.
