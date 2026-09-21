@@ -16,29 +16,39 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.1 — Locate/confirm Unreal installation; Epic root exists but contains only launcher/support folders at its top level.
-- Last command/result: C:\Program Files\Epic Games top-level listing.
-- Blockers: exact installed engine location/version still needs verification.
+- Current step: U0.2 — Verify exact engine version/path; Epic Launcher manifest now identifies UE_5.8 at D:\Unreal\UE_5.8.
+- Last command/result: Epic Games Launcher manifest lookup.
+- Blockers: the installed engine is confirmed as Unreal Engine 5.8.2, while the project continuity target is 5.8.1; exact compatibility must be checked before changing project configuration or building.
 
 # U0 — Environment & Project Health
 
 ## U0.1 — Confirm project + Unreal installation
-Status: PARTIAL — ENGINE LOCATION NOT YET CONFIRMED
+Status: COMPLETE — INSTALLATION PATH IDENTIFIED
 
 Result:
 - Project found: D:\Projeto Age of Aether\Age-Of-Aether-main\AgeOfAether.uproject
 - Epic Games Unreal Engine registry key exists with INSTALLDIR = C:\Program Files\Epic Games\
-- Top-level contents of that directory are only DirectXRedist, GameInputRedist, and Launcher.
-- No UE_5.8 engine directory is present at that top level.
-- This is consistent with the engine being installed elsewhere while Epic Launcher/support files remain under C:\Program Files\Epic Games\.
+- Epic Launcher manifest identifies AppName = UE_5.8.
+- InstallLocation = D:\Unreal\UE_5.8.
 
 Analysis:
-- We should not perform another full-drive recursive scan.
-- The Epic Games Launcher maintains installation manifests that can reveal the exact Unreal Engine installation path and version.
-- U0.1 remains PARTIAL until that manifest evidence is obtained.
+- The exact engine installation location is now known.
+- No more disk-wide search is necessary.
+- The engine executable should be under D:\Unreal\UE_5.8\Engine\Binaries\Win64\.
+- The manifest reports version 5.8.2-56702186+++UE5+Release-5.8-Windows.
 
 ## U0.2 — Verify exact engine version
-Status: PENDING
+Status: PARTIAL — VERSION CONFIRMED AS 5.8.2
+
+Result:
+- DisplayName: Unreal Engine
+- AppName: UE_5.8
+- AppVersion: 5.8.2-56702186+++UE5+Release-5.8-Windows
+
+Analysis:
+- The local installed engine is 5.8.2, not 5.8.1.
+- This is not a failure by itself because 5.8.2 is in the UE 5.8 release line, but we must verify the project/runtime compatibility before proceeding.
+- Do not modify the project version or install another engine yet.
 
 ## U0.3 — Backup/working-tree safety
 Status: PENDING
@@ -182,5 +192,15 @@ Result:
 - DirectXRedist
 - GameInputRedist
 - Launcher
-Analysis: No UE engine folder exists at the top level of the registered Epic root. The next diagnostic should query Epic Launcher installation manifests rather than scan the disks.
-Next: Run exactly one manifest lookup command.
+Analysis: No UE engine folder exists at the top level of the registered Epic root.
+
+## Entry 005 — U0.1 / U0.2
+Status: COMPLETE — PATH AND VERSION CONFIRMED
+Command: Epic Games Launcher manifest lookup.
+Result:
+- AppName: UE_5.8
+- DisplayName: Unreal Engine
+- InstallLocation: D:\Unreal\UE_5.8
+- AppVersion: 5.8.2-56702186+++UE5+Release-5.8-Windows
+Analysis: Unreal Engine installation is confirmed at D:\Unreal\UE_5.8 and the installed version is 5.8.2. The project continuity target says 5.8.1, so compatibility must be verified before proceeding.
+Next: Verify the project's declared Unreal Engine association/version without changing it.
