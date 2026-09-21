@@ -731,3 +731,11 @@ STATUS: INVESTIGATION
 - The project contains many non-subsystem UCLASS headers with generated headers, including `AetherGameInstance.h`, `AetherCharacter.h`, `AetherItemDefinitionDataAsset.h`, `AetherEconomyConfigDataAsset.h`, and others.
 - These provide candidates for a direct structural comparison against the 5 failing subsystem headers.
 - No edits made.
+
+
+## U0.5 — Structural comparison
+STATUS: INVESTIGATION — DIFFERENCE NOT YET PROVEN
+- `AetherGameInstance.h` (known non-failing candidate) places a blank line between its normal includes and its `.generated.h`.
+- The 5 failing subsystem headers place the `.generated.h` immediately after the last normal include (except equivalent whitespace differences).
+- This is a potential difference, but it is not yet sufficient evidence that whitespace is the root cause.
+- No source changes made; next step is to inspect the exact Unreal Header Tool diagnostic implementation for this error before changing all 5 headers.
