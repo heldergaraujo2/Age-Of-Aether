@@ -1822,3 +1822,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Additional independent blockers surfaced: `AetherCharacterTypes.generated.h` is included with the module-relative `Characters/...` path and cannot be found; `AetherAssetPipelineTypes.h` does not have `EAetherAssetType` visible; `AetherAudioSubsystem.cpp` incorrectly treats `TMap<FString,TObjectPtr<UAudioComponent>>.Find()` as returning raw-pointer-to-pointer; `AetherClassBalanceSimulation.cpp/tests` reference missing `TargetClassID`/ `TargetEvolutionID` fields; `AetherClassBalanceTests.cpp` lacks a visible complete `FAetherClassRegistry`; `AetherCharacterAnimationTests.cpp` and `AetherProductionTests.cpp` use unavailable `TNumericLimits<float>::Infinity()` / `TNumericLimits<double>::QuietNaN()`; `AetherQuestDialogueEventTypes.cpp` contains literal `\\n` tokens inside C++ source; `AetherRecipeRegistry.cpp` has a malformed `TEXT`/format-string expression; and `AetherWorldStreamingCoordinator.cpp` stores a non-const subsystem in a const pointer before calling non-const `SetMapActive`.
 - Because several diagnostics are independent, the output must be handled as root causes rather than chasing cascaded errors. No runtime/editor PASS is claimed.
 - Next action: inspect the installed UE 5.8 definition/usages of `EAutomationTestFlags` to identify the exact supported context flag before modifying the project tests. Then repair/test one root cause at a time.
+
+
+## 2026-09-21 — UE 5.8 automation flag search completed
+- The installed-engine search found the canonical automation flag declarations/usages in Engine\\Source\\Runtime\\Core\\Public\\Misc\\AutomationTest.h.
+- The previous command returned paths only and did not expose the enum members, so no replacement for ApplicationContextMask was inferred.
+- No project files were modified.
+- Next action: read the exact EAutomationTestFlags declaration from the installed UE 5.8 AutomationTest.h.
