@@ -66,3 +66,7 @@
 - `FAetherBalanceSimulationCase` now contains `TargetClassID` and `TargetEvolutionID` immediately after `EvolutionID`.
 - PowerShell verified both fields and no other struct fields were changed.
 - Awaiting real UE build validation.
+
+## 2026-09-21 — Class registry declaration located
+- `FAetherClassRegistry` is declared/used through `Public/Data/AetherClassRegistry.h`; `AetherClassBalanceTests.cpp` references it at lines 69 and 88.
+- Next step is to inspect the test's include block and the registry header before adding a direct include.
