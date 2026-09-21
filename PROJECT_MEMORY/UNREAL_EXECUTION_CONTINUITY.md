@@ -803,3 +803,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
   - No direct service header contains a generated include.
 - This means a nested generated-header presence exists in two transitive DataAsset dependencies (`AetherEconomyConfigDataAsset.h`, `AetherItemDefinitionDataAsset.h`, `AetherProgressionConfigDataAsset.h`), but the pattern itself is normal Unreal code and does not yet establish the cause.
 - Next action: inspect the actual include graph/order of the five failing headers, including the types and DataAsset headers, to identify whether a generated header is being reached before the subsystem's generated header or whether a header-name collision remains.
+
+
+## U0.5 — Include graph resolver limitation
+- The attempted project-only include resolver could not resolve any includes because it searched for paths under `Public\$inc`, while many includes are module-root or engine includes and generated headers are generated artifacts.
+- Therefore this output does not prove an include-graph problem and no project files were changed.
+- The five failing headers remain syntactically normal at source level.
+- Next action: inspect the Unreal module's build configuration and UHT-generated manifest/metadata for header discovery and generated-header mapping, rather than continuing with the incomplete custom resolver.
