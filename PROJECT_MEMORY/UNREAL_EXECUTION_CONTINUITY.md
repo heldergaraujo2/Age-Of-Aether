@@ -1134,3 +1134,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The repository still contains those obsolete files and lacks the new `AetherItemDataTypes.h/.cpp` paths, so synchronization is required before continuing runtime/UHT work.
 - No local or remote files were modified by this confirmation.
 - Next action: print the complete local contents of the five files that must be created/updated so the exact local bytes can be transferred to GitHub without guessing or reconstructing source.
+
+
+## U0.5 — Local source payload captured for synchronization
+- Exact local contents were captured for the five controlled source files required for repository synchronization.
+- Three target files are local V7 versions: Game, Editor, Server.
+- The renamed Data API files are present locally as `AetherItemDataTypes.h` and `AetherItemDataTypes.cpp`; their exact local contents were captured.
+- No source reconstruction or guessing is required for the synchronization.
+- Next action: apply these exact local contents to the corresponding GitHub paths, create the two renamed Data files, update the three target files, and delete the two obsolete duplicate-basename Data files using their current remote blob SHAs.
