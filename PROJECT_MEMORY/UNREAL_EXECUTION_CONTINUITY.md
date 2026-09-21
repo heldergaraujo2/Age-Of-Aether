@@ -50,3 +50,8 @@
 - CharacterAnimation and Production sentinel calls were replaced with the standard C++ `std::numeric_limits<float>::infinity()` and `std::numeric_limits<double>::quiet_NaN()` APIs, with `<limits>` included as needed.
 - The verification output shown by Helder confirms a remaining `std::numeric_limits` match at `AetherClassBalanceTests.cpp:45`; this is a separate existing usage and must be inspected before any modification.
 - Next action: inspect the exact ClassBalance line 45 and nearby context, then continue with the next compiler blocker.
+
+## 2026-09-21 — Numeric sentinel verification discrepancy
+- Helder's latest verification still reports the original `TNumericLimits<float>::Infinity()` and `TNumericLimits<double>::QuietNaN()` at lines 22/12, despite the preceding command reporting the standard-library usage at ClassBalance line 45.
+- Therefore the previous replacement command did not persist those two edits as expected; do not proceed as if this blocker were fixed.
+- Next action: directly inspect the exact two files/lines and perform a targeted `String.Replace` with explicit before/after verification in the same command.
