@@ -16,9 +16,9 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.4 — Unreal tooling discovery.
-- Last command/result: recursive search of the full UE 5.8 installation found no UnrealBuildTool.exe or UnrealHeaderTool.exe.
-- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. Standalone UBT/UHT executables and the earlier project-file generator names have not been found. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
+- Current step: U0.4 — Unreal build entry point identified.
+- Last command/result: UE 5.8 contains Engine\\Build\\BatchFiles\\Build.bat and RunUAT.bat.
+- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. Project-file generation has not yet been performed and runtime/editor launch or build has not been verified. Do not initialize Git or alter/copy files yet.
 
 # U0 — Environment & Project Health
 
@@ -397,3 +397,19 @@ Analysis:
 - The expected source-build/project-generation toolchain is not exposed under the usual standalone filenames in this installed distribution.
 - No project files were modified.
 Next: inspect the UE 5.8 installation for the AutomationTool/Build scripts that normally provide the build/project-generation entry points.
+
+## Entry 018 — U0.4
+Status: DIAGNOSTIC PASS — UE BUILD ENTRY POINT IDENTIFIED
+
+Command:
+Search `D:\\Unreal\\UE_5.8\\Engine\\Build` for build/automation scripts.
+
+Result:
+- `D:\\Unreal\\UE_5.8\\Engine\\Build\\BatchFiles\\Build.bat`
+- `D:\\Unreal\\UE_5.8\\Engine\\Build\\BatchFiles\\RunUAT.bat`
+
+Analysis:
+- The installed UE 5.8 distribution provides the standard Build.bat and RunUAT.bat entry points even though standalone UBT/UHT executables are not present.
+- We now have a confirmed build entry point for the next controlled phase.
+- No project files were modified by this diagnostic.
+Next: inspect Build.bat help/usage only, without invoking a project build yet, to confirm the accepted target/platform/configuration syntax in this installed engine.
