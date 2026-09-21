@@ -724,3 +724,10 @@ STATUS: PARTIAL RESULT
 - The project contains 73 headers under `Public` matching both `UCLASS()` and a `.generated.h` include.
 - The detailed table output was not included in the returned terminal result, so it is not sufficient to identify a known-good comparison file from this command alone.
 - No source changes made.
+
+
+## U0.5 — Known-good UCLASS candidates identified
+STATUS: INVESTIGATION
+- The project contains many non-subsystem UCLASS headers with generated headers, including `AetherGameInstance.h`, `AetherCharacter.h`, `AetherItemDefinitionDataAsset.h`, `AetherEconomyConfigDataAsset.h`, and others.
+- These provide candidates for a direct structural comparison against the 5 failing subsystem headers.
+- No edits made.
