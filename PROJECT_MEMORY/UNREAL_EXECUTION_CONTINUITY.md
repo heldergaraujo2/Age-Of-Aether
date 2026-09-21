@@ -882,3 +882,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No anomalous source path, duplicate header, or generated-header path is visible in this response file.
 - The prior command output did not include the `SOURCE` section, so the `.cpp` contents remain unverified.
 - Next action: inspect the exact source file and compare its first include with the subsystem header/diagnostic.
+
+
+## U0.5 — Economy subsystem source inspection
+- `Private/Economy/AetherEconomySubsystem.cpp` begins with `#include "Economy/AetherEconomySubsystem.h"`, followed by `Items/AetherItemSubsystem.h` and `Engine/GameInstance.h`.
+- The source's first include correctly corresponds to its subsystem header; no `.generated.h` is included from the `.cpp`.
+- The source itself shows no unusual preprocessor directives before the first include.
+- This does not explain UHT's generated-header ordering diagnostic; investigation should now compare the exact failing header bytes/line endings and a known-good UCLASS header at a lower level, including file attributes and newline encoding.
