@@ -1009,3 +1009,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The `AgeOfAether` module object classifies the three compared headers under `PrivateHeaders`: `AetherGameInstance.h`, `AetherEconomyConfigDataAsset.h`, and `AetherEconomySubsystem.h`.
 - This confirms the failing Economy subsystem is registered in the same manifest header collection as the known-good GameInstance and DataAsset, so simple manifest omission/classification is not the differentiator.
 - The result did not include the full module field summary, so the next probe will compare only the header-list membership/order around these three entries.
+
+
+## U0.5 — Manifest module field result
+- The `AgeOfAether` module manifest data classifies `AetherGameInstance.h`, `AetherEconomyConfigDataAsset.h`, and `AetherEconomySubsystem.h` under the same `PrivateHeaders` collection.
+- This shows the failing Economy subsystem and known-good GameInstance/DataAsset are registered through the same manifest header category; there is no category mismatch between them.
+- The remaining distinction is therefore inside UHT parsing/processing or the source/header dependency state, not basic manifest registration.
+- Next action: compare the exact generated-header include location and UCLASS declaration of the failing subsystem against the known-good GameInstance using a minimal structural probe, then test the smallest reversible source change only if a concrete difference is found.
