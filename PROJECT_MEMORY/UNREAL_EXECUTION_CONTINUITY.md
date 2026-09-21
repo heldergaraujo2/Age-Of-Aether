@@ -1225,3 +1225,15 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - All five failing subsystem headers have the same broad ordering, but uniquely use directory-qualified generated includes: `Economy/...generated.h`, `Items/...generated.h`, `Multiplayer/...generated.h`, `Persistence/...generated.h`, `Progression/...generated.h`.
 - This remains the only concrete source-level difference consistently shared by all five failures and absent from the known-good `UGameInstanceSubsystem` set.
 - Controlled next repair: change only those five generated includes from directory-qualified paths to bare basenames. No other generated-header includes will be changed.
+
+
+## U0.5 — Controlled generated-header include repair applied
+- Changed only the five failing subsystem headers from directory-qualified generated includes to bare generated-header basenames.
+- Verified locally that all five now use the bare form:
+  - `AetherEconomySubsystem.generated.h`
+  - `AetherItemSubsystem.generated.h`
+  - `AetherMultiplayerSubsystem.generated.h`
+  - `AetherPersistenceSubsystem.generated.h`
+  - `AetherProgressionSubsystem.generated.h`
+- No other generated-header include was modified by this step.
+- Build/UHT result is not yet known; this repair must be compiled next.
