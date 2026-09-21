@@ -1379,3 +1379,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No old Data-domain reflected symbol appears in the inspected global references.
 - The duplicate UHT names should therefore be resolved by the Data-domain renames, pending compilation verification.
 - Next action: run the editor build/UHT again; this is the first compilation attempt after completing and auditing the rename repair.
+
+
+## 2026-09-21 — UHT reduced to one genuine collision
+- Editor build reached UHT and now reports exactly one duplicate reflected name:
+  FAetherQuestDefinition in Public/Quests/AetherQuestTypes.h conflicts with FAetherQuestDefinition in Public/Interaction/AetherInteractionTypes.h.
+- All previous duplicate-name errors are gone, confirming the Data-domain rename repair worked for the other nine symbol collisions.
+- The remaining collision is between two runtime-domain structs and requires semantic inspection before renaming either one.
+- No further source changes made in this step.
+- Next action: inspect the Interaction quest declaration and all direct Interaction quest registry consumers to determine the correct unique runtime name without altering the Quests runtime API.
