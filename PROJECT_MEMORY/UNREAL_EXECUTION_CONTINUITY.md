@@ -1476,3 +1476,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Three name-shadowing UHT blockers remain: SetGuildRole/ServerSetGuildRole parameter Role and ClientReceiveCharacterOperation parameter Character.
 - The correct repair strategy is selective Blueprint exposure removal for unsupported integer members/functions, plus safe parameter renaming for the three shadowing cases, preserving native/server-authoritative types and behavior.
 - Next action: inspect the exact affected USTRUCT/UCLASS declarations and nearby metadata in a compact command, then apply the smallest safe UHT-compatible repair.
+
+
+## 2026-09-21 — Focused declaration inspection partially completed
+- Helder executed the compact declaration-inspection command.
+- The AI declarations were successfully inspected: FAetherAIResponse::RequestId and FAetherAIRequest::RequestId are uint64 UPROPERTY(BlueprintReadOnly) fields inside BlueprintType structs, confirming they are direct Blueprint exposure blockers.
+- The command then stopped because the inspection range exceeded the actual file length for the first subsequent file, producing a null-value Trim error. No source files were modified.
+- The remaining affected declarations still need inspection before applying the repair; no assumptions will be made about their exact surrounding UCLASS/UFUNCTION metadata.
+- Next action: inspect the ClientSubsystem declaration block separately with safe bounds.
