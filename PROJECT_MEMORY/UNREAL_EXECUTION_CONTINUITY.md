@@ -1914,3 +1914,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - New actionable blockers observed: `TObjectPtr<UAudioComponent>` lookup type mismatch in audio subsystem; generated-header include paths for Character/Creature/Interaction types; missing target IDs in `FAetherBalanceSimulationCase`; missing `FAetherClassRegistry` visibility in balance tests; invalid `TNumericLimits` APIs (`Infinity`, `QuietNaN`); presentation test `FString`/`const TCHAR*` mismatch; content-package test uses `Errors` before declaration; inventory test missing type visibility; literal `\\n` in quest dialogue source; non-const world subsystem pointer; malformed `TEXT`/`FString::Printf` call.
 - Build reached 75/78 reported actions and failed with `OtherCompilationError`; no runtime PASS is implied.
 - Next diagnostic will verify exact generated-header output paths before modifying includes.
+
+
+## 2026-09-21 — Generated headers for Character/Creature/Interaction confirmed
+- Local UHT output contains all three generated headers at the standard UE 5.8 path: `Intermediate\\Build\\Win64\\UnrealEditor\\Inc\\AgeOfAether\\UHT\\AetherCharacterTypes.generated.h`, `AetherCreatureTypes.generated.h`, and `AetherInteractionTypes.generated.h`.
+- Therefore the current C1083 errors are include-path mismatches in the project headers, analogous to the already repaired `AetherWorldTypes.h`; the generated files themselves exist.
+- No source files were modified by this diagnostic.
+- Next action: replace only the three affected generated-header includes with their bare filenames, then verify all three headers before rebuilding.
