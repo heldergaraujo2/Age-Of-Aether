@@ -20,3 +20,7 @@
 ## 2026-09-21 — Local repair confirmed
 - Public/Combat/AetherCombatTypes.h generated include was repaired locally to the bare `AetherCombatTypes.generated.h` include and verified by PowerShell.
 - The four confirmed generated-header path blockers from the latest build are now locally repaired: Items, Progression, Skills, Combat. A real UE build is still required to validate them.
+
+## 2026-09-21 — Local repair confirmed
+- AetherQuestDialogueEventTypes.cpp literal `\\n` tokens in ValidateSingle were replaced with real line breaks and verified by PowerShell at the Conditions.Add(*this) line.
+- Awaiting a real UE build before treating the source blocker as resolved.
