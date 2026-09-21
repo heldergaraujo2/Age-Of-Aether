@@ -471,3 +471,22 @@ Analysis:
 - The exact editor target source file is now identified and should be inspected before any modification or compilation.
 - No project files were changed by this inspection command.
 Next: read `Source\\AgeOfAetherEditor.Target.cs` exactly as currently present in the local project.
+
+## Entry 022 — U0.4
+Status: INSPECTION RESULT — EDITOR TARGET SOURCE READ
+
+Command:
+`Get-Content Source\\AgeOfAetherEditor.Target.cs`
+
+Result:
+- Target type is `Editor`.
+- `DefaultBuildSettings = BuildSettingsVersion.V5`.
+- `IncludeOrderVersion = EngineIncludeOrderVersion.Latest`.
+- Module `AgeOfAether` is added.
+- The file does NOT explicitly set the warning-level properties named by UBT.
+- The file does NOT set `BuildEnvironment = TargetBuildEnvironment.Unique` or `bOverrideBuildEnvironment = true`.
+
+Analysis:
+- The UBT conflict is not directly configured in this target file; it is likely inherited from engine/default target settings versus the generated/shared UnrealEditor build environment.
+- Do not blindly add a unique build environment yet; first inspect the other target/module rules to determine whether the project is overriding warning settings elsewhere.
+Next: inspect `Source\\AgeOfAether.Target.cs`, `Source\\AgeOfAetherServer.Target.cs`, and `Source\\AgeOfAether.Build.cs` for warning/build-environment overrides.
