@@ -666,3 +666,18 @@ STATUS: PASS
 - New Data header exists at `Public/Data/AetherItemDataTypes.h`.
 - The renamed header and all 6 include updates are internally consistent at path level.
 - Ready for the next controlled editor/UHT compilation attempt.
+
+
+## U0.5 — Editor/UHT compilation attempt after header rename
+STATUS: FAILED — NEW UHT INCLUDE-ORDER ERRORS
+- The previous duplicate-header basename error is resolved; UHT progressed further.
+- Current errors:
+  - `Private/Data/AetherItemTypes.cpp(1)`: expected `AetherItemTypes.h` to be the first header included. This is now stale because the Data header was renamed to `AetherItemDataTypes.h`; the source file itself still has a filename/header-name expectation mismatch to repair.
+  - `Public/Economy/AetherEconomySubsystem.h`: generated header include ordering error.
+  - `Public/Items/AetherItemSubsystem.h`: generated header include ordering error.
+  - `Public/Multiplayer/AetherMultiplayerSubsystem.h`: generated header include ordering error.
+  - `Public/Persistence/AetherPersistenceSubsystem.h`: generated header include ordering error.
+  - `Public/Progression/AetherProgressionSubsystem.h`: generated header include ordering error.
+- Result: `Failed (OtherCompilationError)` in 2.97s.
+- The duplicate basename UHT error is no longer present.
+- Next action must inspect the exact first lines/includes of the 6 affected headers and the renamed Data implementation before making any edits.
