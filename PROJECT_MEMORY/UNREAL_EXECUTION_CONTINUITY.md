@@ -644,3 +644,10 @@ STATUS: COMPLETE — INCLUDE UPDATES PENDING
 - Source and destination checks passed; destination did not previously exist.
 - No file contents were changed by this operation.
 - Existing includes still referencing `Data/AetherItemTypes.h` must now be updated in a controlled manner.
+
+
+## U0.5 — Conflicting include references identified
+STATUS: COMPLETE — 6 REFERENCES FOUND
+- After renaming the Data header, exactly 6 source references still use `Data/AetherItemTypes.h`.
+- References are in `Private/Data/AetherItemTypes.cpp`, `Public/Characters/AetherEquipmentVisualComponent.h`, `Public/Characters/AetherEquipmentVisualProfile.h`, `Public/Data/AetherItemRegistry.h`, `Public/Items/AetherInventoryTypes.h`, and `Public/Items/AetherLootTypes.h`.
+- No other `.h` or `.cpp` source reference to the old Data header path was found by the controlled search.
