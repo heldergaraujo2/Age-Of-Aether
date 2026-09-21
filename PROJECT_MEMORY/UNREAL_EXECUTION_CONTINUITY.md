@@ -1036,3 +1036,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This is expected for UHT-generated headers and rules out a physical duplicate-file collision for these exact generated names.
 - The five failures remain a UHT validation condition rather than an on-disk generated-header collision.
 - Next action: inspect UHT-generated metadata/output for a known-good and failing class to identify whether UHT believes another include occurred before the generated include.
+
+
+## U0.5 — Intermediate artifact result
+- Each of the five failing subsystems has exactly one intermediate artifact: its `.cpp.obj.rsp` response file.
+- No generated-header, UHT-generated C++, or other subsystem-specific UHT output is present in the searched Intermediate tree.
+- This is consistent with UHT aborting during header validation before generated-header emission/normal compilation proceeds.
+- The response files confirm the compiler action exists, but they do not explain the UHT header diagnostic.
+- Next action: inspect the UHT-generated response/manifest state immediately before failure by comparing the failing subsystem's `.cpp.obj.rsp` with a known-good UCLASS source response file and checking whether the failing source is compiled with unusual forced includes/defines.
