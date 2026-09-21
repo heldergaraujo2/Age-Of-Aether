@@ -1098,3 +1098,19 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Generated directories were explicitly excluded from the inventory: Intermediate, Binaries, Saved, DerivedDataCache.
 - The local source tree includes the controlled changes already identified: `AetherItemDataTypes.cpp`, `AetherItemDataTypes.h`, and the three Target.cs files, plus the five failing subsystem headers and their implementations.
 - Inventory did not itself prove which files differ from GitHub; the next action is a targeted hash comparison of the known controlled-change files against their repository versions before any synchronization.
+
+
+## U0.5 — Local controlled-change hash inventory
+- Helder verified the local hashes of the files that were intentionally changed during the UE 5.8/UHT investigation.
+- Local files present:
+  - `Source/AgeOfAether.Target.cs` — SHA256 `E3B97AD0F5049C79D1E9AC139588A8ECB4C24F2275909BC524B4CC0115B11429`
+  - `Source/AgeOfAetherEditor.Target.cs` — SHA256 `2B3E6C76628357AB1053507C53BA385E626E3C6FCCE5FDD678E1A60EFCA51CDC`
+  - `Source/AgeOfAetherServer.Target.cs` — SHA256 `6B79D9862A6DE0E8DA1B3E84FB7487193A0E93B9BFC2DB785897C6A8DD59F3F1`
+  - `Source/AgeOfAether/Public/Data/AetherItemDataTypes.h` — SHA256 `F415174A7B92430CFCDA492A8B73C6D0CC99F5688785FC541474F7ECE6182A1A`
+  - `Source/AgeOfAether/Private/Data/AetherItemDataTypes.cpp` — SHA256 `69F3FD45F6E1A5B8DCCE655651C0872E0D9793F04E19ACA30F2E81B2C8906076`
+- Confirmed absent locally:
+  - `Source/AgeOfAether/Private/Data/AetherItemTypes.cpp`
+  - `Source/AgeOfAether/Public/Data/AetherItemTypes.h`
+- This confirms the local rename from the duplicate `AetherItemTypes` basename to `AetherItemDataTypes` is complete on disk, and the three target files contain the V7 build-settings changes.
+- These hashes are local evidence only; they do not yet prove whether GitHub contains the same bytes.
+- Next action: fetch the corresponding GitHub files and compare their repository SHA/content with the local state before synchronizing anything.
