@@ -17,8 +17,8 @@
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
 - Current step: U0.4 — Unreal project-file generation prerequisite discovery.
-- Last command/result: UnrealVersionSelector.exe was not found at the expected UE 5.8 Win64 path when invoked.
-- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. The expected UnrealVersionSelector executable path is invalid or absent. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
+- Last command/result: recursive search inside D:\Unreal\UE_5.8\Engine for UnrealVersionSelector.exe and GenerateProjectFiles scripts returned no output.
+- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. No expected project-file generator was found under the Engine directory. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
 
 # U0 — Environment & Project Health
 
@@ -348,3 +348,19 @@ Analysis:
 - No project files were modified by the failed invocation.
 - U0.4 generation remains incomplete.
 Next: locate the actual project-file generation tooling inside the confirmed UE 5.8 installation, without modifying the project.
+
+## Entry 015 — U0.4
+Status: BLOCKED — NO EXPECTED PROJECT-FILE GENERATOR FOUND UNDER ENGINE
+
+Command:
+Recursive search inside `D:\\Unreal\\UE_5.8\\Engine` for `UnrealVersionSelector.exe`, `GenerateProjectFiles.bat`, and `GenerateProjectFiles.command`.
+
+Result:
+- No output.
+
+Analysis:
+- None of the expected project-file generator names was found under the Engine directory.
+- This does not indicate that the Unreal installation is broken; the installed distribution may expose project generation through another tool/workflow.
+- No files were modified.
+- U0.4 generation remains blocked until the correct installed tooling is identified.
+Next: inspect the confirmed UE 5.8 installation's Win64 binaries for available Unreal build/tool executables, without changing the project.
