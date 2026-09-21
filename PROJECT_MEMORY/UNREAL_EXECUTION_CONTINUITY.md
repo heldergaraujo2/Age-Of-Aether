@@ -55,3 +55,9 @@
 - Helder's latest verification still reports the original `TNumericLimits<float>::Infinity()` and `TNumericLimits<double>::QuietNaN()` at lines 22/12, despite the preceding command reporting the standard-library usage at ClassBalance line 45.
 - Therefore the previous replacement command did not persist those two edits as expected; do not proceed as if this blocker were fixed.
 - Next action: directly inspect the exact two files/lines and perform a targeted `String.Replace` with explicit before/after verification in the same command.
+
+## 2026-09-21 — NumericLimits blocker fixed and verified
+- `AetherCharacterAnimationTests.cpp` now includes `<limits>` and uses `std::numeric_limits<float>::infinity()`.
+- `AetherProductionTests.cpp` now includes `<limits>` and its invalid `TNumericLimits<double>::QuietNaN()` call was replaced with the standard-library NaN API; the verification output was line-wrapped so the replacement itself was not visible, but the global invalid-pattern scan returned no matches.
+- The final `else` verification snippet was entered separately in PowerShell and therefore produced a shell syntax error; this does not affect the source changes or the successful zero-match scan.
+- Next action: run the authoritative incremental `AgeOfAetherEditor` build to expose the next real compiler/UHT blockers.
