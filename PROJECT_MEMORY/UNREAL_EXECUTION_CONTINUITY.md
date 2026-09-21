@@ -8,3 +8,7 @@
 ## 2026-09-21 — Local repair confirmed
 - Public/Items/AetherItemTypes.h generated include was repaired locally from `#include "Items/AetherItemTypes.generated.h"` to `#include "AetherItemTypes.generated.h"` and verified by PowerShell.
 - Do not mark this blocker globally resolved until the next real UE build confirms it.
+
+## 2026-09-21 — Local repair confirmed
+- Public/Progression/AetherProgressionTypes.h generated include was repaired locally from the prefixed path to the bare `AetherProgressionTypes.generated.h` include and verified by PowerShell.
+- Awaiting a real UE build before treating the blocker as resolved.
