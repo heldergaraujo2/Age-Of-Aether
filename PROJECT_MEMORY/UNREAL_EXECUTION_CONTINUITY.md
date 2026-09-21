@@ -1016,3 +1016,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This shows the failing Economy subsystem and known-good GameInstance/DataAsset are registered through the same manifest header category; there is no category mismatch between them.
 - The remaining distinction is therefore inside UHT parsing/processing or the source/header dependency state, not basic manifest registration.
 - Next action: compare the exact generated-header include location and UCLASS declaration of the failing subsystem against the known-good GameInstance using a minimal structural probe, then test the smallest reversible source change only if a concrete difference is found.
+
+
+## U0.5 — Next probe narrowed
+- The manifest category is identical for the failing Economy subsystem and known-good GameInstance/DataAsset (`PrivateHeaders`).
+- No manifest-level distinction remains to explain the error.
+- The next probe will compare only the preprocessor/include structure and UCLASS/generated-body structure of one failing subsystem against `AetherGameInstance.h`, without changing source files.
