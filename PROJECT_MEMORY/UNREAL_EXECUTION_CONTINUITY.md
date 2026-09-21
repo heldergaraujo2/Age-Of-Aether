@@ -1706,3 +1706,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Before changing include paths or build configuration, locate the actual module `.Build.cs` file in the source tree and inspect its exact path/content.
 - No source files were modified by this diagnostic.
 - Next action: locate all `*.Build.cs` files under `Source` and report their paths only.
+
+## 2026-09-21 — Actual module Build.cs located
+- Recursive search under `Source` found the real module rules file at `Source\\AgeOfAether.Build.cs`.
+- The previous assumption that the file lived under `Source\\AgeOfAether\\AgeOfAether.Build.cs` was incorrect; the project uses the standard root-`Source` module rules layout while the module's Public/Private headers remain under `Source\\AgeOfAether`.
+- No files were modified by this diagnostic.
+- Next action: inspect the actual `Source\\AgeOfAether.Build.cs` contents, especially its include-path configuration, before changing anything.
