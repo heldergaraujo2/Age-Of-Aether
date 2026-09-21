@@ -490,3 +490,18 @@ Analysis:
 - The UBT conflict is not directly configured in this target file; it is likely inherited from engine/default target settings versus the generated/shared UnrealEditor build environment.
 - Do not blindly add a unique build environment yet; first inspect the other target/module rules to determine whether the project is overriding warning settings elsewhere.
 Next: inspect `Source\\AgeOfAether.Target.cs`, `Source\\AgeOfAetherServer.Target.cs`, and `Source\\AgeOfAether.Build.cs` for warning/build-environment overrides.
+
+## Entry 023 — U0.4
+Status: INSPECTION RESULT — GAME/SERVER/MODULE RULES READ
+
+Result:
+- `AgeOfAether.Target.cs`, `AgeOfAetherServer.Target.cs`, and `AgeOfAether.Build.cs` contain no explicit warning-level overrides.
+- All three targets use `BuildSettingsVersion.V5` and `EngineIncludeOrderVersion.Latest`.
+- Module dependencies are `Core`, `CoreUObject`, `Engine`, `InputCore`, and `EnhancedInput`.
+- No target sets a unique build environment or override flag.
+
+Analysis:
+- The project source shown does not contain the warning-level assignments reported by UBT.
+- The conflict therefore appears related to the UE 5.8 shared `UnrealEditor` build environment/defaults rather than an obvious project rule override.
+- Because UBT explicitly offered `BuildEnvironment = TargetBuildEnvironment.Unique` as the targeted remedy, the safest next step is to inspect the exact generated `.target` receipt and UBT log for the editor target before changing source.
+Next: inspect the generated `Binaries\\Win64\\AgeOfAetherEditor.target` receipt and relevant UBT log lines for the four warning-level properties.
