@@ -1446,3 +1446,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - 3 reported issues are UFUNCTION parameter names shadowing inherited AActor/AController scope: SetGuildRole/ServerSetGuildRole use Role, and ClientReceiveCharacterOperation uses Character.
 - No source changes were made for this batch yet.
 - Next action: inspect the affected declarations and nearby Blueprint exposure metadata to determine which fields/functions should remain native-only versus which identifiers need safe renaming, preserving the server-authoritative C++ API semantics.
+
+
+## 2026-09-21 — Large inspection output constrained
+- The broad declaration inspection produced excessive output and was not useful for controlled diagnosis.
+- No source changes were made.
+- Next action: replace the broad dump with a compact, line-focused inventory of only the exact UHT-reported declarations, preserving one-command-at-a-time execution.
