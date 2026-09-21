@@ -761,3 +761,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - UBT source is also present under `Engine\Source\Programs\UnrealBuildTool`.
 - The previous assumption that UHT would be a standalone executable/source directory was incorrect.
 - No project files changed.
+
+
+## U0.5 investigation — UHT diagnostic source-symbol search
+- User executed the requested recursive source search under `D:\Unreal\UE_5.8\Engine\Source\Programs` for `RequireInclude`, `generated.h`, and `GeneratedHeader` across C#/C++/header files.
+- Result: no matches returned.
+- Interpretation: the installed UE 5.8 source tree does not expose those exact strings/symbols in the searched files, so the previous hypothesis cannot be confirmed from this search. No project files were changed by this step.
+- Next action must use a different, evidence-driven inspection path for the UHT diagnostic before modifying the five headers.
