@@ -1792,3 +1792,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5 build após correção de `Build.cs`: os erros de includes normais foram resolvidos, confirmando o diagnóstico do include path. Restaram quatro grupos concretos: `World/AetherWorldTypes.generated.h` está sendo incluído com caminho incompatível; `AetherUIPresentationTests.cpp` usa `EAutomationTestFlags::ApplicationContextMask` inválido para esta versão; `AetherWorldContentRegistry.cpp` tem descarte de retorno `[[nodiscard]]` e sombreamento de `E`; `AetherAssetPipelineTypes.h` referencia `EAetherAssetType` sem declaração visível, causando também erro no `.gen.cpp`. Próxima ação é inspecionar esses pontos antes de reparar.
+
+
+- U0.5 diagnóstico parcial: a busca confirmou que `EAetherAssetType` é definido/referenciado em `Public\Data\AetherAssetTypes.h`, mas o output recebido não trouxe o conteúdo desse arquivo nem os demais cinco blocos do diagnóstico. Não é seguro reparar por inferência; próxima ação é obter o contexto exato dos arquivos envolvidos.
