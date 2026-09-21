@@ -636,3 +636,11 @@ STATUS: ROOT CAUSE CONFIRMED — STRUCTURAL COLLISION
 - `Data/AetherItemTypes.h` also has a direct implementation file `Private/Data/AetherItemTypes.cpp`.
 - Therefore the two files cannot be merged by simple include replacement without redesigning dependent APIs.
 - The immediate UHT basename conflict must be resolved by giving the two headers unique filenames while preserving their existing declarations/includes. Next action should perform a controlled rename of the Data header and update only its known include references, then verify no old include remains before rebuilding.
+
+
+## U0.5 — Data item header renamed
+STATUS: COMPLETE — INCLUDE UPDATES PENDING
+- `Data/AetherItemTypes.h` was successfully renamed locally to `Data/AetherItemDataTypes.h`.
+- Source and destination checks passed; destination did not previously exist.
+- No file contents were changed by this operation.
+- Existing includes still referencing `Data/AetherItemTypes.h` must now be updated in a controlled manner.
