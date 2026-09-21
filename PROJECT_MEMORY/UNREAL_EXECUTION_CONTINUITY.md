@@ -98,3 +98,5 @@
 - InteractionCatalog inspection command hit a local path mismatch: `Public\Social\AetherInteractionCatalog.h` does not exist at that path. Next step is to locate the actual file path locally before modifying includes.
 
 - Located `AetherInteractionCatalog.h/.cpp` under `Public/Interaction` and `Private/Interaction`; previous Social path was incorrect. Quest-definition search returned no useful lines, so next inspection will read the actual catalog header and search filenames/content more directly.
+
+- `AetherInteractionCatalog.h` references `FAetherDataQuestDefinition`, but the type search only located quest-related files, not the exact declaration. Next step: inspect `AetherInteractionTypes.h` and `AetherQuestTypes.h` declarations before deciding whether the catalog should use the runtime quest type or a data type/include.
