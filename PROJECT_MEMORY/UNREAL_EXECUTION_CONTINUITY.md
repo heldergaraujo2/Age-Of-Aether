@@ -1568,3 +1568,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Previously verified UHT offender list remains authoritative for Combat, Economy, Persistence, Security, Skills, Networking, plus the four visible declarations above.
 - No source changes were made by this inspection.
 - Next action: inspect the exact declaration context for every remaining UHT-reported integer property, including separate-line UPROPERTY/type pairs, before editing metadata.
+
+
+## 2026-09-21 — Complete declaration-aware inventory of remaining unsupported Blueprint integer properties
+- Confirmed 15 remaining offending UPROPERTY integer fields across Combat, Economy, Multiplayer, Networking, Persistence, Security, Skills, UI, Scale, and Client.
+- Networking has five fields in AetherNetworkTypes plus one replicated field in AetherNetworkGameState; the latter must retain Replicated while losing only BlueprintReadOnly.
+- Protocol Major/Minor use EditAnywhere + BlueprintReadOnly and require special handling to preserve editor configurability without Blueprint exposure.
+- No source changes were made by this inspection.
+- Next action: selectively remove BlueprintReadOnly from the integer fields, preserving all other metadata; handle Protocol Major/Minor by retaining EditAnywhere and removing only BlueprintReadOnly.
