@@ -24,3 +24,7 @@
 ## 2026-09-21 — Local repair confirmed
 - AetherQuestDialogueEventTypes.cpp literal `\\n` tokens in ValidateSingle were replaced with real line breaks and verified by PowerShell at the Conditions.Add(*this) line.
 - Awaiting a real UE build before treating the source blocker as resolved.
+
+## 2026-09-21 — Local repair confirmed
+- AetherRecipeRegistry.cpp malformed FString::Printf was corrected so the format string closes before `*Role,*ID`; PowerShell verified the repaired call.
+- Awaiting a real UE build before treating the blocker as resolved.
