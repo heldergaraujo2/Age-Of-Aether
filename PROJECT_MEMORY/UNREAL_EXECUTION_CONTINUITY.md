@@ -104,3 +104,5 @@
 - Confirmed `FAetherDataQuestDefinition` does not exist. `AetherInteractionTypes.h` defines `FAetherInteractionQuestDefinition`, and `AetherQuestTypes.h` defines a distinct `FAetherQuestDefinition`. `AetherInteractionCatalog` registers its quest entries through `UAetherInteractionSubsystem::RegisterQuest`, so the catalog quest array must use `FAetherInteractionQuestDefinition`; next local repair will change that type only.
 
 - Repaired `AetherInteractionCatalog.h`: `FAetherDataQuestDefinition` → `FAetherInteractionQuestDefinition`; verified the header now references the existing interaction quest type.
+
+- EconomyTests inspection: helper `TestItem` and multiple locals use `FAetherDataItemDefinition`, but the test currently has no direct item-data type include. `AddItem` calls in EconomyTests use `FAetherItemService` and appear structurally consistent with the 4-argument signature; next step is inspect `AetherItemService.h` plus data type declaration before editing.
