@@ -889,3 +889,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The source's first include correctly corresponds to its subsystem header; no `.generated.h` is included from the `.cpp`.
 - The source itself shows no unusual preprocessor directives before the first include.
 - This does not explain UHT's generated-header ordering diagnostic; investigation should now compare the exact failing header bytes/line endings and a known-good UCLASS header at a lower level, including file attributes and newline encoding.
+
+
+## U0.5 — Header encoding/line-ending comparison
+- Failing `AetherEconomySubsystem.h` and known-good `AetherGameInstance.h` are both UTF-8 without BOM and LF-only (`0D`/CR count 0); both begin with the same byte sequence for `#pragma once`.
+- The previous PowerShell property print did not expose `IsReadOnly`/`Attributes` values because the object was interpolated incorrectly, so file attributes remain unverified.
+- Encoding and newline format therefore do not explain the UHT diagnostic so far.
+- Next action: compare the exact text surrounding `generated.h`, including whitespace/blank lines, and correctly inspect file attributes for the failing and known-good headers.
