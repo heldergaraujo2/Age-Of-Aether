@@ -1359,3 +1359,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The Data-domain declarations themselves remain correctly renamed.
 - No other files from this inspection require changes.
 - Next action: perform only these targeted reversions, then re-audit affected symbols.
+
+
+## 2026-09-21 — Runtime scope repair verified
+- Targeted repair completed locally with no command errors.
+- EconomyService.cpp now uses FAetherItemDefinition consistently at the three previously leaked local definition points.
+- InteractionTypes.h and InteractionRegistry.h now use runtime FAetherQuestDefinition consistently.
+- This confirms the earlier broad rename leakage in the inspected runtime files has been corrected.
+- Next action: run a repository-wide declaration/reference audit for the ten renamed Data-domain reflected symbols, checking that Data declarations use the new names while runtime declarations/consumers retain their original names.
