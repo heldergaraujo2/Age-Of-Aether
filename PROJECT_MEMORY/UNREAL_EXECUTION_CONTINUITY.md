@@ -1425,3 +1425,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The Entries property is a TArray of the struct and is valid; the issue is specifically the exposed pointer return type on Blueprint UFUNCTIONs.
 - No additional C++ consumers of the struct name were found beyond the catalog implementation/types.
 - Before modifying the API, inspect the struct declaration and all calls to Find/FindWithFallback to select the smallest compatible Blueprint/C++ signature change.
+
+
+## 2026-09-21 — Presentation catalog API usage confirmed
+- Find and FindWithFallback are used only from C++ catalog/component/tests; no Blueprint call sites were found in the source inventory.
+- Both functions intentionally use nullable const USTRUCT pointers for C++ lookup semantics.
+- Minimal UHT-safe repair selected: remove UFUNCTION exposure from these two pointer-returning methods while preserving their C++ signatures and null/fallback behavior.
