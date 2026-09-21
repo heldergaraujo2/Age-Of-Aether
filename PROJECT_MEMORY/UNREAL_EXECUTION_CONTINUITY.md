@@ -1059,3 +1059,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - It exposes several non-UObject types from `AetherEconomyService.h` in public method signatures and stores `FAetherEconomyService EconomyService` by value as a private member.
 - It also references `UAetherEconomyConfigDataAsset` and item/character/economy types through the service/type includes.
 - No source-level include-order defect is visible in this header itself; the next inspection will trace `AetherEconomyService.h` and its transitive type dependencies for generated-header interactions.
+
+
+## U0.5 — Economy service inspection
+- `AetherEconomyService.h` is a plain C++ class with no `UCLASS`, `USTRUCT`, or generated header.
+- It includes only `CoreMinimal.h` and `Economy/AetherEconomyTypes.h`; the `FAetherItemService` dependency is forward-declared.
+- It contains Unreal containers/types and references item/economy/character structs, but no direct generated-header include.
+- Therefore this direct service header does not explain the subsystem generated-header diagnostic by itself.
+- Next action: inspect `AetherEconomyTypes.h`, which is the main transitive dependency before `AetherEconomySubsystem.generated.h` and may contain UHT-generated types or an ordering interaction.
