@@ -918,3 +918,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Their timestamps differ by four seconds.
 - This establishes that the installed UE 5.8 distribution contains at least two byte-distinct UHT assemblies despite identical reported version/size.
 - Next action: determine which assembly is loaded by the Build.bat/UBT process and compare the loaded assembly identity before changing project source.
+
+
+## U0.5 — UBT dependency resolution
+- `UnrealBuildTool.deps.json` declares `EpicGames.UHT/1.0.0` as a runtime dependency and resolves `EpicGames.UHT.dll` with assembly/file version `5.8.0.0` from the UnrealBuildTool dependency graph.
+- The pasted result did not include the earlier `BUILDBAT`, `UBT DIRECTORY`, or `UBT RUNTIME CONFIG` sections, so the exact loader path is not yet fully verified.
+- Next action: inspect only the relevant Build.bat/runtime-config/dependency path entries needed to establish the loaded UHT location.
