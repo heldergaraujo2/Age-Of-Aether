@@ -35,3 +35,8 @@
 - `AetherClassBalanceTests.cpp` is the only inspected project source currently including `<limits>`.
 - UE 5.8 `TNumericLimits` lacks both `Infinity()` and `QuietNaN()`, so the semantic replacement should use the C++ standard `std::numeric_limits<T>` API rather than finite `Max()`.
 - Next action: inspect the exact headers/contexts of all three sentinel usages before making the smallest include/API repair.
+
+## 2026-09-21 — Sentinel usage narrowed to two blockers
+- Exact `TNumericLimits<...>::Infinity()` / `QuietNaN()` scan found only two remaining invalid API calls: `AetherCharacterAnimationTests.cpp:22` (`float::Infinity`) and `AetherProductionTests.cpp:12` (`double::QuietNaN`).
+- The previously observed `AetherClassBalanceTests.cpp` `<limits>` match is not an invalid `TNumericLimits` sentinel call.
+- Next repair: add `<limits>` where needed and replace the two calls with `std::numeric_limits<float>::infinity()` and `std::numeric_limits<double>::quiet_NaN()`, preserving the tests' intended non-finite-value semantics.
