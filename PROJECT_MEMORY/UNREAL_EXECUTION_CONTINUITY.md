@@ -35,3 +35,8 @@
 
 ## 2026-09-21 — Streaming subsystem occurrences inspected
 - `AetherWorldStreamingCoordinator.cpp` has 3 `GetSubsystem<UAetherWorldMapSubsystem>()` occurrences: PrepareStream uses `CanStreamLink` and can remain const; ActivateTarget and DeactivateMap call non-const `SetMapActive` and are the two confirmed fixes.
+
+## 2026-09-21 — Streaming constness repair applied locally
+- `ActivateTarget` and `DeactivateMap` now use non-const `auto*` for `UAetherWorldMapSubsystem`, matching their non-const `SetMapActive` calls.
+- `PrepareStream` remains `const auto*` because it calls `CanStreamLink` and was intentionally left unchanged.
+- Awaiting the next real UE build to validate this repair.
