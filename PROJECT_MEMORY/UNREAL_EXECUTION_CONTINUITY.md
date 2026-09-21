@@ -1938,3 +1938,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The previous failure was solely due to using the repository-root Public path instead of the module Public path.
 - No source files were modified in this diagnostic.
 - Next action: apply the three generated-header include corrections using these verified paths, then print the relevant include lines to verify them.
+
+
+## 2026-09-21 — Character/Creature/Interaction generated-header includes repaired
+- All three affected headers were edited at their verified module paths.
+- Verification confirms the includes are now exactly `AetherCharacterTypes.generated.h`, `AetherCreatureTypes.generated.h`, and `AetherInteractionTypes.generated.h`.
+- The prior module-relative C1083 include-path issue for these three generated headers is therefore repaired locally.
+- Next action: run the authoritative AgeOfAetherEditor Win64 Development build to verify the repair and expose the next independent blocker.
