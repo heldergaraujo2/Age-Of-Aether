@@ -846,3 +846,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - User pasted the trailing `else` block separately, causing PowerShell to report `else` is not recognized as a command.
 - This was a command-entry issue only; no project files were changed and no conclusion about Intermediate was made.
 - Next action: use a single-line-safe command that does not require a multiline `if/else` construct.
+
+
+## U0.5 — Intermediate/UHT artifacts confirmed
+- `Intermediate` exists and contains an `AgeOfAetherEditor.uhtmanifest` plus generated artifacts for all five failing subsystem headers.
+- The generated-header filter returned five matching generated artifacts, confirming UHT has discovered/generates output for each problematic subsystem despite the diagnostic.
+- The previous file inventory output was truncated by PowerShell display width, so exact generated file names/content are not yet visible.
+- Next action: inspect the UHT manifest entries for the five subsystem source headers and the exact generated-header paths/names, without deleting or modifying Intermediate.
