@@ -627,3 +627,12 @@ STATUS: ANALYSIS REQUIRED BEFORE REPAIR
 - `Data/AetherItemTypes.h` defines data/definition-oriented enums and structs including rarity, enhancement, requirements, economy, visuals, `FAetherItemDefinition`, `FAetherItemInstanceSnapshot`, and validation issues.
 - Both define UHT-visible symbols with overlapping names such as `EAetherItemCategory`, `EAetherEquipmentSlot`, and `FAetherItemDefinition`; therefore this is both a header-basename conflict and a type/API collision risk.
 - Neither file should be deleted or blindly merged. Next action must inventory include references and symbol usages so the repair can preserve intended architecture.
+
+
+## U0.5 — Include/symbol dependency inventory completed
+STATUS: ROOT CAUSE CONFIRMED — STRUCTURAL COLLISION
+- Inventory/economy/network/persistence/quest code depends on `Items/AetherItemTypes.h`, including `FAetherItemDefinitionId`, `FAetherItemInstanceId`, `FAetherItemInstance`, and the inventory-oriented `FAetherItemDefinition`.
+- Data registry/visual/data-asset code depends on `Data/AetherItemTypes.h`, including its separate `FAetherItemDefinition`, `FAetherItemInstanceSnapshot`, rarity/enhancement/economy/visual definitions.
+- `Data/AetherItemTypes.h` also has a direct implementation file `Private/Data/AetherItemTypes.cpp`.
+- Therefore the two files cannot be merged by simple include replacement without redesigning dependent APIs.
+- The immediate UHT basename conflict must be resolved by giving the two headers unique filenames while preserving their existing declarations/includes. Next action should perform a controlled rename of the Data header and update only its known include references, then verify no old include remains before rebuilding.
