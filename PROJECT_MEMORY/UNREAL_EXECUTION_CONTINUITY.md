@@ -583,3 +583,13 @@ STATUS: SOURCE FIX APPLIED LOCALLY — VERIFICATION PENDING
 - PowerShell reported `ALTERADO` for all three files with no errors.
 - This directly addresses the UE 5.8 shared-environment mismatch previously identified, where V5 left warning levels Off while UE 5.8 current defaults require Error.
 - Next verification must inspect the edited files before regenerating project/build metadata.
+
+
+## U0.4 — Target files verified after V7 correction
+STATUS: VERIFIED
+- All three target rule files now explicitly use `BuildSettingsVersion.V7`.
+- `AgeOfAether.Target.cs`: Game target, V7, Latest include order, AgeOfAether module.
+- `AgeOfAetherEditor.Target.cs`: Editor target, V7, Latest include order, AgeOfAether module.
+- `AgeOfAetherServer.Target.cs`: Server target, V7, Latest include order, AgeOfAether module.
+- No unexpected changes were shown in the verification output.
+- The previously identified UE 5.8 shared-environment warning mismatch is therefore corrected at source level.
