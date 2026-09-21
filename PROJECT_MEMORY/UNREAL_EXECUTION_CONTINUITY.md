@@ -1075,3 +1075,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The dependency chain therefore contains several generated-header-bearing project headers before `AetherEconomySubsystem.generated.h`.
 - No malformed generated include placement is visible in this file itself: its own generated header is last among its includes.
 - This makes the transitive generated-header chain the strongest concrete lead so far; next we will inspect the exact first 20 lines of the two included type headers to detect an ordering/parse interaction.
+
+
+## U0.5 — Transitive reflected-type headers
+- `AetherCharacterTypes.h` has `CoreMinimal.h`, `World/AetherWorldTypes.h`, then its own generated header as the final include.
+- `AetherItemTypes.h` has `CoreMinimal.h`, `Characters/AetherCharacterTypes.h`, then its own generated header as the final include.
+- This creates a reflected-header chain: `EconomyTypes -> ItemTypes -> CharacterTypes -> WorldTypes`, with each generated header following its direct includes.
+- No direct include-order defect is visible in the first 25 lines of CharacterTypes or ItemTypes.
+- The next target is `AetherWorldTypes.h`, the root of this chain, because a malformed/ambiguous generated-header dependency there could propagate into all five subsystem failures.
