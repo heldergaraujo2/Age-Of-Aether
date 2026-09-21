@@ -92,3 +92,5 @@
 - Next repair should add the direct runtime item-type include to `AetherInventoryTypes.h` and correct only the confirmed `EAetherInventoryItem` typo in the subsystem header, then rebuild.
 
 - Inventory edit revealed a PowerShell replacement emitted literal `` `r`n `` text in `AetherInventoryTypes.h`; this must be corrected before build. `EAetherInventoryItem` was successfully corrected to `FAetherInventoryItem`.
+
+- Inventory include newline corruption repaired locally; `AetherInventoryTypes.h` now cleanly includes `AetherItemTypes.h` on its own line, and `AetherInventorySubsystem.h` uses `FAetherInventoryItem`.
