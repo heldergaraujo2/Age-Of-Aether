@@ -1155,3 +1155,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Remote verification immediately after the writes confirmed the three target paths and two new Data paths exist, while both obsolete paths are absent.
 - Synchronization commit sequence completed without an API write error. The final write was the deletion of the obsolete implementation path; subsequent verification was successful.
 - Next action: run one local repository/source consistency check to confirm the local tree still has the intended renamed files, V7 targets, updated Data-header references, and no obsolete Data basename before resuming the Unreal build investigation.
+
+
+## U0.5 — Local source consistency revalidated after synchronization
+- All three local target files contain `BuildSettingsVersion.V7`.
+- Obsolete local Data header/implementation paths are absent.
+- New local `AetherItemDataTypes.h/.cpp` paths are present.
+- Local source scan reports zero references to the obsolete `Data/AetherItemTypes.h` path.
+- Local source tree is consistent with the synchronized repository state.
+- Next action: rerun the controlled `AgeOfAetherEditor` build to determine whether the five UHT generated-header diagnostics persist after the repository/source synchronization.
