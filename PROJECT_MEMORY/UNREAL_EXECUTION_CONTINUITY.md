@@ -53,3 +53,7 @@
 ## 2026-09-21 — Balance simulation struct inspected
 - `FAetherBalanceSimulationCase` currently contains `ClassID`, `EvolutionID`, and balance parameters, but no `TargetClassID` or `TargetEvolutionID`.
 - The implementation and tests reference both target fields, so the next repair will add those two optional string fields to the case struct, preserving the existing IDs as defaults/fallbacks.
+
+## 2026-09-21 — Balance field repair command safely aborted
+- The attempted insertion of `TargetClassID` / `TargetEvolutionID` did not match the file's exact newline representation and aborted before writing.
+- No source change was made by the failed command. Inspect the exact struct text before retrying.
