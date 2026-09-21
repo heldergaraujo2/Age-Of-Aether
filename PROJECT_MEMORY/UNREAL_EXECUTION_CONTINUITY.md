@@ -924,3 +924,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - `UnrealBuildTool.deps.json` declares `EpicGames.UHT/1.0.0` as a runtime dependency and resolves `EpicGames.UHT.dll` with assembly/file version `5.8.0.0` from the UnrealBuildTool dependency graph.
 - The pasted result did not include the earlier `BUILDBAT`, `UBT DIRECTORY`, or `UBT RUNTIME CONFIG` sections, so the exact loader path is not yet fully verified.
 - Next action: inspect only the relevant Build.bat/runtime-config/dependency path entries needed to establish the loaded UHT location.
+
+
+## U0.5 — UBT loader path confirmed
+- The active UBT directory is `Engine/Binaries/DotNET/UnrealBuildTool` and contains `UnrealBuildTool.dll`, `UnrealBuildTool.runtimeconfig.json`, and `EpicGames.UHT.dll`.
+- The UBT and UHT DLL timestamps match at 09:21:44 on 08/26/2026.
+- This strongly identifies the UHT assembly in the UBT directory as the relevant runtime copy; the separate AutomationTool copy is not needed for the Build.bat path under investigation.
+- The exact `Build.bat` reference lines were not included in the pasted output, but the runtime directory itself is now verified.
+- Next action: inspect the UHT assembly for its embedded diagnostic using .NET string/metadata extraction rather than raw UTF-8 scanning, or invoke UBT with diagnostic tracing if available.
