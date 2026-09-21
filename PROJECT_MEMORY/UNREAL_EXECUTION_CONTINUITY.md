@@ -793,3 +793,13 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The visible bytes/lines do not reveal an encoding corruption or misplaced generated include.
 - Do not edit these headers based solely on whitespace.
 - Next action: inspect the headers directly included by the five failing subsystem headers for nested `*.generated.h` includes or other UHT-sensitive structure that could alter parser state.
+
+
+## U0.5 — Nested include inspection
+- Inspected all direct service/config headers included by the five failing subsystem headers.
+- Findings:
+  - Service headers only include CoreMinimal plus their type headers.
+  - Config/DataAsset headers include their normal dependencies and their own correctly named `*.generated.h`.
+  - No direct service header contains a generated include.
+- This means a nested generated-header presence exists in two transitive DataAsset dependencies (`AetherEconomyConfigDataAsset.h`, `AetherItemDefinitionDataAsset.h`, `AetherProgressionConfigDataAsset.h`), but the pattern itself is normal Unreal code and does not yet establish the cause.
+- Next action: inspect the actual include graph/order of the five failing headers, including the types and DataAsset headers, to identify whether a generated header is being reached before the subsystem's generated header or whether a header-name collision remains.
