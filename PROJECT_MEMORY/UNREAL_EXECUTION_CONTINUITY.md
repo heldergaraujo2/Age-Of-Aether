@@ -12,3 +12,7 @@
 ## 2026-09-21 — Local repair confirmed
 - Public/Progression/AetherProgressionTypes.h generated include was repaired locally from the prefixed path to the bare `AetherProgressionTypes.generated.h` include and verified by PowerShell.
 - Awaiting a real UE build before treating the blocker as resolved.
+
+## 2026-09-21 — Local repair confirmed
+- Public/Skills/AetherSkillTypes.h generated include was repaired locally to the bare `AetherSkillTypes.generated.h` include and verified by PowerShell.
+- Awaiting a real UE build before treating the blocker as resolved.
