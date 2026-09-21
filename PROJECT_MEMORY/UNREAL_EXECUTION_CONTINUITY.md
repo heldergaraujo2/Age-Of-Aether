@@ -1022,3 +1022,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The manifest category is identical for the failing Economy subsystem and known-good GameInstance/DataAsset (`PrivateHeaders`).
 - No manifest-level distinction remains to explain the error.
 - The next probe will compare only the preprocessor/include structure and UCLASS/generated-body structure of one failing subsystem against `AetherGameInstance.h`, without changing source files.
+
+
+## U0.5 — Structural comparison result
+- `AetherEconomySubsystem.h` and known-good `AetherGameInstance.h` both have `#pragma once`, normal includes, their own `*.generated.h` as the final include, `UCLASS()`, and `GENERATED_BODY()`.
+- The failing subsystem has additional direct includes before its generated header, but that is valid Unreal header structure; the known-good comparison does not establish a concrete source-format defect.
+- Therefore no source change is justified yet.
+- Next action: verify whether the five failing generated-header basenames have any duplicate source/generated-header filename collisions elsewhere in the project or engine-visible module paths, since UHT is explicitly flagging generated-header ordering despite correct local syntax.
