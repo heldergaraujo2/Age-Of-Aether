@@ -1193,3 +1193,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The mapping itself is conventional and does not reveal an unexpected duplicate include path or alternate subsystem header.
 - The prior comparison command did not emit its first section in the captured result, so known-good reflected-header formatting still needs a direct, focused comparison.
 - No source modification made.
+
+
+## U0.5 — Generated-header comparison result
+- The attempted known-good comparison used an incorrect path for `AetherGameInstance.h`; that file was not found at `Public\AetherGameInstance.h`.
+- Despite that path mistake, the output exposed an important concrete difference: the known reflected header that was encountered uses a bare generated include (`#include "AetherCharacter.generated.h"`), while all five failing subsystem headers use a directory-qualified generated include (`#include "Economy/AetherEconomySubsystem.generated.h"`, etc.).
+- Each failing subsystem has exactly one generated include, followed by `UCLASS()` and `GENERATED_BODY()`, so duplicate/missing generated includes are ruled out.
+- The directory-qualified generated-header form is now the strongest source-level lead and matches the unusual UHT diagnostic about where the generated include must appear.
+- No source modification has been made yet.
+- Next action: inventory all project headers that include a `.generated.h` with a directory path, so the fix scope can be limited to the affected pattern before editing.
