@@ -572,3 +572,14 @@ Interpretation:
 - The cleanest compatibility correction is to move the three project targets from V5 to the UE 5.8 current defaults (V7/Latest), rather than forcing a unique build environment and retaining stale warning defaults.
 - This should be applied consistently to Game, Editor, and Server targets.
 Next: inspect the exact current target files once more only if needed; then make the minimal source change from `BuildSettingsVersion.V5` to `BuildSettingsVersion.V7` in all three targets, regenerate project files, and verify the conflict disappears before compiling.
+
+
+## U0.4 — Build settings compatibility correction
+STATUS: SOURCE FIX APPLIED LOCALLY — VERIFICATION PENDING
+- User successfully changed `BuildSettingsVersion.V5` to `BuildSettingsVersion.V7` in all three target rule files:
+  - `Source/AgeOfAether.Target.cs`
+  - `Source/AgeOfAetherEditor.Target.cs`
+  - `Source/AgeOfAetherServer.Target.cs`
+- PowerShell reported `ALTERADO` for all three files with no errors.
+- This directly addresses the UE 5.8 shared-environment mismatch previously identified, where V5 left warning levels Off while UE 5.8 current defaults require Error.
+- Next verification must inspect the edited files before regenerating project/build metadata.
