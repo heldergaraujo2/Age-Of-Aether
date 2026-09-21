@@ -1411,3 +1411,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No FAetherQuestDefinition or FAetherDataQuestDefinition remains in those Interaction files.
 - The semantic separation between Interaction, Data, and Quests quest models is now explicit.
 - Next action: rerun the AgeOfAetherEditor UHT/UBT build to verify that the final reflected-name collision is resolved and reveal any subsequent compile errors.
+
+
+## 2026-09-21 — U0.5 build advanced past reflected-name collision
+- AgeOfAetherEditor UHT/UBT rerun no longer reports the previous FAetherQuestDefinition reflected-name collision.
+- New blocking UHT errors are isolated to Public/Characters/AetherClassEvolutionPresentationCatalog.h lines 13-14.
+- UHT reports FAetherClassEvolutionPresentationDefinition is exposed through pointer variables, which is invalid for this reflected struct type.
+- Next action: inspect the catalog header and its consumers before choosing the smallest type-safe UHT-compatible repair.
