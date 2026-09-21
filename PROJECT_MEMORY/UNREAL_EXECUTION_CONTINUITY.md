@@ -945,3 +945,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - User confirmed to continue the U0.5 investigation.
 - Current objective remains to determine the concrete trigger for the five UHT generated-header ordering errors before applying a source change.
 - The active UHT assembly and diagnostic have been identified; source headers have passed encoding, line-ending, attribute, manifest, and visible include-order checks.
+
+
+## U0.5 — UHT include-diagnostic string analysis
+- The active UHT assembly contains exactly one occurrence of the generated-header ordering diagnostic string in the UTF-16 string scan.
+- No `include found after` or generic `include found` literal was found, so the diagnostic family cannot be mapped reliably from strings alone.
+- The assembly also contains generated-header-related strings, including `generated.h already included, missing '#pragma once'...`, confirming the parser has several generated-header validation paths.
+- This string-level investigation has reached diminishing returns; no source change is justified from these strings alone.
+- Next action: use UHT's own invocation/output in a controlled isolated test, preferably on one failing header, to distinguish a project-specific include-graph trigger from an engine/UHT issue.
