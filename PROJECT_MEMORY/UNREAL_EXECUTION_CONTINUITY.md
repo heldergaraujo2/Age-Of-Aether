@@ -1067,3 +1067,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - It contains Unreal containers/types and references item/economy/character structs, but no direct generated-header include.
 - Therefore this direct service header does not explain the subsystem generated-header diagnostic by itself.
 - Next action: inspect `AetherEconomyTypes.h`, which is the main transitive dependency before `AetherEconomySubsystem.generated.h` and may contain UHT-generated types or an ordering interaction.
+
+
+## U0.5 — Economy types inspection
+- `AetherEconomyTypes.h` is a generated UHT header consumer: it includes `Characters/AetherCharacterTypes.h`, `Items/AetherItemTypes.h`, then its own `AetherEconomyTypes.generated.h`.
+- It declares multiple `UENUM(BlueprintType)` and `USTRUCT(BlueprintType)` types with `GENERATED_BODY()`.
+- The dependency chain therefore contains several generated-header-bearing project headers before `AetherEconomySubsystem.generated.h`.
+- No malformed generated include placement is visible in this file itself: its own generated header is last among its includes.
+- This makes the transitive generated-header chain the strongest concrete lead so far; next we will inspect the exact first 20 lines of the two included type headers to detect an ordering/parse interaction.
