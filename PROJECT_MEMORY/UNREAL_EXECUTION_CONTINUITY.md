@@ -1901,3 +1901,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The attempted `AetherAssetTypes.h` insertion produced no change in the first lines of `AetherAssetPipelineTypes.h`.
 - The likely cause is line-ending mismatch in the exact string replacement; no unintended source change was observed.
 - Next action: use a line-oriented insertion that does not depend on CRLF/LF matching, then verify the header.
+
+
+## 2026-09-21 — Asset type include repaired
+- `AetherAssetPipelineTypes.h` now directly includes `AetherAssetTypes.h` immediately after `CoreMinimal.h`.
+- Header verification confirmed the expected include order and generated-header include.
+- The `EAetherAssetType` visibility issue is repaired locally; next step is a clean diagnostic build to expose the next blocker.
