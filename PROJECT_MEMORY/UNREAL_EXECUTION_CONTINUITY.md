@@ -83,3 +83,10 @@
 - Current first/root blockers include `AetherInteractionCatalog.h` missing `FAetherDataQuestDefinition`, inventory headers missing `EAetherEquipmentSlot`/`EAetherInventoryItem`/`FAetherItemDefinition`, and several test files with missing direct type includes/helpers.
 - Character, social, networking errors include cascades that should be revisited after header/type blockers are repaired.
 - Next inspection targets the inventory type declarations/includes because they are public-header blockers and cause broad downstream cascades.
+
+## 2026-09-21 — Inventory blocker inspection
+- Confirmed `EAetherEquipmentSlot` and `FAetherItemDefinition` are defined in `Public/Items/AetherItemTypes.h`.
+- `AetherInventoryTypes.h` includes only `Data/AetherItemDataTypes.h`, so it does not directly see the runtime item types it uses.
+- `AetherInventorySubsystem.h` includes `AetherInventoryTypes.h` and therefore also lacks direct visibility of runtime item types.
+- The reported `EAetherInventoryItem` in `SplitStack` is a confirmed typo: the actual output struct is `FAetherInventoryItem`, and the `.cpp` definition already uses that type.
+- Next repair should add the direct runtime item-type include to `AetherInventoryTypes.h` and correct only the confirmed `EAetherInventoryItem` typo in the subsystem header, then rebuild.
