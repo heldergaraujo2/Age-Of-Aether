@@ -90,3 +90,5 @@
 - `AetherInventorySubsystem.h` includes `AetherInventoryTypes.h` and therefore also lacks direct visibility of runtime item types.
 - The reported `EAetherInventoryItem` in `SplitStack` is a confirmed typo: the actual output struct is `FAetherInventoryItem`, and the `.cpp` definition already uses that type.
 - Next repair should add the direct runtime item-type include to `AetherInventoryTypes.h` and correct only the confirmed `EAetherInventoryItem` typo in the subsystem header, then rebuild.
+
+- Inventory edit revealed a PowerShell replacement emitted literal `` `r`n `` text in `AetherInventoryTypes.h`; this must be corrected before build. `EAetherInventoryItem` was successfully corrected to `FAetherInventoryItem`.
