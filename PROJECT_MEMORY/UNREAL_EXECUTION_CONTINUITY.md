@@ -24,3 +24,5 @@
 - 2026-09-21: No existing enum adapter found. Repository test source confirms the data model's equipment examples use `MainHand`; inventory subsystem tests are not yet identified in the repository snapshot, so local working-tree test discovery is required before defining slot mappings.
 
 - 2026-09-21: Local test inventory scan found only `AetherInventoryLootTests.cpp`, `AetherItemInventoryTests.cpp`, and `AetherItemRegistryTests.cpp`; there is no dedicated `UAetherInventorySubsystem` test covering equipment-slot conversion. Header inspection confirms `ResolveDefinition` is private and currently returns runtime `FAetherItemDefinition`; this must be aligned to `FAetherDataItemDefinition` from the registry.
+
+- 2026-09-21: Local `UAetherInventorySubsystem::ResolveDefinition` contract repaired in header/source to use `FAetherDataItemDefinition`, matching `FAetherItemRegistry::Resolve`. Next compile blocker expected is the `EquipItem` enum mismatch; inspect exact compiler errors before mapping.
