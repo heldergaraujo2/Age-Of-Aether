@@ -96,3 +96,5 @@
 - Inventory include newline corruption repaired locally; `AetherInventoryTypes.h` now cleanly includes `AetherItemTypes.h` on its own line, and `AetherInventorySubsystem.h` uses `FAetherInventoryItem`.
 
 - InteractionCatalog inspection command hit a local path mismatch: `Public\Social\AetherInteractionCatalog.h` does not exist at that path. Next step is to locate the actual file path locally before modifying includes.
+
+- Located `AetherInteractionCatalog.h/.cpp` under `Public/Interaction` and `Private/Interaction`; previous Social path was incorrect. Quest-definition search returned no useful lines, so next inspection will read the actual catalog header and search filenames/content more directly.
