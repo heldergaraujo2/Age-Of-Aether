@@ -17,8 +17,8 @@
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
 - Current step: U0.4 — Unreal tooling discovery.
-- Last command/result: Win64 binaries include UnrealEditor.exe, UnrealEditor-Cmd.exe, UnrealGame.exe and other runtime/tools, but no UnrealBuildTool/UHT executable was found by the name filter.
-- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. The expected project-file generator and directly named UBT/UHT binaries have not been found. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
+- Last command/result: recursive search of the full UE 5.8 installation found no UnrealBuildTool.exe or UnrealHeaderTool.exe.
+- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. Standalone UBT/UHT executables and the earlier project-file generator names have not been found. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
 
 # U0 — Environment & Project Health
 
@@ -381,3 +381,19 @@ Analysis:
 - No project files were modified.
 - U0.4 remains focused on identifying the correct generation/build entry point before U0.5.
 Next: locate `UnrealBuildTool.exe` and `UnrealHeaderTool.exe` anywhere under the confirmed UE installation, without changing files.
+
+## Entry 017 — U0.4
+Status: DIAGNOSTIC PASS — STANDALONE UBT/UHT EXECUTABLES NOT PRESENT
+
+Command:
+Recursive search of `D:\\Unreal\\UE_5.8` for `UnrealBuildTool.exe` and `UnrealHeaderTool.exe`.
+
+Result:
+- No output.
+
+Analysis:
+- No standalone `UnrealBuildTool.exe` or `UnrealHeaderTool.exe` was found anywhere in the confirmed UE 5.8 installation.
+- The installation still contains `UnrealEditor.exe` and `UnrealEditor-Cmd.exe`, so this result does not imply the editor/runtime installation is unusable.
+- The expected source-build/project-generation toolchain is not exposed under the usual standalone filenames in this installed distribution.
+- No project files were modified.
+Next: inspect the UE 5.8 installation for the AutomationTool/Build scripts that normally provide the build/project-generation entry points.
