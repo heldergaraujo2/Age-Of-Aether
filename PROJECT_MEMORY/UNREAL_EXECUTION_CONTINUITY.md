@@ -12,3 +12,5 @@
 - Earlier verified runtime `FAetherItemDefinition` uses `BaseLevel` and `BaseDurability`, so those two production-code field references are now the immediate concrete mismatch to verify/fix.
 - `AddItem` header/source signatures match on `FAetherInventoryItem& OutItem`.
 - Next action: inspect the actual `Data/AetherItemRegistry.h`, runtime item types, and data item types with a corrected read-only command before editing.
+
+- 2026-09-21 follow-up: `FAetherItemRegistry::Resolve` returns `FAetherDataItemDefinition`, while `UAetherInventorySubsystem::ResolveDefinition` currently expects `FAetherItemDefinition`; this is a deeper contract mismatch than just `ItemLevel`/`MaxDurability`. Runtime `FAetherItemDefinition` has `BaseLevel`/`BaseDurability`, whereas `FAetherItemInstance` has `ItemLevel`/`Durability`. The previously attempted `Items/AetherItemDataTypes.h` path is also incorrect; the registry confirms the data header is `Data/AetherItemDataTypes.h`. Next step is to inspect the data definition and inventory state/snapshot types before modifying production code.
