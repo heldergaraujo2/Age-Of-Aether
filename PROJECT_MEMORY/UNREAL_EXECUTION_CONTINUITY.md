@@ -1438,3 +1438,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Both UFUNCTION annotations were removed; ValidateCatalog remains BlueprintPure.
 - Verification found zero remaining UFUNCTION declarations exposing FAetherClassEvolutionPresentationDefinition pointers.
 - Next action: rerun AgeOfAetherEditor UHT/UBT to validate this repair and continue from the next reported blocker.
+
+
+## 2026-09-21 — U0.5 advanced to Blueprint exposure/type compatibility
+- The presentation-catalog pointer issue is resolved; UHT now reports a broader set of Blueprint exposure incompatibilities.
+- 25 reported issues are unsupported uint16/uint32/uint64 types exposed through Blueprint USTRUCT properties or UFUNCTION parameters/returns.
+- 3 reported issues are UFUNCTION parameter names shadowing inherited AActor/AController scope: SetGuildRole/ServerSetGuildRole use Role, and ClientReceiveCharacterOperation uses Character.
+- No source changes were made for this batch yet.
+- Next action: inspect the affected declarations and nearby Blueprint exposure metadata to determine which fields/functions should remain native-only versus which identifiers need safe renaming, preserving the server-authoritative C++ API semantics.
