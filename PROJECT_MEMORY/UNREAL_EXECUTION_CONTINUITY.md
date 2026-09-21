@@ -1083,3 +1083,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This creates a reflected-header chain: `EconomyTypes -> ItemTypes -> CharacterTypes -> WorldTypes`, with each generated header following its direct includes.
 - No direct include-order defect is visible in the first 25 lines of CharacterTypes or ItemTypes.
 - The next target is `AetherWorldTypes.h`, the root of this chain, because a malformed/ambiguous generated-header dependency there could propagate into all five subsystem failures.
+
+
+## U0.5 — World types inspection
+- `AetherWorldTypes.h` is also structurally conventional: `CoreMinimal.h`, then its own `World/AetherWorldTypes.generated.h`, followed by reflected enums/structs.
+- No transitive include exists before its generated header, so the reflected dependency chain reaches a clean root.
+- This rules out a simple malformed generated-header placement in the `Economy -> Item -> Character -> World` chain.
+- The repeated failure across five unrelated subsystem headers now points more strongly to a shared UHT/build-state condition rather than five independent header mistakes.
+- Next action: compare a failing subsystem header against a known-good `UCLASS` header using UHT-relevant tokens and, if structurally identical, move to a controlled clean Intermediate regeneration rather than modifying source speculatively.
