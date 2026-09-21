@@ -112,3 +112,5 @@
 - EconomyTests root repair identified: `TestItem` must return `FAetherItemDefinition`, not `FAetherDataItemDefinition`; its existing fields (`DefinitionId`, `InternalName`, `DisplayName`, `MaxStack`) match the runtime type. This single helper correction should resolve the downstream `RegisterDefinition` and `AddItem` type mismatch without touching production code.
 
 - EconomyTests helper return type changed to `FAetherItemDefinition`, but its local `Definition` declaration remains `FAetherDataItemDefinition`; this must be corrected to complete the root repair.
+
+- EconomyTests `TestItem` helper is now internally consistent: return type and local variable are both `FAetherItemDefinition`; fields used are valid for the runtime type.
