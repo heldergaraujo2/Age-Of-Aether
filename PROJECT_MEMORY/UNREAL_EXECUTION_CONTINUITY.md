@@ -542,3 +542,16 @@ Analysis:
 - UBT itself explicitly provides `BuildEnvironment = TargetBuildEnvironment.Unique` as the targeted remedy for this exact conflict.
 - Before applying that remedy, we can safely inspect the installed engine's relevant TargetRules defaults to understand whether Unique is the intended compatibility fix; however, source inspection inside the engine is diagnostic only.
 Next: inspect the engine UBT source for `TargetBuildEnvironment.Unique` and the warning-level conflict handling, without modifying the engine or project.
+
+## Entry 026 — U0.4
+Status: ENGINE-SOURCE DIAGNOSTIC — RELEVANT UBT LOCATIONS FOUND
+
+Result:
+- UE 5.8 engine source contains the relevant logic in `Engine\\Source\\Programs\\UnrealBuildTool\\Configuration\\UEBuildTarget.cs` and `Configuration\\Rules\\TargetRules.cs`.
+- Warning definitions are in `CppCompileWarnings.cs`.
+- The search confirms the relevant build-environment and warning machinery exists in this installed engine distribution.
+
+Analysis:
+- The broad search produced line locations but not enough surrounding context to determine the exact default/override flow.
+- No engine files were modified.
+Next: read the focused sections around the two `UEBuildTarget.cs` matches and the `TargetRules.cs` matches that define `TargetBuildEnvironment` and warning properties.
