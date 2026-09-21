@@ -696,3 +696,16 @@ STATUS: COMPLETE
 - This now matches the renamed Data header `Public/Data/AetherItemDataTypes.h`.
 - No content change was performed by the rename.
 - Next step: rerun the controlled Editor/UHT compilation to determine which errors remain.
+
+
+## U0.5 — Editor/UHT retest after Data implementation rename
+STATUS: FAILED — 5 GENERATED HEADER ORDER ERRORS REMAIN
+- The stale `AetherItemTypes.cpp` basename error is resolved and no longer appears.
+- UHT now reports only 5 subsystem headers with generated-header ordering errors:
+  - `Public/Economy/AetherEconomySubsystem.h`
+  - `Public/Items/AetherItemSubsystem.h`
+  - `Public/Multiplayer/AetherMultiplayerSubsystem.h`
+  - `Public/Persistence/AetherPersistenceSubsystem.h`
+  - `Public/Progression/AetherProgressionSubsystem.h`
+- This confirms the Data header/implementation rename is correct and isolates the remaining blocker to generated-header handling in these 5 files.
+- Result remains `Failed (OtherCompilationError)`, 3.04s.
