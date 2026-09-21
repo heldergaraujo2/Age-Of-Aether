@@ -57,3 +57,7 @@
 ## 2026-09-21 — Balance field repair command safely aborted
 - The attempted insertion of `TargetClassID` / `TargetEvolutionID` did not match the file's exact newline representation and aborted before writing.
 - No source change was made by the failed command. Inspect the exact struct text before retrying.
+
+## 2026-09-21 — Balance simulation struct exact layout confirmed
+- The header uses one-line UPROPERTY declarations. The exact insertion point is immediately after `EvolutionID`.
+- Next command will add only `TargetClassID` and `TargetEvolutionID` using line-based replacement, avoiding newline-format assumptions.
