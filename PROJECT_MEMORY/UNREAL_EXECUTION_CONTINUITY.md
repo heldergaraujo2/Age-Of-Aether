@@ -32,3 +32,6 @@
 ## 2026-09-21 — Repair command correctly aborted
 - The WorldStreamingCoordinator constness repair command was intentionally aborted because the expected pattern occurred 3 times, not 2. No source change was made by that command.
 - Inspect all 3 occurrences before editing so unrelated const usage is not changed speculatively.
+
+## 2026-09-21 — Streaming subsystem occurrences inspected
+- `AetherWorldStreamingCoordinator.cpp` has 3 `GetSubsystem<UAetherWorldMapSubsystem>()` occurrences: PrepareStream uses `CanStreamLink` and can remain const; ActivateTarget and DeactivateMap call non-const `SetMapActive` and are the two confirmed fixes.
