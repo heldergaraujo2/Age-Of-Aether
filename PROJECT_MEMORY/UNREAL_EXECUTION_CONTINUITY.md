@@ -782,3 +782,14 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No additional UHT diagnostic was exposed by verbose mode; build stops with `Failed (OtherCompilationError)` in 2.31s.
 - The five headers were previously inspected and visibly place `*.generated.h` after their normal includes, so blindly reordering includes is not yet justified.
 - Next step: inspect the exact raw bytes/line structure of the five failing headers versus a known-good UCLASS header to detect hidden encoding, whitespace, or preprocessor differences before editing.
+
+
+## U0.5 — Raw header byte/line comparison
+- Raw inspection of the five failing headers and known-good `Core/AetherGameInstance.h` found:
+  - All six files are UTF-8/no BOM (first bytes `23-70-72`, i.e. `#pr`).
+  - All five failing headers place their own `*.generated.h` after all visible normal includes.
+  - `AetherGameInstance.h` differs mainly by having a blank line immediately before its generated include.
+  - `AetherMultiplayerSubsystem.h` and `AetherProgressionSubsystem.h` have no blank line after `#pragma once`, while the other examples vary; this alone does not explain the UHT error.
+- The visible bytes/lines do not reveal an encoding corruption or misplaced generated include.
+- Do not edit these headers based solely on whitespace.
+- Next action: inspect the headers directly included by the five failing subsystem headers for nested `*.generated.h` includes or other UHT-sensitive structure that could alter parser state.
