@@ -1850,3 +1850,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The 101 incorrect UE 5.8 automation flag references are confined to 21 test .cpp files under Source/AgeOfAether/Private/Tests.
 - Counts by file were verified from the local source tree; no headers are affected.
 - Next action: perform only the exact token replacement in those 21 files, then verify the old token count is zero and the new token count is 101.
+
+
+## 2026-09-21 — Automation flag replacement applied
+- Applied the exact token replacement across Source/AgeOfAether/Private/Tests/*.cpp.
+- Command completed without PowerShell errors.
+- Verification of old/new occurrence counts is still required before build.
