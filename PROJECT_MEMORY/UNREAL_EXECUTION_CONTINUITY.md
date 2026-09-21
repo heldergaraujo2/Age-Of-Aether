@@ -1540,3 +1540,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Verification found no remaining UFUNCTION annotation matching BeginRequest, CompleteRequest, GetRequest, GetAuthoritativeStateRevision, or PushNotification.
 - Native C++ signatures remain exposed in the headers, preserving the existing implementation/test call paths while removing the unsupported Blueprint exposure.
 - Next action: verify the exact surrounding declarations and then proceed to the remaining unsupported integer UPROPERTY metadata without globally changing native uint types.
+
+
+## 2026-09-21 — Native API signatures verified after Blueprint exposure removal
+- Final header context confirms the five native signatures are unchanged: BeginRequest returns uint32, CompleteRequest accepts uint32, GetRequest accepts uint32, GetAuthoritativeStateRevision returns uint64, and PushNotification returns uint32.
+- No UFUNCTION annotation remains on those declarations.
+- This repair is therefore complete at source level.
+- Next action: address the remaining unsupported Blueprint-exposed integer UPROPERTY fields selectively, beginning with the AI request/response fields and then the other listed structs.
