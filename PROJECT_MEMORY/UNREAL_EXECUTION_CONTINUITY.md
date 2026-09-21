@@ -1696,3 +1696,13 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The build now fails broadly with `C1083: cannot open include file` for project headers using module-relative paths such as `Accounts/...`, `AI/...`, `Data/...`, `Characters/...`, `Networking/...`, and even `AgeOfAether.h`.
 - This pattern affects many unrelated source files and indicates a module include-path/configuration problem rather than dozens of independent missing files.
 - No source repair has been made yet. Next action: inspect `AgeOfAether.Build.cs` and the actual Public/Private directory layout to determine the missing include path before changing anything.
+
+
+## 2026-09-21 — Build.cs path assumption invalid; module layout confirmed
+- Helder's diagnostic attempted to read `Source\\AgeOfAether\\AgeOfAether.Build.cs`, but that exact file does not exist.
+- The module directory does exist and contains only `Private` and `Public` directories in the tested listing.
+- Representative public headers, including `Public\\AgeOfAether.h`, account/AI/character/data/networking headers, all exist.
+- The failure is therefore a wrong Build.cs path assumption, not evidence that the referenced headers are missing.
+- Before changing include paths or build configuration, locate the actual module `.Build.cs` file in the source tree and inspect its exact path/content.
+- No source files were modified by this diagnostic.
+- Next action: locate all `*.Build.cs` files under `Source` and report their paths only.
