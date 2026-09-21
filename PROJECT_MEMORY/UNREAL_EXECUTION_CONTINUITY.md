@@ -1955,3 +1955,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Confirmed additional test blockers from the complete log: inventory loot test declarations, plus prior blockers still active such as class-balance target fields/registry visibility, presentation helper FString/TCHAR mismatch, and content-package Errors declaration. These must be repaired from exact source declarations rather than inferred broadly.
 - The full result also confirms prior Character/Creature/Interaction generated-header repairs were not the end of the include-path sweep; more headers need the same verified bare-name treatment.
 - Next action: inspect the exact declaration/include context for the first root blocker before making any source change; continue one command at a time, update this continuity file after each result, and rebuild only after the targeted repair is verified.
+
+
+## 2026-09-21 — FAetherAccountId root declaration located
+- Local inspection of AetherCharacterTypes.h confirms it includes only CoreMinimal.h, World/AetherWorldTypes.h, and its generated header before declaring FAetherAccountId AccountId.
+- The canonical FAetherAccountId definition is in Public/Accounts/AetherAccountSessionTypes.h, where the struct and NewId() are declared.
+- This confirms the character header has a direct type-visibility dependency on AetherAccountSessionTypes.h; the current unknown-type error is not a missing definition in the project.
+- The symbol is widely used across Accounts, Characters, Networking, Social, Persistence, Progression, Skills and World, so correcting the owning public header visibility is preferable to ad-hoc declarations.
+- No source files were modified by this diagnostic.
+- Next action: inspect the exact top-of-file includes and generated-header ordering of AetherAccountSessionTypes.h and neighboring Character type headers before applying the minimal include repair.
