@@ -100,3 +100,5 @@
 - Located `AetherInteractionCatalog.h/.cpp` under `Public/Interaction` and `Private/Interaction`; previous Social path was incorrect. Quest-definition search returned no useful lines, so next inspection will read the actual catalog header and search filenames/content more directly.
 
 - `AetherInteractionCatalog.h` references `FAetherDataQuestDefinition`, but the type search only located quest-related files, not the exact declaration. Next step: inspect `AetherInteractionTypes.h` and `AetherQuestTypes.h` declarations before deciding whether the catalog should use the runtime quest type or a data type/include.
+
+- Confirmed `FAetherDataQuestDefinition` does not exist. `AetherInteractionTypes.h` defines `FAetherInteractionQuestDefinition`, and `AetherQuestTypes.h` defines a distinct `FAetherQuestDefinition`. `AetherInteractionCatalog` registers its quest entries through `UAetherInteractionSubsystem::RegisterQuest`, so the catalog quest array must use `FAetherInteractionQuestDefinition`; next local repair will change that type only.
