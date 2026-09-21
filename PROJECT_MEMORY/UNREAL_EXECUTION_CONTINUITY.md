@@ -1682,3 +1682,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Build stopped because Live Coding is active: `Unable to build while Live Coding is active. Exit the editor and game, or press Ctrl+Alt+F11...`.
 - This is an environment/process-state blocker, not a source compilation error at this stage.
 - Next action: close Unreal Editor cleanly so the next authoritative build can proceed with Live Coding inactive.
+
+
+## 2026-09-21 — Unreal processes closed
+- `UnrealEditor` was found and closed successfully; verification reports `UnrealEditor restantes: 0` and `UnrealGame restantes: 0`.
+- PowerShell emitted a separate `else` parser error because the multiline block had already completed before the standalone `else` was entered; this did not affect the process shutdown.
+- The prior build blocker (Live Coding active) should now be removed.
+- Next action: rerun the authoritative Editor build with no Unreal Editor/Game process active.
