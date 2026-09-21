@@ -1777,3 +1777,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No other Build.cs dependency or target configuration was changed.
 - This is the minimal source-level fix indicated by the confirmed module layout and C1083 include-resolution pattern.
 - Next action: rerun the authoritative `AgeOfAetherEditor Win64 Development` build with the editor still closed, then analyze the complete result for the next blocker.
+
+
+- U0.5: O comando de localização de `*.Build.cs` retornou saída grande demais para revisão manual. Próxima ação: reduzir a saída para apenas caminhos relevantes de Build.cs, sem alterar o projeto.
