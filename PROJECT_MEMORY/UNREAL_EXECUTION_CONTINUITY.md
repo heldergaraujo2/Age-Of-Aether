@@ -1895,3 +1895,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - `AetherAssetPipelineTypes.h` uses `EAetherAssetType` but does not include `AetherAssetTypes.h` before the generated header.
 - The build error is therefore explained by missing type visibility in `AetherAssetPipelineTypes.h`; no enum rename or API change is warranted.
 - Next action: add the minimal project-header include, then verify the diff and rebuild to expose the next independent compiler error.
+
+
+## 2026-09-21 — Asset include insertion did not apply
+- The attempted `AetherAssetTypes.h` insertion produced no change in the first lines of `AetherAssetPipelineTypes.h`.
+- The likely cause is line-ending mismatch in the exact string replacement; no unintended source change was observed.
+- Next action: use a line-oriented insertion that does not depend on CRLF/LF matching, then verify the header.
