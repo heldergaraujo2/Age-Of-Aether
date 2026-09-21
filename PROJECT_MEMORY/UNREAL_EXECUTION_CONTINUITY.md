@@ -45,3 +45,8 @@
 - The attempted `-replace` expression failed because PowerShell parsed the concatenated replacement as more than the two operands supported by `-replace`.
 - No intended source replacement was applied by that loop; verification still shows the two known invalid calls in CharacterAnimation and Production, plus a separate `AetherClassBalanceTests.cpp:45` match that must be inspected because the previous exact sentinel scan did not classify it as an invalid `TNumericLimits` call.
 - Next action: inspect the three matching lines and nearby includes, then use `String.Replace` only for the mechanical replacements.
+
+## 2026-09-21 — NumericLimits API repair applied
+- CharacterAnimation and Production sentinel calls were replaced with the standard C++ `std::numeric_limits<float>::infinity()` and `std::numeric_limits<double>::quiet_NaN()` APIs, with `<limits>` included as needed.
+- The verification output shown by Helder confirms a remaining `std::numeric_limits` match at `AetherClassBalanceTests.cpp:45`; this is a separate existing usage and must be inspected before any modification.
+- Next action: inspect the exact ClassBalance line 45 and nearby context, then continue with the next compiler blocker.
