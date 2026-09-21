@@ -604,3 +604,17 @@ STATUS: COMPLETE
 - The .NET 10 / Visual Studio 2022 notice remains informational; Automation solution is generated for Visual Studio 2026.
 - Engine-distribution Program target notices remain informational and did not fail project generation.
 - This verifies the target-rule compatibility correction and project-file generation, but does NOT yet verify C++ compilation, Unreal Editor launch, UHT/UBT build, PIE, or runtime.
+
+
+## U0.5 — Editor compilation: first real C++/UHT failure identified
+STATUS: BLOCKED — DUPLICATE HEADER BASENAME
+- `AgeOfAetherEditor Win64 Development` was invoked through UE 5.8 UBT.
+- UBT created the makefile and started UHT successfully.
+- Build failed during UHT manifest validation with:
+  `Two headers with the same name is not allowed`.
+- Conflicting files:
+  - `Source/AgeOfAether/Public/Items/AetherItemTypes.h`
+  - `Source/AgeOfAether/Public/Data/AetherItemTypes.h`
+- Result: `Failed (OtherCompilationError)` after 22.12 seconds.
+- This is a real project-source issue, not the previous target build-environment warning.
+- Required next action: inspect both header files and their references before deciding which file should be renamed/merged; do not delete or overwrite either file without inspection.
