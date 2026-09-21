@@ -16,8 +16,8 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.1 — Confirm project path; Unreal 5.8.x installation path was NOT found by the tested roots.
-- Last command/result: U0.1 PowerShell check completed.
+- Current step: U0.1 — Locate Unreal installation; project path confirmed, but UnrealEditor.exe is not exposed through PowerShell PATH.
+- Last command/result: U0.1 PATH lookup returned no path.
 - Blockers: exact Unreal installation path/version still unknown.
 
 # U0 — Environment & Project Health
@@ -27,17 +27,15 @@ Status: PARTIAL / BLOCKED ON ENGINE PATH
 
 Result:
 - Project found: D:\Projeto Age of Aether\Age-Of-Aether-main\AgeOfAether.uproject
-- The command found no directory matching UE_5.8 under the four tested roots:
-  C:\Program Files\Epic Games
-  D:\Program Files\Epic Games
-  D:\Epic Games
-  C:\Epic Games
-- This does NOT prove Unreal is absent. Helder explicitly reports Unreal is installed; it may be installed through a different path or launcher-managed location.
+- No UE_5.8 directory was found under the four previously tested roots.
+- PowerShell PATH lookup for UnrealEditor.exe returned no path.
+- This does NOT prove Unreal is absent; UnrealEditor.exe may simply not be registered in PATH.
 
 Analysis:
 - Project location is confirmed.
-- Before version verification/build, we must locate the actual Unreal executable/installation.
-- U0.1 is not PASS because the required engine path evidence is incomplete.
+- The previous full-drive recursive scan was stopped because it was too expensive.
+- The PATH lookup confirms only that UnrealEditor.exe is not currently resolvable as a PowerShell command.
+- We still need a targeted Windows/Epic installation lookup before attempting any build.
 
 ## U0.2 — Verify exact engine version
 Status: PENDING
@@ -162,5 +160,11 @@ Command: PowerShell project + UE_5.8 root scan.
 Result:
 - Project: D:\Projeto Age of Aether\Age-Of-Aether-main\AgeOfAether.uproject
 - No UE_5.8 directory found in the four tested roots.
-Analysis: Project is confirmed, but the Unreal installation path remains unresolved. The negative scan is not sufficient to conclude Unreal is not installed.
-Next: Locate the actual Unreal Editor executable/installation with one PowerShell command.
+Analysis: Project is confirmed, but the Unreal installation path remained unresolved.
+
+## Entry 002 — U0.1
+Status: PARTIAL / BLOCKED ON ENGINE PATH
+Command: PowerShell PATH lookup for UnrealEditor.exe.
+Result: No output.
+Analysis: UnrealEditor.exe is not exposed through PATH. This does not prove Unreal is absent. The next step is a targeted Windows/Epic installation lookup rather than another full-drive scan.
+Next: Run exactly one targeted registry query.
