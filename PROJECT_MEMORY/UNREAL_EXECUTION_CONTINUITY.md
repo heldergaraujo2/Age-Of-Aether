@@ -49,3 +49,7 @@
 - `StopLoop` now receives `TObjectPtr<UAudioComponent>*` from `ActiveLoops.Find`.
 - `IsPlaying` now receives `const TObjectPtr<UAudioComponent>*` from `ActiveLoops.Find`.
 - The repair was verified by PowerShell. Awaiting real UE build validation.
+
+## 2026-09-21 — Balance simulation struct inspected
+- `FAetherBalanceSimulationCase` currently contains `ClassID`, `EvolutionID`, and balance parameters, but no `TargetClassID` or `TargetEvolutionID`.
+- The implementation and tests reference both target fields, so the next repair will add those two optional string fields to the case struct, preserving the existing IDs as defaults/fallbacks.
