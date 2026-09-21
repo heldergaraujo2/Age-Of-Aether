@@ -16,34 +16,28 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.1 — Locate/confirm the Unreal project and engine installation.
-- Last command/result: none yet.
-- Blockers: none known; local machine state has not been inspected.
+- Current step: U0.1 — Confirm project path; Unreal 5.8.x installation path was NOT found by the tested roots.
+- Last command/result: U0.1 PowerShell check completed.
+- Blockers: exact Unreal installation path/version still unknown.
 
 # U0 — Environment & Project Health
 
 ## U0.1 — Confirm project + Unreal installation
-Status: PENDING
+Status: PARTIAL / BLOCKED ON ENGINE PATH
 
-Goal: establish the exact .uproject path and Unreal 5.8.x installation.
+Result:
+- Project found: D:\Projeto Age of Aether\Age-Of-Aether-main\AgeOfAether.uproject
+- The command found no directory matching UE_5.8 under the four tested roots:
+  C:\Program Files\Epic Games
+  D:\Program Files\Epic Games
+  D:\Epic Games
+  C:\Epic Games
+- This does NOT prove Unreal is absent. Helder explicitly reports Unreal is installed; it may be installed through a different path or launcher-managed location.
 
-PowerShell command:
-
-    Write-Host '=== AGE OF AETHER / UNREAL CHECK ==='
-    Write-Host "`n[PROJECT]"
-    Get-ChildItem -Path . -Filter *.uproject -Recurse -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
-    Write-Host "`n[UNREAL 5.8.x]"
-    $roots = @('C:\Program Files\Epic Games','D:\Program Files\Epic Games','D:\Epic Games','C:\Epic Games')
-    foreach ($root in $roots) {
-      if (Test-Path $root) {
-        Get-ChildItem $root -Directory -ErrorAction SilentlyContinue |
-          Where-Object { $_.Name -match 'UE_5\.8' } |
-          Select-Object -ExpandProperty FullName
-      }
-    }
-
-Expected evidence: project path + Unreal Engine 5.8.x installation path.
-After execution: paste the complete terminal output here. Do not run the next step yet.
+Analysis:
+- Project location is confirmed.
+- Before version verification/build, we must locate the actual Unreal executable/installation.
+- U0.1 is not PASS because the required engine path evidence is incomplete.
 
 ## U0.2 — Verify exact engine version
 Status: PENDING
@@ -163,8 +157,10 @@ Status: PENDING
 # Command/result journal
 
 ## Entry 001 — U0.1
-Status: PENDING
-Command: See U0.1 above.
-Result: Awaiting Helder's terminal output.
-Analysis: No local Unreal environment facts have been assumed.
-Next: Analyze output, update this file, then issue exactly one next command.
+Status: PARTIAL / BLOCKED ON ENGINE PATH
+Command: PowerShell project + UE_5.8 root scan.
+Result:
+- Project: D:\Projeto Age of Aether\Age-Of-Aether-main\AgeOfAether.uproject
+- No UE_5.8 directory found in the four tested roots.
+Analysis: Project is confirmed, but the Unreal installation path remains unresolved. The negative scan is not sufficient to conclude Unreal is not installed.
+Next: Locate the actual Unreal Editor executable/installation with one PowerShell command.
