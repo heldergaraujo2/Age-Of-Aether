@@ -1888,3 +1888,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The scan confirms the unresolved build symbol is not an unknown project-wide name; it is specifically a visibility/include-resolution issue in `AetherAssetPipelineTypes.h` or a declaration-order/dependency issue.
 - No source files were modified by this diagnostic.
 - Next action: inspect the exact `EAetherAssetType` definition and the include list/top of `AetherAssetPipelineTypes.h` before making the minimal visibility fix.
+
+
+## 2026-09-21 — EAetherAssetType definition confirmed
+- `EAetherAssetType` is correctly declared as a `BlueprintType` enum in `Public/Data/AetherAssetTypes.h`.
+- `AetherAssetPipelineTypes.h` uses `EAetherAssetType` but does not include `AetherAssetTypes.h` before the generated header.
+- The build error is therefore explained by missing type visibility in `AetherAssetPipelineTypes.h`; no enum rename or API change is warranted.
+- Next action: add the minimal project-header include, then verify the diff and rebuild to expose the next independent compiler error.
