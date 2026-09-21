@@ -1278,3 +1278,17 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
   - Runtime skill types: AetherSkillTypes.cpp, AetherSkillVisualComponent.h, AetherNetworkPlayerController.h, AetherSkillRegistry.h, AetherSkillSubsystem.h.
   - Skill/effect content types: AetherSkillEffectTypes.cpp, AetherSkillEffectRegistry.h.
 - Do not delete or merge these declarations blindly. Next step is to determine the smallest reflected-name rename set that preserves domain APIs and references.
+
+
+## 2026-09-21 — Consumer inventory completed for reflected-name collisions
+- Helder ran the reduced consumer-inventory command successfully and returned the complete summarized mapping for all 10 conflicting headers.
+- Runtime/content separation is confirmed by consumer scope:
+  - Interaction runtime header is consumed by its implementation/catalog/registry; WorldContent header is consumed by its implementation/registry.
+  - Quest runtime header is consumed by networking/persistence/quest gameplay/data-asset code; QuestDialogueEvent content header is consumed only by its implementation/registry.
+  - Runtime item header is consumed by economy/item service/networking/persistence/quest code; ItemData content header is consumed by item data/visual/inventory/loot code.
+  - Runtime loot header is consumed by its implementation/tests/subsystem; LootReward content header is consumed by its implementation/registry.
+  - Runtime skill header is consumed by gameplay/visual/networking/registry/subsystem code; SkillEffect content header is consumed by its implementation/registry.
+- This mapping supports preserving both APIs rather than merging/deleting either side.
+- The safest next repair is to rename only the reflected declarations on the broader Data/content side where necessary, while keeping the existing runtime-facing names intact and updating their Data-side consumers. Before editing, exact declaration names must be mapped to the intended new reflected names and all references must be changed consistently.
+- No local source modification was made by the inventory command.
+- Next action: perform a focused local declaration/reference inventory for the six collision families, returning only exact declaration lines and reference counts so the rename plan can be executed without large output.
