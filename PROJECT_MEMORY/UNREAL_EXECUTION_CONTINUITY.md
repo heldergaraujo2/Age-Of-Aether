@@ -593,3 +593,14 @@ STATUS: VERIFIED
 - `AgeOfAetherServer.Target.cs`: Server target, V7, Latest include order, AgeOfAether module.
 - No unexpected changes were shown in the verification output.
 - The previously identified UE 5.8 shared-environment warning mismatch is therefore corrected at source level.
+
+
+## U0.4 — Project files regenerated successfully after V7 correction
+STATUS: COMPLETE
+- UnrealBuildTool project-file generation completed with `Result: Succeeded` in 8.04 seconds.
+- The previous `AgeOfAetherEditor modifies the values...` Shared Environment error did not recur.
+- `AgeOfAether.sln` and `AgeOfAether.slnx` were generated successfully.
+- QueryTargets data for the editor was generated successfully.
+- The .NET 10 / Visual Studio 2022 notice remains informational; Automation solution is generated for Visual Studio 2026.
+- Engine-distribution Program target notices remain informational and did not fail project generation.
+- This verifies the target-rule compatibility correction and project-file generation, but does NOT yet verify C++ compilation, Unreal Editor launch, UHT/UBT build, PIE, or runtime.
