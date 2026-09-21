@@ -1780,3 +1780,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5: O comando de localização de `*.Build.cs` retornou saída grande demais para revisão manual. Próxima ação: reduzir a saída para apenas caminhos relevantes de Build.cs, sem alterar o projeto.
+
+
+- U0.5: Build.cs real localizado em `Source\AgeOfAether.Build.cs`. O build avançou até compilação, mas falhou em 20+ arquivos com `C1083` para includes como `UI/...`, `Data/...`, `World/...` e `AgeOfAether.h`. Isso indica configuração de include paths do módulo, não ausência geral dos headers. Próxima ação: inspecionar o Build.cs real antes de alterar qualquer código.
