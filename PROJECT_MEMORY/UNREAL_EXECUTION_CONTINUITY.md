@@ -520,3 +520,25 @@ Analysis:
 - The generated receipt is partial and must not be treated as proof of a successful editor build.
 - Before modifying source, inspect whether these properties are being supplied through project config (`.ini`) or another rules/configuration file. This avoids adding a workaround when the underlying setting can be removed.
 Next: search project configuration/source text for the four exact property names and related warning/build-environment settings.
+
+## Entry 025 — U0.4
+Status: DIAGNOSTIC RESULT — NO PROJECT-SIDE WARNING SETTING FOUND
+
+Command searched the entire project tree for:
+- `UndefinedIdentifierWarningLevel`
+- `UnreachableCodeWarningLevel`
+- `ReturnTypeWarningLevel`
+- `DanglingWarningLevel`
+- `BuildEnvironment`
+- `bOverrideBuildEnvironment`
+
+Result:
+- Only the generated `Binaries\\Win64\\AgeOfAetherEditor.target` receipt matched, via its `TargetBuildEnvironment` field.
+- No source, config, or project rule file contains the four warning-level properties or build-environment override settings.
+
+Analysis:
+- The conflicting warning settings are not coming from the project's source/configuration tree.
+- The remaining evidence points to UE 5.8's shared editor target/build environment interaction with the generated project target.
+- UBT itself explicitly provides `BuildEnvironment = TargetBuildEnvironment.Unique` as the targeted remedy for this exact conflict.
+- Before applying that remedy, we can safely inspect the installed engine's relevant TargetRules defaults to understand whether Unique is the intended compatibility fix; however, source inspection inside the engine is diagnostic only.
+Next: inspect the engine UBT source for `TargetBuildEnvironment.Unique` and the warning-level conflict handling, without modifying the engine or project.
