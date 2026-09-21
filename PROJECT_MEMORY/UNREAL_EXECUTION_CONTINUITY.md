@@ -853,3 +853,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The generated-header filter returned five matching generated artifacts, confirming UHT has discovered/generates output for each problematic subsystem despite the diagnostic.
 - The previous file inventory output was truncated by PowerShell display width, so exact generated file names/content are not yet visible.
 - Next action: inspect the UHT manifest entries for the five subsystem source headers and the exact generated-header paths/names, without deleting or modifying Intermediate.
+
+
+## U0.5 — UHT manifest confirmation
+- `AgeOfAetherEditor.uhtmanifest` explicitly lists all five failing subsystem headers in the module's `PublicHeaders` set.
+- Therefore UHT discovery and manifest registration are correct; the failure occurs during processing/validation of these headers, not because they are omitted from the manifest.
+- The manifest context also shows nearby subsystem/type headers, but no evidence of a missing module registration or path configuration issue.
+- Next action: inspect the exact generated artifacts for the five subsystem headers and compare their generated contents/timestamps with a known-good generated UCLASS artifact, using the manifest to identify the paths.
