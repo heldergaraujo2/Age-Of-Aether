@@ -840,3 +840,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No namespace, conditional preprocessor block, malformed macro placement, or encoding anomaly was revealed in these source excerpts.
 - The subsystem headers mostly expose plain C++ methods/data; this does not explain a generated-header placement diagnostic.
 - Next action: inspect generated/intermediate Unreal metadata and generated-header files produced by the failed UHT run, because source-level structure is not identifying the cause.
+
+
+## U0.5 — Intermediate inspection command entry issue
+- User pasted the trailing `else` block separately, causing PowerShell to report `else` is not recognized as a command.
+- This was a command-entry issue only; no project files were changed and no conclusion about Intermediate was made.
+- Next action: use a single-line-safe command that does not require a multiline `if/else` construct.
