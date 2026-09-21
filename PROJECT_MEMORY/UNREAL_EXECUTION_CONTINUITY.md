@@ -1844,3 +1844,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The replacement target is confirmed as the UE 5.8 namespace-level EAutomationTestFlags_ApplicationContextMask.
 - No source modification performed in this step.
 - Next action: list the 101 occurrences by file so the controlled replacement scope can be verified before editing.
+
+
+## 2026-09-21 — Automation flag file distribution verified
+- The 101 incorrect UE 5.8 automation flag references are confined to 21 test .cpp files under Source/AgeOfAether/Private/Tests.
+- Counts by file were verified from the local source tree; no headers are affected.
+- Next action: perform only the exact token replacement in those 21 files, then verify the old token count is zero and the new token count is 101.
