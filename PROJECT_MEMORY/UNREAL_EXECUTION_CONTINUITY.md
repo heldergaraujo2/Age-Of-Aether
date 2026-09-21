@@ -709,3 +709,11 @@ STATUS: FAILED — 5 GENERATED HEADER ORDER ERRORS REMAIN
   - `Public/Progression/AetherProgressionSubsystem.h`
 - This confirms the Data header/implementation rename is correct and isolates the remaining blocker to generated-header handling in these 5 files.
 - Result remains `Failed (OtherCompilationError)`, 3.04s.
+
+
+## U0.5 — Generated header byte/order inspection
+STATUS: INVESTIGATION CONTINUES
+- All 5 affected headers begin with the expected ASCII bytes for `#pragma once`; there is no UTF-8 BOM at the start.
+- Their `.generated.h` includes are visibly last among the include directives, matching standard Unreal conventions.
+- The previous output did not include the requested inventory of all generated-header files, so no source-level comparison with a known-good project header was established yet.
+- No edits made in this step.
