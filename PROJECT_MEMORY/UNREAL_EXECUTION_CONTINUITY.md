@@ -1262,3 +1262,19 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Loot: `Items/AetherLootTypes.h` is a DataAsset/runtime table wrapper around a compact entry, while `Data/AetherLootRewardTypes.h` is the broader content/reward definition model.
 - Skills: `Skills/AetherSkillTypes.h` is gameplay/runtime-oriented, while `Data/AetherSkillEffectTypes.h` is content-definition-oriented.
 - Therefore blind deletion or merging would be unsafe. Next step is consumer inventory for each conflicting header/type so the minimal compatibility-preserving separation can be selected.
+
+
+## 2026-09-21 — Reflected-name collision consumer inventory
+- Latest Editor/UHT build advanced past the generated-header include errors and reported 11 reflected-name collisions.
+- Inventory confirms paired Runtime/Content headers have distinct consumers:
+  - Interaction runtime types: AetherInteractionTypes.cpp, AetherInteractionCatalog.h, AetherInteractionRegistry.h.
+  - World content types: AetherWorldContentTypes.cpp, AetherWorldContentRegistry.h.
+  - Quest runtime types: AetherNetworkPlayerController.h, AetherPersistenceTypes.h, AetherQuestDefinitionDataAsset.h, AetherQuestService.h.
+  - Quest dialogue/content types: AetherQuestDialogueEventTypes.cpp, AetherQuestDialogueEventRegistry.h.
+  - Runtime item types: AetherEconomyTypes.h, AetherItemDefinitionDataAsset.h, AetherItemService.h, AetherNetworkPlayerController.h, AetherPersistenceTypes.h, AetherQuestTypes.h.
+  - Item content data types: AetherItemDataTypes.cpp, AetherEquipmentVisualComponent.h, AetherEquipmentVisualProfile.h, AetherItemRegistry.h, AetherInventoryTypes.h, AetherLootTypes.h.
+  - Runtime loot types: AetherLootTypes.cpp, AetherInventoryLootTests.cpp, AetherLootSubsystem.h.
+  - Loot/reward content types: AetherLootRewardTypes.cpp, AetherLootRewardRegistry.h.
+  - Runtime skill types: AetherSkillTypes.cpp, AetherSkillVisualComponent.h, AetherNetworkPlayerController.h, AetherSkillRegistry.h, AetherSkillSubsystem.h.
+  - Skill/effect content types: AetherSkillEffectTypes.cpp, AetherSkillEffectRegistry.h.
+- Do not delete or merge these declarations blindly. Next step is to determine the smallest reflected-name rename set that preserves domain APIs and references.
