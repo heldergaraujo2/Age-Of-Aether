@@ -1576,3 +1576,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Protocol Major/Minor use EditAnywhere + BlueprintReadOnly and require special handling to preserve editor configurability without Blueprint exposure.
 - No source changes were made by this inspection.
 - Next action: selectively remove BlueprintReadOnly from the integer fields, preserving all other metadata; handle Protocol Major/Minor by retaining EditAnywhere and removing only BlueprintReadOnly.
+
+
+## 2026-09-21 — Unsupported integer UPROPERTY metadata repair applied
+- The selective metadata edit completed across the remaining integer UPROPERTY declarations.
+- BlueprintReadOnly was removed from the offending uint16/uint32/uint64 fields while preserving native types; NetworkGameState retained Replicated, and NetworkTypes Major/Minor retained EditAnywhere.
+- The command's final verification showed the expected Major/Minor and AuthoritativeStateRevision declarations still present; the output did not report any REVISAR lines.
+- No global uint type conversion was performed.
+- Next action: run a focused metadata audit against the full known UHT offender set before compiling, ensuring zero offending Blueprint exposure remains and special metadata is preserved.
