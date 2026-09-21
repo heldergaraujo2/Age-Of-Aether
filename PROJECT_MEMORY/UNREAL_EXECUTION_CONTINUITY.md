@@ -1091,3 +1091,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This rules out a simple malformed generated-header placement in the `Economy -> Item -> Character -> World` chain.
 - The repeated failure across five unrelated subsystem headers now points more strongly to a shared UHT/build-state condition rather than five independent header mistakes.
 - Next action: compare a failing subsystem header against a known-good `UCLASS` header using UHT-relevant tokens and, if structurally identical, move to a controlled clean Intermediate regeneration rather than modifying source speculatively.
+
+
+## U0.5 — Local source/config inventory before synchronization
+- Local project contains Source, Config, and PROJECT_MEMORY files outside generated directories.
+- Generated directories were explicitly excluded from the inventory: Intermediate, Binaries, Saved, DerivedDataCache.
+- The local source tree includes the controlled changes already identified: `AetherItemDataTypes.cpp`, `AetherItemDataTypes.h`, and the three Target.cs files, plus the five failing subsystem headers and their implementations.
+- Inventory did not itself prove which files differ from GitHub; the next action is a targeted hash comparison of the known controlled-change files against their repository versions before any synchronization.
