@@ -904,3 +904,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Both files are writable and have `Normal` attributes.
 - The failing header is structurally conventional and matches Unreal's expected generated-header placement, so a simple source formatting/attribute issue is unlikely.
 - Next investigation: identify the exact implementation of UHT's generated-header ordering diagnostic in the installed UE 5.8 binaries/source, using the diagnostic string and related code symbols, before making any source change.
+
+
+## U0.5 — Installed UHT diagnostic lookup
+- UE 5.8 contains `EpicGames.UHT.dll` in the expected UnrealBuildTool distribution and multiple AutomationTool copies.
+- A raw UTF-8 byte scan of all DLLs under `Engine/Binaries/DotNET` found no literal match for the diagnostic string, so the message is likely stored encoded/compressed/generated or constructed at runtime.
+- No source modification was made from this test.
+- Next action: inspect the UBT/UHT assembly metadata and command invocation path to identify the actual UHT component/version being executed and whether multiple copies are involved.
