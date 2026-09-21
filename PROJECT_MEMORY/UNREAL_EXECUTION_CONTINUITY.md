@@ -1418,3 +1418,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - New blocking UHT errors are isolated to Public/Characters/AetherClassEvolutionPresentationCatalog.h lines 13-14.
 - UHT reports FAetherClassEvolutionPresentationDefinition is exposed through pointer variables, which is invalid for this reflected struct type.
 - Next action: inspect the catalog header and its consumers before choosing the smallest type-safe UHT-compatible repair.
+
+
+## 2026-09-21 — Class evolution presentation UHT diagnosis
+- UHT now reaches AetherClassEvolutionPresentationCatalog.h and rejects the two BlueprintPure functions returning const pointers to USTRUCT FAetherClassEvolutionPresentationDefinition.
+- The Entries property is a TArray of the struct and is valid; the issue is specifically the exposed pointer return type on Blueprint UFUNCTIONs.
+- No additional C++ consumers of the struct name were found beyond the catalog implementation/types.
+- Before modifying the API, inspect the struct declaration and all calls to Find/FindWithFallback to select the smallest compatible Blueprint/C++ signature change.
