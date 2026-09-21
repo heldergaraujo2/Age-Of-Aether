@@ -1755,3 +1755,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The remaining evidence supports a minimal module include-path correction in `Source\\AgeOfAether.Build.cs`, specifically exposing the module's actual Public root for module-relative includes.
 - No source files were modified yet.
 - Next action: edit only `Source\\AgeOfAether.Build.cs` to add the explicit Public include path, then verify the resulting file before rebuilding.
+
+
+## 2026-09-21 — Build.cs include-path edit did not pass verification
+- The attempted Build.cs edit ended with the verification exception: `PublicIncludePaths nao encontrado apos a alteracao.`
+- The supplied output does not show whether the replacement itself matched or whether the file was modified before verification, so the file state must be inspected directly rather than assuming success or failure.
+- No build was run after this attempt.
+- Next action: read the exact current `Source\\AgeOfAether.Build.cs` contents and verify whether the include-path line exists before making any further change.
