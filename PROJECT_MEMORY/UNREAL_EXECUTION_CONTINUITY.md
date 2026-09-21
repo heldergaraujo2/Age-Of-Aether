@@ -975,3 +975,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This is a diagnostic-script compatibility issue, not evidence about the project or UHT.
 - No project files were changed.
 - Next action: remove `Split-Path` entirely and use `[System.IO.Path]::GetDirectoryName()` for deterministic path handling.
+
+
+## U0.5 — Economy include-tree result
+- The deterministic include-tree probe now executes correctly.
+- It resolved the project-side graph from `AetherEconomySubsystem.h` through `AetherEconomyService.h`, `AetherEconomyTypes.h`, `AetherCharacterTypes.h`, `AetherWorldTypes.h`, `AetherItemTypes.h`, and `AetherEconomyConfigDataAsset.h`.
+- The probe reports engine headers and generated headers as `[NOT FOUND]` because it intentionally searches only the project `Public`/`Private` roots; this is expected and is not itself an error.
+- Importantly, no project-side header was found that directly includes `AetherEconomySubsystem.generated.h` before the subsystem header's own generated include.
+- The subsystem header's visible include graph therefore does not explain the UHT diagnostic by itself.
+- Next action: inspect the exact UHT manifest entry/order and generated-header metadata for the Economy subsystem against a known-good UCLASS header, focusing on filename/basename pairing and module discovery metadata.
