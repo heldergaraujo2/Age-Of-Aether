@@ -618,3 +618,12 @@ STATUS: BLOCKED — DUPLICATE HEADER BASENAME
 - Result: `Failed (OtherCompilationError)` after 22.12 seconds.
 - This is a real project-source issue, not the previous target build-environment warning.
 - Required next action: inspect both header files and their references before deciding which file should be renamed/merged; do not delete or overwrite either file without inspection.
+
+
+## U0.5 — Duplicate header contents inspected
+STATUS: ANALYSIS REQUIRED BEFORE REPAIR
+- The two conflicting `AetherItemTypes.h` files are materially different APIs, not duplicates that can safely be deleted.
+- `Items/AetherItemTypes.h` defines inventory/runtime-oriented enums and structs including `FAetherItemDefinitionId`, `FAetherItemInstanceId`, `FAetherItemDefinition`, `FAetherItemInstance`, `FAetherInventorySlot`, and inventory operation results.
+- `Data/AetherItemTypes.h` defines data/definition-oriented enums and structs including rarity, enhancement, requirements, economy, visuals, `FAetherItemDefinition`, `FAetherItemInstanceSnapshot`, and validation issues.
+- Both define UHT-visible symbols with overlapping names such as `EAetherItemCategory`, `EAetherEquipmentSlot`, and `FAetherItemDefinition`; therefore this is both a header-basename conflict and a type/API collision risk.
+- Neither file should be deleted or blindly merged. Next action must inventory include references and symbol usages so the repair can preserve intended architecture.
