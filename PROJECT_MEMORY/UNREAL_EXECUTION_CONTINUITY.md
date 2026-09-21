@@ -1186,3 +1186,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The diagnostic script reported generated-include index `-1` for all five because the script searched using a path-derived filename that already included the relative path; this is a diagnostic-script mismatch, not evidence that the generated includes are absent.
 - Therefore no source modification was made from this result.
 - Next action: compare these headers against known-good reflected headers at the preprocessor/token level and inspect the exact UHT diagnostic context, especially whether the dependency headers introduce generated-header ordering state.
+
+
+## U0.5 — Include-consumer mapping
+- The five subsystem headers are directly included by their own .cpp implementations and, for some, by networking/persistence/economy code.
+- The mapping itself is conventional and does not reveal an unexpected duplicate include path or alternate subsystem header.
+- The prior comparison command did not emit its first section in the captured result, so known-good reflected-header formatting still needs a direct, focused comparison.
+- No source modification made.
