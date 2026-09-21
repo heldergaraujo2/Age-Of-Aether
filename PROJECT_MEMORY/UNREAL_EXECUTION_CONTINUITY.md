@@ -1044,3 +1044,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This is consistent with UHT aborting during header validation before generated-header emission/normal compilation proceeds.
 - The response files confirm the compiler action exists, but they do not explain the UHT header diagnostic.
 - Next action: inspect the UHT-generated response/manifest state immediately before failure by comparing the failing subsystem's `.cpp.obj.rsp` with a known-good UCLASS source response file and checking whether the failing source is compiled with unusual forced includes/defines.
+
+
+## U0.5 — Compiler RSP comparison
+- The known-good `AetherAssetManager.cpp.obj.rsp` and `AetherGameInstance.cpp.obj.rsp` use the same compiler structure: source path, shared response file, shared PCH/definitions, object/SARIF/dependency outputs, C++20, and warning suppression.
+- No anomalous forced include, compiler standard, or PCH setting is visible in the known-good responses.
+- The failing Economy response was not included in the returned excerpt, so this comparison does not yet establish whether it differs; no conclusion should be drawn from its absence.
+- The next step is to inspect the complete `AetherEconomySubsystem.h` declaration and its member types, because a concrete dependency requirement may explain why UHT treats the include sequence differently.
