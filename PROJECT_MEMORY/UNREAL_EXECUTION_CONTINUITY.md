@@ -106,3 +106,5 @@
 - Repaired `AetherInteractionCatalog.h`: `FAetherDataQuestDefinition` → `FAetherInteractionQuestDefinition`; verified the header now references the existing interaction quest type.
 
 - EconomyTests inspection: helper `TestItem` and multiple locals use `FAetherDataItemDefinition`, but the test currently has no direct item-data type include. `AddItem` calls in EconomyTests use `FAetherItemService` and appear structurally consistent with the 4-argument signature; next step is inspect `AetherItemService.h` plus data type declaration before editing.
+
+- Confirmed a deeper EconomyTests mismatch: `FAetherItemService::RegisterDefinition` accepts runtime `FAetherItemDefinition`, while the test helper returns data `FAetherDataItemDefinition`. `FAetherDataItemDefinition` has `DefinitionID` (FString), whereas runtime uses `FAetherItemDefinitionId`. Need inspect the runtime definition fields and all EconomyTests uses before designing the minimal repair.
