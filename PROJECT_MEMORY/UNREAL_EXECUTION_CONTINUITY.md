@@ -1807,3 +1807,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5: corrigido `AetherWorldTypes.h` para incluir `AetherWorldTypes.generated.h` pelo nome simples; o generated header existe no diretório UHT. Próximo teste deve recompilar para revelar os erros restantes sem o falso `C1083` desse header.
+
+
+- U0.5 build após corrigir `AetherWorldTypes.generated.h`: esse erro desapareceu. O build agora está em 94 ações e revelou: `AetherWorldContentRegistry.cpp` ainda com os dois C4456; `AetherWorldMapTests.cpp` usa `EAutomationTestFlags::ApplicationContextMask`; `AetherCharacterTypes.h` tem include `Characters/AetherCharacterTypes.generated.h` incompatível; `AetherWorldStreamingCoordinator.cpp` obtém o subsystem como `const` e chama método não-const; `AetherAssetPipelineTypes.h` ainda não enxerga `EAetherAssetType`. Próximo passo: reparar o erro mais localizado do registry e depois recompilar.
