@@ -1610,3 +1610,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The client branch already uses GuildRole, and ServerSetGuildRole_Implementation itself uses GuildRole correctly.
 - This is a real compile error introduced by the incomplete rename and must be repaired before the next UHT/UBT build.
 - Next action: replace only that stale Role argument in SetGuildRole and verify the relevant three definitions contain no unintended Role/Character identifiers.
+
+
+## 2026-09-21 — Stale guild-role identifier repaired and verified
+- The local repair replaced the remaining stale Role argument in SetGuildRole with GuildRole.
+- Verification reports 0 remaining calls matching ServerSetGuildRole_Implementation(Id,Target,Role) or ServerSetGuildRole(Id,Target,Role).
+- The parameter rename repair is therefore internally consistent for the verified stale-call patterns.
+- Next action: run the Unreal 5.8 editor build to obtain the next authoritative UHT/UBT result.
