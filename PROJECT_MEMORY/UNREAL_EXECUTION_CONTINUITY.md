@@ -1003,3 +1003,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The broad `Modules` property dump produced excessive output and was not useful for diagnosis.
 - No project files were changed.
 - Next diagnostic will query only the `AgeOfAether` module object and only fields relevant to header registration, avoiding full manifest dumps.
+
+
+## U0.5 — Compact manifest module result
+- The `AgeOfAether` module object classifies the three compared headers under `PrivateHeaders`: `AetherGameInstance.h`, `AetherEconomyConfigDataAsset.h`, and `AetherEconomySubsystem.h`.
+- This confirms the failing Economy subsystem is registered in the same manifest header collection as the known-good GameInstance and DataAsset, so simple manifest omission/classification is not the differentiator.
+- The result did not include the full module field summary, so the next probe will compare only the header-list membership/order around these three entries.
