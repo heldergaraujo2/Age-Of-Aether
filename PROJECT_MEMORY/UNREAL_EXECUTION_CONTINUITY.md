@@ -16,26 +16,26 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.1 — Locate Unreal installation; project path confirmed, but UnrealEditor.exe is not exposed through PowerShell PATH.
-- Last command/result: U0.1 PATH lookup returned no path.
-- Blockers: exact Unreal installation path/version still unknown.
+- Current step: U0.1 — Locate/confirm Unreal installation; Epic registry installation root is now confirmed.
+- Last command/result: Registry lookup returned C:\Program Files\Epic Games\.
+- Blockers: exact installed engine subdirectory/version still needs verification.
 
 # U0 — Environment & Project Health
 
 ## U0.1 — Confirm project + Unreal installation
-Status: PARTIAL / BLOCKED ON ENGINE PATH
+Status: PARTIAL — INSTALL ROOT CONFIRMED
 
 Result:
 - Project found: D:\Projeto Age of Aether\Age-Of-Aether-main\AgeOfAether.uproject
-- No UE_5.8 directory was found under the four previously tested roots.
-- PowerShell PATH lookup for UnrealEditor.exe returned no path.
-- This does NOT prove Unreal is absent; UnrealEditor.exe may simply not be registered in PATH.
+- Windows Epic Games Unreal Engine registry key exists.
+- INSTALLDIR = C:\Program Files\Epic Games\
+- Earlier UE_5.8 directory scan did not find an engine directory directly under the tested roots.
+- Get-Command UnrealEditor.exe returned no path because UnrealEditor.exe is not on PowerShell PATH.
 
 Analysis:
-- Project location is confirmed.
-- The previous full-drive recursive scan was stopped because it was too expensive.
-- The PATH lookup confirms only that UnrealEditor.exe is not currently resolvable as a PowerShell command.
-- We still need a targeted Windows/Epic installation lookup before attempting any build.
+- This is useful evidence that Unreal Engine is installed through Epic's registered installation root.
+- We should now inspect only C:\Program Files\Epic Games\, avoiding a full C:/D: recursive scan.
+- U0.1 remains PARTIAL until the exact engine directory/version is confirmed.
 
 ## U0.2 — Verify exact engine version
 Status: PENDING
@@ -166,5 +166,12 @@ Analysis: Project is confirmed, but the Unreal installation path remained unreso
 Status: PARTIAL / BLOCKED ON ENGINE PATH
 Command: PowerShell PATH lookup for UnrealEditor.exe.
 Result: No output.
-Analysis: UnrealEditor.exe is not exposed through PATH. This does not prove Unreal is absent. The next step is a targeted Windows/Epic installation lookup rather than another full-drive scan.
-Next: Run exactly one targeted registry query.
+Analysis: UnrealEditor.exe is not exposed through PATH. This does not prove Unreal is absent.
+
+## Entry 003 — U0.1
+Status: PARTIAL — INSTALL ROOT CONFIRMED
+Command: PowerShell registry lookup for the Epic Games Unreal Engine installation root.
+Result:
+- INSTALLDIR : C:\Program Files\Epic Games\
+Analysis: The Windows registry confirms the Epic Games Unreal Engine installation root. The exact UE version/subdirectory is still pending.
+Next: Inspect only the confirmed Epic Games root for UE_5.8 directories.
