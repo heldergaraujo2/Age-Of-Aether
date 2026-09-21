@@ -1512,3 +1512,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Both are direct UHT Blueprint integer blockers; their surrounding APIs show the rest of the networking/UI Blueprint surface uses supported types.
 - No source changes were made.
 - Next action: inspect local call sites for GetAuthoritativeStateRevision and PushNotification before removing only their Blueprint exposure, preserving native behavior and return types.
+
+
+## 2026-09-21 — Native consumers confirmed for remaining integer-return APIs
+- Local search confirms GetAuthoritativeStateRevision() is used by AetherNetworkPlayerController.cpp and its own implementation; no Blueprint call site is present in source.
+- Local search confirms PushNotification() is used by AetherUISubsystem.cpp and AetherUISubsystemTests.cpp; no Blueprint call site is present in source.
+- Both APIs therefore must remain unchanged in native C++ signatures and behavior; only their Blueprint exposure should be removed.
+- The same principle applies to the three ClientSubsystem request methods previously verified.
+- No source files were modified by this search.
+- Next action: apply the first selective UHT repair to the five native-only UFUNCTIONs (three ClientSubsystem, one NetworkGameState, one UISubsystem), then verify their annotations are gone and no signatures changed.
