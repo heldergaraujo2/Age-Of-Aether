@@ -1504,3 +1504,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The methods therefore have native C++ consumers that must remain unchanged; the UFUNCTION annotations can be removed without changing signatures or test behavior, preserving the native API while eliminating unsupported Blueprint uint32 exposure.
 - No source files were modified by this search.
 - Next action: inspect the remaining UHT-blocking UFUNCTION declarations (NetworkGameState and UISubsystem) and their local call sites before applying the first selective exposure repair.
+
+
+## 2026-09-21 — Remaining UFUNCTION integer blockers inspected
+- AetherNetworkGameState exposes GetAuthoritativeStateRevision() as BlueprintPure returning uint64, and exposes AuthoritativeStateRevision as a replicated BlueprintReadOnly uint64 property.
+- AetherUISubsystem exposes PushNotification(...) as BlueprintCallable returning uint32.
+- Both are direct UHT Blueprint integer blockers; their surrounding APIs show the rest of the networking/UI Blueprint surface uses supported types.
+- No source changes were made.
+- Next action: inspect local call sites for GetAuthoritativeStateRevision and PushNotification before removing only their Blueprint exposure, preserving native behavior and return types.
