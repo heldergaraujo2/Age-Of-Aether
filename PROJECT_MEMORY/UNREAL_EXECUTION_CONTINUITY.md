@@ -1813,3 +1813,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5: correção de `AetherWorldContentRegistry.cpp` aplicada e verificada no trecho: removido o `FindChecked` descartado e renomeados os erros internos para `RequirementError`/`OutcomeError`. Próximo passo é recompilar para confirmar esses C4456/C4834 e descobrir os próximos erros.
+
+
+## 2026-09-21 — Editor build reached broad source-compatibility blockers after prior repairs
+- The authoritative `AgeOfAetherEditor Win64 Development` build ran 90 actions and failed with `OtherCompilationError` in 16.91s; UBT/UBA invocation itself is healthy.
+- The previously repaired `AetherWorldContentRegistry.cpp` errors are no longer present in the supplied output, confirming that repair held.
+- The dominant remaining blocker is repeated UE 5.8 automation-test incompatibility: many test files use `EAutomationTestFlags::ApplicationContextMask`, which this engine/compiler rejects. This appears across AI, AssetRegistry, Audio, Performance/Scale, Production, ReleaseGate, Security, WorldMap, UI and other tests. The exact valid replacement must be verified from the installed UE 5.8 headers before any bulk edit.
+- Additional independent blockers surfaced: `AetherCharacterTypes.generated.h` is included with the module-relative `Characters/...` path and cannot be found; `AetherAssetPipelineTypes.h` does not have `EAetherAssetType` visible; `AetherAudioSubsystem.cpp` incorrectly treats `TMap<FString,TObjectPtr<UAudioComponent>>.Find()` as returning raw-pointer-to-pointer; `AetherClassBalanceSimulation.cpp/tests` reference missing `TargetClassID`/ `TargetEvolutionID` fields; `AetherClassBalanceTests.cpp` lacks a visible complete `FAetherClassRegistry`; `AetherCharacterAnimationTests.cpp` and `AetherProductionTests.cpp` use unavailable `TNumericLimits<float>::Infinity()` / `TNumericLimits<double>::QuietNaN()`; `AetherQuestDialogueEventTypes.cpp` contains literal `\\n` tokens inside C++ source; `AetherRecipeRegistry.cpp` has a malformed `TEXT`/format-string expression; and `AetherWorldStreamingCoordinator.cpp` stores a non-const subsystem in a const pointer before calling non-const `SetMapActive`.
+- Because several diagnostics are independent, the output must be handled as root causes rather than chasing cascaded errors. No runtime/editor PASS is claimed.
+- Next action: inspect the installed UE 5.8 definition/usages of `EAutomationTestFlags` to identify the exact supported context flag before modifying the project tests. Then repair/test one root cause at a time.
