@@ -1560,3 +1560,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Exact regex verification reports 2 native UPROPERTY() uint64 RequestId fields and 0 BlueprintReadOnly uint64 RequestId fields in AetherAITypes.h.
 - The AI-specific UHT repair is confirmed complete without changing the uint64 type or RequestId identifiers.
 - Next action: inspect the remaining unsupported integer UPROPERTY declarations as a grouped inventory, so the next edits preserve reflection/replication/editor semantics while removing only Blueprint exposure where required.
+
+
+## 2026-09-21 — Remaining integer inventory requires declaration-aware inspection
+- The grouped regex only surfaced four declarations because several previously reported UHT errors have the UPROPERTY macro and integer type on separate lines, so they were not captured by the pattern.
+- Confirmed visible single-line offenders: Multiplayer ConnectionId, UI NotificationID, Scale TransferId, Client RequestID.
+- Previously verified UHT offender list remains authoritative for Combat, Economy, Persistence, Security, Skills, Networking, plus the four visible declarations above.
+- No source changes were made by this inspection.
+- Next action: inspect the exact declaration context for every remaining UHT-reported integer property, including separate-line UPROPERTY/type pairs, before editing metadata.
