@@ -1829,3 +1829,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The previous command returned paths only and did not expose the enum members, so no replacement for ApplicationContextMask was inferred.
 - No project files were modified.
 - Next action: read the exact EAutomationTestFlags declaration from the installed UE 5.8 AutomationTest.h.
+
+
+## 2026-09-21 — Confirmed UE 5.8 automation flag API
+- Installed UE 5.8 AutomationTest.h defines EAutomationTestFlags::EditorContext, ClientContext, ServerContext, CommandletContext, and ProgramContext as the application-context flags.
+- The aggregate mask exists as the namespace-level constant EAutomationTestFlags_ApplicationContextMask, not as EAutomationTestFlags::ApplicationContextMask.
+- Therefore the project diagnostics are caused by the old/incorrect qualified spelling. Existing tests can preserve their intended application-context semantics by replacing EAutomationTestFlags::ApplicationContextMask with EAutomationTestFlags_ApplicationContextMask; existing EngineFilter/ProductFilter choices remain unchanged.
+- No project source was modified yet.
+- Next action: count all project occurrences before performing the controlled replacement.
