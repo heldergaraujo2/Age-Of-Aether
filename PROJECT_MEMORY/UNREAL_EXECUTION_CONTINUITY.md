@@ -1647,3 +1647,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Targeted verification reports 0 remaining BlueprintReadOnly matches for these integer fields.
 - No unrelated NetworkTypes metadata was changed by this repair.
 - Next action: rerun the authoritative AgeOfAetherEditor UHT/UBT build.
+
+
+## 2026-09-21 — NetworkTypes blockers cleared; build reached non-fatal metadata warnings
+- The authoritative AgeOfAetherEditor Win64 Development build was rerun after the exact NetworkTypes repair.
+- The previous three UHT errors for FAetherNetworkRequest::RequestId, FAetherNetworkResponse::RequestId, and FAetherNetworkResponse::AuthoritativeStateRevision are no longer reported.
+- UHT now reports only four warnings in AetherNetworkGameState.h (lines 30, 33, 36, 39): Category metadata is present on native-only properties without Blueprint/editor exposure keywords.
+- Build still returns FAILED (OtherCompilationError); no new UHT type/shadowing errors are shown in the supplied output. The four Category warnings are the only surfaced diagnostics and must be inspected before changing anything.
+- No runtime/editor PASS is claimed.
+- Next action: inspect the exact AetherNetworkGameState.h declarations around lines 20–42 to determine whether Category should be removed from native-only properties, preserving Replicated/other functional metadata.
