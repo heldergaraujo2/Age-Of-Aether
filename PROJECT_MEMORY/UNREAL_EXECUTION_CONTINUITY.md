@@ -1164,3 +1164,17 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Local source scan reports zero references to the obsolete `Data/AetherItemTypes.h` path.
 - Local source tree is consistent with the synchronized repository state.
 - Next action: rerun the controlled `AgeOfAetherEditor` build to determine whether the five UHT generated-header diagnostics persist after the repository/source synchronization.
+
+
+## U0.5 — Editor/UHT rerun after synchronization
+- Controlled `AgeOfAetherEditor Win64 Development` build was rerun after local/remote synchronization.
+- Result: FAILED with the same five UHT diagnostics, all reporting that the corresponding `.generated.h` include must appear at the top of the header after all other includes:
+  - `Economy/AetherEconomySubsystem.h`
+  - `Items/AetherItemSubsystem.h`
+  - `Persistence/AetherPersistenceSubsystem.h`
+  - `Multiplayer/AetherMultiplayerSubsystem.h`
+  - `Progression/AetherProgressionSubsystem.h`
+- The previously resolved duplicate `AetherItemTypes.h` basename error did not return.
+- Synchronization did not change the five UHT diagnostics; the issue is reproducible in the current local source state.
+- No PASS is declared for U0.5.
+- Next action: inspect the exact raw bytes/ordering of the five failing headers and compare them against a known-good reflected header, including BOM/whitespace/include ordering, before making any source modification.
