@@ -991,3 +991,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The manifest excerpt shows the project headers registered as absolute paths; no omission of the failing subsystem header was found.
 - The current excerpt is only the surrounding string list, not a semantic per-header metadata record, so it does not yet explain the include-order diagnostic.
 - Next action: inspect the manifest structure/keys around the first and last project header entries to determine whether there is per-header metadata or an ordering field that differs between known-good and failing headers.
+
+
+## U0.5 — Manifest structure identified
+- The UHT manifest is valid JSON and has top-level keys: `IsGameTarget`, `RootLocalPath`, `TargetName`, `ExternalDependenciesFile`, `TargetSettings`, `Modules`, and `UhtPlugins`.
+- The PowerShell `else` was entered after the completed `if` block and therefore produced a shell syntax error; this does not affect the manifest or project.
+- The useful discovery is that header registration is nested under `Modules`, so the next probe should inspect the `AgeOfAether` module object and its fields directly.
