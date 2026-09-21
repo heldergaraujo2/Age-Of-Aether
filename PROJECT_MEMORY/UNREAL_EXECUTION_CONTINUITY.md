@@ -1178,3 +1178,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Synchronization did not change the five UHT diagnostics; the issue is reproducible in the current local source state.
 - No PASS is declared for U0.5.
 - Next action: inspect the exact raw bytes/ordering of the five failing headers and compare them against a known-good reflected header, including BOM/whitespace/include ordering, before making any source modification.
+
+
+## U0.5 — Raw-byte/header-order diagnostic
+- All five failing subsystem headers begin with normal UTF-8/ASCII bytes for `#pragma once`; no BOM is present.
+- The visible include ordering is correct: `CoreMinimal.h`, subsystem/dependency includes, then the matching `.generated.h` include.
+- The diagnostic script reported generated-include index `-1` for all five because the script searched using a path-derived filename that already included the relative path; this is a diagnostic-script mismatch, not evidence that the generated includes are absent.
+- Therefore no source modification was made from this result.
+- Next action: compare these headers against known-good reflected headers at the preprocessor/token level and inspect the exact UHT diagnostic context, especially whether the dependency headers introduce generated-header ordering state.
