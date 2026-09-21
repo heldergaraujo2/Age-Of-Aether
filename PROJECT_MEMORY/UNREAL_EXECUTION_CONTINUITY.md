@@ -16,9 +16,9 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.3 — Backup/working-tree safety; local project has expected top-level source structure but no local Git metadata.
-- Last command/result: .uproject inspection confirmed EngineAssociation 5.8, one Runtime module named AgeOfAether with Default loading phase, and EnhancedInput enabled.
-- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
+- Current step: U0.4 — Generated project/build metadata check.
+- Last command/result: local top-level check for Binaries, Intermediate, Saved, DerivedDataCache, AgeOfAether.sln, Makefile and CMakeLists.txt returned no output.
+- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. Generated project/build metadata is not present at the project root from the tested names. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
 
 # U0 — Environment & Project Health
 
@@ -62,8 +62,18 @@ Analysis:
 - Do not initialize a new repository, delete files, or overwrite the local project.
 - U0.3 remains incomplete.
 
-## U0.4 — Generate project files / compile prerequisites
-Status: PENDING
+## U0.4 — Generated project files / build metadata
+Status: IN PROGRESS — NO EXPECTED ROOT-LEVEL GENERATED FILES FOUND
+
+Result:
+- Checked the project root for Binaries, Intermediate, Saved, DerivedDataCache, AgeOfAether.sln, Makefile and CMakeLists.txt.
+- The command returned no output.
+
+Analysis:
+- None of the tested generated/build artifacts exists at the project root under those exact names.
+- This is not an error by itself; a clean source snapshot can legitimately lack generated Unreal/IDE metadata.
+- No files were modified.
+- Next: check the local source tree for generated Visual Studio/build metadata elsewhere, still without changing files.
 
 ## U0.5 — First UHT/UBT build
 Status: PENDING
@@ -289,3 +299,18 @@ Analysis:
 - This is a configuration-structure check only; it does not prove UHT/UBT compilation or editor startup.
 - U0.3 remains incomplete because Git safety is unresolved.
 Next: Verify whether the local source tree contains the generated project/build metadata that would indicate whether this copy has already been prepared locally, without modifying anything.
+
+## Entry 012 — U0.4
+Status: DIAGNOSTIC PASS — NO ROOT-LEVEL GENERATED METADATA FOUND
+
+Command:
+Get-ChildItem on the project root filtered for Binaries, Intermediate, Saved, DerivedDataCache, AgeOfAether.sln, Makefile and CMakeLists.txt.
+
+Result:
+- No output.
+
+Analysis:
+- None of the tested generated/build artifacts exists at the project root under those exact names.
+- This is not an error by itself; a clean source snapshot can legitimately lack generated Unreal/IDE metadata.
+- No files were modified.
+- Next: check for generated Visual Studio/build metadata elsewhere in the local project tree, still without changing files.
