@@ -24,3 +24,8 @@
 - Verification: the account include occurs exactly once and the literal backtick-r/backtick-n sequence count is zero.
 - The earlier PowerShell escaping issue is fully resolved locally.
 - Next action: inspect the remaining `TNumericLimits` API mismatch against the installed UE 5.8 headers before modifying the test.
+
+## 2026-09-21 — UE 5.8 NumericLimits API confirmed
+- Installed UE 5.8 `Math/NumericLimits.h` provides `TNumericLimits<float>::Max()` and `Lowest()`, but no `Infinity()` or `QuietNaN()` methods.
+- `AetherCharacterAnimationTests.cpp` explicitly intends to validate rejection of an infinite run-speed threshold, so blindly replacing `Infinity()` with finite `Max()` would change the test meaning.
+- Next action: inspect project-wide existing infinity/NaN usage and available standard-library usage before selecting the minimal semantic-preserving replacement.
