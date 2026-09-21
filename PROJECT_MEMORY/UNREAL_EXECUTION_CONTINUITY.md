@@ -1533,3 +1533,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Exact file context confirms all five problematic declarations still have their UFUNCTION annotations: BeginRequest, CompleteRequest, GetRequest, GetAuthoritativeStateRevision, and PushNotification.
 - No source change was made by the inspection command.
 - The annotations are now precisely identified, so the next edit can remove only those five UFUNCTION lines while preserving signatures and behavior.
+
+
+## 2026-09-21 — Native-only UFUNCTION exposure removed successfully
+- The selective edit completed for ClientSubsystem, NetworkGameState, and UISubsystem.
+- Verification found no remaining UFUNCTION annotation matching BeginRequest, CompleteRequest, GetRequest, GetAuthoritativeStateRevision, or PushNotification.
+- Native C++ signatures remain exposed in the headers, preserving the existing implementation/test call paths while removing the unsupported Blueprint exposure.
+- Next action: verify the exact surrounding declarations and then proceed to the remaining unsupported integer UPROPERTY metadata without globally changing native uint types.
