@@ -16,9 +16,9 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.2 — Verify exact engine version/path; project declares EngineAssociation = 5.8 and installed engine is 5.8.2.
-- Last command/result: Test-Path confirmed UnrealEditor.exe at D:\Unreal\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe.
-- Blockers: no runtime/editor launch or build has been verified yet.
+- Current step: U0.3 — Backup/working-tree safety; local project folder is not currently recognized as a Git working tree.
+- Last command/result: `git status --short --branch` returned `fatal: not a git repository (or any of the parent directories): .git`.
+- Blockers: local Git working-tree status cannot be verified from the current folder; do not assume the local copy is clean or connected to the GitHub repository. Runtime/editor launch or build has not been verified yet.
 
 # U0 — Environment & Project Health
 
@@ -48,7 +48,18 @@ Analysis:
 - The runtime/editor itself is still unverified because we have not launched it yet.
 
 ## U0.3 — Backup/working-tree safety
-Status: PENDING
+Status: IN PROGRESS — LOCAL FOLDER IS NOT A GIT WORKING TREE
+
+Result:
+- Command: `git status --short --branch`
+- Git returned: `fatal: not a git repository (or any of the parent directories): .git`
+
+Analysis:
+- The current folder `D:\Projeto Age of Aether\Age-Of-Aether-main` does not contain a `.git` directory, and no parent directory is a Git repository.
+- This does NOT by itself mean the source is wrong or missing; it may be a GitHub ZIP/export or a copied working directory.
+- We must identify the local project root and determine whether the Git metadata exists elsewhere before making changes.
+- Do not initialize a new Git repository or delete/copy project files yet; that could create an unintended local history or alter the working copy.
+- U0.3 remains incomplete until local source/backup safety is established.
 
 ## U0.4 — Generate project files / compile prerequisites
 Status: PENDING
@@ -215,3 +226,14 @@ Result:
 - True
 Analysis: The Unreal Editor executable exists at D:\Unreal\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe. Installation/path verification is complete. Runtime/editor launch remains unverified.
 Next: Perform a safe working-tree/status check before generating files or launching/building.
+
+## Entry 008 — U0.3
+Status: BLOCKED — LOCAL FOLDER IS NOT A GIT WORKING TREE
+Command: `git status --short --branch`
+Result:
+- `fatal: not a git repository (or any of the parent directories): .git`
+Analysis:
+- The current local project folder is not recognized as a Git working tree.
+- This may be a ZIP/export or copied repository, but that is not yet verified.
+- No repository initialization or file movement should be performed yet.
+Next: Locate the nearest existing `.git` metadata without modifying anything.
