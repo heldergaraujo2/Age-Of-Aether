@@ -1795,3 +1795,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5 diagnóstico parcial: a busca confirmou que `EAetherAssetType` é definido/referenciado em `Public\Data\AetherAssetTypes.h`, mas o output recebido não trouxe o conteúdo desse arquivo nem os demais cinco blocos do diagnóstico. Não é seguro reparar por inferência; próxima ação é obter o contexto exato dos arquivos envolvidos.
+
+
+- U0.5: o contexto confirmado de `AetherAssetPipelineTypes.h` mostra `FAetherAssetPipelineRecord::AssetType` como `EAetherAssetType::Unknown`. A definição existe em `Data/AetherAssetTypes.h`; ainda falta confirmar os includes e os demais erros antes de editar, para evitar introduzir uma dependência incorreta.
