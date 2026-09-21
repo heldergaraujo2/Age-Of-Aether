@@ -1554,3 +1554,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The verification pattern reported one false positive because FAetherAIResponse is a one-line USTRUCT and earlier unrelated BlueprintReadOnly properties occur on the same physical line; the RequestId itself is visibly UPROPERTY() and not BlueprintReadOnly.
 - No type or field name was changed.
 - Next action: verify the exact RequestId metadata with a property-focused regex, then continue with the remaining unsupported integer fields.
+
+
+## 2026-09-21 — AI RequestId metadata verification passed
+- Exact regex verification reports 2 native UPROPERTY() uint64 RequestId fields and 0 BlueprintReadOnly uint64 RequestId fields in AetherAITypes.h.
+- The AI-specific UHT repair is confirmed complete without changing the uint64 type or RequestId identifiers.
+- Next action: inspect the remaining unsupported integer UPROPERTY declarations as a grouped inventory, so the next edits preserve reflection/replication/editor semantics while removing only Blueprint exposure where required.
