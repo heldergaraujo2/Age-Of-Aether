@@ -454,3 +454,20 @@ Analysis:
 - The `AgeOfAetherEditor` build-environment conflict is a real issue to investigate before treating an editor build as healthy; it must not be ignored.
 - No source correction has been made yet because the next action should first inspect the generated files and target definition to identify exactly where the conflicting settings originate.
 Next: inspect the generated solution/metadata and the AgeOfAether target files without compiling.
+
+## Entry 021 — U0.4
+Status: INSPECTION RESULT — TARGET FILES LOCATED
+
+Command:
+`Get-ChildItem ... | Where-Object { $_.Name -match 'AgeOfAether.*Target|AgeOfAether.*Build|AgeOfAether\\.slnx|AgeOfAether\\.sln' }`
+
+Result:
+- Generated solutions exist: `AgeOfAether.sln`, `AgeOfAether.slnx`, and Automation variants.
+- Generated partial receipt exists: `Binaries\\Win64\\AgeOfAetherEditor.target`.
+- Project source target files exist: `Source\\AgeOfAether.Target.cs`, `Source\\AgeOfAetherEditor.Target.cs`, `Source\\AgeOfAetherServer.Target.cs`.
+- Module rules file exists: `Source\\AgeOfAether.Build.cs`.
+
+Analysis:
+- The exact editor target source file is now identified and should be inspected before any modification or compilation.
+- No project files were changed by this inspection command.
+Next: read `Source\\AgeOfAetherEditor.Target.cs` exactly as currently present in the local project.
