@@ -28,3 +28,7 @@
 ## 2026-09-21 — Local repair confirmed
 - AetherRecipeRegistry.cpp malformed FString::Printf was corrected so the format string closes before `*Role,*ID`; PowerShell verified the repaired call.
 - Awaiting a real UE build before treating the blocker as resolved.
+
+## 2026-09-21 — Repair command correctly aborted
+- The WorldStreamingCoordinator constness repair command was intentionally aborted because the expected pattern occurred 3 times, not 2. No source change was made by that command.
+- Inspect all 3 occurrences before editing so unrelated const usage is not changed speculatively.
