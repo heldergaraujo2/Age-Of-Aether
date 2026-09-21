@@ -20,3 +20,5 @@
 - 2026-09-21: Inventory subsystem usage map confirms `ResolveDefinition` is only used by `AddItem` and `EquipItem`. `AddItem` needs DefinitionID, MaxStack, ItemLevel, MaxDurability. `EquipItem` additionally needs equipment slot/category, but data enums (`EAetherDataEquipmentSlot`, `EAetherDataItemCategory`) differ from inventory runtime enums. Next step is to inspect existing conversion helpers/usages for these enum pairs before implementing a localized adapter.
 
 - 2026-09-21: Repository search found no existing conversion helper for data/runtime item category or equipment-slot enums. Existing visual equipment code is runtime-enum based only. Local source remains authoritative for current working tree; next inspect inventory/equipment tests for expected slot semantics before introducing any mapping.
+
+- 2026-09-21: No existing enum adapter found. Repository test source confirms the data model's equipment examples use `MainHand`; inventory subsystem tests are not yet identified in the repository snapshot, so local working-tree test discovery is required before defining slot mappings.
