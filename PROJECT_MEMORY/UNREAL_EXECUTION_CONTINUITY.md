@@ -16,9 +16,9 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.4 — Unreal project-file generation prerequisite discovery.
-- Last command/result: recursive search inside D:\Unreal\UE_5.8\Engine for UnrealVersionSelector.exe and GenerateProjectFiles scripts returned no output.
-- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. No expected project-file generator was found under the Engine directory. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
+- Current step: U0.4 — Unreal tooling discovery.
+- Last command/result: Win64 binaries include UnrealEditor.exe, UnrealEditor-Cmd.exe, UnrealGame.exe and other runtime/tools, but no UnrealBuildTool/UHT executable was found by the name filter.
+- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. The expected project-file generator and directly named UBT/UHT binaries have not been found. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
 
 # U0 — Environment & Project Health
 
@@ -364,3 +364,20 @@ Analysis:
 - No files were modified.
 - U0.4 generation remains blocked until the correct installed tooling is identified.
 Next: inspect the confirmed UE 5.8 installation's Win64 binaries for available Unreal build/tool executables, without changing the project.
+
+## Entry 016 — U0.4
+Status: DIAGNOSTIC PASS — UE WIN64 TOOLSET INVENTORIED
+
+Command:
+List UE 5.8 `Engine\\Binaries\\Win64` executables whose names begin with Unreal, Build, UBT or UHT.
+
+Result:
+- Found `UnrealEditor.exe`, `UnrealEditor-Cmd.exe`, `UnrealGame.exe`, DebugGame variants, UnrealInsights, UnrealPak and other UE runtime/tools.
+- No `UnrealBuildTool.exe` or `UnrealHeaderTool.exe` appeared in this Win64 directory under the tested name filter.
+
+Analysis:
+- The confirmed UE installation contains the Unreal Editor and command-line editor executables required for runtime diagnostics.
+- UBT/UHT are not exposed as Win64 root executables under those names, so the next step should locate the build tools by searching their actual known filenames/paths rather than assuming they are Win64 binaries.
+- No project files were modified.
+- U0.4 remains focused on identifying the correct generation/build entry point before U0.5.
+Next: locate `UnrealBuildTool.exe` and `UnrealHeaderTool.exe` anywhere under the confirmed UE installation, without changing files.
