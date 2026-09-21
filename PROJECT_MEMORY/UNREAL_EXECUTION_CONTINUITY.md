@@ -1388,3 +1388,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The remaining collision is between two runtime-domain structs and requires semantic inspection before renaming either one.
 - No further source changes made in this step.
 - Next action: inspect the Interaction quest declaration and all direct Interaction quest registry consumers to determine the correct unique runtime name without altering the Quests runtime API.
+
+
+## 2026-09-21 — Interaction quest collision semantics confirmed
+- Interaction's quest struct is a distinct runtime model used by StartQuest/AdvanceQuest/CompleteQuest, with fields such as QuestID, StartNPCID, CompleteNPCID, ObjectiveID, RequiredCount, MinimumLevel and bRepeatable.
+- The Quests module has its own FAetherQuestDefinition API and must remain unchanged.
+- The Interaction registry/subsystem currently have an inconsistent mixed state: headers declare FAetherQuestDefinition while their cpp/subsystem references contain FAetherDataQuestDefinition from the earlier broad rename.
+- Before changing names, inspect the complete Interaction quest struct fields and the Data quest struct side-by-side to choose a unique Interaction-only reflected name and avoid semantic aliasing.
