@@ -1114,3 +1114,13 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This confirms the local rename from the duplicate `AetherItemTypes` basename to `AetherItemDataTypes` is complete on disk, and the three target files contain the V7 build-settings changes.
 - These hashes are local evidence only; they do not yet prove whether GitHub contains the same bytes.
 - Next action: fetch the corresponding GitHub files and compare their repository SHA/content with the local state before synchronizing anything.
+
+
+## U0.5 — GitHub comparison of local controlled changes
+- The local hashes were compared against the current default-branch repository state using exact repository paths.
+- The three Target.cs files exist in GitHub but have different blob SHAs from the local files, so the local V7 changes are not yet synchronized there.
+- The new local Data header/implementation paths `AetherItemDataTypes.h/.cpp` do not exist in GitHub yet.
+- The old duplicate-basename files `AetherItemTypes.h/.cpp` still exist in GitHub, while they are absent locally.
+- This is a real synchronization delta, not a hash-calculation issue: the local controlled rename and target-setting changes have not yet been applied to GitHub.
+- No remote file was modified by this comparison.
+- Next action: fetch the three Target.cs and old Data files' complete repository contents so the synchronization can be performed safely and exactly, while preserving unrelated remote content.
