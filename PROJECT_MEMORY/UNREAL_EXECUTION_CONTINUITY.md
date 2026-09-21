@@ -1308,3 +1308,20 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No source modification was made by the inventory command.
 - The previous generated-header include-path issue is considered resolved because the five subsystem generated-header errors disappeared on the subsequent build; the build progressed to these reflected-name collisions.
 - Next action: apply a controlled, minimal reflected-name namespace separation for the six collision families, beginning with the Data/content declarations where the consumer boundary is clearest, while also correcting the renamed ItemData generated-header basename if encountered by UHT.
+
+
+## 2026-09-21 — Rename plan prepared; no local modification yet
+- The full reflected-name inventory confirms the six collision families are semantically distinct.
+- Planned controlled namespace separation will rename only Data/content-side reflected symbols, preserving runtime-facing APIs:
+  - EAetherInteractionType -> EAetherWorldInteractionType
+  - FAetherInteractionDefinition -> FAetherWorldInteractionDefinition
+  - EAetherQuestObjectiveType -> EAetherDataQuestObjectiveType
+  - FAetherQuestObjectiveDefinition -> FAetherDataQuestObjectiveDefinition
+  - FAetherQuestDefinition -> FAetherDataQuestDefinition
+  - EAetherItemCategory -> EAetherDataItemCategory
+  - EAetherEquipmentSlot -> EAetherDataEquipmentSlot
+  - FAetherItemDefinition -> FAetherDataItemDefinition
+  - FAetherLootEntry -> FAetherDataLootEntry
+  - FAetherSkillDefinition -> FAetherDataSkillDefinition
+- The renamed AetherItemDataTypes.h also needs its generated-header include corrected from AetherItemTypes.generated.h to AetherItemDataTypes.generated.h.
+- No local source change was made while preparing this plan.
