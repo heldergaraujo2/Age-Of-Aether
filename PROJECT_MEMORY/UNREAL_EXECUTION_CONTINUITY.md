@@ -1459,3 +1459,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - ClientSubsystem lines 37/40/46 and NetworkGameState line 22 are Blueprint-exposed functions whose exact signatures are still needed before choosing whether to make them native-only.
 - The three parameter-shadowing diagnostics are confirmed: Role in SetGuildRole/ServerSetGuildRole and Character in ClientReceiveCharacterOperation.
 - No source changes made yet.
+
+
+## 2026-09-21 — Integer type exposure classified
+- Native uint32/uint64 usage is widespread in internal/server-authoritative code and must not be globally converted.
+- The UHT failures are specifically caused by Blueprint exposure, not by the native integer types themselves.
+- The compact inventory also confirms many uint32/uint64 members are private/native-only and therefore not blockers.
+- Next action: inspect only the exact failing UPROPERTY/UFUNCTION declarations and their surrounding USTRUCT/UCLASS annotations, then remove Blueprint exposure selectively where appropriate rather than changing underlying C++ types.
