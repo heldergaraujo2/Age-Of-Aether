@@ -1593,3 +1593,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Networking Major/Minor retain EditAnywhere; NetworkGameState AuthoritativeStateRevision retains Replicated + Category without BlueprintReadOnly.
 - The audit therefore demonstrates the metadata repair is structurally correct, but its association test is too broad and must be replaced with a declaration-aware verifier before compilation.
 - Next action: inspect the three known parameter-shadowing UHT declarations and their C++ definitions/usages so they can be repaired before the next build.
+
+
+## 2026-09-21 — UHT parameter-shadowing declarations inspected
+- Exact context confirms three known UHT shadowing cases in AetherNetworkPlayerController.h/cpp.
+- SetGuildRole and ServerSetGuildRole expose a parameter named Role, conflicting with inherited AActor::Role in reflected UFUNCTION/RPC declarations.
+- ClientReceiveCharacterOperation exposes a parameter named Character, conflicting with inherited AController::Character.
+- C++ definitions and direct call sites use these parameter names consistently, so the safe repair is a parameter-only rename: Role → GuildRole and Character → CharacterRecord, with no type/signature behavior change.
+- No source files were modified by the inspection command.
+- Next action: apply the three parameter renames in header/cpp and verify there are no remaining shadowing declarations/usages for these methods.
