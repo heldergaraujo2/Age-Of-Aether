@@ -1617,3 +1617,15 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Verification reports 0 remaining calls matching ServerSetGuildRole_Implementation(Id,Target,Role) or ServerSetGuildRole(Id,Target,Role).
 - The parameter rename repair is therefore internally consistent for the verified stale-call patterns.
 - Next action: run the Unreal 5.8 editor build to obtain the next authoritative UHT/UBT result.
+
+
+## 2026-09-21 — Editor build reached remaining NetworkTypes Blueprint integer blockers
+- The controlled AgeOfAetherEditor Win64 Development build was executed after the guild-role parameter repair.
+- UHT now reports exactly three blocking Blueprint integer exposures in AetherNetworkTypes.h:
+  - FAetherNetworkRequest::RequestId is still uint32 and Blueprint-exposed.
+  - FAetherNetworkResponse::RequestId is still uint32 and Blueprint-exposed.
+  - FAetherNetworkResponse::AuthoritativeStateRevision is still uint64 and Blueprint-exposed.
+- AetherNetworkGameState.h reports only warnings because Category metadata remains on native-only properties; these warnings are non-fatal and are separate from the three UHT errors.
+- Build result: FAILED (OtherCompilationError), total execution time 3.43s.
+- This means the previous metadata repair did not remove Blueprint exposure from these three NetworkTypes fields as UHT actually sees them. No runtime PASS is claimed.
+- Next action: inspect the exact declaration context of the three NetworkTypes fields and apply a declaration-safe metadata repair only to those fields, then verify before rebuilding.
