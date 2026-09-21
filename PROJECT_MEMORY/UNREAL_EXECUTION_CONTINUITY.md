@@ -29,3 +29,9 @@
 - Installed UE 5.8 `Math/NumericLimits.h` provides `TNumericLimits<float>::Max()` and `Lowest()`, but no `Infinity()` or `QuietNaN()` methods.
 - `AetherCharacterAnimationTests.cpp` explicitly intends to validate rejection of an infinite run-speed threshold, so blindly replacing `Infinity()` with finite `Max()` would change the test meaning.
 - Next action: inspect project-wide existing infinity/NaN usage and available standard-library usage before selecting the minimal semantic-preserving replacement.
+
+## 2026-09-21 — Project-wide floating-point sentinel usage confirmed
+- Only three source locations use infinity/NaN sentinels: `AetherCharacterAnimationTests.cpp`, `AetherClassBalanceTests.cpp`, and `AetherProductionTests.cpp`.
+- `AetherClassBalanceTests.cpp` is the only inspected project source currently including `<limits>`.
+- UE 5.8 `TNumericLimits` lacks both `Infinity()` and `QuietNaN()`, so the semantic replacement should use the C++ standard `std::numeric_limits<T>` API rather than finite `Max()`.
+- Next action: inspect the exact headers/contexts of all three sentinel usages before making the smallest include/API repair.
