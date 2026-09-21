@@ -1395,3 +1395,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The Quests module has its own FAetherQuestDefinition API and must remain unchanged.
 - The Interaction registry/subsystem currently have an inconsistent mixed state: headers declare FAetherQuestDefinition while their cpp/subsystem references contain FAetherDataQuestDefinition from the earlier broad rename.
 - Before changing names, inspect the complete Interaction quest struct fields and the Data quest struct side-by-side to choose a unique Interaction-only reflected name and avoid semantic aliasing.
+
+
+## 2026-09-21 — Final quest collision naming decision
+- Interaction quest definition is semantically distinct from both the Data quest definition and the Quests runtime quest definition.
+- Interaction version is a compact interaction/runtime quest model with QuestID, StartNPCID, CompleteNPCID, ObjectiveID, RequiredCount, MinimumLevel and bRepeatable.
+- The Quests runtime API already owns FAetherQuestDefinition, so it must not be renamed.
+- The Data layer already owns FAetherDataQuestDefinition.
+- Chosen unique Interaction name: FAetherInteractionQuestDefinition.
+- Required repair scope: InteractionTypes.h, InteractionRegistry.h/.cpp and InteractionSubsystem.h must use FAetherInteractionQuestDefinition consistently.
