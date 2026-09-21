@@ -61,3 +61,8 @@
 ## 2026-09-21 — Balance simulation struct exact layout confirmed
 - The header uses one-line UPROPERTY declarations. The exact insertion point is immediately after `EvolutionID`.
 - Next command will add only `TargetClassID` and `TargetEvolutionID` using line-based replacement, avoiding newline-format assumptions.
+
+## 2026-09-21 — Balance target fields added locally
+- `FAetherBalanceSimulationCase` now contains `TargetClassID` and `TargetEvolutionID` immediately after `EvolutionID`.
+- PowerShell verified both fields and no other struct fields were changed.
+- Awaiting real UE build validation.
