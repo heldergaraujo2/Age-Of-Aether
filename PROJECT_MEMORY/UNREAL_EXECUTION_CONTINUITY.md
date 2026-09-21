@@ -984,3 +984,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Importantly, no project-side header was found that directly includes `AetherEconomySubsystem.generated.h` before the subsystem header's own generated include.
 - The subsystem header's visible include graph therefore does not explain the UHT diagnostic by itself.
 - Next action: inspect the exact UHT manifest entry/order and generated-header metadata for the Economy subsystem against a known-good UCLASS header, focusing on filename/basename pairing and module discovery metadata.
+
+
+## U0.5 — UHT manifest comparison
+- `AgeOfAetherEditor.uhtmanifest` contains the Economy subsystem, GameInstance, and Economy DataAsset entries as expected.
+- The manifest excerpt shows the project headers registered as absolute paths; no omission of the failing subsystem header was found.
+- The current excerpt is only the surrounding string list, not a semantic per-header metadata record, so it does not yet explain the include-order diagnostic.
+- Next action: inspect the manifest structure/keys around the first and last project header entries to determine whether there is per-header metadata or an ordering field that differs between known-good and failing headers.
