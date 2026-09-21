@@ -94,3 +94,5 @@
 - Inventory edit revealed a PowerShell replacement emitted literal `` `r`n `` text in `AetherInventoryTypes.h`; this must be corrected before build. `EAetherInventoryItem` was successfully corrected to `FAetherInventoryItem`.
 
 - Inventory include newline corruption repaired locally; `AetherInventoryTypes.h` now cleanly includes `AetherItemTypes.h` on its own line, and `AetherInventorySubsystem.h` uses `FAetherInventoryItem`.
+
+- InteractionCatalog inspection command hit a local path mismatch: `Public\Social\AetherInteractionCatalog.h` does not exist at that path. Next step is to locate the actual file path locally before modifying includes.
