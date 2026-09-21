@@ -40,3 +40,8 @@
 - Exact `TNumericLimits<...>::Infinity()` / `QuietNaN()` scan found only two remaining invalid API calls: `AetherCharacterAnimationTests.cpp:22` (`float::Infinity`) and `AetherProductionTests.cpp:12` (`double::QuietNaN`).
 - The previously observed `AetherClassBalanceTests.cpp` `<limits>` match is not an invalid `TNumericLimits` sentinel call.
 - Next repair: add `<limits>` where needed and replace the two calls with `std::numeric_limits<float>::infinity()` and `std::numeric_limits<double>::quiet_NaN()`, preserving the tests' intended non-finite-value semantics.
+
+## 2026-09-21 — Numeric sentinel repair command hit PowerShell parsing error
+- The attempted `-replace` expression failed because PowerShell parsed the concatenated replacement as more than the two operands supported by `-replace`.
+- No intended source replacement was applied by that loop; verification still shows the two known invalid calls in CharacterAnimation and Production, plus a separate `AetherClassBalanceTests.cpp:45` match that must be inspected because the previous exact sentinel scan did not classify it as an invalid `TNumericLimits` call.
+- Next action: inspect the three matching lines and nearby includes, then use `String.Replace` only for the mechanical replacements.
