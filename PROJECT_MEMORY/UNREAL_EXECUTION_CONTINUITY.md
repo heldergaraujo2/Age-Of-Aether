@@ -432,3 +432,25 @@ Analysis:
 - No project source files were intentionally modified by the help invocation.
 - U0.4 generation is ready to proceed.
 Next: invoke Build.bat with -ProjectFiles against the .uproject, then inspect the generated metadata before any compile.
+
+## Entry 020 — U0.4
+Status: GENERATION SUCCEEDED WITH TARGET-CONFIGURATION WARNING
+
+Command:
+`Build.bat -ProjectFiles D:\\Projeto Age of Aether\\Age-Of-Aether-main\\AgeOfAether.uproject`
+
+Result:
+- UnrealBuildTool successfully discovered modules, targets and source code.
+- Visual Studio solution/project files were generated: `AgeOfAether.sln`, `AgeOfAether.slnx`, plus automation solution files.
+- Rules assemblies compiled successfully and QueryTargets data was generated.
+- Overall UBT result: `Succeeded` in 16.56s.
+- UBT reported that the installed bundled runtime is .NET 10.0.7 and Visual Studio 2022 does not support .NET 10 C# projects; it generated the Automation solution for Visual Studio 2026. This did not prevent project-file generation.
+- UBT reported several engine-distribution Program targets unsupported; these are engine-side target generation notices and did not fail generation.
+- Important project-specific warning: `AgeOfAetherEditor` modifies warning-level properties while sharing build products with `UnrealEditor`; UBT says this is not allowed unless the target uses a unique build environment or the override is explicitly enabled.
+- UBT wrote a partial `Binaries\\Win64\\AgeOfAetherEditor.target` receipt, but the final generation result was still `Succeeded`.
+
+Analysis:
+- Project-file generation itself is confirmed successful.
+- The `AgeOfAetherEditor` build-environment conflict is a real issue to investigate before treating an editor build as healthy; it must not be ignored.
+- No source correction has been made yet because the next action should first inspect the generated files and target definition to identify exactly where the conflicting settings originate.
+Next: inspect the generated solution/metadata and the AgeOfAether target files without compiling.
