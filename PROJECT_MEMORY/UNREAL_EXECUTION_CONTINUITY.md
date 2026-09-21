@@ -1786,3 +1786,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5: `Source\AgeOfAether.Build.cs` confirmado. `ModuleDirectory` aponta para `Source`, enquanto os headers estão em `Source\AgeOfAether\Public`; portanto `PublicIncludePaths.Add(Path.Combine(ModuleDirectory, "Public"))` aponta para diretório inexistente e explica os `C1083` em massa. Correção proposta: ajustar o include path público para `ModuleDirectory/AgeOfAether/Public` e adicionar o privado correspondente apenas se necessário.
+
+
+- U0.5: `AgeOfAether.Build.cs` corrigido para `Source\AgeOfAether\Public`; dependências permanecem inalteradas. Próxima ação: recompilar o Editor para verificar se os `C1083` de include foram eliminados.
