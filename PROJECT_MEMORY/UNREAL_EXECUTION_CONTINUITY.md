@@ -4,3 +4,7 @@
 - Inventory errors include a declaration mismatch: the header declares SplitStack(..., EAetherInventoryItem& ...) while the implementation defines SplitStack(..., FAetherInventoryItem& ...). The header also lacks visible EAetherEquipmentSlot and FAetherItemDefinition types. Inspect these before changing signatures.
 - Treat cascaded Def, OutResult, Slot, and ValidateChat errors as dependent on the primary header/type errors.
 - Next action: repair the smallest confirmed generated-header include blocker first, beginning with Public/Items/AetherItemTypes.h, then rebuild. Continue one local command at a time and never claim PASS without a real build result.
+
+## 2026-09-21 — Local repair confirmed
+- Public/Items/AetherItemTypes.h generated include was repaired locally from `#include "Items/AetherItemTypes.generated.h"` to `#include "AetherItemTypes.generated.h"` and verified by PowerShell.
+- Do not mark this blocker globally resolved until the next real UE build confirms it.
