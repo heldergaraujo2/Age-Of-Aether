@@ -1602,3 +1602,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - C++ definitions and direct call sites use these parameter names consistently, so the safe repair is a parameter-only rename: Role → GuildRole and Character → CharacterRecord, with no type/signature behavior change.
 - No source files were modified by the inspection command.
 - Next action: apply the three parameter renames in header/cpp and verify there are no remaining shadowing declarations/usages for these methods.
+
+
+## 2026-09-21 — Parameter-rename repair revealed one remaining stale local identifier
+- The repair correctly renamed the reflected parameter names in the function definitions to GuildRole/CharacterRecord.
+- Verification exposed one remaining stale identifier in SetGuildRole: the authority branch still calls ServerSetGuildRole_Implementation(Id,Target,Role), even though the parameter is now GuildRole.
+- The client branch already uses GuildRole, and ServerSetGuildRole_Implementation itself uses GuildRole correctly.
+- This is a real compile error introduced by the incomplete rename and must be repaired before the next UHT/UBT build.
+- Next action: replace only that stale Role argument in SetGuildRole and verify the relevant three definitions contain no unintended Role/Character identifiers.
