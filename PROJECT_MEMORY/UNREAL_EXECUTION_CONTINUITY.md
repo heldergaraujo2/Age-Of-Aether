@@ -1252,3 +1252,13 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Confirmed duplicate pairs have materially overlapping concepts: Interaction vs WorldContent both define `EAetherInteractionType` and `FAetherInteractionDefinition`; QuestTypes vs QuestDialogueEventTypes both define `EAetherQuestObjectiveType`, `FAetherQuestObjectiveDefinition`, and `FAetherQuestDefinition`; Items vs DataItemTypes both define `EAetherItemCategory`, `EAetherEquipmentSlot`, and `FAetherItemDefinition`; LootRewardTypes vs ItemLootTypes both define `FAetherLootEntry`; SkillEffectTypes vs SkillTypes both define `FAetherSkillDefinition`.
 - Some duplicates may be intentionally split domain models, but reflected Unreal names cannot coexist. No rename/consolidation chosen yet because exact fields and consumers must be compared before changing public APIs.
 - Next step: inspect the complete declarations for each conflicting pair and their direct include/consumer relationships, then choose the smallest source-preserving consolidation or namespacing-compatible fix.
+
+
+## U0.5 — Duplicate declaration semantics inspected
+- The duplicate declarations are materially different models, not byte-identical duplicates.
+- Interaction: the legacy `Interaction/AetherInteractionTypes.h` model is compact/runtime-oriented (`InteractionID`, `TargetID`, quest linkage), while `Data/AetherWorldContentTypes.h` models world-content interactions (`DefinitionID`, world actor/point/cell, requirements/outcomes).
+- Quest: `Quests/AetherQuestTypes.h` uses a runtime/gameplay model (`FAetherQuestId`, reward/objective progress), while `Data/AetherQuestDialogueEventTypes.h` is a richer content-definition model with conditions, objectives, dialogue, and events.
+- Items: `Items/AetherItemTypes.h` is inventory/runtime-oriented and includes IDs/instances, while `Data/AetherItemDataTypes.h` is content-definition-oriented with rarity, requirements, economy, enhancement, visuals, stats/options.
+- Loot: `Items/AetherLootTypes.h` is a DataAsset/runtime table wrapper around a compact entry, while `Data/AetherLootRewardTypes.h` is the broader content/reward definition model.
+- Skills: `Skills/AetherSkillTypes.h` is gameplay/runtime-oriented, while `Data/AetherSkillEffectTypes.h` is content-definition-oriented.
+- Therefore blind deletion or merging would be unsafe. Next step is consumer inventory for each conflicting header/type so the minimal compatibility-preserving separation can be selected.
