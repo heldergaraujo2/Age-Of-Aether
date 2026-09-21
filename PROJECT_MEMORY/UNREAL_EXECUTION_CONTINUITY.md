@@ -1637,3 +1637,13 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The safe repair is to remove only BlueprintReadOnly from these three integer properties, preserving the USTRUCT(BlueprintType) structs, field names, native uint32/uint64 types, and all other metadata.
 - No source changes were made by the inspection command.
 - Next action: apply the three exact metadata removals and verify that zero matching BlueprintReadOnly integer declarations remain for these fields before recompiling.
+
+
+## 2026-09-21 — NetworkTypes Blueprint metadata repair verified
+- The three exact blocking fields were changed from UPROPERTY(BlueprintReadOnly) to UPROPERTY() without changing their native types or names.
+- FAetherNetworkRequest::RequestId is now native-only uint32.
+- FAetherNetworkResponse::RequestId is now native-only uint32.
+- FAetherNetworkResponse::AuthoritativeStateRevision is now native-only uint64.
+- Targeted verification reports 0 remaining BlueprintReadOnly matches for these integer fields.
+- No unrelated NetworkTypes metadata was changed by this repair.
+- Next action: rerun the authoritative AgeOfAetherEditor UHT/UBT build.
