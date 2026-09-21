@@ -1452,3 +1452,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The broad declaration inspection produced excessive output and was not useful for controlled diagnosis.
 - No source changes were made.
 - Next action: replace the broad dump with a compact, line-focused inventory of only the exact UHT-reported declarations, preserving one-command-at-a-time execution.
+
+
+## 2026-09-21 — Compact Blueprint incompatibility inventory
+- The exact declarations confirm the unsupported integer types are exposed through BlueprintReadOnly UPROPERTY fields in AI, Combat, Economy, Multiplayer, Networking, Persistence, Security, Skills, UI, Scale, and Client types.
+- ClientSubsystem lines 37/40/46 and NetworkGameState line 22 are Blueprint-exposed functions whose exact signatures are still needed before choosing whether to make them native-only.
+- The three parameter-shadowing diagnostics are confirmed: Role in SetGuildRole/ServerSetGuildRole and Character in ClientReceiveCharacterOperation.
+- No source changes made yet.
