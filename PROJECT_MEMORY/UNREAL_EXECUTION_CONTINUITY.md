@@ -1237,3 +1237,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
   - `AetherProgressionSubsystem.generated.h`
 - No other generated-header include was modified by this step.
 - Build/UHT result is not yet known; this repair must be compiled next.
+
+
+## U0.5 — UHT progressed past subsystem-header errors; duplicate reflected names exposed
+- The controlled generated-header repair succeeded in moving UHT past the previous five `given include must appear...generated.h` errors.
+- New UHT failure is now a reflected-name collision set: 11 reported conflicts across Interaction, Items, Quests, Loot, Skills, and Data headers.
+- Key collisions include `EAetherInteractionType`, `FAetherInteractionDefinition`, `FAetherQuestDefinition`, `EAetherItemCategory`, `EAetherEquipmentSlot`, `FAetherItemDefinition`, `EAetherQuestObjectiveType`, `FAetherQuestObjectiveDefinition`, `FAetherLootEntry`, and `FAetherSkillDefinition`.
+- This establishes that the prior subsystem-generated-header diagnostic was not the final source issue; UHT is now successfully parsing substantially further into the module.
+- No collision fix applied yet. Next step: inspect the exact declarations and includes for the reported duplicate pairs to determine whether they are intentional duplicate APIs or duplicated reflected definitions that require consolidation/renaming.
