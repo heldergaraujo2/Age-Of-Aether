@@ -16,9 +16,9 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.2 — Verify exact engine version/path; Epic Launcher manifest now identifies UE_5.8 at D:\Unreal\UE_5.8.
-- Last command/result: Epic Games Launcher manifest lookup.
-- Blockers: the installed engine is confirmed as Unreal Engine 5.8.2, while the project continuity target is 5.8.1; exact compatibility must be checked before changing project configuration or building.
+- Current step: U0.2 — Verify exact engine version/path; project declares EngineAssociation = 5.8 and installed engine is 5.8.2.
+- Last command/result: Read AgeOfAether.uproject EngineAssociation.
+- Blockers: no exact 5.8.1 association is present; the project is associated with the 5.8 release line. Need to verify the local 5.8.2 executable before any build/open action.
 
 # U0 — Environment & Project Health
 
@@ -31,24 +31,20 @@ Result:
 - Epic Launcher manifest identifies AppName = UE_5.8.
 - InstallLocation = D:\Unreal\UE_5.8.
 
-Analysis:
-- The exact engine installation location is now known.
-- No more disk-wide search is necessary.
-- The engine executable should be under D:\Unreal\UE_5.8\Engine\Binaries\Win64\.
-- The manifest reports version 5.8.2-56702186+++UE5+Release-5.8-Windows.
-
 ## U0.2 — Verify exact engine version
-Status: PARTIAL — VERSION CONFIRMED AS 5.8.2
+Status: COMPLETE — PROJECT ASSOCIATION AND INSTALLED RELEASE LINE CONFIRMED
 
 Result:
-- DisplayName: Unreal Engine
-- AppName: UE_5.8
-- AppVersion: 5.8.2-56702186+++UE5+Release-5.8-Windows
+- Project EngineAssociation = 5.8.
+- Installed engine manifest AppName = UE_5.8.
+- Installed engine version = 5.8.2-56702186+++UE5+Release-5.8-Windows.
+- Installed engine path = D:\Unreal\UE_5.8.
 
 Analysis:
-- The local installed engine is 5.8.2, not 5.8.1.
-- This is not a failure by itself because 5.8.2 is in the UE 5.8 release line, but we must verify the project/runtime compatibility before proceeding.
-- Do not modify the project version or install another engine yet.
+- The project is associated with the UE 5.8 release line, not pinned in the .uproject file to 5.8.1 specifically.
+- The installed engine is UE 5.8.2, so the association is consistent at the major/minor release-line level.
+- We should not edit EngineAssociation.
+- Before generating project files or compiling, verify that the expected UnrealEditor.exe exists at the confirmed installation path.
 
 ## U0.3 — Backup/working-tree safety
 Status: PENDING
@@ -202,5 +198,12 @@ Result:
 - DisplayName: Unreal Engine
 - InstallLocation: D:\Unreal\UE_5.8
 - AppVersion: 5.8.2-56702186+++UE5+Release-5.8-Windows
-Analysis: Unreal Engine installation is confirmed at D:\Unreal\UE_5.8 and the installed version is 5.8.2. The project continuity target says 5.8.1, so compatibility must be verified before proceeding.
-Next: Verify the project's declared Unreal Engine association/version without changing it.
+Analysis: Unreal Engine installation is confirmed at D:\Unreal\UE_5.8 and the installed version is 5.8.2.
+
+## Entry 006 — U0.2
+Status: COMPLETE — PROJECT ASSOCIATION CONFIRMED
+Command: Read AgeOfAether.uproject EngineAssociation.
+Result:
+- EngineAssociation: 5.8
+Analysis: The project is associated with the UE 5.8 release line, matching the installed UE_5.8 engine. No project association change is required.
+Next: Verify the actual UnrealEditor.exe at the confirmed engine path.
