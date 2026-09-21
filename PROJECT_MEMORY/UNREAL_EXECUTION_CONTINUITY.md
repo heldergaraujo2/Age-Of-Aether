@@ -1431,3 +1431,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Find and FindWithFallback are used only from C++ catalog/component/tests; no Blueprint call sites were found in the source inventory.
 - Both functions intentionally use nullable const USTRUCT pointers for C++ lookup semantics.
 - Minimal UHT-safe repair selected: remove UFUNCTION exposure from these two pointer-returning methods while preserving their C++ signatures and null/fallback behavior.
+
+
+## 2026-09-21 — Presentation catalog UHT pointer exposure removed
+- AetherClassEvolutionPresentationCatalog.h now keeps Find and FindWithFallback as native C++ const-pointer methods.
+- Both UFUNCTION annotations were removed; ValidateCatalog remains BlueprintPure.
+- Verification found zero remaining UFUNCTION declarations exposing FAetherClassEvolutionPresentationDefinition pointers.
+- Next action: rerun AgeOfAetherEditor UHT/UBT to validate this repair and continue from the next reported blocker.
