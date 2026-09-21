@@ -1798,3 +1798,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5: o contexto confirmado de `AetherAssetPipelineTypes.h` mostra `FAetherAssetPipelineRecord::AssetType` como `EAetherAssetType::Unknown`. A definição existe em `Data/AetherAssetTypes.h`; ainda falta confirmar os includes e os demais erros antes de editar, para evitar introduzir uma dependência incorreta.
+
+
+- U0.5: `AetherWorldContentRegistry.cpp` confirmou dois erros no bloco de validação: `Maps.FindChecked(...)` é chamado e seu retorno é descartado (diagnóstico `[[nodiscard]]`), e variáveis locais `FString E` dentro dos loops `Interactions`/`Outcomes` ocultam o `E` declarado para o mapa. Ainda faltam os demais contextos antes de aplicar correções.
