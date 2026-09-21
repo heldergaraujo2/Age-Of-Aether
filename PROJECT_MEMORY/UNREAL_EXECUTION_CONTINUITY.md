@@ -1673,3 +1673,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Verification reports `UPROPERTY Replicated + Category restantes: 0`.
 - The previous UHT Category warnings are therefore addressed at source level.
 - Next action: rerun the authoritative `AgeOfAetherEditor Win64 Development` build to expose the next remaining compile/UHT issue, if any.
+
+
+## 2026-09-21 — Editor build reached UHT successfully; blocked by Live Coding
+- Authoritative `AgeOfAetherEditor Win64 Development` build rerun after NetworkGameState cleanup.
+- UHT completed successfully: `UHT processed AgeOfAetherEditor in 37.7120107 seconds (232 generated files written)`.
+- No previous NetworkTypes integer diagnostics or NetworkGameState Category warnings appeared.
+- Build stopped because Live Coding is active: `Unable to build while Live Coding is active. Exit the editor and game, or press Ctrl+Alt+F11...`.
+- This is an environment/process-state blocker, not a source compilation error at this stage.
+- Next action: close Unreal Editor cleanly so the next authoritative build can proceed with Live Coding inactive.
