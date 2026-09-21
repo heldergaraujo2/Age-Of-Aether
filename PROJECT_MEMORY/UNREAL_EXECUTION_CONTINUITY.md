@@ -658,3 +658,11 @@ STATUS: COMPLETE — 6/6 UPDATED
 - All 6 references identified in the previous inventory were updated from `Data/AetherItemTypes.h` to `Data/AetherItemDataTypes.h`.
 - The command reported 6 files updated and no replacement failure occurred.
 - Next validation must confirm no old include remains before rerunning UHT/editor compilation.
+
+
+## U0.5 — Include/path validation
+STATUS: PASS
+- Old include reference count: 0.
+- New Data header exists at `Public/Data/AetherItemDataTypes.h`.
+- The renamed header and all 6 include updates are internally consistent at path level.
+- Ready for the next controlled editor/UHT compilation attempt.
