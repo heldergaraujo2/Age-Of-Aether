@@ -1584,3 +1584,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The command's final verification showed the expected Major/Minor and AuthoritativeStateRevision declarations still present; the output did not report any REVISAR lines.
 - No global uint type conversion was performed.
 - Next action: run a focused metadata audit against the full known UHT offender set before compiling, ensuring zero offending Blueprint exposure remains and special metadata is preserved.
+
+
+## 2026-09-21 — Focused integer Blueprint metadata audit found verifier false positives
+- Helder executed the focused audit after the selective metadata repair.
+- The audit reported 7 errors, but inspection of each hit shows the verifier is matching unrelated neighboring BlueprintReadOnly properties in one-line/sequential declarations, not the target integer fields themselves.
+- Confirmed target integer fields are native-only: Combat RequestId, Economy TransactionId, Multiplayer ConnectionId, Persistence Revision fields, Security ConnectionId/RequestId, Skills RequestId, UI NotificationID, Scale TransferId, and Client RequestID all show UPROPERTY() without BlueprintReadOnly.
+- Networking Major/Minor retain EditAnywhere; NetworkGameState AuthoritativeStateRevision retains Replicated + Category without BlueprintReadOnly.
+- The audit therefore demonstrates the metadata repair is structurally correct, but its association test is too broad and must be replaced with a declaration-aware verifier before compilation.
+- Next action: inspect the three known parameter-shadowing UHT declarations and their C++ definitions/usages so they can be repaired before the next build.
