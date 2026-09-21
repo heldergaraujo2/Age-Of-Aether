@@ -688,3 +688,11 @@ STATUS: ROOT CAUSE CONFIRMED
 - The 5 subsystem headers have `.generated.h` after other includes, which is structurally correct for Unreal Header Tool. However, UHT reports them as needing to be the first header following all other includes, indicating these files are likely being parsed with a generated-header ordering rule affected by the current source state; exact fix will be applied only after confirming repository conventions.
 - `Private/Data/AetherItemTypes.cpp` correctly includes the renamed Data header `Data/AetherItemDataTypes.h`, but UHT still expects `AetherItemTypes.h` because the implementation filename remains `AetherItemTypes.cpp` while its paired header was renamed. The implementation should be renamed consistently to `AetherItemDataTypes.cpp`.
 - The inspected headers show no obvious generated-header line placed before normal includes; the next repair should address the stale cpp basename first and then retest UHT before changing the subsystem headers unnecessarily.
+
+
+## U0.5 — Data implementation renamed consistently
+STATUS: COMPLETE
+- `Private/Data/AetherItemTypes.cpp` was successfully renamed to `Private/Data/AetherItemDataTypes.cpp`.
+- This now matches the renamed Data header `Public/Data/AetherItemDataTypes.h`.
+- No content change was performed by the rename.
+- Next step: rerun the controlled Editor/UHT compilation to determine which errors remain.
