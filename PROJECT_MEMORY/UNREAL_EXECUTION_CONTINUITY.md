@@ -1862,3 +1862,22 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Verified local Source scan: OLD token EAutomationTestFlags::ApplicationContextMask = 0.
 - Verified replacement token EAutomationTestFlags_ApplicationContextMask = 101.
 - This repair is complete; next step is the next build to expose remaining UE 5.8 compilation/UHT issues.
+
+
+## 2026-09-21 — Build after automation-flag repair
+- Automation flag repair is confirmed; the previous 101 errors are no longer present.
+- Build still fails, with the main remaining clusters now exposed:
+  1. EAetherAssetType unresolved in AetherAssetPipelineTypes.h.
+  2. Generated-header include paths are wrong for CharacterTypes, CreatureTypes, and InteractionTypes.
+  3. Audio ActiveLoops uses TObjectPtr but implementation expects raw-pointer-to-pointer types.
+  4. TNumericLimits<float>::Infinity and TNumericLimits<double>::QuietNaN are unavailable in UE 5.8.
+  5. FAetherBalanceSimulationCase lacks TargetClassID/TargetEvolutionID used by implementation/tests.
+  6. FAetherClassRegistry is incomplete in AetherClassBalanceTests.cpp.
+  7. AetherClassPresentationTests passes FString where helper expects const TCHAR*.
+  8. AetherContentPackageTests uses Errors before declaration.
+  9. AetherInventoryLootTests lacks visible definitions for FAetherDataLootEntry/FAetherInventoryItem.
+  10. AetherQuestDialogueEventTypes.cpp contains literal \\n sequences.
+  11. AetherRecipeRegistry.cpp has malformed TEXT/FString::Printf call.
+  12. AetherWorldStreamingCoordinator.cpp obtains the subsystem as const while calling non-const SetMapActive.
+- AetherWorldContentRegistry.cpp issues previously fixed remain absent from this build.
+- Next action is inspection of the first structural blocker, EAetherAssetType, before editing.
