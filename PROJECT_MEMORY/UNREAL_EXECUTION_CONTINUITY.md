@@ -968,3 +968,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The project root/header path itself was confirmed, but the recursive include resolution output is invalid and must not be interpreted as evidence about the include graph.
 - No source files were changed by this failed probe.
 - Next action: rerun the same diagnostic with `Join-Path` using a single combined path argument per call.
+
+
+## U0.5 — Include-tree probe second correction
+- The corrected probe still failed before resolving the include graph because this PowerShell environment reports an ambiguous parameter set for `Split-Path -LiteralPath ... -Parent`.
+- This is a diagnostic-script compatibility issue, not evidence about the project or UHT.
+- No project files were changed.
+- Next action: remove `Split-Path` entirely and use `[System.IO.Path]::GetDirectoryName()` for deterministic path handling.
