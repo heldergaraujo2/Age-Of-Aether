@@ -16,26 +16,26 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.1 — Locate/confirm Unreal installation; Epic registry installation root is now confirmed.
-- Last command/result: Registry lookup returned C:\Program Files\Epic Games\.
-- Blockers: exact installed engine subdirectory/version still needs verification.
+- Current step: U0.1 — Locate/confirm Unreal installation; Epic root exists but contains only launcher/support folders at its top level.
+- Last command/result: C:\Program Files\Epic Games top-level listing.
+- Blockers: exact installed engine location/version still needs verification.
 
 # U0 — Environment & Project Health
 
 ## U0.1 — Confirm project + Unreal installation
-Status: PARTIAL — INSTALL ROOT CONFIRMED
+Status: PARTIAL — ENGINE LOCATION NOT YET CONFIRMED
 
 Result:
 - Project found: D:\Projeto Age of Aether\Age-Of-Aether-main\AgeOfAether.uproject
-- Windows Epic Games Unreal Engine registry key exists.
-- INSTALLDIR = C:\Program Files\Epic Games\
-- Earlier UE_5.8 directory scan did not find an engine directory directly under the tested roots.
-- Get-Command UnrealEditor.exe returned no path because UnrealEditor.exe is not on PowerShell PATH.
+- Epic Games Unreal Engine registry key exists with INSTALLDIR = C:\Program Files\Epic Games\
+- Top-level contents of that directory are only DirectXRedist, GameInputRedist, and Launcher.
+- No UE_5.8 engine directory is present at that top level.
+- This is consistent with the engine being installed elsewhere while Epic Launcher/support files remain under C:\Program Files\Epic Games\.
 
 Analysis:
-- This is useful evidence that Unreal Engine is installed through Epic's registered installation root.
-- We should now inspect only C:\Program Files\Epic Games\, avoiding a full C:/D: recursive scan.
-- U0.1 remains PARTIAL until the exact engine directory/version is confirmed.
+- We should not perform another full-drive recursive scan.
+- The Epic Games Launcher maintains installation manifests that can reveal the exact Unreal Engine installation path and version.
+- U0.1 remains PARTIAL until that manifest evidence is obtained.
 
 ## U0.2 — Verify exact engine version
 Status: PENDING
@@ -173,5 +173,14 @@ Status: PARTIAL — INSTALL ROOT CONFIRMED
 Command: PowerShell registry lookup for the Epic Games Unreal Engine installation root.
 Result:
 - INSTALLDIR : C:\Program Files\Epic Games\
-Analysis: The Windows registry confirms the Epic Games Unreal Engine installation root. The exact UE version/subdirectory is still pending.
-Next: Inspect only the confirmed Epic Games root for UE_5.8 directories.
+Analysis: The Windows registry confirms the Epic Games Unreal Engine installation root, but not the engine subdirectory.
+
+## Entry 004 — U0.1
+Status: PARTIAL — ENGINE LOCATION NOT YET CONFIRMED
+Command: Get-ChildItem on the confirmed Epic Games root.
+Result:
+- DirectXRedist
+- GameInputRedist
+- Launcher
+Analysis: No UE engine folder exists at the top level of the registered Epic root. The next diagnostic should query Epic Launcher installation manifests rather than scan the disks.
+Next: Run exactly one manifest lookup command.
