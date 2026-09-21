@@ -16,9 +16,9 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.3 — Backup/working-tree safety; local project folder is not currently recognized as a Git working tree.
-- Last command/result: `git status --short --branch` returned `fatal: not a git repository (or any of the parent directories): .git`.
-- Blockers: local Git working-tree status cannot be verified from the current folder; do not assume the local copy is clean or connected to the GitHub repository. Runtime/editor launch or build has not been verified yet.
+- Current step: U0.3 — Backup/working-tree safety; local project has expected top-level source structure but no local Git metadata.
+- Last command/result: top-level project listing confirmed .github, Config, Content, Docs, PROJECT_MEMORY, Source, .gitattributes, .gitignore, AgeOfAether.uproject and roadmap files; no .git directory.
+- Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
 
 # U0 — Environment & Project Health
 
@@ -48,18 +48,31 @@ Analysis:
 - The runtime/editor itself is still unverified because we have not launched it yet.
 
 ## U0.3 — Backup/working-tree safety
-Status: IN PROGRESS — LOCAL FOLDER IS NOT A GIT WORKING TREE
+Status: BLOCKED — LOCAL COPY HAS NO GIT METADATA
 
 Result:
-- Command: `git status --short --branch`
-- Git returned: `fatal: not a git repository (or any of the parent directories): .git`
+- Previous `git status --short --branch` failed with: `fatal: not a git repository (or any of the parent directories): .git`.
+- Recursive search for `.git` under `D:\Projeto Age of Aether` returned no results.
+- Top-level project listing confirms the expected source/project structure:
+  - .github
+  - Config
+  - Content
+  - Docs
+  - PROJECT_MEMORY
+  - Source
+  - .gitattributes
+  - .gitignore
+  - AgeOfAether.uproject
+  - ROADMAP.md
+  - ROADMAP_CONTENT_AND_CLIENT.md
+  - ROADMAP_VISUAL_AND_PLAYABLE.md
 
 Analysis:
-- The current folder `D:\Projeto Age of Aether\Age-Of-Aether-main` does not contain a `.git` directory, and no parent directory is a Git repository.
-- This does NOT by itself mean the source is wrong or missing; it may be a GitHub ZIP/export or a copied working directory.
-- We must identify the local project root and determine whether the Git metadata exists elsewhere before making changes.
-- Do not initialize a new Git repository or delete/copy project files yet; that could create an unintended local history or alter the working copy.
-- U0.3 remains incomplete until local source/backup safety is established.
+- The local folder contains a complete-looking Unreal/source tree, but it is not a Git working tree.
+- The absence of .git is consistent with a downloaded/copied repository snapshot, but its origin is not yet proven.
+- We have enough evidence to know the project files are present, but not enough to claim local version-control safety.
+- Do not initialize a new repository, delete files, or overwrite the local project.
+- U0.3 remains incomplete.
 
 ## U0.4 — Generate project files / compile prerequisites
 Status: PENDING
@@ -237,3 +250,35 @@ Analysis:
 - This may be a ZIP/export or copied repository, but that is not yet verified.
 - No repository initialization or file movement should be performed yet.
 Next: Locate the nearest existing `.git` metadata without modifying anything.
+
+## Entry 009 — U0.3
+Status: BLOCKED — NO LOCAL GIT METADATA FOUND
+Command: Recursive `.git` directory search under `D:\Projeto Age of Aether`.
+Result:
+- No output; no `.git` directory was found.
+Analysis:
+- The local project tree has no Git metadata under its parent directory.
+- We cannot use local Git status as a safety check for this copy.
+- No destructive or repository-initializing action was performed.
+
+## Entry 010 — U0.3
+Status: BLOCKED — PROJECT TREE PRESENT, GIT METADATA ABSENT
+Command: Top-level local project structure listing.
+Result:
+- .github
+- Config
+- Content
+- Docs
+- PROJECT_MEMORY
+- Source
+- .gitattributes
+- .gitignore
+- AgeOfAether.uproject
+- ROADMAP.md
+- ROADMAP_CONTENT_AND_CLIENT.md
+- ROADMAP_VISUAL_AND_PLAYABLE.md
+Analysis:
+- The expected Unreal/source directories and repository documentation are present.
+- The local copy is structurally consistent with the project repository, but it remains a non-Git working tree.
+- No files were changed by this diagnostic.
+Next: Inspect the .uproject file for its declared modules/plugins without modifying it.
