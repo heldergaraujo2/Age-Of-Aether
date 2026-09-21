@@ -16,3 +16,7 @@
 ## 2026-09-21 — Local repair confirmed
 - Public/Skills/AetherSkillTypes.h generated include was repaired locally to the bare `AetherSkillTypes.generated.h` include and verified by PowerShell.
 - Awaiting a real UE build before treating the blocker as resolved.
+
+## 2026-09-21 — Local repair confirmed
+- Public/Combat/AetherCombatTypes.h generated include was repaired locally to the bare `AetherCombatTypes.generated.h` include and verified by PowerShell.
+- The four confirmed generated-header path blockers from the latest build are now locally repaired: Items, Progression, Skills, Combat. A real UE build is still required to validate them.
