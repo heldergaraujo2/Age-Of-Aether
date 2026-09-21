@@ -860,3 +860,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Therefore UHT discovery and manifest registration are correct; the failure occurs during processing/validation of these headers, not because they are omitted from the manifest.
 - The manifest context also shows nearby subsystem/type headers, but no evidence of a missing module registration or path configuration issue.
 - Next action: inspect the exact generated artifacts for the five subsystem headers and compare their generated contents/timestamps with a known-good generated UCLASS artifact, using the manifest to identify the paths.
+
+
+## U0.5 — Generated artifact inventory confirmed
+- The Intermediate output directory contains five artifacts matching the failing subsystem basenames, one for each subsystem.
+- PowerShell table formatting truncates the names, so the exact extensions/paths are still hidden.
+- This confirms UHT/UBT created per-subsystem intermediate artifacts despite the validation error, but does not yet reveal whether they are generated headers, metadata, or object/code artifacts.
+- Next action: print the exact full paths as raw strings (without table formatting) and inspect their extensions/content classification.
