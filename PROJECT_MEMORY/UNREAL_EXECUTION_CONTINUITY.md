@@ -961,3 +961,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Failure remains exactly the same five generated-header include-order diagnostics for Economy, Items, Multiplayer, Persistence, and Progression subsystems.
 - `-VeryVerbose` produced no additional UHT command-line detail before the diagnostics; execution stops in ~2.21s and writes a 2.2 KB UBT trace.
 - Therefore the next diagnostic should isolate one failing header and its transitive include graph rather than repeat global builds or DLL string archaeology.
+
+
+## U0.5 — Include-tree probe correction
+- The first isolated include-tree probe did not execute correctly because the PowerShell `Join-Path` calls supplied multiple positional path arguments.
+- The project root/header path itself was confirmed, but the recursive include resolution output is invalid and must not be interpreted as evidence about the include graph.
+- No source files were changed by this failed probe.
+- Next action: rerun the same diagnostic with `Join-Path` using a single combined path argument per call.
