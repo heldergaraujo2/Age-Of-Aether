@@ -114,3 +114,5 @@
 - EconomyTests helper return type changed to `FAetherItemDefinition`, but its local `Definition` declaration remains `FAetherDataItemDefinition`; this must be corrected to complete the root repair.
 
 - EconomyTests `TestItem` helper is now internally consistent: return type and local variable are both `FAetherItemDefinition`; fields used are valid for the runtime type.
+
+- EconomyTests residue scan found 5 remaining `FAetherDataItemDefinition` declarations at lines 132-133 and 201-203, all initialized from the runtime `TestItem` helper. These must be changed to `FAetherItemDefinition`.
