@@ -1245,3 +1245,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Key collisions include `EAetherInteractionType`, `FAetherInteractionDefinition`, `FAetherQuestDefinition`, `EAetherItemCategory`, `EAetherEquipmentSlot`, `FAetherItemDefinition`, `EAetherQuestObjectiveType`, `FAetherQuestObjectiveDefinition`, `FAetherLootEntry`, and `FAetherSkillDefinition`.
 - This establishes that the prior subsystem-generated-header diagnostic was not the final source issue; UHT is now successfully parsing substantially further into the module.
 - No collision fix applied yet. Next step: inspect the exact declarations and includes for the reported duplicate pairs to determine whether they are intentional duplicate APIs or duplicated reflected definitions that require consolidation/renaming.
+
+
+## U0.5 — Collision declarations confirmed as real duplicate APIs
+- The UHT collisions are genuine duplicate reflected declarations, not parser noise.
+- Confirmed duplicate pairs have materially overlapping concepts: Interaction vs WorldContent both define `EAetherInteractionType` and `FAetherInteractionDefinition`; QuestTypes vs QuestDialogueEventTypes both define `EAetherQuestObjectiveType`, `FAetherQuestObjectiveDefinition`, and `FAetherQuestDefinition`; Items vs DataItemTypes both define `EAetherItemCategory`, `EAetherEquipmentSlot`, and `FAetherItemDefinition`; LootRewardTypes vs ItemLootTypes both define `FAetherLootEntry`; SkillEffectTypes vs SkillTypes both define `FAetherSkillDefinition`.
+- Some duplicates may be intentionally split domain models, but reflected Unreal names cannot coexist. No rename/consolidation chosen yet because exact fields and consumers must be compared before changing public APIs.
+- Next step: inspect the complete declarations for each conflicting pair and their direct include/consumer relationships, then choose the smallest source-preserving consolidation or namespacing-compatible fix.
