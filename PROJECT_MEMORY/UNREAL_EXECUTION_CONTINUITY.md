@@ -1029,3 +1029,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The failing subsystem has additional direct includes before its generated header, but that is valid Unreal header structure; the known-good comparison does not establish a concrete source-format defect.
 - Therefore no source change is justified yet.
 - Next action: verify whether the five failing generated-header basenames have any duplicate source/generated-header filename collisions elsewhere in the project or engine-visible module paths, since UHT is explicitly flagging generated-header ordering despite correct local syntax.
+
+
+## U0.5 — Generated-header collision check
+- No physical file named `AetherEconomySubsystem.generated.h`, `AetherItemSubsystem.generated.h`, `AetherMultiplayerSubsystem.generated.h`, `AetherPersistenceSubsystem.generated.h`, or `AetherProgressionSubsystem.generated.h` exists in the project tree or UE Engine Source tree.
+- This is expected for UHT-generated headers and rules out a physical duplicate-file collision for these exact generated names.
+- The five failures remain a UHT validation condition rather than an on-disk generated-header collision.
+- Next action: inspect UHT-generated metadata/output for a known-good and failing class to identify whether UHT believes another include occurred before the generated include.
