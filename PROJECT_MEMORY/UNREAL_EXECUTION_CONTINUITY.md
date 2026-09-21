@@ -40,3 +40,7 @@
 - `ActivateTarget` and `DeactivateMap` now use non-const `auto*` for `UAetherWorldMapSubsystem`, matching their non-const `SetMapActive` calls.
 - `PrepareStream` remains `const auto*` because it calls `CanStreamLink` and was intentionally left unchanged.
 - Awaiting the next real UE build to validate this repair.
+
+## 2026-09-21 — Audio subsystem blocker confirmed
+- `AetherAudioSubsystem.cpp` was inspected locally. `ActiveLoops` stores `TObjectPtr<UAudioComponent>`, while `StopLoop` and `IsPlaying` still declare raw-pointer-to-pointer results from `Find`.
+- Next repair is limited to changing those local pointer declarations to `TObjectPtr<UAudioComponent>*` / `const TObjectPtr<UAudioComponent>*`; no unrelated audio logic is being changed.
