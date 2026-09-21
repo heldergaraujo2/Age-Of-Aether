@@ -831,3 +831,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Game, Editor, and Server targets all use BuildSettingsVersion.V7, EngineIncludeOrderVersion.Latest, and ExtraModuleNames.Add("AgeOfAether").
 - No module configuration explains the five generated-header diagnostics.
 - Next action: inspect the exact source declarations/metadata of the five failing UCLASS subsystems against known-good UCLASS headers, focusing on class macros, includes, namespace/preprocessor state, and generated-header naming without editing yet.
+
+
+## U0.5 — UCLASS structural comparison
+- Compared all five failing subsystem headers with known-good UCLASS/DataAsset headers.
+- All five failing subsystem headers have conventional `UCLASS()` + `GENERATED_BODY()` structure and their generated include is last among visible includes.
+- Known-good DataAsset headers use the same generated-header placement pattern, including direct type-header dependencies.
+- No namespace, conditional preprocessor block, malformed macro placement, or encoding anomaly was revealed in these source excerpts.
+- The subsystem headers mostly expose plain C++ methods/data; this does not explain a generated-header placement diagnostic.
+- Next action: inspect generated/intermediate Unreal metadata and generated-header files produced by the failed UHT run, because source-level structure is not identifying the cause.
