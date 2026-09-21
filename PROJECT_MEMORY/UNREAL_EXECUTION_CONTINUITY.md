@@ -1340,3 +1340,14 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The planned post-edit symbol audit did not execute because PowerShell raised a parser error at the formatted Write-Host string: the colon immediately after $relative was interpreted as an invalid variable reference.
 - No source files were modified by this failed audit command.
 - The audit itself remains pending; the next command will use explicit format interpolation to avoid the parser ambiguity.
+
+
+## 2026-09-21 — Post-rename audit completed; scope leakage identified
+- The audit executed successfully and confirms the intended Data declarations were renamed.
+- However, the audit also exposed unintended cross-domain replacements:
+  - Public/Interaction/AetherInteractionTypes.h now contains FAetherDataQuestDefinition, although this runtime Interaction API must retain FAetherQuestDefinition.
+  - Public/Interaction/AetherInteractionRegistry.h mixes runtime FAetherInteractionDefinition with FAetherDataQuestDefinition by design only if explicitly intended; this needs source inspection before compilation.
+  - Runtime Economy/Items/Tests consumers now contain FAetherDataItemDefinition in places that previously used runtime FAetherItemDefinition; these are outside the intended Data-domain rename and must be repaired.
+- The old runtime symbols that remain in their runtime directories are correct and should not be renamed.
+- The Data-side new symbols are present in their expected Data headers/registries/tests.
+- No compilation was run after the rename because the audit found scope leakage that must be corrected first.
