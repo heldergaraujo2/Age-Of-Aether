@@ -1746,3 +1746,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The module rules file is located one directory above the actual Public/Private roots (`Source\\AgeOfAether.Build.cs` vs. `Source\\AgeOfAether\\Public|Private`), which is consistent with the observed module-relative include failures.
 - No files were modified.
 - Next action: inspect the Game Target only, then apply the minimal include-root correction if it matches the confirmed structure.
+
+
+## 2026-09-21 — Game Target configuration confirmed
+- `AgeOfAetherTarget` is correctly declared as `TargetType.Game`, uses `BuildSettingsVersion.V7`, `EngineIncludeOrderVersion.Latest`, and `ExtraModuleNames.Add("AgeOfAether")`.
+- Game, Editor, and Server targets are therefore consistent; none defines a custom include root.
+- All representative missing headers are physically present under `Source\\AgeOfAether\\Public`.
+- The remaining evidence supports a minimal module include-path correction in `Source\\AgeOfAether.Build.cs`, specifically exposing the module's actual Public root for module-relative includes.
+- No source files were modified yet.
+- Next action: edit only `Source\\AgeOfAether.Build.cs` to add the explicit Public include path, then verify the resulting file before rebuilding.
