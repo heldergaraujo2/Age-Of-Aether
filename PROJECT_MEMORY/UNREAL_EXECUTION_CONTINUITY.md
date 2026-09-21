@@ -1521,3 +1521,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The same principle applies to the three ClientSubsystem request methods previously verified.
 - No source files were modified by this search.
 - Next action: apply the first selective UHT repair to the five native-only UFUNCTIONs (three ClientSubsystem, one NetworkGameState, one UISubsystem), then verify their annotations are gone and no signatures changed.
+
+
+## 2026-09-21 — First native-only UFUNCTION repair command had no-op/partial verification
+- The attempted scripted edit stopped on the first file because its exact CRLF pattern did not match; therefore no source file was modified by that command.
+- Verification output shows the five target signatures are present without UFUNCTION lines immediately visible, but this alone is insufficient to prove the annotations were removed because the command aborted before the intended verification of surrounding lines.
+- Next action: inspect the exact surrounding declarations for the five methods with numbered context, then perform a line-safe edit based on the actual file formatting.
