@@ -1801,3 +1801,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5: `AetherWorldContentRegistry.cpp` confirmou dois erros no bloco de validação: `Maps.FindChecked(...)` é chamado e seu retorno é descartado (diagnóstico `[[nodiscard]]`), e variáveis locais `FString E` dentro dos loops `Interactions`/`Outcomes` ocultam o `E` declarado para o mapa. Ainda faltam os demais contextos antes de aplicar correções.
+
+
+- U0.5: `AetherWorldTypes.generated.h` foi efetivamente gerado em `Intermediate\Build\Win64\UnrealEditor\Inc\AgeOfAether\UHT\AetherWorldTypes.generated.h`; portanto o `C1083` é causado pelo include com caminho `World/AetherWorldTypes.generated.h` em vez do padrão bare `AetherWorldTypes.generated.h`. Próxima ação: corrigir somente esse include e verificar o cabeçalho.
