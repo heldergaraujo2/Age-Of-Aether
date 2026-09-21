@@ -1907,3 +1907,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - `AetherAssetPipelineTypes.h` now directly includes `AetherAssetTypes.h` immediately after `CoreMinimal.h`.
 - Header verification confirmed the expected include order and generated-header include.
 - The `EAetherAssetType` visibility issue is repaired locally; next step is a clean diagnostic build to expose the next blocker.
+
+
+## 2026-09-21 — Build diagnostics after asset include repair
+- `AetherAssetPipelineTypes.cpp` and `AetherAssetPipelineTests.cpp` now compile past the previous `EAetherAssetType` visibility failure, confirming the direct include repair worked.
+- New actionable blockers observed: `TObjectPtr<UAudioComponent>` lookup type mismatch in audio subsystem; generated-header include paths for Character/Creature/Interaction types; missing target IDs in `FAetherBalanceSimulationCase`; missing `FAetherClassRegistry` visibility in balance tests; invalid `TNumericLimits` APIs (`Infinity`, `QuietNaN`); presentation test `FString`/`const TCHAR*` mismatch; content-package test uses `Errors` before declaration; inventory test missing type visibility; literal `\\n` in quest dialogue source; non-const world subsystem pointer; malformed `TEXT`/`FString::Printf` call.
+- Build reached 75/78 reported actions and failed with `OtherCompilationError`; no runtime PASS is implied.
+- Next diagnostic will verify exact generated-header output paths before modifying includes.
