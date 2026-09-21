@@ -1769,3 +1769,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The attempted edit therefore did not persist the intended include-path change.
 - No compilation was attempted after the failed edit.
 - Next action: apply a simpler line insertion immediately after `PCHUsage`, then print and verify the complete Build.cs in the same command.
+
+
+## 2026-09-21 — Build.cs Public include path added and verified
+- `Source\\AgeOfAether.Build.cs` now contains `PublicIncludePaths.Add(System.IO.Path.Combine(ModuleDirectory, "Public"));`.
+- The complete file was printed after the edit and the verification found the expected declaration at line 8.
+- No other Build.cs dependency or target configuration was changed.
+- This is the minimal source-level fix indicated by the confirmed module layout and C1083 include-resolution pattern.
+- Next action: rerun the authoritative `AgeOfAetherEditor Win64 Development` build with the editor still closed, then analyze the complete result for the next blocker.
