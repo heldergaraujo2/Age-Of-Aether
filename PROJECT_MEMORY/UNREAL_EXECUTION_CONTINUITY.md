@@ -1124,3 +1124,13 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This is a real synchronization delta, not a hash-calculation issue: the local controlled rename and target-setting changes have not yet been applied to GitHub.
 - No remote file was modified by this comparison.
 - Next action: fetch the three Target.cs and old Data files' complete repository contents so the synchronization can be performed safely and exactly, while preserving unrelated remote content.
+
+
+## U0.5 — Final local confirmation before repository synchronization
+- Helder confirmed both obsolete duplicate-basename files are absent locally:
+  - `Source/AgeOfAether/Private/Data/AetherItemTypes.cpp`
+  - `Source/AgeOfAether/Public/Data/AetherItemTypes.h`
+- This matches the controlled rename already validated by the successful local UHT rerun: the stale `AetherItemTypes.cpp` implementation error disappeared after the rename.
+- The repository still contains those obsolete files and lacks the new `AetherItemDataTypes.h/.cpp` paths, so synchronization is required before continuing runtime/UHT work.
+- No local or remote files were modified by this confirmation.
+- Next action: print the complete local contents of the five files that must be created/updated so the exact local bytes can be transferred to GitHub without guessing or reconstructing source.
