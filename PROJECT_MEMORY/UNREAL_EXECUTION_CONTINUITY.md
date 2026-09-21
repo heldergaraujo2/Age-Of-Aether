@@ -1928,3 +1928,13 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - PowerShell reported path-not-found for all three target headers, and the verification reads failed for the same reason.
 - No intended source-header modification was applied by this command.
 - Next action: locate the three exact source header paths under the confirmed module directory, then perform the correction using those verified paths.
+
+
+## 2026-09-21 — Exact source header paths confirmed
+- All three affected headers exist under the confirmed module Public root:
+  - `Source\\AgeOfAether\\Public\\Characters\\AetherCharacterTypes.h`
+  - `Source\\AgeOfAether\\Public\\Creatures\\AetherCreatureTypes.h`
+  - `Source\\AgeOfAether\\Public\\Interaction\\AetherInteractionTypes.h`
+- The previous failure was solely due to using the repository-root Public path instead of the module Public path.
+- No source files were modified in this diagnostic.
+- Next action: apply the three generated-header include corrections using these verified paths, then print the relevant include lines to verify them.
