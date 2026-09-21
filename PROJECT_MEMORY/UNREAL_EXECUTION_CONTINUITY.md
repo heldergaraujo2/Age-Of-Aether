@@ -824,3 +824,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No .uplugin file exists in the project tree.
 - The previous configuration search looked only under Source/AgeOfAether, so it missed the actual module Build.cs at Source/AgeOfAether.Build.cs.
 - Next action: inspect the exact contents of the module Build.cs and all three Target.cs files for include-path/UHT-related configuration.
+
+
+## U0.5 — Module/Target configuration verified
+- AgeOfAether.Build.cs uses explicit/shared PCHs and only standard dependencies (Core, CoreUObject, Engine, InputCore, EnhancedInput); no custom include paths or UHT settings are present.
+- Game, Editor, and Server targets all use BuildSettingsVersion.V7, EngineIncludeOrderVersion.Latest, and ExtraModuleNames.Add("AgeOfAether").
+- No module configuration explains the five generated-header diagnostics.
+- Next action: inspect the exact source declarations/metadata of the five failing UCLASS subsystems against known-good UCLASS headers, focusing on class macros, includes, namespace/preprocessor state, and generated-header naming without editing yet.
