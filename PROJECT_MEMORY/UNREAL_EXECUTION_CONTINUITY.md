@@ -12,3 +12,9 @@
 - Local verification showed the malformed include block with literal `r`/`n` escape text instead of separate physical lines.
 - This is a local source formatting/syntax issue and must be repaired before compiling.
 - Next action: replace the malformed literal sequences with real newlines and verify the first include block plus exact include count.
+
+## 2026-09-21 — First malformed-include repair attempt failed safely
+- The attempted `-ireplace` repair failed because PowerShell parsed the replacement expression as more than the required two operands.
+- `Set-Content` then wrote the unchanged content back; the malformed literal backtick sequence remains exactly once.
+- No intended source correction occurred yet.
+- Next action: use `String.Replace` with explicit old/new string variables, avoiding `-replace` operator parsing.
