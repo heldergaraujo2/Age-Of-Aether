@@ -39,3 +39,11 @@
 - 2026-09-21: Adapter write succeeded but exposed a second PowerShell replacement issue: the header replacement used an escaped replacement string, so literal backslashes and `\r\n` text were written into the beginning of `AetherInventorySubsystem.cpp`. The EquipItem block itself was replaced correctly. Next command must repair only the malformed generated prefix, then verify the file before any build.
 - 2026-09-21: Malformed adapter prefix in the local inventory subsystem was repaired successfully. The file now has a valid C++ namespace adapter with explicit data-slot to runtime-slot mapping, and the EquipItem replacement remains in place. No build has been run against this repair yet.
 - 2026-09-21: Final local verification confirms the inventory adapter and EquipItem data-category bridge are present exactly once; unsupported data slots resolve to runtime `None`. The malformed-prefix repair is also reflected in the source. Proceeding to the next validation step: targeted Unreal Editor build.
+
+## 2026-09-21 — Full repository audit before resuming local execution
+- GitHub default branch is `main`; current HEAD is `69ca9f8c8d0d12a7b732e417453fc5ad6f4eb9ee` (`docs: confirm inventory adapter before build`).
+- Repository tree is present and non-truncated; Unreal project, Source, Config, Content placeholders, Docs, project-memory continuity, targets and CI workflow are tracked.
+- Repository validation workflow has recently reported success, but that is repository validation only and is NOT evidence of Unreal Editor compilation or runtime success.
+- Important divergence found during audit: GitHub HEAD's tracked `AetherInventorySubsystem.cpp` still shows the pre-adapter runtime/data type boundary, while the provided local state reports the explicit adapter repair is already applied locally. Per project rule, local source remains authoritative; do NOT overwrite the local repair from GitHub.
+- GitHub continuity records the local adapter as repaired and explicitly says the next step is the real UE 5.8 Editor build.
+- Therefore the audit does not change the execution plan: run the real local Build.bat against the local working tree, capture `D:\Temp_AetherBuild.log`, and use only the resulting compiler/UHT errors to select the next blocker.
