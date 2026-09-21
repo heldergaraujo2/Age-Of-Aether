@@ -77,3 +77,9 @@
 - Next repair: add `#include "Data/AetherClassRegistry.h"` to the test include block, then rebuild.
 
 - Applied direct include `Data/AetherClassRegistry.h` to `Private/Tests/AetherClassBalanceTests.cpp`; local verification shows the include present.
+
+## 2026-09-21 — Build validation after class registry include
+- The reduced build output confirms the class registry include repair moved past that blocker.
+- Current first/root blockers include `AetherInteractionCatalog.h` missing `FAetherDataQuestDefinition`, inventory headers missing `EAetherEquipmentSlot`/`EAetherInventoryItem`/`FAetherItemDefinition`, and several test files with missing direct type includes/helpers.
+- Character, social, networking errors include cascades that should be revisited after header/type blockers are repaired.
+- Next inspection targets the inventory type declarations/includes because they are public-header blockers and cause broad downstream cascades.
