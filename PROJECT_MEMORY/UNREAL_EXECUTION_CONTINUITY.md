@@ -874,3 +874,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - All five were created at the same build timestamp (09/21/2026 08:51:26), confirming the compiler response-file stage reached each subsystem source.
 - Therefore the current UHT diagnostic is not explained by missing generated-header artifacts in this directory.
 - Next action: inspect one failing subsystem `.cpp` and its corresponding `.obj.rsp` to determine the exact include/source path UBT is compiling and whether a stale or mismatched generated-header expectation is involved.
+
+
+## U0.5 — Economy subsystem response-file inspection
+- `AetherEconomySubsystem.cpp.obj.rsp` points to the expected source: `Source/AgeOfAether/Private/Economy/AetherEconomySubsystem.cpp`.
+- The response file uses the expected UnrealEd shared PCH, project definitions, C++20, and emits `.obj`, `.sarif`, and dependency outputs.
+- No anomalous source path, duplicate header, or generated-header path is visible in this response file.
+- The prior command output did not include the `SOURCE` section, so the `.cpp` contents remain unverified.
+- Next action: inspect the exact source file and compare its first include with the subsystem header/diagnostic.
