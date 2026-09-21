@@ -1762,3 +1762,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The supplied output does not show whether the replacement itself matched or whether the file was modified before verification, so the file state must be inspected directly rather than assuming success or failure.
 - No build was run after this attempt.
 - Next action: read the exact current `Source\\AgeOfAether.Build.cs` contents and verify whether the include-path line exists before making any further change.
+
+
+## 2026-09-21 — Build.cs confirmed unchanged after failed edit
+- Direct verification found no `PublicIncludePaths` declaration in `Source\\AgeOfAether.Build.cs`.
+- The attempted edit therefore did not persist the intended include-path change.
+- No compilation was attempted after the failed edit.
+- Next action: apply a simpler line insertion immediately after `PCHUsage`, then print and verify the complete Build.cs in the same command.
