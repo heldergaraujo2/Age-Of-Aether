@@ -932,3 +932,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This strongly identifies the UHT assembly in the UBT directory as the relevant runtime copy; the separate AutomationTool copy is not needed for the Build.bat path under investigation.
 - The exact `Build.bat` reference lines were not included in the pasted output, but the runtime directory itself is now verified.
 - Next action: inspect the UHT assembly for its embedded diagnostic using .NET string/metadata extraction rather than raw UTF-8 scanning, or invoke UBT with diagnostic tracing if available.
+
+
+## U0.5 — UHT diagnostic located in active assembly
+- The active `EpicGames.UHT.dll` contains the exact diagnostic string `The given include must appear at the top of the header following all other includes: '#include "...generated.h"'`.
+- This confirms the error is emitted by the actual UHT implementation, not by a wrapper or unrelated compiler component.
+- The surrounding assembly strings also include `include found after` diagnostics, indicating UHT has explicit generated-header/include-order validation logic.
+- Next action: inspect the assembly's surrounding strings for the exact preceding/following diagnostics and determine what condition triggers this message; avoid source changes until the trigger is understood.
