@@ -739,3 +739,11 @@ STATUS: INVESTIGATION — DIFFERENCE NOT YET PROVEN
 - The 5 failing subsystem headers place the `.generated.h` immediately after the last normal include (except equivalent whitespace differences).
 - This is a potential difference, but it is not yet sufficient evidence that whitespace is the root cause.
 - No source changes made; next step is to inspect the exact Unreal Header Tool diagnostic implementation for this error before changing all 5 headers.
+
+
+## U0.5 — UHT diagnostic source lookup
+BLOCKED — EXPECTED UHT SOURCE DIRECTORY IS NOT PRESENT
+- Attempted to inspect `D:\Unreal\UE_5.8\Engine\Source\Programs\UnrealHeaderTool`.
+- PowerShell reported that this directory does not exist in the installed engine.
+- No project files were changed.
+- Next step: search the installed UE 5.8 tree for the exact diagnostic text instead of assuming the source-layout path.
