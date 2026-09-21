@@ -1547,3 +1547,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No UFUNCTION annotation remains on those declarations.
 - This repair is therefore complete at source level.
 - Next action: address the remaining unsupported Blueprint-exposed integer UPROPERTY fields selectively, beginning with the AI request/response fields and then the other listed structs.
+
+
+## 2026-09-21 — AI uint64 Blueprint exposure repaired
+- Both FAetherAIResponse::RequestId and FAetherAIRequest::RequestId are now declared as native UPROPERTY() uint64 fields, preserving reflection while removing Blueprint exposure.
+- The verification pattern reported one false positive because FAetherAIResponse is a one-line USTRUCT and earlier unrelated BlueprintReadOnly properties occur on the same physical line; the RequestId itself is visibly UPROPERTY() and not BlueprintReadOnly.
+- No type or field name was changed.
+- Next action: verify the exact RequestId metadata with a property-focused regex, then continue with the remaining unsupported integer fields.
