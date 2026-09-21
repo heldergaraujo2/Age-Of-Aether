@@ -911,3 +911,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - A raw UTF-8 byte scan of all DLLs under `Engine/Binaries/DotNET` found no literal match for the diagnostic string, so the message is likely stored encoded/compressed/generated or constructed at runtime.
 - No source modification was made from this test.
 - Next action: inspect the UBT/UHT assembly metadata and command invocation path to identify the actual UHT component/version being executed and whether multiple copies are involved.
+
+
+## U0.5 — UHT assembly copy comparison
+- `UnrealBuildTool/EpicGames.UHT.dll` and `AutomationTool/EpicGames.UHT.dll` are both version `5.8.0.0` and same size (1,006,520 bytes), but have different SHA-256 hashes: `CE5136...D966C` vs `DEDEB9...FB76`.
+- Their timestamps differ by four seconds.
+- This establishes that the installed UE 5.8 distribution contains at least two byte-distinct UHT assemblies despite identical reported version/size.
+- Next action: determine which assembly is loaded by the Build.bat/UBT process and compare the loaded assembly identity before changing project source.
