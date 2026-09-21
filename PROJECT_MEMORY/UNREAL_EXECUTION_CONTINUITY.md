@@ -1466,3 +1466,13 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The UHT failures are specifically caused by Blueprint exposure, not by the native integer types themselves.
 - The compact inventory also confirms many uint32/uint64 members are private/native-only and therefore not blockers.
 - Next action: inspect only the exact failing UPROPERTY/UFUNCTION declarations and their surrounding USTRUCT/UCLASS annotations, then remove Blueprint exposure selectively where appropriate rather than changing underlying C++ types.
+
+
+## 2026-09-21 — Exact Blueprint integer blockers confirmed
+- Helder supplied the compact declaration inventory for all UHT-reported unsupported integer exposures.
+- Confirmed Blueprint-exposed UPROPERTY integer blockers: AI uint64 RequestId fields; Combat uint32 RequestId; Economy uint64 TransactionId; Multiplayer uint32 ConnectionId; NetworkGameState uint64 AuthoritativeStateRevision; NetworkTypes uint16 Major/Minor plus uint32 RequestId fields and uint64 revision; Persistence uint64 Revision fields; Security uint32 ConnectionId/RequestId; Skills uint32 RequestId; UI uint32 NotificationID; Scale uint64 TransferId; Client uint32 RequestID.
+- Confirmed Blueprint-exposed UFUNCTION integer blockers: ClientSubsystem BeginRequest(uint32 return), CompleteRequest(uint32 parameter), GetRequest(uint32 parameter); NetworkGameState GetAuthoritativeStateRevision() returning uint64; UISubsystem PushNotification(uint32 return).
+- Native-only uint32/uint64 uses elsewhere (hash functions, service internals, maps, counters, RPCs, etc.) are not themselves blockers and must not be globally converted.
+- Three name-shadowing UHT blockers remain: SetGuildRole/ServerSetGuildRole parameter Role and ClientReceiveCharacterOperation parameter Character.
+- The correct repair strategy is selective Blueprint exposure removal for unsupported integer members/functions, plus safe parameter renaming for the three shadowing cases, preserving native/server-authoritative types and behavior.
+- Next action: inspect the exact affected USTRUCT/UCLASS declarations and nearby metadata in a compact command, then apply the smallest safe UHT-compatible repair.
