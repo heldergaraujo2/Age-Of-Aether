@@ -1,8 +1,8 @@
 
 
-## 2026-09-21 — FAetherAccountId root declaration located
-- Local inspection confirms `FAetherAccountId` is defined correctly in `Source\\AgeOfAether\\Public\\Accounts\\AetherAccountSessionTypes.h` as a `USTRUCT(BlueprintType)` with `Value`, `IsValid()`, `NewId()` and equality/hash support.
-- `AetherCharacterTypes.h` currently includes `CoreMinimal.h`, `World/AetherWorldTypes.h`, and its generated header, but not `AetherAccountSessionTypes.h` before using `FAetherAccountId AccountId`.
-- The unknown-type build error is therefore a direct public-header visibility dependency, not a missing type definition.
-- No source files were modified in this diagnostic.
-- Next action: inspect the neighboring account/character public headers for the established include pattern before applying the minimal direct include.
+## 2026-09-21 — Account include pattern confirmed
+- `AetherCharacterPlayerState.h` and `AetherCharacterService.h` already include `Accounts/AetherAccountSessionTypes.h` directly when using `FAetherAccountId`.
+- `AetherCharacterTypes.h` is the only inspected character public header using `FAetherAccountId` without that direct include.
+- Minimal repair is therefore to add `#include "Accounts/AetherAccountSessionTypes.h"` to `AetherCharacterTypes.h` before the generated header include.
+- No source file was modified during this inspection.
+- Next action: apply only this direct include, verify it appears exactly once, then continue with the next compile blocker.
