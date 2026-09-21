@@ -1210,3 +1210,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Therefore the qualified generated-header path itself is not sufficient to explain the five UHT failures and should not be mass-changed.
 - No source modification made.
 - Next action: identify known-good `UCLASS` headers that are also `UGameInstanceSubsystem` subclasses and compare their exact include/declaration structure with the five failing subsystem headers.
+
+
+## U0.5 — GameInstanceSubsystem comparison
+- Inventory found many known `UGameInstanceSubsystem` headers that use the bare generated-header form and compile structurally as conventional subsystem headers.
+- The five failing headers (Economy, Items, Multiplayer, Persistence, Progression) are the only subsystem headers in this inventory using directory-qualified generated-header includes.
+- However, qualified generated-header includes exist elsewhere in known-good reflected non-subsystem headers, so the issue appears specifically correlated with this subsystem group, not a global Unreal rule.
+- The failing subsystem declarations otherwise match the known-good subsystem pattern: `Subsystems/GameInstanceSubsystem.h`, generated include, `UCLASS()`, class deriving from `UGameInstanceSubsystem`, and `GENERATED_BODY()`.
+- No source change made yet; next step will inspect the five failing headers' exact include lists against known-good subsystem headers to isolate the remaining structural difference before modifying code.
