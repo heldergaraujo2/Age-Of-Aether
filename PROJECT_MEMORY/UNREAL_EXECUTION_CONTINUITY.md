@@ -1496,3 +1496,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No source changes were made.
 - These three uint32 request-management functions should be considered native-only candidates; before changing them, their C++ call sites/Blueprint exposure usage must be checked to avoid removing an intentional public API.
 - Next action: inspect the corresponding implementations and call sites for BeginRequest, CompleteRequest and GetRequest in a compact repository search.
+
+
+## 2026-09-21 — Client request API usage verified
+- Local source search found BeginRequest, CompleteRequest and GetRequest used by their own C++ implementation and AetherClientSubsystemTests.cpp only.
+- No Blueprint-generated/source call sites were found by the local search.
+- The methods therefore have native C++ consumers that must remain unchanged; the UFUNCTION annotations can be removed without changing signatures or test behavior, preserving the native API while eliminating unsupported Blueprint uint32 exposure.
+- No source files were modified by this search.
+- Next action: inspect the remaining UHT-blocking UFUNCTION declarations (NetworkGameState and UISubsystem) and their local call sites before applying the first selective exposure repair.
