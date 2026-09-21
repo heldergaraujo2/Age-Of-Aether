@@ -1689,3 +1689,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - PowerShell emitted a separate `else` parser error because the multiline block had already completed before the standalone `else` was entered; this did not affect the process shutdown.
 - The prior build blocker (Live Coding active) should now be removed.
 - Next action: rerun the authoritative Editor build with no Unreal Editor/Game process active.
+
+
+## 2026-09-21 — Native compilation reached source include-path failure
+- With Unreal Editor closed, the authoritative `AgeOfAetherEditor Win64 Development` build progressed past UHT and into 185 C++ actions.
+- The build now fails broadly with `C1083: cannot open include file` for project headers using module-relative paths such as `Accounts/...`, `AI/...`, `Data/...`, `Characters/...`, `Networking/...`, and even `AgeOfAether.h`.
+- This pattern affects many unrelated source files and indicates a module include-path/configuration problem rather than dozens of independent missing files.
+- No source repair has been made yet. Next action: inspect `AgeOfAether.Build.cs` and the actual Public/Private directory layout to determine the missing include path before changing anything.
