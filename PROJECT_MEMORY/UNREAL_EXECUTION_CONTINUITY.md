@@ -753,3 +753,11 @@ BLOCKED — EXPECTED UHT SOURCE DIRECTORY IS NOT PRESENT
 RESULT: NO MATCH
 - Searching the entire installed UE 5.8 tree for the exact diagnostic text returned no result.
 - This indicates the installed distribution does not expose that diagnostic as searchable source/text, so we should inspect the actual UHT/UBT runtime files and logs rather than continue guessing header formatting.
+
+
+## U0.5 — UHT/UBT runtime inventory
+RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
+- Installed UE 5.8 contains `EpicGames.UHT.dll` under `Engine\Binaries\DotNET\UnrealBuildTool`.
+- UBT source is also present under `Engine\Source\Programs\UnrealBuildTool`.
+- The previous assumption that UHT would be a standalone executable/source directory was incorrect.
+- No project files changed.
