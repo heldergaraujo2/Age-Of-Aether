@@ -867,3 +867,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - PowerShell table formatting truncates the names, so the exact extensions/paths are still hidden.
 - This confirms UHT/UBT created per-subsystem intermediate artifacts despite the validation error, but does not yet reveal whether they are generated headers, metadata, or object/code artifacts.
 - Next action: print the exact full paths as raw strings (without table formatting) and inspect their extensions/content classification.
+
+
+## U0.5 — Artifact classification
+- The five matching Intermediate artifacts are `.cpp.obj.rsp` response files, not generated headers.
+- All five were created at the same build timestamp (09/21/2026 08:51:26), confirming the compiler response-file stage reached each subsystem source.
+- Therefore the current UHT diagnostic is not explained by missing generated-header artifacts in this directory.
+- Next action: inspect one failing subsystem `.cpp` and its corresponding `.obj.rsp` to determine the exact include/source path UBT is compiling and whether a stale or mismatched generated-header expectation is involved.
