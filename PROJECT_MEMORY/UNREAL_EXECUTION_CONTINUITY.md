@@ -810,3 +810,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Therefore this output does not prove an include-graph problem and no project files were changed.
 - The five failing headers remain syntactically normal at source level.
 - Next action: inspect the Unreal module's build configuration and UHT-generated manifest/metadata for header discovery and generated-header mapping, rather than continuing with the incomplete custom resolver.
+
+
+## U0.5 — Module configuration inspection
+- The requested recursive inspection under `Source\AgeOfAether` returned no matching Build/Target/uplugin files or no matching configuration lines.
+- This means the expected module configuration file was not found by the supplied pattern in that location, or it contains none of the searched settings.
+- No project files were modified.
+- Next action: locate the actual `*.Build.cs` and `*.Target.cs` files by filename inventory, then inspect their exact contents rather than assuming their location/configuration.
