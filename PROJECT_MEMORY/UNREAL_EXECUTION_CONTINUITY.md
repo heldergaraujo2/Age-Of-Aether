@@ -651,3 +651,10 @@ STATUS: COMPLETE — 6 REFERENCES FOUND
 - After renaming the Data header, exactly 6 source references still use `Data/AetherItemTypes.h`.
 - References are in `Private/Data/AetherItemTypes.cpp`, `Public/Characters/AetherEquipmentVisualComponent.h`, `Public/Characters/AetherEquipmentVisualProfile.h`, `Public/Data/AetherItemRegistry.h`, `Public/Items/AetherInventoryTypes.h`, and `Public/Items/AetherLootTypes.h`.
 - No other `.h` or `.cpp` source reference to the old Data header path was found by the controlled search.
+
+
+## U0.5 — Data item include references updated
+STATUS: COMPLETE — 6/6 UPDATED
+- All 6 references identified in the previous inventory were updated from `Data/AetherItemTypes.h` to `Data/AetherItemDataTypes.h`.
+- The command reported 6 files updated and no replacement failure occurred.
+- Next validation must confirm no old include remains before rerunning UHT/editor compilation.
