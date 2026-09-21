@@ -1367,3 +1367,15 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - InteractionTypes.h and InteractionRegistry.h now use runtime FAetherQuestDefinition consistently.
 - This confirms the earlier broad rename leakage in the inspected runtime files has been corrected.
 - Next action: run a repository-wide declaration/reference audit for the ten renamed Data-domain reflected symbols, checking that Data declarations use the new names while runtime declarations/consumers retain their original names.
+
+
+## 2026-09-21 — Global reflected-name audit result
+- Audit confirms all ten old names now remain only in their intended runtime domains:
+  - Interaction: EAetherInteractionType, FAetherInteractionDefinition, FAetherQuestDefinition.
+  - Quests: EAetherQuestObjectiveType, FAetherQuestObjectiveDefinition, FAetherQuestDefinition.
+  - Items: EAetherItemCategory, EAetherEquipmentSlot, FAetherItemDefinition.
+  - Items loot: FAetherLootEntry.
+  - Skills: FAetherSkillDefinition.
+- No old Data-domain reflected symbol appears in the inspected global references.
+- The duplicate UHT names should therefore be resolved by the Data-domain renames, pending compilation verification.
+- Next action: run the editor build/UHT again; this is the first compilation attempt after completing and auditing the rename repair.
