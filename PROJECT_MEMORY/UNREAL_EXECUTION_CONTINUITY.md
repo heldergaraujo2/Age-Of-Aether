@@ -1051,3 +1051,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - No anomalous forced include, compiler standard, or PCH setting is visible in the known-good responses.
 - The failing Economy response was not included in the returned excerpt, so this comparison does not yet establish whether it differs; no conclusion should be drawn from its absence.
 - The next step is to inspect the complete `AetherEconomySubsystem.h` declaration and its member types, because a concrete dependency requirement may explain why UHT treats the include sequence differently.
+
+
+## U0.5 — Economy subsystem declaration inspection
+- `AetherEconomySubsystem.h` has a conventional `#pragma once`, normal includes, and its own `AetherEconomySubsystem.generated.h` as the final include.
+- The class is `UCLASS()` / `GENERATED_BODY()` and derives from `UGameInstanceSubsystem`.
+- It exposes several non-UObject types from `AetherEconomyService.h` in public method signatures and stores `FAetherEconomyService EconomyService` by value as a private member.
+- It also references `UAetherEconomyConfigDataAsset` and item/character/economy types through the service/type includes.
+- No source-level include-order defect is visible in this header itself; the next inspection will trace `AetherEconomyService.h` and its transitive type dependencies for generated-header interactions.
