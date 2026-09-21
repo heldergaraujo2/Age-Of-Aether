@@ -17,7 +17,7 @@
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
 - Current step: U0.3 — Backup/working-tree safety; local project has expected top-level source structure but no local Git metadata.
-- Last command/result: top-level project listing confirmed .github, Config, Content, Docs, PROJECT_MEMORY, Source, .gitattributes, .gitignore, AgeOfAether.uproject and roadmap files; no .git directory.
+- Last command/result: .uproject inspection confirmed EngineAssociation 5.8, one Runtime module named AgeOfAether with Default loading phase, and EnhancedInput enabled.
 - Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. Do not initialize Git or alter/copy files yet. Runtime/editor launch or build has not been verified.
 
 # U0 — Environment & Project Health
@@ -53,19 +53,7 @@ Status: BLOCKED — LOCAL COPY HAS NO GIT METADATA
 Result:
 - Previous `git status --short --branch` failed with: `fatal: not a git repository (or any of the parent directories): .git`.
 - Recursive search for `.git` under `D:\Projeto Age of Aether` returned no results.
-- Top-level project listing confirms the expected source/project structure:
-  - .github
-  - Config
-  - Content
-  - Docs
-  - PROJECT_MEMORY
-  - Source
-  - .gitattributes
-  - .gitignore
-  - AgeOfAether.uproject
-  - ROADMAP.md
-  - ROADMAP_CONTENT_AND_CLIENT.md
-  - ROADMAP_VISUAL_AND_PLAYABLE.md
+- Top-level project listing confirms the expected source/project structure.
 
 Analysis:
 - The local folder contains a complete-looking Unreal/source tree, but it is not a Git working tree.
@@ -282,3 +270,22 @@ Analysis:
 - The local copy is structurally consistent with the project repository, but it remains a non-Git working tree.
 - No files were changed by this diagnostic.
 Next: Inspect the .uproject file for its declared modules/plugins without modifying it.
+
+## Entry 011 — U0.3
+Status: DIAGNOSTIC PASS — PROJECT DECLARATION IS PARSEABLE
+
+Command:
+`Get-Content '.\AgeOfAether.uproject' -Raw | ConvertFrom-Json | Select-Object EngineAssociation, Modules, Plugins`
+
+Result:
+- EngineAssociation: 5.8
+- Modules: one Runtime module named AgeOfAether, LoadingPhase=Default
+- Plugins: EnhancedInput enabled
+
+Analysis:
+- The .uproject file parses successfully as JSON through PowerShell.
+- Its declared engine association matches the previously verified UE 5.8 installation.
+- The project declares the expected AgeOfAether Runtime module and has EnhancedInput enabled.
+- This is a configuration-structure check only; it does not prove UHT/UBT compilation or editor startup.
+- U0.3 remains incomplete because Git safety is unresolved.
+Next: Verify whether the local source tree contains the generated project/build metadata that would indicate whether this copy has already been prepared locally, without modifying anything.
