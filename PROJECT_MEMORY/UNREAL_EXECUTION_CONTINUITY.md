@@ -896,3 +896,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The previous PowerShell property print did not expose `IsReadOnly`/`Attributes` values because the object was interpolated incorrectly, so file attributes remain unverified.
 - Encoding and newline format therefore do not explain the UHT diagnostic so far.
 - Next action: compare the exact text surrounding `generated.h`, including whitespace/blank lines, and correctly inspect file attributes for the failing and known-good headers.
+
+
+## U0.5 — Generated-header context and file attributes
+- `AetherEconomySubsystem.h`: generated include is line 7, after all three preceding includes; no whitespace on those lines beyond normal spaces, followed by a blank line and `UCLASS()`.
+- Known-good `AetherGameInstance.h`: generated include is line 6, after its two preceding includes, followed by a blank line and `UCLASS()`.
+- Both files are writable and have `Normal` attributes.
+- The failing header is structurally conventional and matches Unreal's expected generated-header placement, so a simple source formatting/attribute issue is unlikely.
+- Next investigation: identify the exact implementation of UHT's generated-header ordering diagnostic in the installed UE 5.8 binaries/source, using the diagnostic string and related code symbols, before making any source change.
