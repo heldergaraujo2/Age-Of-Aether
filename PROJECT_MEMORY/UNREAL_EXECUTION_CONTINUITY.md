@@ -1789,3 +1789,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5: `AgeOfAether.Build.cs` corrigido para `Source\AgeOfAether\Public`; dependências permanecem inalteradas. Próxima ação: recompilar o Editor para verificar se os `C1083` de include foram eliminados.
+
+
+- U0.5 build após correção de `Build.cs`: os erros de includes normais foram resolvidos, confirmando o diagnóstico do include path. Restaram quatro grupos concretos: `World/AetherWorldTypes.generated.h` está sendo incluído com caminho incompatível; `AetherUIPresentationTests.cpp` usa `EAutomationTestFlags::ApplicationContextMask` inválido para esta versão; `AetherWorldContentRegistry.cpp` tem descarte de retorno `[[nodiscard]]` e sombreamento de `E`; `AetherAssetPipelineTypes.h` referencia `EAetherAssetType` sem declaração visível, causando também erro no `.gen.cpp`. Próxima ação é inspecionar esses pontos antes de reparar.
