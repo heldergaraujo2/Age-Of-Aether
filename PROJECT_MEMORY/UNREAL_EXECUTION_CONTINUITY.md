@@ -1921,3 +1921,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Therefore the current C1083 errors are include-path mismatches in the project headers, analogous to the already repaired `AetherWorldTypes.h`; the generated files themselves exist.
 - No source files were modified by this diagnostic.
 - Next action: replace only the three affected generated-header includes with their bare filenames, then verify all three headers before rebuilding.
+
+
+## 2026-09-21 — Generated-header repair command used wrong source root
+- The attempted edit did not modify the intended headers because the command addressed `D:\\Projeto Age of Aether\\Age-Of-Aether-main\\Public\\...`, but the confirmed module layout is under `Source\\AgeOfAether\\Public\\...`.
+- PowerShell reported path-not-found for all three target headers, and the verification reads failed for the same reason.
+- No intended source-header modification was applied by this command.
+- Next action: locate the three exact source header paths under the confirmed module directory, then perform the correction using those verified paths.
