@@ -817,3 +817,10 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - This means the expected module configuration file was not found by the supplied pattern in that location, or it contains none of the searched settings.
 - No project files were modified.
 - Next action: locate the actual `*.Build.cs` and `*.Target.cs` files by filename inventory, then inspect their exact contents rather than assuming their location/configuration.
+
+
+## U0.5 — Build/Target file location confirmed
+- Located the module/build files at Source/AgeOfAether.Build.cs and the three target files directly under Source/.
+- No .uplugin file exists in the project tree.
+- The previous configuration search looked only under Source/AgeOfAether, so it missed the actual module Build.cs at Source/AgeOfAether.Build.cs.
+- Next action: inspect the exact contents of the module Build.cs and all three Target.cs files for include-path/UHT-related configuration.
