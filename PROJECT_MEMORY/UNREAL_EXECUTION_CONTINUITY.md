@@ -1804,3 +1804,6 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 
 
 - U0.5: `AetherWorldTypes.generated.h` foi efetivamente gerado em `Intermediate\Build\Win64\UnrealEditor\Inc\AgeOfAether\UHT\AetherWorldTypes.generated.h`; portanto o `C1083` é causado pelo include com caminho `World/AetherWorldTypes.generated.h` em vez do padrão bare `AetherWorldTypes.generated.h`. Próxima ação: corrigir somente esse include e verificar o cabeçalho.
+
+
+- U0.5: corrigido `AetherWorldTypes.h` para incluir `AetherWorldTypes.generated.h` pelo nome simples; o generated header existe no diretório UHT. Próximo teste deve recompilar para revelar os erros restantes sem o falso `C1083` desse header.
