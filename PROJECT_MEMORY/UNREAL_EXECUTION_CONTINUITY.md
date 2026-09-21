@@ -1856,3 +1856,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Applied the exact token replacement across Source/AgeOfAether/Private/Tests/*.cpp.
 - Command completed without PowerShell errors.
 - Verification of old/new occurrence counts is still required before build.
+
+
+## 2026-09-21 — Automation flag replacement verified
+- Verified local Source scan: OLD token EAutomationTestFlags::ApplicationContextMask = 0.
+- Verified replacement token EAutomationTestFlags_ApplicationContextMask = 101.
+- This repair is complete; next step is the next build to expose remaining UE 5.8 compilation/UHT issues.
