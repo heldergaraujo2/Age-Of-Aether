@@ -1712,3 +1712,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The previous assumption that the file lived under `Source\\AgeOfAether\\AgeOfAether.Build.cs` was incorrect; the project uses the standard root-`Source` module rules layout while the module's Public/Private headers remain under `Source\\AgeOfAether`.
 - No files were modified by this diagnostic.
 - Next action: inspect the actual `Source\\AgeOfAether.Build.cs` contents, especially its include-path configuration, before changing anything.
+
+
+## 2026-09-21 — Actual Build.cs contents inspected
+- `Source\\AgeOfAether.Build.cs` contains the expected module class `AgeOfAether : ModuleRules` and dependencies: Core, CoreUObject, Engine, InputCore, EnhancedInput.
+- The rules file currently defines no explicit `PublicIncludePaths` or `PrivateIncludePaths`.
+- Because the failing compiler diagnostics were unable to resolve module-relative includes such as `Accounts/...`, `AI/...`, `Data/...`, `Networking/...`, and even `AgeOfAether.h`, the missing include root is a strong configuration candidate.
+- No Build.cs changes were made yet.
+- Next action: inspect the target module declarations and exact Source directory structure to confirm the intended module/public/private roots before modifying include paths.
