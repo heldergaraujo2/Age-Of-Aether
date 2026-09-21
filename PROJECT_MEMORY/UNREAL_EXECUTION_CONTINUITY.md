@@ -1728,3 +1728,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The supplied result did not include the requested Target.cs contents, so target configuration has not yet been verified from this command.
 - No files were modified.
 - Next action: read the three Target.cs files directly and verify their module declarations before deciding the minimal Build.cs include-path fix.
+
+
+## 2026-09-21 — Editor/Server target configuration confirmed
+- The supplied target output confirms `AgeOfAetherEditorTarget` and `AgeOfAetherServerTarget` both use `BuildSettingsVersion.V7`, `EngineIncludeOrderVersion.Latest`, and `ExtraModuleNames.Add("AgeOfAether")`.
+- No target-level include-path override is present in these files.
+- The game target content was not included in the returned output, so it remains unverified from this inspection.
+- The module layout and Build.cs together point toward the module's Public directory needing explicit include resolution for the existing module-relative headers.
+- No files were modified.
+- Next action: verify the Game Target and confirm the failing include forms exist under `Source\\AgeOfAether\\Public` before applying the minimal module include-path change.
