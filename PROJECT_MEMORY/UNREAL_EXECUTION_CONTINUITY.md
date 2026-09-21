@@ -1527,3 +1527,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The attempted scripted edit stopped on the first file because its exact CRLF pattern did not match; therefore no source file was modified by that command.
 - Verification output shows the five target signatures are present without UFUNCTION lines immediately visible, but this alone is insufficient to prove the annotations were removed because the command aborted before the intended verification of surrounding lines.
 - Next action: inspect the exact surrounding declarations for the five methods with numbered context, then perform a line-safe edit based on the actual file formatting.
+
+
+## 2026-09-21 — Exact Blueprint annotations confirmed for native-only APIs
+- Exact file context confirms all five problematic declarations still have their UFUNCTION annotations: BeginRequest, CompleteRequest, GetRequest, GetAuthoritativeStateRevision, and PushNotification.
+- No source change was made by the inspection command.
+- The annotations are now precisely identified, so the next edit can remove only those five UFUNCTION lines while preserving signatures and behavior.
