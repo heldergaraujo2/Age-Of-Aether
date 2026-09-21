@@ -953,3 +953,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The assembly also contains generated-header-related strings, including `generated.h already included, missing '#pragma once'...`, confirming the parser has several generated-header validation paths.
 - This string-level investigation has reached diminishing returns; no source change is justified from these strings alone.
 - Next action: use UHT's own invocation/output in a controlled isolated test, preferably on one failing header, to distinguish a project-specific include-graph trigger from an engine/UHT issue.
+
+
+## U0.5 — VeryVerbose UBT/UHT run
+- Re-ran `Build.bat AgeOfAetherEditor Win64 Development AgeOfAether.uproject -WaitMutex -VeryVerbose`.
+- UBT confirms it invokes the bundled .NET 10 SDK and `UnrealBuildTool.dll`; UHT reports `compiled-in object format Default`.
+- Failure remains exactly the same five generated-header include-order diagnostics for Economy, Items, Multiplayer, Persistence, and Progression subsystems.
+- `-VeryVerbose` produced no additional UHT command-line detail before the diagnostics; execution stops in ~2.21s and writes a 2.2 KB UBT trace.
+- Therefore the next diagnostic should isolate one failing header and its transitive include graph rather than repeat global builds or DLL string archaeology.
