@@ -1629,3 +1629,11 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - Build result: FAILED (OtherCompilationError), total execution time 3.43s.
 - This means the previous metadata repair did not remove Blueprint exposure from these three NetworkTypes fields as UHT actually sees them. No runtime PASS is claimed.
 - Next action: inspect the exact declaration context of the three NetworkTypes fields and apply a declaration-safe metadata repair only to those fields, then verify before rebuilding.
+
+
+## 2026-09-21 — NetworkTypes declarations confirmed as direct Blueprint blockers
+- Exact inspection confirms all three UHT errors are direct UPROPERTY(BlueprintReadOnly) declarations: FAetherNetworkRequest::RequestId at line 58, FAetherNetworkResponse::RequestId at line 73, and FAetherNetworkResponse::AuthoritativeStateRevision at line 82.
+- The surrounding supported Blueprint fields must remain unchanged.
+- The safe repair is to remove only BlueprintReadOnly from these three integer properties, preserving the USTRUCT(BlueprintType) structs, field names, native uint32/uint64 types, and all other metadata.
+- No source changes were made by the inspection command.
+- Next action: apply the three exact metadata removals and verify that zero matching BlueprintReadOnly integer declarations remain for these fields before recompiling.
