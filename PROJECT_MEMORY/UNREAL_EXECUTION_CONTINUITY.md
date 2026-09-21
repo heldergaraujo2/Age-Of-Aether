@@ -1325,3 +1325,12 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
   - FAetherSkillDefinition -> FAetherDataSkillDefinition
 - The renamed AetherItemDataTypes.h also needs its generated-header include corrected from AetherItemTypes.generated.h to AetherItemDataTypes.generated.h.
 - No local source change was made while preparing this plan.
+
+
+## 2026-09-21 — Controlled reflected-name rename applied locally
+- Helder executed the scoped Data-domain rename successfully with no PowerShell errors.
+- The Data/content reflected names were renamed to unique Unreal reflection names while runtime-domain names were intentionally excluded.
+- AetherItemDataTypes.h now correctly includes AetherItemDataTypes.generated.h after the earlier physical file rename.
+- The reported remaining old-name counts are expected to include the preserved runtime-domain declarations/usages; they are not by themselves proof that the rename is complete.
+- No build was run yet after this source modification.
+- Next action: perform a targeted post-edit audit showing every remaining old symbol location and every new symbol location, to verify the scope before compiling.
