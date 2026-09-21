@@ -1292,3 +1292,19 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The safest next repair is to rename only the reflected declarations on the broader Data/content side where necessary, while keeping the existing runtime-facing names intact and updating their Data-side consumers. Before editing, exact declaration names must be mapped to the intended new reflected names and all references must be changed consistently.
 - No local source modification was made by the inventory command.
 - Next action: perform a focused local declaration/reference inventory for the six collision families, returning only exact declaration lines and reference counts so the rename plan can be executed without large output.
+
+
+## 2026-09-21 — Reflected collision declaration/reference inventory completed
+- Helder provided the full declaration/reference inventory for the six UHT collision families.
+- The inventory confirms the collisions are between distinct domain models, not duplicate implementations:
+  - Interaction runtime vs WorldContent interaction data.
+  - Interaction runtime quest vs Data quest/dialogue content quest.
+  - Runtime quest objective model vs Data quest objective model.
+  - Runtime item model vs Data item content model.
+  - Runtime loot model vs Data loot/reward model.
+  - Runtime skill model vs Data skill/effect model.
+- The runtime-facing declarations are heavily consumed by gameplay/services/subsystems/tests, while the Data/content declarations are primarily consumed by registries and Data-side validation/content code, with some Data types also used by visual/inventory systems.
+- A blind global rename is therefore unsafe. The next fix must be scoped by header/domain and update declarations plus only their corresponding consumers.
+- No source modification was made by the inventory command.
+- The previous generated-header include-path issue is considered resolved because the five subsystem generated-header errors disappeared on the subsequent build; the build progressed to these reflected-name collisions.
+- Next action: apply a controlled, minimal reflected-name namespace separation for the six collision families, beginning with the Data/content declarations where the consumer boundary is clearest, while also correcting the renamed ItemData generated-header basename if encountered by UHT.
