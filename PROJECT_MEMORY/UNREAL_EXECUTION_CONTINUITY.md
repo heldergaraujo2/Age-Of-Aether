@@ -16,8 +16,8 @@
 - Repository/source roadmap: Phases 19–56 complete at source level.
 - Unreal 5.8.1 local runtime: NOT YET VERIFIED.
 - Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.4 — Unreal build entry point identified.
-- Last command/result: UE 5.8 contains Engine\\Build\\BatchFiles\\Build.bat and RunUAT.bat.
+- Current step: U0.4 — Build.bat/UBT invocation verified.
+- Last command/result: Build.bat -help successfully launched the bundled .NET 10 SDK and UnrealBuildTool.dll; help confirms GenerateProjectFiles, Build, Clean, QueryTargets and UnrealHeaderTool modes.
 - Blockers: local Git working-tree status cannot be verified because this copy has no Git metadata. Project-file generation has not yet been performed and runtime/editor launch or build has not been verified. Do not initialize Git or alter/copy files yet.
 
 # U0 — Environment & Project Health
@@ -413,3 +413,22 @@ Analysis:
 - We now have a confirmed build entry point for the next controlled phase.
 - No project files were modified by this diagnostic.
 Next: inspect Build.bat help/usage only, without invoking a project build yet, to confirm the accepted target/platform/configuration syntax in this installed engine.
+
+## Entry 019 — U0.4
+Status: DIAGNOSTIC PASS — UNREALBUILDTOOL ENTRY VERIFIED
+
+Command:
+`Build.bat -help`
+
+Result:
+- Bundled DotNet SDK 10.0 win-x64 launched successfully.
+- UnrealBuildTool was invoked through `Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool.dll`.
+- Help confirms `-ProjectFiles` / `-Mode=GenerateProjectFiles`, `-Mode=Build`, `-Clean`, `QueryTargets`, and `UnrealHeaderTool` modes.
+- A UBT trace was written successfully.
+
+Analysis:
+- The previous absence of standalone UBT/UHT executables was expected for this installation layout; the tools are provided through the .NET DLL and Build.bat wrapper.
+- The project-file generation path is now confirmed.
+- No project source files were intentionally modified by the help invocation.
+- U0.4 generation is ready to proceed.
+Next: invoke Build.bat with -ProjectFiles against the .uproject, then inspect the generated metadata before any compile.
