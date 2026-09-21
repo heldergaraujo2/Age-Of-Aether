@@ -70,3 +70,8 @@
 ## 2026-09-21 — Class registry declaration located
 - `FAetherClassRegistry` is declared/used through `Public/Data/AetherClassRegistry.h`; `AetherClassBalanceTests.cpp` references it at lines 69 and 88.
 - Next step is to inspect the test's include block and the registry header before adding a direct include.
+
+## 2026-09-21 — Class balance test include diagnosis
+- `Private/Tests/AetherClassBalanceTests.cpp` includes BalanceConfig, BalanceRegistry and ClassCatalog, but not `Data/AetherClassRegistry.h`.
+- `FAetherClassRegistry` is a concrete class declared by `Public/Data/AetherClassRegistry.h`, so the missing direct include explains the incomplete/undefined type errors in this test.
+- Next repair: add `#include "Data/AetherClassRegistry.h"` to the test include block, then rebuild.
