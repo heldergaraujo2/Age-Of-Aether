@@ -747,3 +747,9 @@ BLOCKED — EXPECTED UHT SOURCE DIRECTORY IS NOT PRESENT
 - PowerShell reported that this directory does not exist in the installed engine.
 - No project files were changed.
 - Next step: search the installed UE 5.8 tree for the exact diagnostic text instead of assuming the source-layout path.
+
+
+## U0.5 — UHT diagnostic text search
+RESULT: NO MATCH
+- Searching the entire installed UE 5.8 tree for the exact diagnostic text returned no result.
+- This indicates the installed distribution does not expose that diagnostic as searchable source/text, so we should inspect the actual UHT/UBT runtime files and logs rather than continue guessing header formatting.
