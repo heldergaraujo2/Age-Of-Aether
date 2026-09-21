@@ -997,3 +997,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The UHT manifest is valid JSON and has top-level keys: `IsGameTarget`, `RootLocalPath`, `TargetName`, `ExternalDependenciesFile`, `TargetSettings`, `Modules`, and `UhtPlugins`.
 - The PowerShell `else` was entered after the completed `if` block and therefore produced a shell syntax error; this does not affect the manifest or project.
 - The useful discovery is that header registration is nested under `Modules`, so the next probe should inspect the `AgeOfAether` module object and its fields directly.
+
+
+## U0.5 — Manifest module inspection output too large
+- The broad `Modules` property dump produced excessive output and was not useful for diagnosis.
+- No project files were changed.
+- Next diagnostic will query only the `AgeOfAether` module object and only fields relevant to header registration, avoiding full manifest dumps.
