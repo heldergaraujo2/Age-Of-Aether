@@ -1334,3 +1334,9 @@ RESULT: UHT IS EMBEDDED IN THE UBT DISTRIBUTION
 - The reported remaining old-name counts are expected to include the preserved runtime-domain declarations/usages; they are not by themselves proof that the rename is complete.
 - No build was run yet after this source modification.
 - Next action: perform a targeted post-edit audit showing every remaining old symbol location and every new symbol location, to verify the scope before compiling.
+
+
+## 2026-09-21 — Audit command parser correction
+- The planned post-edit symbol audit did not execute because PowerShell raised a parser error at the formatted Write-Host string: the colon immediately after $relative was interpreted as an invalid variable reference.
+- No source files were modified by this failed audit command.
+- The audit itself remains pending; the next command will use explicit format interpolation to avoid the parser ambiguity.
