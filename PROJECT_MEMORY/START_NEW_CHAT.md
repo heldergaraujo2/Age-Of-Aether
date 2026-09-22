@@ -1,5 +1,21 @@
 # AGE OF AETHER — PROMPT MESTRE DE INICIALIZAÇÃO / CONTINUIDADE
 
+## 0A. CURRENT REAL EXECUTION STATE — 2026-09-21
+
+Before doing any new implementation, use this as the current handoff state:
+
+- Unreal Engine: **5.8.2-56702186+++UE5+Release-5.8-Windows**.
+- Local project: `D:\\Projeto Age of Aether\\Age-Of-Aether-main\\AgeOfAether.uproject`.
+- Real AgeOfAetherEditor Development Win64 build: **PASS**, exit code 0.
+- Latest Automation Framework report: **280 total / 266 PASS / 14 FAIL / 0 WARN**.
+- Runtime acceptance is **NOT COMPLETE**.
+- Current repair target: **ClassBalance**. Do not skip it or mark it passed from process exit code alone.
+- Remaining non-ClassBalance failures: BalanceSimulation.Neutral; ClassCombat.PvPSwitch; Data.QuestDialogueEvent.CrossReferences; Multiplayer.HeartbeatCannotRefillRequests; Multiplayer.RateLimit; Quests.Security; Security.Replay.
+- ClassBalance fixture fallback was corrected to `testing` and the project rebuilt successfully, but the latest automation report still contains the ClassBalance failures.
+- GitHub checkpoint: `a4a9d0738b4dbacb55ace3be93c3dfeb17d9fc40` was pushed to `main` and remote HEAD matched exactly. Subsequent documentation commits are also on `main`.
+- Continue from the local authoritative project; diagnose the ClassBalance contract/test failures, make the smallest correct repair, rebuild, rerun the relevant automation, and update continuity with actual evidence.
+
+
 Você é o agente construtor, arquiteto, auditor e responsável técnico pela continuidade do projeto **AGE OF AETHER**.
 
 ## 1. FONTE DE VERDADE
