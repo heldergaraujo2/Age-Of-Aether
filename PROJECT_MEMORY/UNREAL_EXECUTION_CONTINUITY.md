@@ -1,170 +1,100 @@
-# Age Of AetheR — Unreal 5.8.1 Execution Continuity
+# Age Of AetheR — Unreal 5.8.2 Execution Continuity
 
-> Canonical checklist for the local Unreal Engine execution phase. Updated after every command/result cycle.
+> Canonical execution handoff for the local Unreal validation phase. Updated from real local build/automation evidence on 2026-09-21.
 
 ## Rules
-1. Never mark a runtime step PASS without Helder's actual result/log/screenshot.
+1. Never mark a runtime step PASS without actual result/log evidence.
 2. One command at a time when diagnosis depends on the previous result.
-3. After every result, analyze it, update this file, then issue the next command.
-4. Prefer the lowest-bureaucracy workflow: Data Assets + reusable components + a few Widget Blueprints.
-5. Never create fake .uasset, .umap, FBX, animation, VFX or audio files in Git.
-6. If a step fails, repair it before continuing.
-7. State-changing gameplay remains server-authoritative.
-8. Visual assets are presentation and never gameplay authority.
+3. If a step fails, repair it before continuing dependent work.
+4. Never create fake .uasset, .umap, FBX, animation, VFX or audio files.
+5. Local project/source is authoritative for execution; GitHub is the persisted continuity checkpoint.
+6. Do not confuse repository/source completion with Unreal runtime/content acceptance.
 
-## Current global state
-- Repository/source roadmap: Phases 19–56 complete at source level.
-- Unreal 5.8.1 local runtime: NOT YET VERIFIED.
-- Current local execution phase: U0 — Environment & Project Health.
-- Current step: U0.1 — Locate/confirm the Unreal project and engine installation.
-- Last command/result: none yet.
-- Blockers: none known; local machine state has not been inspected.
+## Environment
+- Project: `D:\Projeto Age of Aether\Age-Of-Aether-main\AgeOfAether.uproject`
+- Unreal: **5.8.2-56702186+++UE5+Release-5.8-Windows**
+- Build script: `D:\Unreal\UE_5.8\Engine\Build\BatchFiles\Build.bat`
+- Build log: `D:\Temp_AetherBuild.log`
+- Automation report: `D:\Projeto Age of Aether\Age-Of-Aether-main\Saved\AutomationReport\index.json`
 
-# U0 — Environment & Project Health
+## Current state — 2026-09-21
+### Build
+**PASS**
+- AgeOfAetherEditor / Win64 / Development
+- Exit code: 0
+- C++ compilation and linking completed successfully.
 
-## U0.1 — Confirm project + Unreal installation
-Status: PENDING
+### Automation
+**NOT COMPLETE**
+- Total: **280**
+- PASS: **266**
+- FAIL: **14**
+- WARN: **0**
+- Do not declare the runtime gate passed while these 14 failures remain.
 
-Goal: establish the exact .uproject path and Unreal 5.8.x installation.
+### Current 14 failures
+ClassBalance block:
+- AgeOfAether.ClassBalance.ConfigValidation
+- AgeOfAether.ClassBalance.CrossRegistry
+- AgeOfAether.ClassBalance.Evolution
+- AgeOfAether.ClassBalance.Fallback
+- AgeOfAether.ClassBalance.Invalid
+- AgeOfAether.ClassBalance.ReferenceMismatch
+- AgeOfAether.ClassBalance.Resolution
 
-PowerShell command:
+Other failures:
+- AgeOfAether.BalanceSimulation.Neutral
+- AgeOfAether.ClassCombat.PvPSwitch
+- AgeOfAether.Data.QuestDialogueEvent.CrossReferences
+- AgeOfAether.Multiplayer.HeartbeatCannotRefillRequests
+- AgeOfAether.Multiplayer.RateLimit
+- AgeOfAether.Quests.Security
+- AgeOfAether.Security.Replay
 
-    Write-Host '=== AGE OF AETHER / UNREAL CHECK ==='
-    Write-Host "`n[PROJECT]"
-    Get-ChildItem -Path . -Filter *.uproject -Recurse -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
-    Write-Host "`n[UNREAL 5.8.x]"
-    $roots = @('C:\Program Files\Epic Games','D:\Program Files\Epic Games','D:\Epic Games','C:\Epic Games')
-    foreach ($root in $roots) {
-      if (Test-Path $root) {
-        Get-ChildItem $root -Directory -ErrorAction SilentlyContinue |
-          Where-Object { $_.Name -match 'UE_5\.8' } |
-          Select-Object -ExpandProperty FullName
-      }
-    }
+## Latest ClassBalance repair
+File: `Source/AgeOfAether/Private/Tests/AetherClassBalanceTests.cpp`
 
-Expected evidence: project path + Unreal Engine 5.8.x installation path.
-After execution: paste the complete terminal output here. Do not run the next step yet.
+The sample fixture fallback was corrected from `production` to `testing`, matching the fixture profile. The invalid fixture was also kept syntactically valid while testing rejection of a negative multiplier.
 
-## U0.2 — Verify exact engine version
-Status: PENDING
+Verified afterward:
+- fixture correction present;
+- full AgeOfAetherEditor build: **PASS**;
+- latest automation still reports the ClassBalance failures, so this phase remains open.
 
-## U0.3 — Backup/working-tree safety
-Status: PENDING
+## Important validated repairs already completed
+- UI tests: valid `UGameInstance` outer instead of transient package; UI automation passed.
+- Timed quest objective validation corrected.
+- Recipe reference validation fixtures corrected.
+- Client subsystem test construction corrected.
+- AI context test fixture corrected.
+- World content duplicate fixture corrected to avoid array-reference invalidation.
+- Presentation subsystem test construction corrected.
+- Multiple Unreal 5.8 test compatibility/fixture issues repaired and build-verified.
 
-## U0.4 — Generate project files / compile prerequisites
-Status: PENDING
+## Automation execution note
+A direct command-line automation run successfully registered and queued:
+`Automation RunTests AgeOfAether.ClassBalance; Quit`.
+The command returned without a fatal engine crash; the authoritative report remains `Saved/AutomationReport/index.json`.
+Do not infer PASS from process exit code alone.
 
-## U0.5 — First UHT/UBT build
-Status: PENDING
+## GitHub checkpoint
+- Commit: `a4a9d0738b4dbacb55ace3be93c3dfeb17d9fc40`
+- Branch: `main`
+- Remote HEAD matched local HEAD after push.
+- Documentation updates made after that checkpoint must be committed/pushed before the next continuity handoff.
 
-# U1 — Editor Boot & Base Map
-Status: PENDING
-- Open project in Unreal 5.8.1.
-- Confirm no startup crash.
-- Confirm no new critical errors.
-- Open/create development map.
-- Confirm PlayerStart and base character.
+## Next exact technical objective
+**Repair the ClassBalance automation block first.**
 
-# U2 — Visual Foundation + Real FBX
-Status: PENDING
-- Import one real character FBX.
-- Validate skeleton, scale, materials and collision.
-- Create one reusable Visual Profile Data Asset.
-- Apply to AAetherCharacter.
-- Verify camera/movement.
+Required loop:
+1. Inspect the failing ClassBalance test and production implementation.
+2. Identify the contract mismatch rather than weakening the test.
+3. Make the smallest correct source/test-fixture repair.
+4. Rebuild AgeOfAetherEditor.
+5. Run the relevant automation.
+6. Verify the actual report.
+7. Only then proceed to the next failure block.
+8. Update this file and GitHub after meaningful progress.
 
-# U3 — Animation
-Status: PENDING
-- Create one reusable Anim Blueprint based on UAetherBaseAnimInstance.
-- Configure Idle/Walk/Run/Jump/Fall.
-- Import one attack montage.
-- Verify attack presentation.
-
-# U4 — Skills / Buffs / Debuffs / VFX
-Status: PENDING
-- Configure aether.skill.training_strike.
-- Import one simple VFX/SFX.
-- Test cast, range and cooldown.
-- Verify server authority with 2 clients.
-
-# U5 — Monsters / NPCs / Bosses
-Status: PENDING
-- Create one UAetherCreatureCatalog.
-- Add one Monster, one NPC and one Boss.
-- Reuse AAetherCreatureActor.
-- Import only one real creature FBX initially.
-- Spawn and validate MaxAlive.
-
-# U6 — World / Maps / Streaming
-Status: PENDING
-- Create first real development map.
-- Configure world/streaming using existing data contracts.
-- Validate player spawn and transitions.
-
-# U7 — Inventory / Loot / Equipment
-Status: PENDING
-- Create required Data Assets.
-- Create minimum inventory/equipment UI.
-- Equip one real item visual.
-- Validate server-authoritative mutations.
-
-# U8 — Crafting / Economy / Shops
-Status: PENDING
-- Create one shop.
-- Create one recipe.
-- Create one forge/crafting station.
-- Validate buy/sell/craft.
-
-# U9 — MMORPG UI/UX
-Status: PENDING
-Only four initial Widget Blueprints:
-- WBP_HUD
-- WBP_Inventory
-- WBP_Character
-- WBP_Skills
-
-# U10 — Audio
-Status: PENDING
-- Import minimum music/ambience/UI/combat SFX.
-- Create one Audio Catalog Data Asset.
-- Verify client playback and Dedicated Server guard.
-
-# U11 — Multiplayer / Persistence / Dedicated Server
-Status: PENDING
-- 2-client PIE.
-- Dedicated Server + clients.
-- Disconnect/reconnect.
-- Save/load character state.
-- Inventory/economy/quest persistence.
-
-# U12 — Performance / Streaming / Scale
-Status: PENDING
-- Run performance budget checks.
-- Profile first playable map.
-- Validate streaming.
-
-# U13 — Complete Content Package
-Status: PENDING
-- Assemble first playable content package Data Asset.
-- Validate required AssetIDs.
-
-# U14 — Alpha Gate
-Status: PENDING
-- Build, Content, Security, Persistence, Networking, Dedicated Server, Multiplayer, Performance, UI, Audio.
-- Any unverified check remains NOT PASSED.
-
-# U15 — Beta / RC / Release
-Status: PENDING
-- Fix runtime defects.
-- Repeat regression.
-- Package client/server.
-- Progress Beta → RC → Release only after gates pass.
-
-# Command/result journal
-
-## Entry 001 — U0.1
-Status: PENDING
-Command: See U0.1 above.
-Result: Awaiting Helder's terminal output.
-Analysis: No local Unreal environment facts have been assumed.
-Next: Analyze output, update this file, then issue exactly one next command.
+## Historical execution phases
+The repository/source roadmap contains the historical phases and their implementation status. This file is intentionally focused on the current Unreal execution state so it remains usable as a handoff document.
