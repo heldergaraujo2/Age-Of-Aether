@@ -37,6 +37,12 @@ bool AAetherCreatureActor::ApplyDefinition(const FAetherCreatureDefinition& Defi
     return true;
 }
 
+void AAetherCreatureActor::ResetHealth()
+{
+    RuntimeState.CurrentHealth = RuntimeState.MaxHealth;
+    RuntimeState.bAlive = RuntimeState.MaxHealth > 0;
+}
+
 void AAetherCreatureActor::ApplyPresentation(const FAetherCreatureDefinition& Definition)
 {
     if (Definition.SkeletalMesh.IsValid())

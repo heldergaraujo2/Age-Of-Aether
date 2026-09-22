@@ -24,10 +24,10 @@ struct FAetherProtocolVersion
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere)
     uint16 Major = 1;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere)
     uint16 Minor = 0;
 
     bool IsCompatibleWith(const FAetherProtocolVersion& Other) const
@@ -54,7 +54,7 @@ struct FAetherNetworkRequest
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint32 RequestId = 0;
 
     UPROPERTY(BlueprintReadOnly)
@@ -69,7 +69,7 @@ struct FAetherNetworkResponse
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint32 RequestId = 0;
 
     UPROPERTY(BlueprintReadOnly)
@@ -78,6 +78,6 @@ struct FAetherNetworkResponse
     UPROPERTY(BlueprintReadOnly)
     FAetherProtocolVersion ProtocolVersion;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint64 AuthoritativeStateRevision = 0;
 };

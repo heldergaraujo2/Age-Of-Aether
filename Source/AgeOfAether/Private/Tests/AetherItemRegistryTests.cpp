@@ -5,9 +5,9 @@
 
 namespace
 {
-FAetherItemDefinition MakeItem(const FString& ID, EAetherItemCategory Category = EAetherItemCategory::Material)
+FAetherDataItemDefinition MakeItem(const FString& ID, EAetherDataItemCategory Category = EAetherDataItemCategory::Material)
 {
-    FAetherItemDefinition Item;
+    FAetherDataItemDefinition Item;
     Item.DefinitionID = ID;
     Item.DisplayName = ID;
     Item.Category = Category;
@@ -43,7 +43,7 @@ bool FAetherItemRegistryBasicTest::RunTest(const FString&)
     FString Error;
     TestTrue(TEXT("valid item registers"), Registry.RegisterItem(MakeItem(TEXT("Item.Material.Iron.001")), Error));
     TestEqual(TEXT("registry count"), Registry.Num(), 1);
-    FAetherItemDefinition Resolved;
+    FAetherDataItemDefinition Resolved;
     TestTrue(TEXT("normalized resolve"), Registry.Resolve(TEXT(" Item.Material.Iron.001 "), Resolved));
     TestEqual(TEXT("resolved id"), Resolved.DefinitionID, FString(TEXT("Item.Material.Iron.001")));
     return true;
@@ -54,7 +54,7 @@ bool FAetherItemRegistryValidationTest::RunTest(const FString&)
 {
     FAetherItemRegistry Registry;
     FString Error;
-    FAetherItemDefinition Bad = MakeItem(TEXT("Item.Bad"));
+    FAetherDataItemDefinition Bad = MakeItem(TEXT("Item.Bad"));
     Bad.MaxStack = 0;
     TestFalse(TEXT("zero stack rejected"), Registry.RegisterItem(Bad, Error));
     Bad = MakeItem(TEXT("Item.BadDurability")); Bad.BaseDurability = 101; Bad.MaxDurability = 100;
@@ -71,14 +71,14 @@ bool FAetherItemRegistryEquipmentTest::RunTest(const FString&)
 {
     FAetherItemRegistry Registry;
     FString Error;
-    FAetherItemDefinition Weapon = MakeItem(TEXT("Item.Weapon.IronSword.001"), EAetherItemCategory::Equipment);
-    Weapon.EquipmentSlot = EAetherEquipmentSlot::MainHand;
+    FAetherDataItemDefinition Weapon = MakeItem(TEXT("Item.Weapon.IronSword.001"), EAetherDataItemCategory::Equipment);
+    Weapon.EquipmentSlot = EAetherDataEquipmentSlot::MainHand;
     Weapon.AllowedClasses = { TEXT("Warrior"), TEXT("Knight") };
     Weapon.RequiredCharacterLevel = 10;
     Weapon.Requirements.CharacterLevel = 10;
     Weapon.BaseStats.Add(TEXT("Attack"), 25.0);
     TestTrue(TEXT("equipment registers"), Registry.RegisterItem(Weapon, Error));
-    FAetherItemDefinition Invalid = MakeItem(TEXT("Item.Weapon.Invalid"), EAetherItemCategory::Equipment);
+    FAetherDataItemDefinition Invalid = MakeItem(TEXT("Item.Weapon.Invalid"), EAetherDataItemCategory::Equipment);
     TestFalse(TEXT("equipment without slot rejected"), Registry.RegisterItem(Invalid, Error));
     return true;
 }
@@ -89,8 +89,8 @@ bool FAetherItemRegistryEnhancementTest::RunTest(const FString&)
     FAetherItemRegistry Registry;
     FString Error;
     TestTrue(TEXT("material registers"), Registry.RegisterItem(MakeItem(TEXT("Item.Material.EnhanceStone.001")), Error));
-    FAetherItemDefinition Sword = MakeItem(TEXT("Item.Weapon.DragonSword.001"), EAetherItemCategory::Equipment);
-    Sword.EquipmentSlot = EAetherEquipmentSlot::MainHand;
+    FAetherDataItemDefinition Sword = MakeItem(TEXT("Item.Weapon.DragonSword.001"), EAetherDataItemCategory::Equipment);
+    Sword.EquipmentSlot = EAetherDataEquipmentSlot::MainHand;
     Sword.MaxEnhancementLevel = 2;
     Sword.Enhancements.SetNum(3);
     Sword.Enhancements[0].Level = 0; Sword.Enhancements[1].Level = 1; Sword.Enhancements[2].Level = 2;
@@ -116,8 +116,8 @@ bool FAetherItemRegistryCrossReferenceTest::RunTest(const FString&)
     TestTrue(TEXT("content registers"), Content.RegisterDefinition(MakeContent(ItemID), Error));
     TestTrue(TEXT("icon registers"), Assets.RegisterAsset(MakeAsset(IconID), Error));
     TestTrue(TEXT("mesh registers"), Assets.RegisterAsset(MakeAsset(MeshID, EAetherAssetType::SkeletalMesh), Error));
-    FAetherItemDefinition Item = MakeItem(ItemID, EAetherItemCategory::Equipment);
-    Item.EquipmentSlot = EAetherEquipmentSlot::MainHand;
+    FAetherDataItemDefinition Item = MakeItem(ItemID, EAetherDataItemCategory::Equipment);
+    Item.EquipmentSlot = EAetherDataEquipmentSlot::MainHand;
     Item.Visuals.IconAssetID = IconID; Item.Visuals.EquippedVisualAssetID = MeshID;
     TestTrue(TEXT("item registers"), Registry.RegisterItem(Item, Error));
     TArray<FAetherItemValidationIssue> Issues;
@@ -131,8 +131,8 @@ bool FAetherItemRegistryMissingReferenceTest::RunTest(const FString&)
 {
     FAetherItemRegistry Registry;
     FString Error;
-    FAetherItemDefinition Sword = MakeItem(TEXT("Item.Weapon.MissingRefs"), EAetherItemCategory::Equipment);
-    Sword.EquipmentSlot = EAetherEquipmentSlot::MainHand;
+    FAetherDataItemDefinition Sword = MakeItem(TEXT("Item.Weapon.MissingRefs"), EAetherDataItemCategory::Equipment);
+    Sword.EquipmentSlot = EAetherDataEquipmentSlot::MainHand;
     Sword.MaxEnhancementLevel = 1;
     Sword.Enhancements.SetNum(2);
     Sword.Enhancements[0].Level = 0;

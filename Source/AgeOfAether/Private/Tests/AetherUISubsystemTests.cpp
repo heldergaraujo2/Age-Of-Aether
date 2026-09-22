@@ -1,5 +1,7 @@
 #include "Misc/AutomationTest.h"
 #include "UI/AetherUISubsystem.h"
+#include "Engine/GameInstance.h"
+#include "Engine/Engine.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUIValidationTest,"AgeOfAether.UI.Validation",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherUIValidationTest::RunTest(const FString&)
@@ -16,7 +18,10 @@ bool FAetherUIValidationTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUINavigationTest,"AgeOfAether.UI.Navigation",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherUINavigationTest::RunTest(const FString&)
 {
-    UAetherUISubsystem* S=NewObject<UAetherUISubsystem>();
+    UGameInstance* GI=NewObject<UGameInstance>(GEngine);
+    GI->AddToRoot();
+    GI->InitializeStandalone();
+    UAetherUISubsystem* S=GI->GetSubsystem<UAetherUISubsystem>();
     TestTrue(TEXT("open inventory"),S->OpenScreen(EAetherUIScreen::Inventory));
     TestTrue(TEXT("open skills"),S->OpenScreen(EAetherUIScreen::Skills));
     TestEqual(TEXT("current skills"),S->GetCurrentScreen(),EAetherUIScreen::Skills);
@@ -29,7 +34,10 @@ bool FAetherUINavigationTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUIModalTest,"AgeOfAether.UI.Modal",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherUIModalTest::RunTest(const FString&)
 {
-    UAetherUISubsystem* S=NewObject<UAetherUISubsystem>();
+    UGameInstance* GI=NewObject<UGameInstance>(GEngine);
+    GI->AddToRoot();
+    GI->InitializeStandalone();
+    UAetherUISubsystem* S=GI->GetSubsystem<UAetherUISubsystem>();
     S->OpenScreen(EAetherUIScreen::HUD);
     TestTrue(TEXT("open modal"),S->OpenModal(TEXT("Confirm.Delete")));
     TestFalse(TEXT("blocked navigation"),S->OpenScreen(EAetherUIScreen::Settings));
@@ -41,7 +49,10 @@ bool FAetherUIModalTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUIDataViewsTest,"AgeOfAether.UI.DataViews",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherUIDataViewsTest::RunTest(const FString&)
 {
-    UAetherUISubsystem* S=NewObject<UAetherUISubsystem>();
+    UGameInstance* GI=NewObject<UGameInstance>(GEngine);
+    GI->AddToRoot();
+    GI->InitializeStandalone();
+    UAetherUISubsystem* S=GI->GetSubsystem<UAetherUISubsystem>();
     TArray<FAetherUIItemEntry> Items; FAetherUIItemEntry I; I.InstanceID=TEXT("I"); I.DefinitionID=TEXT("Sword"); I.SlotIndex=0; Items.Add(I);
     S->SetInventory(Items,60); TestEqual(TEXT("inventory count"),S->GetSnapshot().Inventory.Num(),1); TestEqual(TEXT("capacity"),S->GetSnapshot().InventoryCapacity,60);
     TArray<FAetherUIQuestEntry> Quests; FAetherUIQuestEntry Q; Q.QuestID=TEXT("Quest.Intro"); Quests.Add(Q); S->SetQuests(Quests);
@@ -52,7 +63,10 @@ bool FAetherUIDataViewsTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUINotificationTest,"AgeOfAether.UI.Notifications",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherUINotificationTest::RunTest(const FString&)
 {
-    UAetherUISubsystem* S=NewObject<UAetherUISubsystem>();
+    UGameInstance* GI=NewObject<UGameInstance>(GEngine);
+    GI->AddToRoot();
+    GI->InitializeStandalone();
+    UAetherUISubsystem* S=GI->GetSubsystem<UAetherUISubsystem>();
     const uint32 ID=S->PushNotification(EAetherUINotificationType::Success,TEXT("Loot"),TEXT("Sword obtained"),10.0,5.0);
     TestTrue(TEXT("notification id"),ID>0);
     TestEqual(TEXT("active notification"),S->GetSnapshot().Notifications.Num(),1);
@@ -64,7 +78,10 @@ bool FAetherUINotificationTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUIResetTest,"AgeOfAether.UI.Reset",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherUIResetTest::RunTest(const FString&)
 {
-    UAetherUISubsystem* S=NewObject<UAetherUISubsystem>();
+    UGameInstance* GI=NewObject<UGameInstance>(GEngine);
+    GI->AddToRoot();
+    GI->InitializeStandalone();
+    UAetherUISubsystem* S=GI->GetSubsystem<UAetherUISubsystem>();
     S->OpenScreen(EAetherUIScreen::HUD); S->OpenModal(TEXT("Test")); S->CloseModal();
     S->PushNotification(EAetherUINotificationType::Info,TEXT("T"),TEXT("M"),0.0);
     S->ResetUI();
@@ -78,7 +95,10 @@ bool FAetherUIResetTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherUIClassSelectionTest,"AgeOfAether.UI.ClassSelection",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherUIClassSelectionTest::RunTest(const FString&)
 {
-    UAetherUISubsystem* S=NewObject<UAetherUISubsystem>();
+    UGameInstance* GI=NewObject<UGameInstance>(GEngine);
+    GI->AddToRoot();
+    GI->InitializeStandalone();
+    UAetherUISubsystem* S=GI->GetSubsystem<UAetherUISubsystem>();
     TArray<FAetherUIClassEntry> Entries;
     FAetherUIClassEntry A; A.ClassID=TEXT("archer"); A.EvolutionID=TEXT("archer.01"); A.DisplayName=TEXT("Batedor"); A.bUnlocked=true; A.bSelected=true; Entries.Add(A);
     S->SetClassSelection(Entries);

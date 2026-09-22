@@ -49,15 +49,15 @@ bool UAetherEquipmentVisualComponent::AttachMesh(UMeshComponent* MeshComponent, 
     MeshComponent->SetRelativeTransform(Profile->RelativeTransform);
     return true;
 }
-void UAetherEquipmentVisualComponent::RemoveEquipmentVisual(EAetherEquipmentSlot Slot)
+void UAetherEquipmentVisualComponent::RemoveEquipmentVisual(EAetherDataEquipmentSlot Slot)
 {
     if(TObjectPtr<UMeshComponent>* Existing=ActiveVisuals.Find(Slot)){ if(*Existing)(*Existing)->DestroyComponent(); ActiveVisuals.Remove(Slot); }
 }
 void UAetherEquipmentVisualComponent::ClearAllEquipmentVisuals()
 {
-    TArray<EAetherEquipmentSlot> Slots; ActiveVisuals.GetKeys(Slots); for(const EAetherEquipmentSlot Slot:Slots) RemoveEquipmentVisual(Slot);
+    TArray<EAetherDataEquipmentSlot> Slots; ActiveVisuals.GetKeys(Slots); for(const EAetherDataEquipmentSlot Slot:Slots) RemoveEquipmentVisual(Slot);
 }
-UMeshComponent* UAetherEquipmentVisualComponent::GetEquipmentVisual(EAetherEquipmentSlot Slot) const
+UMeshComponent* UAetherEquipmentVisualComponent::GetEquipmentVisual(EAetherDataEquipmentSlot Slot) const
 {
     const TObjectPtr<UMeshComponent>* Existing=ActiveVisuals.Find(Slot); return Existing?Existing->Get():nullptr;
 }

@@ -3,7 +3,7 @@
 #include "AetherQuestDialogueEventTypes.generated.h"
 
 UENUM(BlueprintType)
-enum class EAetherQuestObjectiveType : uint8
+enum class EAetherDataQuestObjectiveType : uint8
 {
     Kill,
     Collect,
@@ -72,11 +72,11 @@ struct FAetherQuestCondition
 };
 
 USTRUCT(BlueprintType)
-struct FAetherQuestObjectiveDefinition
+struct FAetherDataQuestObjectiveDefinition
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString ObjectiveID;
-    UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherQuestObjectiveType Type = EAetherQuestObjectiveType::Kill;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherDataQuestObjectiveType Type = EAetherDataQuestObjectiveType::Kill;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString TargetID;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 RequiredCount = 1;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 MinimumLevel = 0;
@@ -90,7 +90,7 @@ struct FAetherQuestObjectiveDefinition
 };
 
 USTRUCT(BlueprintType)
-struct FAetherQuestDefinition
+struct FAetherDataQuestDefinition
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString DefinitionID;
@@ -103,7 +103,7 @@ struct FAetherQuestDefinition
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString TurnInNPCID;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> PrerequisiteQuestIDs;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherQuestCondition> Prerequisites;
-    UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherQuestObjectiveDefinition> Objectives;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherDataQuestObjectiveDefinition> Objectives;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> RewardIDs;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> NextQuestIDs;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> Tags;

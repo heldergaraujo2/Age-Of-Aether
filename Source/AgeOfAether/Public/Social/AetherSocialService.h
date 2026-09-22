@@ -40,7 +40,7 @@ public:
         const FString& Message,
         double ServerTimeSeconds,
         FAetherChatMessage& OutMessage,
-        FAetherSocialResult& OutResult);
+        EAetherSocialResult& OutResult);
 
     void ClearCharacterState(const FAetherCharacterId& CharacterId);
     void ClearAccountState(const FAetherAccountId& AccountId);

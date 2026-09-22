@@ -19,7 +19,6 @@ public:
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Networking")
     FAetherProtocolVersion GetProtocolVersion() const;
 
-    UFUNCTION(BlueprintPure, Category = "Age of Aether|Networking")
     uint64 GetAuthoritativeStateRevision() const;
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Networking") int32 GetConnectedPlayerCount() const { return ConnectedPlayerCount; }
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Networking") bool IsAcceptingConnections() const { return bAcceptingConnections; }
@@ -28,15 +27,15 @@ public:
     void SetAcceptingConnections(bool bAccepting);
 
 protected:
-    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Networking")
+    UPROPERTY(Replicated)
     FAetherProtocolVersion ProtocolVersion;
 
-    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Networking")
+    UPROPERTY(Replicated)
     uint64 AuthoritativeStateRevision = 0;
 
-    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Networking")
+    UPROPERTY(Replicated)
     int32 ConnectedPlayerCount = 0;
 
-    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Age of Aether|Networking")
+    UPROPERTY(Replicated)
     bool bAcceptingConnections = true;
 };

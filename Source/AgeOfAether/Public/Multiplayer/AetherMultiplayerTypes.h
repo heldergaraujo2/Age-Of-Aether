@@ -23,7 +23,7 @@ USTRUCT(BlueprintType)
 struct FAetherMultiplayerConnection
 {
     GENERATED_BODY()
-    UPROPERTY(BlueprintReadOnly) uint32 ConnectionId = 0;
+    UPROPERTY() uint32 ConnectionId = 0;
     UPROPERTY(BlueprintReadOnly) bool bAuthenticated = false;
     UPROPERTY(BlueprintReadOnly) double ConnectedAt = 0.0;
     UPROPERTY(BlueprintReadOnly) double LastHeartbeatAt = 0.0;

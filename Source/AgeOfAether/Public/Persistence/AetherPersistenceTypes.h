@@ -31,7 +31,7 @@ struct FAetherCharacterPersistenceSnapshot
     UPROPERTY(BlueprintReadOnly)
     int32 SchemaVersion = AETHER_PERSISTENCE_SCHEMA_VERSION;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint64 Revision = 0;
 
     UPROPERTY(BlueprintReadOnly)
@@ -73,7 +73,7 @@ struct FAetherPersistenceOperation
     UPROPERTY(BlueprintReadOnly)
     EAetherPersistenceResult Result = EAetherPersistenceResult::InvalidRequest;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint64 Revision = 0;
 
     UPROPERTY(BlueprintReadOnly)

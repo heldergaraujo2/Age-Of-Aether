@@ -15,7 +15,7 @@ namespace
     }
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialFriendTest,"AgeOfAether.Social.Friends",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialFriendTest,"AgeOfAether.Social.Friends",EAutomationTestFlags_ApplicationContextMask|EAutomationTestFlags::ProductFilter)
 bool FAetherSocialFriendTest::RunTest(const FString&)
 {
     FAetherSocialService S; FAetherAccountId A=FAetherAccountId::NewId(),B=FAetherAccountId::NewId(); FAetherSocialOperation O;
@@ -26,7 +26,7 @@ bool FAetherSocialFriendTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialBlockTest,"AgeOfAether.Social.Block",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialBlockTest,"AgeOfAether.Social.Block",EAutomationTestFlags_ApplicationContextMask|EAutomationTestFlags::ProductFilter)
 bool FAetherSocialBlockTest::RunTest(const FString&)
 {
     FAetherSocialService S; FAetherAccountId A=FAetherAccountId::NewId(),B=FAetherAccountId::NewId(); FAetherSocialOperation O;
@@ -35,7 +35,7 @@ bool FAetherSocialBlockTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialPartyTest,"AgeOfAether.Social.Party",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialPartyTest,"AgeOfAether.Social.Party",EAutomationTestFlags_ApplicationContextMask|EAutomationTestFlags::ProductFilter)
 bool FAetherSocialPartyTest::RunTest(const FString&)
 {
     FAetherSocialService S; auto A=MakeCharacter(TEXT("A")); auto B=MakeCharacter(TEXT("B")); FAetherSocialOperation O;
@@ -47,7 +47,7 @@ bool FAetherSocialPartyTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialPartyCapacityTest,"AgeOfAether.Social.PartyCapacity",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialPartyCapacityTest,"AgeOfAether.Social.PartyCapacity",EAutomationTestFlags_ApplicationContextMask|EAutomationTestFlags::ProductFilter)
 bool FAetherSocialPartyCapacityTest::RunTest(const FString&)
 {
     FAetherSocialService S; FAetherSocialConfig C=S.GetConfig(); C.MaxPartyMembers=2; TestTrue(TEXT("config"),S.SetConfig(C));
@@ -57,7 +57,7 @@ bool FAetherSocialPartyCapacityTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialGuildTest,"AgeOfAether.Social.Guild",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialGuildTest,"AgeOfAether.Social.Guild",EAutomationTestFlags_ApplicationContextMask|EAutomationTestFlags::ProductFilter)
 bool FAetherSocialGuildTest::RunTest(const FString&)
 {
     FAetherSocialService S; auto A=MakeCharacter(TEXT("A")); auto B=MakeCharacter(TEXT("B")); FAetherSocialOperation O;
@@ -69,7 +69,7 @@ bool FAetherSocialGuildTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialSecurityTest,"AgeOfAether.Social.Security",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialSecurityTest,"AgeOfAether.Social.Security",EAutomationTestFlags_ApplicationContextMask|EAutomationTestFlags::ProductFilter)
 bool FAetherSocialSecurityTest::RunTest(const FString&)
 {
     FAetherSocialService S; auto A=MakeCharacter(TEXT("A")); auto B=MakeCharacter(TEXT("B")); auto C=MakeCharacter(TEXT("C")); FAetherSocialOperation O;
@@ -80,7 +80,7 @@ bool FAetherSocialSecurityTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialChatTest,"AgeOfAether.Social.Chat",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialChatTest,"AgeOfAether.Social.Chat",EAutomationTestFlags_ApplicationContextMask|EAutomationTestFlags::ProductFilter)
 bool FAetherSocialChatTest::RunTest(const FString&)
 {
     FAetherSocialService S; auto A=MakeCharacter(TEXT("A")); FAetherChatMessage M; EAetherSocialResult R;
@@ -92,7 +92,7 @@ bool FAetherSocialChatTest::RunTest(const FString&)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialCleanupTest,"AgeOfAether.Social.Cleanup",EAutomationTestFlags::ApplicationContextMask|EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSocialCleanupTest,"AgeOfAether.Social.Cleanup",EAutomationTestFlags_ApplicationContextMask|EAutomationTestFlags::ProductFilter)
 bool FAetherSocialCleanupTest::RunTest(const FString&)
 {
     FAetherSocialService S;

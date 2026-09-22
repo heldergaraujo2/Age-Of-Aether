@@ -186,7 +186,7 @@ bool FAetherLootRewardRegistry::Validate(TArray<FAetherLootRewardValidationIssue
     for (const auto& Pair : LootTables)
     {
         const FAetherLootTableDefinition& Definition = Pair.Value;
-        for (const FAetherLootEntry& Entry : Definition.Entries)
+        for (const FAetherDataLootEntry& Entry : Definition.Entries)
         {
             ValidateItem(Definition.DefinitionID, Entry.ItemID);
         }

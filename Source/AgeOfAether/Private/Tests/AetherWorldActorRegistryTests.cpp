@@ -12,7 +12,7 @@ FAetherMonsterDefinition Monster(const FString& ID)
 FAetherNPCDefinition NPC(const FString& ID){FAetherNPCDefinition D;D.DefinitionID=ID;D.DisplayName=ID;return D;}
 FAetherBossDefinition Boss(const FString& ID)
 {
-    FAetherBossDefinition D; D.DefinitionID=ID; D.DisplayName=ID; D.Combat.Level=50; D.Combat.MaxHealth=100000; D.Combat.MinDamage=500; D.Combat.MaxDamage=800; D.Combat.Defense=200; D.Combat.AttackSpeed=1; D.Combat.MoveSpeed=1; D.AI.Behavior=EAetherAIBehavior::Boss; D.AI.AttackRange=5; FAetherBossPhase P;P.Phase=1;P.TriggerValue=.5;D.Phases.Add(P);return D;
+    FAetherBossDefinition D; D.DefinitionID=ID; D.DisplayName=ID; D.Combat.Level=50; D.Combat.MaxHealth=100000; D.Combat.MinDamage=500; D.Combat.MaxDamage=800; D.Combat.Defense=200; D.Combat.AttackSpeed=1; D.Combat.MoveSpeed=1; D.AI.Behavior=EAetherAIBehavior::Boss; D.AI.BehaviorProfileID=TEXT("boss"); D.AI.AttackRange=5; FAetherBossPhase P;P.Phase=1;P.TriggerValue=.5;D.Phases.Add(P);return D;
 }
 FAetherContentDefinition Content(const FString& ID, EAetherContentType T){FAetherContentDefinition C;C.Type=T;C.Metadata.DefinitionID=ID;C.Metadata.DisplayName=FText::FromString(ID);return C;}
 FAetherAssetDefinition Asset(const FString& ID,EAetherAssetType T){FAetherAssetDefinition A;A.Asset.AssetID=ID;A.Asset.AssetType=T;A.Asset.UnrealAssetPath=TEXT("/Game/Test/")+ID;return A;}

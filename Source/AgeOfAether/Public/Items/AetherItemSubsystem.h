@@ -4,8 +4,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Items/AetherItemService.h"
 #include "Items/AetherItemDefinitionDataAsset.h"
-#include "Items/AetherItemSubsystem.generated.h"
-
+#include "AetherItemSubsystem.generated.h"
 UCLASS()
 class AGEOFAETHER_API UAetherItemSubsystem : public UGameInstanceSubsystem
 {

@@ -4,8 +4,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Economy/AetherEconomyService.h"
 #include "Economy/AetherEconomyConfigDataAsset.h"
-#include "Economy/AetherEconomySubsystem.generated.h"
-
+#include "AetherEconomySubsystem.generated.h"
 UCLASS()
 class AGEOFAETHER_API UAetherEconomySubsystem : public UGameInstanceSubsystem
 {

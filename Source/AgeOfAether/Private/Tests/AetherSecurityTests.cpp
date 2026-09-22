@@ -2,7 +2,7 @@
 #include "Misc/AutomationTest.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSecurityConfigTest, "AgeOfAether.Security.Config",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherSecurityConfigTest::RunTest(const FString&)
 {
     FAetherSecurityService Service;
@@ -16,7 +16,7 @@ bool FAetherSecurityConfigTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSecurityRateLimitTest, "AgeOfAether.Security.RateLimit",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherSecurityRateLimitTest::RunTest(const FString&)
 {
     FAetherSecurityService Service;
@@ -33,7 +33,7 @@ bool FAetherSecurityRateLimitTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSecurityAuthGateTest, "AgeOfAether.Security.AuthenticationGate",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherSecurityAuthGateTest::RunTest(const FString&)
 {
     FAetherSecurityService Service;
@@ -50,7 +50,7 @@ bool FAetherSecurityAuthGateTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSecurityQuarantineTest, "AgeOfAether.Security.Quarantine",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherSecurityQuarantineTest::RunTest(const FString&)
 {
     FAetherSecurityService Service;
@@ -74,7 +74,7 @@ bool FAetherSecurityQuarantineTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSecurityMovementTest, "AgeOfAether.Security.Movement",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherSecurityMovementTest::RunTest(const FString&)
 {
     FAetherSecurityService Service;
@@ -92,7 +92,7 @@ bool FAetherSecurityMovementTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSecurityAuditTest, "AgeOfAether.Security.Audit",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherSecurityAuditTest::RunTest(const FString&)
 {
     FAetherSecurityService Service;
@@ -107,7 +107,7 @@ bool FAetherSecurityAuditTest::RunTest(const FString&)
 
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSecurityReplayTest, "AgeOfAether.Security.Replay",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherSecurityReplayTest::RunTest(const FString&)
 {
     FAetherSecurityService Service;

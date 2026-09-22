@@ -130,6 +130,7 @@ private:
     TObjectPtr<UInputAction> JumpAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> SprintAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraZoomAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> BasicAttackAction;
     bool bSprinting = false;
     uint32 LocalAttackSequence = 0;
 };

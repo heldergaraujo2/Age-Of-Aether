@@ -10,8 +10,8 @@ class AGEOFAETHER_API UAetherClassEvolutionPresentationCatalog : public UDataAss
 public:
  UAetherClassEvolutionPresentationCatalog();
  UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Age of Aether|Class Presentation") TArray<FAetherClassEvolutionPresentationDefinition> Entries;
- UFUNCTION(BlueprintPure,Category="Age of Aether|Class Presentation") const FAetherClassEvolutionPresentationDefinition* Find(FName ClassID,FName EvolutionID) const;
- UFUNCTION(BlueprintPure,Category="Age of Aether|Class Presentation") const FAetherClassEvolutionPresentationDefinition* FindWithFallback(FName ClassID,FName EvolutionID) const;
+ const FAetherClassEvolutionPresentationDefinition* Find(FName ClassID,FName EvolutionID) const;
+ const FAetherClassEvolutionPresentationDefinition* FindWithFallback(FName ClassID,FName EvolutionID) const;
  UFUNCTION(BlueprintPure,Category="Age of Aether|Class Presentation") bool ValidateCatalog(FString& OutError) const;
 private: void BuildCanonicalCatalog();
 };

@@ -7,7 +7,7 @@ UCLASS() class AGEOFAETHER_API UAetherInteractionSubsystem:public UWorldSubsyste
  GENERATED_BODY()
 public:
  bool RegisterInteraction(const FAetherInteractionDefinition&D){return R.RegisterInteraction(D);}
- bool RegisterQuest(const FAetherQuestDefinition&D){return R.RegisterQuest(D);}
+ bool RegisterQuest(const FAetherInteractionQuestDefinition&D){return R.RegisterQuest(D);}
  bool RegisterEvent(const FAetherEventDefinition&D){return R.RegisterEvent(D);}
  UFUNCTION(BlueprintCallable,Category="Age of Aether|Interaction") bool StartQuest(const FString&QuestID,int32 Level);
  UFUNCTION(BlueprintCallable,Category="Age of Aether|Interaction") bool AdvanceQuest(const FString&QuestID,int32 Amount=1);

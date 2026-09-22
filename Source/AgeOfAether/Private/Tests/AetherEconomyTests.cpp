@@ -23,7 +23,7 @@ namespace
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherEconomyRegistrationTest, "AgeOfAether.Economy.Registration",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherEconomyRegistrationTest::RunTest(const FString&)
 {
@@ -59,7 +59,7 @@ bool FAetherEconomyRegistrationTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherEconomyWalletTest, "AgeOfAether.Economy.Wallet",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherEconomyWalletTest::RunTest(const FString&)
 {
@@ -79,7 +79,7 @@ bool FAetherEconomyWalletTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherEconomyBuySellTest, "AgeOfAether.Economy.BuySell",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherEconomyBuySellTest::RunTest(const FString&)
 {
@@ -122,7 +122,7 @@ bool FAetherEconomyBuySellTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherEconomyCraftingTest, "AgeOfAether.Economy.Crafting",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherEconomyCraftingTest::RunTest(const FString&)
 {
@@ -173,7 +173,7 @@ bool FAetherEconomyCraftingTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherEconomyValidationTest, "AgeOfAether.Economy.Validation",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherEconomyValidationTest::RunTest(const FString&)
 {
@@ -191,7 +191,7 @@ bool FAetherEconomyValidationTest::RunTest(const FString&)
 
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherEconomyCraftingCapacityAtomicityTest, "AgeOfAether.Economy.CraftingCapacityAtomicity",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherEconomyCraftingCapacityAtomicityTest::RunTest(const FString&)
 {

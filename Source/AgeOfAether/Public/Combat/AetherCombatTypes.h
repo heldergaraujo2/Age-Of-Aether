@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Characters/AetherCharacterTypes.h"
 #include "Data/AetherClassBalanceTypes.h"
-#include "Combat/AetherCombatTypes.generated.h"
+#include "AetherCombatTypes.generated.h"
 
 UENUM(BlueprintType)
 enum class EAetherCombatMode : uint8
@@ -86,7 +86,7 @@ struct FAetherCombatResult
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint32 RequestId = 0;
 
     UPROPERTY(BlueprintReadOnly)

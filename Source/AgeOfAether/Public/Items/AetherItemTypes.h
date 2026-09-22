@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/AetherCharacterTypes.h"
-#include "Items/AetherItemTypes.generated.h"
+#include "AetherItemTypes.generated.h"
 
 UENUM(BlueprintType)
 enum class EAetherItemCategory : uint8

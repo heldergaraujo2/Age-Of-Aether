@@ -46,7 +46,7 @@ namespace
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FAetherPersistenceSaveLoadTest,
     "AgeOfAether.Persistence.SaveLoad",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherPersistenceSaveLoadTest::RunTest(const FString&)
 {
@@ -72,7 +72,7 @@ bool FAetherPersistenceSaveLoadTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FAetherPersistenceConflictTest,
     "AgeOfAether.Persistence.OptimisticConcurrency",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherPersistenceConflictTest::RunTest(const FString&)
 {
@@ -95,7 +95,7 @@ bool FAetherPersistenceConflictTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FAetherPersistenceIntegrityTest,
     "AgeOfAether.Persistence.Integrity",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherPersistenceIntegrityTest::RunTest(const FString&)
 {
@@ -124,7 +124,7 @@ bool FAetherPersistenceIntegrityTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FAetherPersistenceValidationTest,
     "AgeOfAether.Persistence.Validation",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherPersistenceValidationTest::RunTest(const FString&)
 {
@@ -154,7 +154,7 @@ bool FAetherPersistenceValidationTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FAetherPersistenceDeleteAndMigrationTest,
     "AgeOfAether.Persistence.DeleteAndMigration",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherPersistenceDeleteAndMigrationTest::RunTest(const FString&)
 {
@@ -178,7 +178,7 @@ bool FAetherPersistenceDeleteAndMigrationTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FAetherPersistenceEnumerationTest,
     "AgeOfAether.Persistence.Enumeration",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherPersistenceEnumerationTest::RunTest(const FString&)
 {

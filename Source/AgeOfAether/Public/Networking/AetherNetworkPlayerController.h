@@ -50,7 +50,7 @@ public:
     void AuthenticateAccount(const FString& Username, const FString& CredentialProof);
 
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Accounts")
-    void ReconnectAccount(const FAetherAccountId& AccountId, const FAetherSessionId& SessionId, const FString& CredentialProof);
+    void ReconnectAccount(const FAetherAccountId& AccountId, const FAetherSessionId& InSessionId, const FString& CredentialProof);
 
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Accounts")
     void LogoutAccount();
@@ -125,8 +125,13 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void InviteToGuild(const FAetherAccountId& TargetAccountId);
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void AcceptGuildInvite(const FAetherGuildId& GuildId);
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void LeaveGuild();
-    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void SetGuildRole(const FAetherCharacterId& TargetCharacterId, EAetherGuildRole Role);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void SetGuildRole(const FAetherCharacterId& TargetCharacterId, EAetherGuildRole GuildRole);
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|Social") void SendChat(EAetherSocialChannel Channel, const FAetherAccountId& TargetAccountId, const FString& Message);
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Economy") void RequestWallet();
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Economy") void BuyItem(const FString& ShopId, const FAetherItemDefinitionId& ItemDefinitionId, int32 Quantity);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Economy") void SellItem(const FString& ShopId, const FAetherItemInstanceId& InstanceId, int32 Quantity);
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|Economy") void CraftItem(const FString& RecipeId, int32 Quantity);
 
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Accounts")
     bool IsAccountAuthenticated() const;
@@ -195,19 +200,19 @@ protected:
     void ClientReceiveAuthenticationResponse(uint32 RequestId, const FAetherAuthenticationResponse& Response);
 
     UFUNCTION(Server, Reliable)
-    void ServerReconnectAccount(uint32 RequestId, const FAetherAccountId& AccountId, const FAetherSessionId& SessionId, const FString& CredentialProof, const FAetherProtocolVersion& ProtocolVersion);
+    void ServerReconnectAccount(uint32 RequestId, const FAetherAccountId& AccountId, const FAetherSessionId& InSessionId, const FString& CredentialProof, const FAetherProtocolVersion& ProtocolVersion);
 
     UFUNCTION(Client, Reliable)
     void ClientReceiveReconnectResponse(uint32 RequestId, const FAetherAuthenticationResponse& Response);
 
     UFUNCTION(Server, Reliable)
-    void ServerLogoutAccount(uint32 RequestId, const FAetherSessionId& SessionId, const FAetherProtocolVersion& ProtocolVersion);
+    void ServerLogoutAccount(uint32 RequestId, const FAetherSessionId& InSessionId, const FAetherProtocolVersion& ProtocolVersion);
 
     UFUNCTION(Client, Reliable)
     void ClientReceiveLogoutResponse(uint32 RequestId, const FAetherAuthenticationResponse& Response);
 
     UFUNCTION(Server, Unreliable)
-    void ServerSessionHeartbeat(uint32 RequestId, const FAetherSessionId& SessionId, const FAetherProtocolVersion& ProtocolVersion);
+    void ServerSessionHeartbeat(uint32 RequestId, const FAetherSessionId& InSessionId, const FAetherProtocolVersion& ProtocolVersion);
 
     UFUNCTION(Client, Reliable)
     void ClientReceiveSessionHeartbeat(uint32 RequestId, const FAetherAuthenticationResponse& Response);
@@ -222,7 +227,7 @@ protected:
     void ServerCreateCharacter(uint32 RequestId, const FString& Name, EAetherCharacterClass CharacterClass);
 
     UFUNCTION(Client, Reliable)
-    void ClientReceiveCharacterOperation(uint32 RequestId, EAetherCharacterOperationResult Result, const FAetherCharacterRecord& Character);
+    void ClientReceiveCharacterOperation(uint32 RequestId, EAetherCharacterOperationResult Result, const FAetherCharacterRecord& CharacterRecord);
 
     UFUNCTION(Server, Reliable)
     void ServerSelectCharacter(uint32 RequestId, const FAetherCharacterId& CharacterId);
@@ -305,7 +310,7 @@ protected:
     UFUNCTION(Server, Reliable)
     void ServerLeaveGuild(uint32 RequestId);
     UFUNCTION(Server, Reliable)
-    void ServerSetGuildRole(uint32 RequestId, const FAetherCharacterId& Target, EAetherGuildRole Role);
+    void ServerSetGuildRole(uint32 RequestId, const FAetherCharacterId& Target, EAetherGuildRole GuildRole);
     UFUNCTION(Server, Reliable)
     void ServerSendChat(uint32 RequestId, EAetherSocialChannel Channel, const FAetherAccountId& Target, const FString& Message);
     UFUNCTION(Server, Reliable)

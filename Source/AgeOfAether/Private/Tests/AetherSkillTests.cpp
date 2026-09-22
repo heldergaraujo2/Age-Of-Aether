@@ -2,7 +2,7 @@
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSkillDefinitionValidationTest,
     "AgeOfAether.Skills.DefinitionValidation",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherSkillDefinitionValidationTest::RunTest(const FString&)
 {
@@ -24,7 +24,7 @@ bool FAetherSkillDefinitionValidationTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSkillRegistryDuplicateAndNormalizeTest,
     "AgeOfAether.Skills.RegistryDuplicateAndNormalize",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherSkillRegistryDuplicateAndNormalizeTest::RunTest(const FString&)
 {
@@ -52,7 +52,7 @@ bool FAetherSkillRegistryDuplicateAndNormalizeTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherSkillStatusValidationTest,
     "AgeOfAether.Skills.BuffDebuffValidation",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherSkillStatusValidationTest::RunTest(const FString&)
 {

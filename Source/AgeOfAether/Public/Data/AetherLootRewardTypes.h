@@ -29,7 +29,7 @@ enum class EAetherDropTrigger : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FAetherLootEntry
+struct FAetherDataLootEntry
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString ItemID;
@@ -51,7 +51,7 @@ struct FAetherLootTableDefinition
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString Description;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherLootSelectionMode SelectionMode = EAetherLootSelectionMode::WeightedSingle;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 RollCount = 1;
-    UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherLootEntry> Entries;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherDataLootEntry> Entries;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> Tags;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 MinimumLevel = 0;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 MaximumLevel = 0;

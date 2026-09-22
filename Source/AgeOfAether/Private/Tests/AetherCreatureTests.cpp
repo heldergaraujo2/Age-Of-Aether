@@ -2,7 +2,7 @@
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherCreatureDefinitionValidationTest,
     "AgeOfAether.Creatures.DefinitionValidation",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherCreatureDefinitionValidationTest::RunTest(const FString&)
 {
@@ -23,7 +23,7 @@ bool FAetherCreatureDefinitionValidationTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherCreatureRegistryTest,
     "AgeOfAether.Creatures.Registry",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherCreatureRegistryTest::RunTest(const FString&)
 {
@@ -56,7 +56,7 @@ bool FAetherCreatureRegistryTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherCreatureSpawnValidationTest,
     "AgeOfAether.Creatures.SpawnValidation",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FAetherCreatureSpawnValidationTest::RunTest(const FString&)
 {

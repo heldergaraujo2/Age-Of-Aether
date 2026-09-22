@@ -1,12 +1,12 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "AetherItemTypes.generated.h"
+#include "AetherItemDataTypes.generated.h"
 
 class FAetherContentRegistry;
 class FAetherAssetRegistry;
 
 UENUM(BlueprintType)
-enum class EAetherItemCategory : uint8
+enum class EAetherDataItemCategory : uint8
 {
     Equipment, Consumable, Material, SkillItem, Quest, Currency, Cosmetic, Event, Container, Special
 };
@@ -18,7 +18,7 @@ enum class EAetherItemRarity : uint8
 };
 
 UENUM(BlueprintType)
-enum class EAetherEquipmentSlot : uint8
+enum class EAetherDataEquipmentSlot : uint8
 {
     None, MainHand, OffHand, Shield, Head, Chest, Legs, Gloves, Feet, Ring1, Ring2, Necklace, Wings, Mount, Cosmetic
 };
@@ -90,15 +90,15 @@ struct FAetherItemVisualReferences
 };
 
 USTRUCT(BlueprintType)
-struct FAetherItemDefinition
+struct FAetherDataItemDefinition
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString DefinitionID;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString DisplayName;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString Description;
-    UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherItemCategory Category = EAetherItemCategory::Material;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherDataItemCategory Category = EAetherDataItemCategory::Material;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherItemRarity Rarity = EAetherItemRarity::Common;
-    UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherEquipmentSlot EquipmentSlot = EAetherEquipmentSlot::None;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherDataEquipmentSlot EquipmentSlot = EAetherDataEquipmentSlot::None;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 ItemLevel = 0;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 RequiredCharacterLevel = 0;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> AllowedClasses;

@@ -67,7 +67,7 @@ bool FAetherWorldActorPlacementDefinition::IsStructurallyValid(FString& E) const
     const FVector L=Transform.GetLocation(); if(!FMath::IsFinite(L.X)||!FMath::IsFinite(L.Y)||!FMath::IsFinite(L.Z)){E=TEXT("Actor placement transform must be finite.");return false;}
     return true;
 }
-bool FAetherInteractionDefinition::IsStructurallyValid(FString& E) const
+bool FAetherWorldInteractionDefinition::IsStructurallyValid(FString& E) const
 {
     E.Reset();
     if(!NonEmpty(DefinitionID)){E=TEXT("Interaction DefinitionID is required.");return false;}

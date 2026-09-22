@@ -3,8 +3,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Progression/AetherProgressionService.h"
 #include "Progression/AetherProgressionConfigDataAsset.h"
-#include "Progression/AetherProgressionSubsystem.generated.h"
-
+#include "AetherProgressionSubsystem.generated.h"
 UCLASS()
 class AGEOFAETHER_API UAetherProgressionSubsystem : public UGameInstanceSubsystem
 {

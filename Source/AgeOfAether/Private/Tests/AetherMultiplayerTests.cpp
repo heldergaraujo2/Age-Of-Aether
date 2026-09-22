@@ -2,7 +2,7 @@
 #include "Misc/AutomationTest.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherMultiplayerAdmissionTest, "AgeOfAether.Multiplayer.Admission",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherMultiplayerAdmissionTest::RunTest(const FString&)
 {
     FAetherMultiplayerService Service;
@@ -21,7 +21,7 @@ bool FAetherMultiplayerAdmissionTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherMultiplayerRateLimitTest, "AgeOfAether.Multiplayer.RateLimit",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherMultiplayerRateLimitTest::RunTest(const FString&)
 {
     FAetherMultiplayerService Service;
@@ -39,7 +39,7 @@ bool FAetherMultiplayerRateLimitTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherMultiplayerHeartbeatTest, "AgeOfAether.Multiplayer.HeartbeatTimeout",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherMultiplayerHeartbeatTest::RunTest(const FString&)
 {
     FAetherMultiplayerService Service;
@@ -54,7 +54,7 @@ bool FAetherMultiplayerHeartbeatTest::RunTest(const FString&)
     return true;
 }
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherMultiplayerLifecycleTest, "AgeOfAether.Multiplayer.Lifecycle",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherMultiplayerLifecycleTest::RunTest(const FString&)
 {
     FAetherMultiplayerService Service;
@@ -75,7 +75,7 @@ bool FAetherMultiplayerLifecycleTest::RunTest(const FString&)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherMultiplayerRequestRefillTest, "AgeOfAether.Multiplayer.RequestRefill",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherMultiplayerRequestRefillTest::RunTest(const FString&)
 {
     FAetherMultiplayerService Service;
@@ -93,7 +93,7 @@ bool FAetherMultiplayerRequestRefillTest::RunTest(const FString&)
 
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherMultiplayerHeartbeatRefillIsolationTest, "AgeOfAether.Multiplayer.HeartbeatCannotRefillRequests",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherMultiplayerHeartbeatRefillIsolationTest::RunTest(const FString&)
 {
     FAetherMultiplayerService Service;

@@ -1,5 +1,8 @@
 #include "Misc/AutomationTest.h"
 #include "Data/AetherRecipeRegistry.h"
+#include "Data/AetherSkillEffectRegistry.h"
+#include "Data/AetherQuestDialogueEventRegistry.h"
+#include "Data/AetherWorldActorRegistry.h"
 
 namespace
 {
@@ -61,7 +64,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherRecipeReferenceTest,"AgeOfAether.Data.Re
 bool FAetherRecipeReferenceTest::RunTest(const FString&)
 {
     FAetherRecipeRegistry R;FString E;auto A=MakeRecipe(TEXT("Recipe.Ref"));A.RequiredSkillID=TEXT("Skill.Missing");A.RequiredSkillLevel=1;A.RequiredStationID=TEXT("Station.Missing");FAetherRecipeUnlockCondition Qc; Qc.Type=EAetherRecipeUnlockConditionType::QuestCompleted; Qc.ReferenceID=TEXT("Quest.Missing"); A.UnlockConditions.Add(Qc);TestTrue(TEXT("register structurally"),R.RegisterRecipe(A,E));
-    TArray<FAetherRecipeValidationIssue> Issues;TestFalse(TEXT("validation detects missing refs"),R.Validate(Issues));TestTrue(TEXT("issues"),Issues.Num()>=3);return true;
+    FAetherSkillEffectRegistry SkillRegistry; FAetherQuestDialogueEventRegistry QuestRegistry; FAetherWorldActorRegistry WorldActorRegistry; TArray<FAetherRecipeValidationIssue> Issues; TestFalse(TEXT("validation detects missing refs"),R.Validate(Issues,nullptr,nullptr,nullptr,&SkillRegistry,&QuestRegistry,&WorldActorRegistry)); TestTrue(TEXT("issues"),Issues.Num()>=3); return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherRecipeUnlockConditionTest,"AgeOfAether.Data.Recipe.UnlockConditions",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)

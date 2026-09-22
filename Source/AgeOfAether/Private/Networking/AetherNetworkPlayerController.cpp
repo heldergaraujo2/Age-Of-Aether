@@ -157,7 +157,7 @@ FAetherSessionId AAetherNetworkPlayerController::GetSessionId() const
 
 void AAetherNetworkPlayerController::ServerSubmitRequest_Implementation(const FAetherNetworkRequest& Request)
 {
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Generic))
+    if (!AuthorizeSecurityRequest(Request.RequestId, EAetherSecurityAction::Generic))
     {
         return;
     }
@@ -468,9 +468,9 @@ void AAetherNetworkPlayerController::ServerSessionHeartbeat_Implementation(
     if (UAetherSecuritySubsystem* Security = GetGameInstance()
         ? GetGameInstance()->GetSubsystem<UAetherSecuritySubsystem>() : nullptr)
     {
-        if (const APawn* Pawn = GetPawn())
+        if (const APawn* ControlledPawn = GetPawn())
         {
-            Security->ValidateMovement(GetUniqueID(), Pawn->GetActorLocation(), Now);
+            Security->ValidateMovement(GetUniqueID(), ControlledPawn->GetActorLocation(), Now);
         }
     }
 
@@ -608,7 +608,7 @@ void AAetherNetworkPlayerController::ServerCreateCharacter_Implementation(
         return;
     }
 
-    FAetherCharacterRecord Character;
+    FAetherCharacterRecord CharacterRecord;
     EAetherCharacterOperationResult Result = EAetherCharacterOperationResult::NotAuthenticated;
 
     UAetherCharacterSubsystem* Characters = GetGameInstance()
@@ -617,7 +617,7 @@ void AAetherNetworkPlayerController::ServerCreateCharacter_Implementation(
 
     if (bAccountAuthenticated && Characters)
     {
-        if (Characters->CreateCharacter(AuthenticatedAccountId, Name, CharacterClass, Character))
+        if (Characters->CreateCharacter(AuthenticatedAccountId, Name, CharacterClass, CharacterRecord))
         {
             Result = EAetherCharacterOperationResult::Accepted;
         }
@@ -646,7 +646,7 @@ void AAetherNetworkPlayerController::ServerCreateCharacter_Implementation(
     }
 
     LastProcessedCharacterRequestId = RequestId;
-    ClientReceiveCharacterOperation(RequestId, Result, Character);
+    ClientReceiveCharacterOperation(RequestId, Result, CharacterRecord);
 }
 
 void AAetherNetworkPlayerController::ServerSelectCharacter_Implementation(
@@ -662,7 +662,7 @@ void AAetherNetworkPlayerController::ServerSelectCharacter_Implementation(
         return;
     }
 
-    FAetherCharacterRecord Character;
+    FAetherCharacterRecord CharacterRecord;
     EAetherCharacterOperationResult Result = EAetherCharacterOperationResult::NotAuthenticated;
 
     UAetherCharacterSubsystem* Characters = GetGameInstance()
@@ -671,34 +671,34 @@ void AAetherNetworkPlayerController::ServerSelectCharacter_Implementation(
 
     if (bAccountAuthenticated && Characters)
     {
-        if (!Characters->FindCharacter(CharacterId, Character))
+        if (!Characters->FindCharacter(CharacterId, CharacterRecord))
         {
             Result = EAetherCharacterOperationResult::CharacterNotFound;
         }
-        else if (Character.AccountId != AuthenticatedAccountId)
+        else if (CharacterRecord.AccountId != AuthenticatedAccountId)
         {
             Result = EAetherCharacterOperationResult::NotOwned;
         }
-        else if (Character.Status == EAetherCharacterStatus::Disabled)
+        else if (CharacterRecord.Status == EAetherCharacterStatus::Disabled)
         {
             Result = EAetherCharacterOperationResult::CharacterDisabled;
         }
-        else if (Character.Status == EAetherCharacterStatus::Deleted)
+        else if (CharacterRecord.Status == EAetherCharacterStatus::Deleted)
         {
             Result = EAetherCharacterOperationResult::CharacterDeleted;
         }
-        else if (Characters->SelectCharacter(AuthenticatedAccountId, CharacterId, Character))
+        else if (Characters->SelectCharacter(AuthenticatedAccountId, CharacterId, CharacterRecord))
         {
             Result = EAetherCharacterOperationResult::Accepted;
 
             if (AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>())
             {
-                State->SetCharacterIdentity(Character);
+                State->SetCharacterIdentity(CharacterRecord);
             }
 
             if (AAetherNetworkGameMode* GameMode = GetWorld()->GetAuthGameMode<AAetherNetworkGameMode>())
             {
-                GameMode->SpawnSelectedCharacter(this, Character);
+                GameMode->SpawnSelectedCharacter(this, CharacterRecord);
             }
         }
         else
@@ -708,7 +708,7 @@ void AAetherNetworkPlayerController::ServerSelectCharacter_Implementation(
     }
 
     LastProcessedCharacterRequestId = RequestId;
-    ClientReceiveCharacterOperation(RequestId, Result, Character);
+    ClientReceiveCharacterOperation(RequestId, Result, CharacterRecord);
 }
 
 void AAetherNetworkPlayerController::ServerDeselectCharacter_Implementation(
@@ -724,7 +724,7 @@ void AAetherNetworkPlayerController::ServerDeselectCharacter_Implementation(
         return;
     }
 
-    FAetherCharacterRecord Character;
+    FAetherCharacterRecord CharacterRecord;
     EAetherCharacterOperationResult Result = EAetherCharacterOperationResult::NotAuthenticated;
 
     UAetherCharacterSubsystem* Characters = GetGameInstance()
@@ -744,12 +744,12 @@ void AAetherNetworkPlayerController::ServerDeselectCharacter_Implementation(
         }
         else
         {
-            Result = Characters->FindCharacter(CharacterId, Character)
+            Result = Characters->FindCharacter(CharacterId, CharacterRecord)
                 ? EAetherCharacterOperationResult::NotOwned
                 : EAetherCharacterOperationResult::CharacterNotFound;
 
             if (Result == EAetherCharacterOperationResult::NotOwned &&
-                Character.AccountId == AuthenticatedAccountId)
+                CharacterRecord.AccountId == AuthenticatedAccountId)
             {
                 Result = EAetherCharacterOperationResult::InvalidRequest;
             }
@@ -757,15 +757,15 @@ void AAetherNetworkPlayerController::ServerDeselectCharacter_Implementation(
     }
 
     LastProcessedCharacterRequestId = RequestId;
-    ClientReceiveCharacterOperation(RequestId, Result, Character);
+    ClientReceiveCharacterOperation(RequestId, Result, CharacterRecord);
 }
 
 void AAetherNetworkPlayerController::ClientReceiveCharacterOperation_Implementation(
     uint32 RequestId,
     EAetherCharacterOperationResult Result,
-    const FAetherCharacterRecord& Character)
+    const FAetherCharacterRecord& CharacterRecord)
 {
-    OnCharacterOperation.Broadcast(Result, Character);
+    OnCharacterOperation.Broadcast(Result, CharacterRecord);
 }
 
 
@@ -1231,19 +1231,19 @@ void AAetherNetworkPlayerController::ServerRequestWorldTransition_Implementation
             ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
             : nullptr;
 
-        FAetherCharacterRecord Character;
-        if (Characters && Characters->FindCharacter(CharacterId, Character))
+        FAetherCharacterRecord CharacterRecord;
+        if (Characters && Characters->FindCharacter(CharacterId, CharacterRecord))
         {
             if (AAetherCharacterPlayerState* CharacterState = GetPlayerState<AAetherCharacterPlayerState>())
             {
-                CharacterState->SetCharacterIdentity(Character);
+                CharacterState->SetCharacterIdentity(CharacterRecord);
             }
 
-            if (APawn* Pawn = GetPawn())
+            if (APawn* ControlledPawn = GetPawn())
             {
-                Pawn->SetActorLocationAndRotation(
-                    Character.WorldLocation,
-                    Character.WorldRotation,
+                ControlledPawn->SetActorLocationAndRotation(
+                    CharacterRecord.WorldLocation,
+                    CharacterRecord.WorldRotation,
                     false,
                     nullptr,
                     ETeleportType::TeleportPhysics);
@@ -1359,12 +1359,12 @@ void AAetherNetworkPlayerController::ServerAcceptQuest_Implementation(uint32 Req
         ? GetGameInstance()->GetSubsystem<UAetherQuestSubsystem>()
         : nullptr;
 
-    FAetherCharacterRecord Character;
-    if (bAccountAuthenticated && Characters && Quests && Characters->FindCharacter(CharacterId, Character))
+    FAetherCharacterRecord CharacterRecord;
+    if (bAccountAuthenticated && Characters && Quests && Characters->FindCharacter(CharacterId, CharacterRecord))
     {
-        if (Character.AccountId == AuthenticatedAccountId)
+        if (CharacterRecord.AccountId == AuthenticatedAccountId)
         {
-            Quests->AcceptQuest(Character, QuestId, Operation);
+            Quests->AcceptQuest(CharacterRecord, QuestId, Operation);
         }
         else
         {
@@ -1400,12 +1400,12 @@ void AAetherNetworkPlayerController::ServerAbandonQuest_Implementation(uint32 Re
         ? GetGameInstance()->GetSubsystem<UAetherQuestSubsystem>()
         : nullptr;
 
-    FAetherCharacterRecord Character;
-    if (bAccountAuthenticated && Characters && Quests && Characters->FindCharacter(CharacterId, Character))
+    FAetherCharacterRecord CharacterRecord;
+    if (bAccountAuthenticated && Characters && Quests && Characters->FindCharacter(CharacterId, CharacterRecord))
     {
-        if (Character.AccountId == AuthenticatedAccountId)
+        if (CharacterRecord.AccountId == AuthenticatedAccountId)
         {
-            Quests->AbandonQuest(Character, QuestId, Operation);
+            Quests->AbandonQuest(CharacterRecord, QuestId, Operation);
         }
         else
         {
@@ -1441,12 +1441,12 @@ void AAetherNetworkPlayerController::ServerCompleteQuest_Implementation(uint32 R
         ? GetGameInstance()->GetSubsystem<UAetherQuestSubsystem>()
         : nullptr;
 
-    FAetherCharacterRecord Character;
-    if (bAccountAuthenticated && Characters && Quests && Characters->FindCharacter(CharacterId, Character))
+    FAetherCharacterRecord CharacterRecord;
+    if (bAccountAuthenticated && Characters && Quests && Characters->FindCharacter(CharacterId, CharacterRecord))
     {
-        if (Character.AccountId == AuthenticatedAccountId)
+        if (CharacterRecord.AccountId == AuthenticatedAccountId)
         {
-            Quests->CompleteQuest(Character, QuestId, Operation);
+            Quests->CompleteQuest(CharacterRecord, QuestId, Operation);
         }
         else
         {
@@ -1489,14 +1489,14 @@ void AAetherNetworkPlayerController::CreateGuild(const FString& Name){const uint
 void AAetherNetworkPlayerController::InviteToGuild(const FAetherAccountId& Target){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerInviteToGuild_Implementation(Id,Target);else ServerInviteToGuild(Id,Target);}
 void AAetherNetworkPlayerController::AcceptGuildInvite(const FAetherGuildId& GuildId){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerAcceptGuildInvite_Implementation(Id,GuildId);else ServerAcceptGuildInvite(Id,GuildId);}
 void AAetherNetworkPlayerController::LeaveGuild(){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerLeaveGuild_Implementation(Id);else ServerLeaveGuild(Id);}
-void AAetherNetworkPlayerController::SetGuildRole(const FAetherCharacterId& Target,EAetherGuildRole Role){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerSetGuildRole_Implementation(Id,Target,Role);else ServerSetGuildRole(Id,Target,Role);}
+void AAetherNetworkPlayerController::SetGuildRole(const FAetherCharacterId& Target,EAetherGuildRole GuildRole){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerSetGuildRole_Implementation(Id,Target,GuildRole);else ServerSetGuildRole(Id,Target,GuildRole);}
 void AAetherNetworkPlayerController::SendChat(EAetherSocialChannel Channel,const FAetherAccountId& Target,const FString& Message){const uint32 Id=NextSocialRequestId++;if(HasAuthority())ServerSendChat_Implementation(Id,Channel,Target,Message);else ServerSendChat(Id,Channel,Target,Message);}
 
 #define AETHER_SOCIAL_GUARD(Id) if((Id)==0||(Id)<=LastProcessedSocialRequestId){return;} if(!AuthorizeSecurityRequest((Id),EAetherSecurityAction::Social)){return;} LastProcessedSocialRequestId=(Id)
 
 void AAetherNetworkPlayerController::ServerRequestFriends_Implementation(uint32 Id)
 {
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    if (!AuthorizeSecurityRequest(Id, EAetherSecurityAction::Social))
     {
         return;
     }
@@ -1523,16 +1523,16 @@ void AAetherNetworkPlayerController::ServerCreateGuild_Implementation(uint32 Id,
 void AAetherNetworkPlayerController::ServerInviteToGuild_Implementation(uint32 Id,const FAetherAccountId& Target){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->InviteToGuild(C,Target,O);ClientReceiveSocialOperation(Id,O);}
 void AAetherNetworkPlayerController::ServerAcceptGuildInvite_Implementation(uint32 Id,const FAetherGuildId& GuildId){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->AcceptGuildInvite(C,GuildId,O);ClientReceiveSocialOperation(Id,O);}
 void AAetherNetworkPlayerController::ServerLeaveGuild_Implementation(uint32 Id){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->LeaveGuild(C,O);ClientReceiveSocialOperation(Id,O);}
-void AAetherNetworkPlayerController::ServerSetGuildRole_Implementation(uint32 Id,const FAetherCharacterId& Target,EAetherGuildRole Role){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->SetGuildRole(C,Target,Role,O);ClientReceiveSocialOperation(Id,O);}
+void AAetherNetworkPlayerController::ServerSetGuildRole_Implementation(uint32 Id,const FAetherCharacterId& Target,EAetherGuildRole GuildRole){AETHER_SOCIAL_GUARD(Id);FAetherSocialOperation O;O.Result=EAetherSocialResult::CharacterRequired;FAetherCharacterRecord C;UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;if(S&&GetControllerCharacter(this,C))S->SetGuildRole(C,Target,GuildRole,O);ClientReceiveSocialOperation(Id,O);}
 
 void AAetherNetworkPlayerController::ServerSendChat_Implementation(uint32 Id,EAetherSocialChannel Channel,const FAetherAccountId& Target,const FString& Message)
 {
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    if (!AuthorizeSecurityRequest(Id, EAetherSecurityAction::Social))
     {
         return;
     }
     AETHER_SOCIAL_GUARD(Id);
-    FAetherSocialResult Result=EAetherSocialResult::InvalidRequest;
+    EAetherSocialResult Result=EAetherSocialResult::InvalidRequest;
     FAetherChatMessage Chat;
     FAetherCharacterRecord C;
     UAetherSocialSubsystem* S=GetGameInstance()?GetGameInstance()->GetSubsystem<UAetherSocialSubsystem>():nullptr;
@@ -1615,51 +1615,19 @@ void AAetherNetworkPlayerController::ClientReceiveChat_Implementation(uint32 Id,
 
 #undef AETHER_SOCIAL_GUARD
 
-void AAetherNetworkPlayerController::RequestWallet()
-{
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
-    {
-        return;
-    }
-    const uint32 Id = NextEconomyRequestId++;
-    if (HasAuthority()) ServerRequestWallet_Implementation(Id); else ServerRequestWallet(Id);
-}
+void AAetherNetworkPlayerController::RequestWallet(){const uint32 Id=NextEconomyRequestId++;if(!AuthorizeSecurityRequest(Id,EAetherSecurityAction::Economy)){return;}if(HasAuthority())ServerRequestWallet_Implementation(Id);else ServerRequestWallet(Id);}
 
-void AAetherNetworkPlayerController::BuyItem(const FString& ShopId, const FAetherItemDefinitionId& ItemDefinitionId, int32 Quantity)
-{
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
-    {
-        return;
-    }
-    const uint32 Id = NextEconomyRequestId++;
-    if (HasAuthority()) ServerBuyItem_Implementation(Id, ShopId, ItemDefinitionId, Quantity); else ServerBuyItem(Id, ShopId, ItemDefinitionId, Quantity);
-}
+void AAetherNetworkPlayerController::BuyItem(const FString& ShopId,const FAetherItemDefinitionId& ItemDefinitionId,int32 Quantity){const uint32 Id=NextEconomyRequestId++;if(!AuthorizeSecurityRequest(Id,EAetherSecurityAction::Economy)){return;}if(HasAuthority())ServerBuyItem_Implementation(Id,ShopId,ItemDefinitionId,Quantity);else ServerBuyItem(Id,ShopId,ItemDefinitionId,Quantity);}
 
-void AAetherNetworkPlayerController::SellItem(const FString& ShopId, const FAetherItemInstanceId& InstanceId, int32 Quantity)
-{
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
-    {
-        return;
-    }
-    const uint32 Id = NextEconomyRequestId++;
-    if (HasAuthority()) ServerSellItem_Implementation(Id, ShopId, InstanceId, Quantity); else ServerSellItem(Id, ShopId, InstanceId, Quantity);
-}
+void AAetherNetworkPlayerController::SellItem(const FString& ShopId,const FAetherItemInstanceId& InstanceId,int32 Quantity){const uint32 Id=NextEconomyRequestId++;if(!AuthorizeSecurityRequest(Id,EAetherSecurityAction::Economy)){return;}if(HasAuthority())ServerSellItem_Implementation(Id,ShopId,InstanceId,Quantity);else ServerSellItem(Id,ShopId,InstanceId,Quantity);}
 
-void AAetherNetworkPlayerController::CraftItem(const FString& RecipeId, int32 Quantity)
-{
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
-    {
-        return;
-    }
-    const uint32 Id = NextEconomyRequestId++;
-    if (HasAuthority()) ServerCraftItem_Implementation(Id, RecipeId, Quantity); else ServerCraftItem(Id, RecipeId, Quantity);
-}
+void AAetherNetworkPlayerController::CraftItem(const FString& RecipeId,int32 Quantity){const uint32 Id=NextEconomyRequestId++;if(!AuthorizeSecurityRequest(Id,EAetherSecurityAction::Economy)){return;}if(HasAuthority())ServerCraftItem_Implementation(Id,RecipeId,Quantity);else ServerCraftItem(Id,RecipeId,Quantity);}
 
 #define AETHER_ECONOMY_GUARD(Id) if((Id)==0||(Id)<=LastProcessedEconomyRequestId){return;} LastProcessedEconomyRequestId=(Id)
 
 void AAetherNetworkPlayerController::ServerRequestWallet_Implementation(uint32 Id)
 {
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    if (!AuthorizeSecurityRequest(Id, EAetherSecurityAction::Economy))
     {
         return;
     }
@@ -1667,68 +1635,68 @@ void AAetherNetworkPlayerController::ServerRequestWallet_Implementation(uint32 I
     FAetherEconomyTransaction Transaction;
     Transaction.Result = EAetherEconomyResult::NotOwned;
     UAetherEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>() : nullptr;
-    FAetherCharacterRecord Character;
-    if (Economy && GetControllerCharacter(this, Character))
+    FAetherCharacterRecord CharacterRecord;
+    if (Economy && GetControllerCharacter(this, CharacterRecord))
     {
-        Transaction.CharacterId = Character.CharacterId;
+        Transaction.CharacterId = CharacterRecord.CharacterId;
         Transaction.Result = EAetherEconomyResult::Accepted;
         Transaction.Currency = EAetherCurrency::Gold;
-        Transaction.BalanceAfter = Economy->GetBalance(Character.CharacterId, EAetherCurrency::Gold);
+        Transaction.BalanceAfter = Economy->GetBalance(CharacterRecord.CharacterId, EAetherCurrency::Gold);
     }
     ClientReceiveEconomy(Id, Transaction);
 }
 
 void AAetherNetworkPlayerController::ServerBuyItem_Implementation(uint32 Id, const FString& ShopId, const FAetherItemDefinitionId& ItemDefinitionId, int32 Quantity)
 {
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    if (!AuthorizeSecurityRequest(Id, EAetherSecurityAction::Economy))
     {
         return;
     }
     AETHER_ECONOMY_GUARD(Id);
     FAetherEconomyTransaction Transaction;
     Transaction.Result = EAetherEconomyResult::NotOwned;
-    FAetherCharacterRecord Character;
+    FAetherCharacterRecord CharacterRecord;
     UAetherEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>() : nullptr;
-    if (Economy && GetControllerCharacter(this, Character))
-        Economy->Buy(Character.CharacterId, ShopId, ItemDefinitionId, Quantity, Transaction);
+    if (Economy && GetControllerCharacter(this, CharacterRecord))
+        Economy->Buy(CharacterRecord.CharacterId, ShopId, ItemDefinitionId, Quantity, Transaction);
     ClientReceiveEconomy(Id, Transaction);
 }
 
 void AAetherNetworkPlayerController::ServerSellItem_Implementation(uint32 Id, const FString& ShopId, const FAetherItemInstanceId& InstanceId, int32 Quantity)
 {
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    if (!AuthorizeSecurityRequest(Id, EAetherSecurityAction::Economy))
     {
         return;
     }
     AETHER_ECONOMY_GUARD(Id);
     FAetherEconomyTransaction Transaction;
     Transaction.Result = EAetherEconomyResult::NotOwned;
-    FAetherCharacterRecord Character;
+    FAetherCharacterRecord CharacterRecord;
     UAetherEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>() : nullptr;
-    if (Economy && GetControllerCharacter(this, Character))
-        Economy->Sell(Character.CharacterId, ShopId, InstanceId, Quantity, Transaction);
+    if (Economy && GetControllerCharacter(this, CharacterRecord))
+        Economy->Sell(CharacterRecord.CharacterId, ShopId, InstanceId, Quantity, Transaction);
     ClientReceiveEconomy(Id, Transaction);
 }
 
 void AAetherNetworkPlayerController::ServerCraftItem_Implementation(uint32 Id, const FString& RecipeId, int32 Quantity)
 {
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    if (!AuthorizeSecurityRequest(Id, EAetherSecurityAction::Economy))
     {
         return;
     }
     AETHER_ECONOMY_GUARD(Id);
     FAetherEconomyTransaction Transaction;
     Transaction.Result = EAetherEconomyResult::NotOwned;
-    FAetherCharacterRecord Character;
+    FAetherCharacterRecord CharacterRecord;
     UAetherEconomySubsystem* Economy = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAetherEconomySubsystem>() : nullptr;
-    if (Economy && GetControllerCharacter(this, Character))
-        Economy->Craft(Character.CharacterId, RecipeId, Quantity, Character.Level, Transaction);
+    if (Economy && GetControllerCharacter(this, CharacterRecord))
+        Economy->Craft(CharacterRecord.CharacterId, RecipeId, Quantity, CharacterRecord.Level, Transaction);
     ClientReceiveEconomy(Id, Transaction);
 }
 
 void AAetherNetworkPlayerController::ClientReceiveEconomy_Implementation(uint32 Id, const FAetherEconomyTransaction& Transaction)
 {
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+    if (!AuthorizeSecurityRequest(Id, EAetherSecurityAction::Economy))
     {
         return;
     }
@@ -1737,13 +1705,7 @@ void AAetherNetworkPlayerController::ClientReceiveEconomy_Implementation(uint32 
 
 #undef AETHER_ECONOMY_GUARD
 
-void AAetherNetworkPlayerController::AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount)
-{
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
-    {
-        return;
-    }
-    const uint32 RequestId = NextProgressionRequestId++;
+void AAetherNetworkPlayerController::AllocateStatPoints(EAetherCharacterStat Stat, int32 Amount){const uint32 RequestId=NextProgressionRequestId++;if(!AuthorizeSecurityRequest(RequestId,EAetherSecurityAction::Progression)){return;}
     if (HasAuthority())
     {
         ServerAllocateStatPoints_Implementation(RequestId, Stat, Amount);
@@ -1790,14 +1752,14 @@ void AAetherNetworkPlayerController::ServerAllocateStatPoints_Implementation(
     {
         if (AAetherCharacterPlayerState* State = GetPlayerState<AAetherCharacterPlayerState>())
         {
-            FAetherCharacterRecord Character;
+            FAetherCharacterRecord CharacterRecord;
             UAetherCharacterSubsystem* Characters = GetGameInstance()
                 ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
                 : nullptr;
 
-            if (Characters && Characters->FindCharacter(CharacterId, Character))
+            if (Characters && Characters->FindCharacter(CharacterId, CharacterRecord))
             {
-                State->SetCharacterIdentity(Character);
+                State->SetCharacterIdentity(CharacterRecord);
             }
         }
     }
@@ -1805,11 +1767,7 @@ void AAetherNetworkPlayerController::ServerAllocateStatPoints_Implementation(
     ClientReceiveProgression(RequestId, Result);
 }
 
-void AAetherNetworkPlayerController::ClientReceiveProgression_Implementation(
-    uint32 RequestId,
-    const FAetherProgressionResult& Result)
-{
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
+void AAetherNetworkPlayerController::ClientReceiveProgression_Implementation(uint32 RequestId,const FAetherProgressionResult& Result){if(!AuthorizeSecurityRequest(RequestId,EAetherSecurityAction::Progression))
     {
         return;
     }
@@ -1866,23 +1824,13 @@ double AAetherNetworkPlayerController::GetServerTimeSeconds() const
     return FPlatformTime::Seconds();
 }
 
-void AAetherNetworkPlayerController::ApplyAuthenticatedSession(const FAetherAuthenticationResponse& Response)
-{
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
-    {
-        return;
-    }
+void AAetherNetworkPlayerController::ApplyAuthenticatedSession(const FAetherAuthenticationResponse& Response){
     AuthenticatedAccountId = Response.AccountId;
     SessionId = Response.SessionId;
     bAccountAuthenticated = true;
 }
 
-void AAetherNetworkPlayerController::ClearAuthenticatedSession()
-{
-    if (!AuthorizeSecurityRequest(RequestId, EAetherSecurityAction::Social))
-    {
-        return;
-    }
+void AAetherNetworkPlayerController::ClearAuthenticatedSession(){
     AuthenticatedAccountId = FAetherAccountId();
     SessionId = FAetherSessionId();
     bAccountAuthenticated = false;

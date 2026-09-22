@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/AetherCharacterTypes.h"
-#include "Skills/AetherSkillTypes.generated.h"
+#include "AetherSkillTypes.generated.h"
 
 UENUM(BlueprintType)
 enum class EAetherSkillTargetMode : uint8
@@ -116,7 +116,7 @@ struct FAetherSkillResult
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint32 RequestId = 0;
 
     UPROPERTY(BlueprintReadOnly)

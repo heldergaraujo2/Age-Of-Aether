@@ -12,7 +12,7 @@ class AGEOFAETHER_API UAetherInventorySubsystem : public UGameInstanceSubsystem
 public:
     bool AddItem(const FAetherCharacterId& CharacterId, const FString& DefinitionID, int32 Quantity, FAetherInventoryItem& OutItem, EAetherInventoryResult& OutResult);
     bool RemoveItem(const FAetherCharacterId& CharacterId, const FString& InstanceID, int32 Quantity, EAetherInventoryResult& OutResult);
-    bool SplitStack(const FAetherCharacterId& CharacterId, const FString& InstanceID, int32 Quantity, EAetherInventoryItem& OutItem, EAetherInventoryResult& OutResult);
+    bool SplitStack(const FAetherCharacterId& CharacterId, const FString& InstanceID, int32 Quantity, FAetherInventoryItem& OutItem, EAetherInventoryResult& OutResult);
     bool EquipItem(const FAetherCharacterId& CharacterId, const FString& InstanceID, EAetherInventoryResult& OutResult);
     bool UnequipSlot(const FAetherCharacterId& CharacterId, EAetherEquipmentSlot Slot, EAetherInventoryResult& OutResult);
 
@@ -28,5 +28,5 @@ private:
     const FAetherItemRegistry* ItemRegistry = nullptr;
     static FString CharacterKey(const FAetherCharacterId& Id);
     FAetherInventoryItem* FindItem(FAetherInventoryState& State, const FString& InstanceID);
-    const FAetherItemDefinition* ResolveDefinition(const FString& DefinitionID) const;
+    const FAetherDataItemDefinition* ResolveDefinition(const FString& DefinitionID) const;
 };

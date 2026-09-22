@@ -34,16 +34,13 @@ public:
     UFUNCTION(BlueprintPure, Category="Age of Aether|Client")
     FAetherClientRuntimeSnapshot GetSnapshot() const { return Snapshot; }
 
-    UFUNCTION(BlueprintCallable, Category="Age of Aether|Client")
     uint32 BeginRequest(const FString& Operation, double NowSeconds, double TimeoutSeconds = 15.0);
 
-    UFUNCTION(BlueprintCallable, Category="Age of Aether|Client")
     bool CompleteRequest(uint32 RequestID, bool bAccepted);
 
     UFUNCTION(BlueprintCallable, Category="Age of Aether|Client")
     int32 ExpireRequests(double NowSeconds);
 
-    UFUNCTION(BlueprintPure, Category="Age of Aether|Client")
     bool GetRequest(uint32 RequestID, FAetherClientRequestState& OutRequest) const;
 
     UFUNCTION(BlueprintCallable, Category="Age of Aether|Client")

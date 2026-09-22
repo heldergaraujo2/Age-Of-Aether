@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "World/AetherWorldTypes.h"
-#include "Creatures/AetherCreatureTypes.generated.h"
+#include "AetherCreatureTypes.generated.h"
 
 class USkeletalMesh;
 class UAnimInstance;

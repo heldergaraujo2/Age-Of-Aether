@@ -15,7 +15,7 @@ FAetherAssetDefinition MakeAsset(const TCHAR* ID, EAetherAssetType Type)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherAssetRegistryRegistrationTest,
     "AgeOfAether.AssetRegistry.Registration",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherAssetRegistryRegistrationTest::RunTest(const FString&)
 {
@@ -36,7 +36,7 @@ bool FAetherAssetRegistryRegistrationTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherAssetRegistryFallbackTest,
     "AgeOfAether.AssetRegistry.Fallback",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherAssetRegistryFallbackTest::RunTest(const FString&)
 {
@@ -60,7 +60,7 @@ bool FAetherAssetRegistryFallbackTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherAssetRegistrySkeletonTest,
     "AgeOfAether.AssetRegistry.Skeleton",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherAssetRegistrySkeletonTest::RunTest(const FString&)
 {
@@ -82,7 +82,7 @@ bool FAetherAssetRegistrySkeletonTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherAssetRegistryNumericTest,
     "AgeOfAether.AssetRegistry.NumericValidation",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherAssetRegistryNumericTest::RunTest(const FString&)
 {
@@ -99,7 +99,7 @@ bool FAetherAssetRegistryNumericTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherAssetRegistryDependencyTest,
     "AgeOfAether.AssetRegistry.Dependencies",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherAssetRegistryDependencyTest::RunTest(const FString&)
 {
@@ -122,7 +122,7 @@ bool FAetherAssetRegistryDependencyTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherAssetRegistryDeterministicOrderTest,
     "AgeOfAether.AssetRegistry.DeterministicOrder",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherAssetRegistryDeterministicOrderTest::RunTest(const FString&)
 {

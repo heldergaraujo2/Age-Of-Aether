@@ -1,7 +1,8 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Characters/AetherCharacterTypes.h"
-#include "Data/AetherItemTypes.h"
+#include "Data/AetherItemDataTypes.h"
+#include "AetherItemTypes.h"
 #include "AetherInventoryTypes.generated.h"
 
 USTRUCT(BlueprintType)

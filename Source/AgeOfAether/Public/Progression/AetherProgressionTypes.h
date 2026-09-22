@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Characters/AetherCharacterTypes.h"
-#include "Progression/AetherProgressionTypes.generated.h"
+#include "AetherProgressionTypes.generated.h"
 
 UENUM(BlueprintType)
 enum class EAetherProgressionResult : uint8

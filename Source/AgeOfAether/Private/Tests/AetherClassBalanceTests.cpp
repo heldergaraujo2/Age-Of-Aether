@@ -3,12 +3,13 @@
 #include "Data/AetherClassBalanceConfig.h"
 #include "Data/AetherClassBalanceRegistry.h"
 #include "Data/AetherClassCatalog.h"
+#include "Data/AetherClassRegistry.h"
 
 namespace
 {
 FString Sample()
 {
-    return TEXT("config|1|testing|production\n"
+    return TEXT("config|1|testing|testing\n"
                 "profile|testing|7\n"
                 "balance|testing|archer.base|archer||2|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|3|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1\n"
                 "balance|testing|archer.01|archer|archer.01|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1");
@@ -35,7 +36,7 @@ bool FAetherClassBalanceEvolutionTest::RunTest(const FString&)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherClassBalanceInvalidTest,"AgeOfAether.ClassBalance.Invalid",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
 bool FAetherClassBalanceInvalidTest::RunTest(const FString&)
 {
- const FString Bad=TEXT("config|1|testing|production\nprofile|testing|1\nbalance|testing|archer.base|archer||-1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1");
+ const FString Bad=TEXT("config|1|testing|testing\nprofile|testing|1\nbalance|testing|archer.base|archer||-1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1");
  FAetherBalanceConfig C;FString E;TestTrue(TEXT("parser accepts syntax"),FAetherClassBalanceConfigLoader::Parse(Bad,C,E));FAetherClassBalanceRegistry R;TestFalse(TEXT("registry rejects negative multiplier"),FAetherClassBalanceConfigLoader::BuildRegistry(C,R,E));return true;
 }
 

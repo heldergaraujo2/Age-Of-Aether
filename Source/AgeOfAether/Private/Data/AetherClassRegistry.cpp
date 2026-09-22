@@ -37,15 +37,15 @@ bool FAetherClassRegistry::Validate(TArray<FAetherClassValidationIssue>& O,const
     for(const auto& P:Classes){
         const auto& C=P.Value; FString E; if(!C.IsStructurallyValid(E)){AddIssue(O,C.ClassID,TEXT("Invalid"),E);Good=false;}
         for(const FString& I:C.StartingItemIDs) if(Items && !Items->Contains(I)){AddIssue(O,C.ClassID,TEXT("MissingItem"),I);Good=false;}
-        for(const FString& S:C.StartingSkillIDs) if(Skills && !([&](){ FAetherSkillDefinition X; return Skills->ResolveSkill(S,X); })()){AddIssue(O,C.ClassID,TEXT("MissingSkill"),S);Good=false;}
+        for(const FString& S:C.StartingSkillIDs) if(Skills && !([&](){ FAetherDataSkillDefinition X; return Skills->ResolveSkill(S,X); })()){AddIssue(O,C.ClassID,TEXT("MissingSkill"),S);Good=false;}
     }
     for(const auto& P:Evolutions){
         const auto& E=P.Value; FString X; if(!E.IsStructurallyValid(X)){AddIssue(O,E.EvolutionID,TEXT("Invalid"),X);Good=false;}
         if(!Classes.Contains(E.ClassID)){AddIssue(O,E.EvolutionID,TEXT("MissingClass"),E.ClassID);Good=false;}
         for(const FString& R:E.PrerequisiteEvolutionIDs) if(!Evolutions.Contains(Normalize(R))){AddIssue(O,E.EvolutionID,TEXT("MissingPrerequisite"),R);Good=false;}
-        for(const FString& Q:E.RequiredQuestIDs) if(Quests && !([&](){ FAetherQuestDefinition X; return Quests->ResolveQuest(Q,X); })()){AddIssue(O,E.EvolutionID,TEXT("MissingQuest"),Q);Good=false;}
+        for(const FString& Q:E.RequiredQuestIDs) if(Quests && !([&](){ FAetherDataQuestDefinition X; return Quests->ResolveQuest(Q,X); })()){AddIssue(O,E.EvolutionID,TEXT("MissingQuest"),Q);Good=false;}
         for(const FString& C:E.RequiredContentIDs) if(Content && !Content->Contains(C)){AddIssue(O,E.EvolutionID,TEXT("MissingContent"),C);Good=false;}
-        for(const FString& S:E.GrantedSkillIDs) if(Skills && !([&](){ FAetherSkillDefinition X; return Skills->ResolveSkill(S,X); })()){AddIssue(O,E.EvolutionID,TEXT("MissingSkill"),S);Good=false;}
+        for(const FString& S:E.GrantedSkillIDs) if(Skills && !([&](){ FAetherDataSkillDefinition X; return Skills->ResolveSkill(S,X); })()){AddIssue(O,E.EvolutionID,TEXT("MissingSkill"),S);Good=false;}
         for(const FString& F:E.GrantedEffectIDs) if(Skills && !([&](){ FAetherEffectDefinition X; return Skills->ResolveEffect(F,X); })()){AddIssue(O,E.EvolutionID,TEXT("MissingEffect"),F);Good=false;}
         for(const FString& A:E.VisualAssetIDs) if(Assets && !Assets->Contains(A)){AddIssue(O,E.EvolutionID,TEXT("MissingAsset"),A);Good=false;}
     }

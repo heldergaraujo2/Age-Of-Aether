@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "Data/AetherItemTypes.h"
+#include "Data/AetherItemDataTypes.h"
 #include "AetherEquipmentVisualProfile.generated.h"
 class UMaterialInterface; class USkeletalMesh; class UStaticMesh;
 UENUM(BlueprintType)
@@ -13,7 +13,7 @@ class AGEOFAETHER_API UAetherEquipmentVisualProfile : public UDataAsset
 public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Age of Aether|Equipment") FName VisualProfileID;
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Age of Aether|Equipment") FName ItemDefinitionID;
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Age of Aether|Equipment") EAetherEquipmentSlot EquipmentSlot = EAetherEquipmentSlot::None;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Age of Aether|Equipment") EAetherDataEquipmentSlot EquipmentSlot = EAetherDataEquipmentSlot::None;
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Age of Aether|Equipment") EAetherEquipmentVisualType VisualType = EAetherEquipmentVisualType::None;
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Age of Aether|Equipment") TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Age of Aether|Equipment") TSoftObjectPtr<UStaticMesh> StaticMesh;

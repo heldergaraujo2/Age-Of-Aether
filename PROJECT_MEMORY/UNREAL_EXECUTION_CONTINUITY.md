@@ -1,49 +1,170 @@
-## 2026-09-21 — UE 5.8 build result after EconomyTests repair
-- Real local AgeOfAetherEditor build failed after 17.09s; no build success yet.
-- EconomyTests blockers are gone from the reported output, confirming the runtime `FAetherItemDefinition` normalization was effective.
-- New primary blockers exposed: several compressed test files use missing direct type declarations/includes and one-argument AutomationTest calls; AetherInventorySubsystem.cpp is mixing runtime `FAetherItemDefinition` with data `FAetherDataItemDefinition`; AetherSocialService.h is missing `FAetherSocialResult`; QuestTests helper/type API mismatches; Character.cpp and NetworkPlayerController.cpp have additional compile blockers.
-- InventorySubsystem.cpp is a production-code blocker and should be handled after inspecting the exact runtime/data registry contract, not by guessing.
-- Next action: inspect `AetherInventorySubsystem.cpp`, `AetherInventorySubsystem.h`, `AetherItemRegistry.h`, and both item definition structs in one read-only PowerShell command to establish the correct production contract before changing code.
-- Continue one local command at a time. Do not claim PASS until a real build succeeds.
+# Age Of AetheR — Unreal 5.8.1 Execution Continuity
 
-## 2026-09-21 — Inventory subsystem contract inspection
-- Local read-only inspection confirmed `Public/Items/AetherInventorySubsystem.h` includes `Data/AetherItemRegistry.h`; the attempted `Public/Items/AetherItemRegistry.h` path does not exist, so the registry is under the Data path.
-- `AetherInventorySubsystem.cpp` currently resolves a runtime `FAetherItemDefinition` and then accesses `Def->ItemLevel` and `Def->MaxDurability`.
-- Earlier verified runtime `FAetherItemDefinition` uses `BaseLevel` and `BaseDurability`, so those two production-code field references are now the immediate concrete mismatch to verify/fix.
-- `AddItem` header/source signatures match on `FAetherInventoryItem& OutItem`.
-- Next action: inspect the actual `Data/AetherItemRegistry.h`, runtime item types, and data item types with a corrected read-only command before editing.
+> Canonical checklist for the local Unreal Engine execution phase. Updated after every command/result cycle.
 
-- 2026-09-21 follow-up: `FAetherItemRegistry::Resolve` returns `FAetherDataItemDefinition`, while `UAetherInventorySubsystem::ResolveDefinition` currently expects `FAetherItemDefinition`; this is a deeper contract mismatch than just `ItemLevel`/`MaxDurability`. Runtime `FAetherItemDefinition` has `BaseLevel`/`BaseDurability`, whereas `FAetherItemInstance` has `ItemLevel`/`Durability`. The previously attempted `Items/AetherItemDataTypes.h` path is also incorrect; the registry confirms the data header is `Data/AetherItemDataTypes.h`. Next step is to inspect the data definition and inventory state/snapshot types before modifying production code.
+## Rules
+1. Never mark a runtime step PASS without Helder's actual result/log/screenshot.
+2. One command at a time when diagnosis depends on the previous result.
+3. After every result, analyze it, update this file, then issue the next command.
+4. Prefer the lowest-bureaucracy workflow: Data Assets + reusable components + a few Widget Blueprints.
+5. Never create fake .uasset, .umap, FBX, animation, VFX or audio files in Git.
+6. If a step fails, repair it before continuing.
+7. State-changing gameplay remains server-authoritative.
+8. Visual assets are presentation and never gameplay authority.
 
-- 2026-09-21: `FAetherDataItemDefinition` contains the fields the inventory subsystem needs (`ItemLevel`, `BaseDurability`, `MaxDurability`, data category/equipment enums), while `FAetherInventoryItem::Snapshot` is also explicitly `FAetherItemInstanceSnapshot` from the data layer. Therefore `UAetherInventorySubsystem::ResolveDefinition` should consume/cache `FAetherDataItemDefinition`; current runtime `FAetherItemDefinition` is a separate incompatible model. Before editing, inspect all `ResolveDefinition`/`Def->` usages in the inventory subsystem to map enum and field conversions safely.
+## Current global state
+- Repository/source roadmap: Phases 19–56 complete at source level.
+- Unreal 5.8.1 local runtime: NOT YET VERIFIED.
+- Current local execution phase: U0 — Environment & Project Health.
+- Current step: U0.1 — Locate/confirm the Unreal project and engine installation.
+- Last command/result: none yet.
+- Blockers: none known; local machine state has not been inspected.
 
-- 2026-09-21: Inventory subsystem usage map confirms `ResolveDefinition` is only used by `AddItem` and `EquipItem`. `AddItem` needs DefinitionID, MaxStack, ItemLevel, MaxDurability. `EquipItem` additionally needs equipment slot/category, but data enums (`EAetherDataEquipmentSlot`, `EAetherDataItemCategory`) differ from inventory runtime enums. Next step is to inspect existing conversion helpers/usages for these enum pairs before implementing a localized adapter.
+# U0 — Environment & Project Health
 
-- 2026-09-21: Repository search found no existing conversion helper for data/runtime item category or equipment-slot enums. Existing visual equipment code is runtime-enum based only. Local source remains authoritative for current working tree; next inspect inventory/equipment tests for expected slot semantics before introducing any mapping.
+## U0.1 — Confirm project + Unreal installation
+Status: PENDING
 
-- 2026-09-21: No existing enum adapter found. Repository test source confirms the data model's equipment examples use `MainHand`; inventory subsystem tests are not yet identified in the repository snapshot, so local working-tree test discovery is required before defining slot mappings.
+Goal: establish the exact .uproject path and Unreal 5.8.x installation.
 
-- 2026-09-21: Local test inventory scan found only `AetherInventoryLootTests.cpp`, `AetherItemInventoryTests.cpp`, and `AetherItemRegistryTests.cpp`; there is no dedicated `UAetherInventorySubsystem` test covering equipment-slot conversion. Header inspection confirms `ResolveDefinition` is private and currently returns runtime `FAetherItemDefinition`; this must be aligned to `FAetherDataItemDefinition` from the registry.
+PowerShell command:
 
-- 2026-09-21: Local `UAetherInventorySubsystem::ResolveDefinition` contract repaired in header/source to use `FAetherDataItemDefinition`, matching `FAetherItemRegistry::Resolve`. Next compile blocker expected is the `EquipItem` enum mismatch; inspect exact compiler errors before mapping.
+    Write-Host '=== AGE OF AETHER / UNREAL CHECK ==='
+    Write-Host "`n[PROJECT]"
+    Get-ChildItem -Path . -Filter *.uproject -Recurse -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
+    Write-Host "`n[UNREAL 5.8.x]"
+    $roots = @('C:\Program Files\Epic Games','D:\Program Files\Epic Games','D:\Epic Games','C:\Epic Games')
+    foreach ($root in $roots) {
+      if (Test-Path $root) {
+        Get-ChildItem $root -Directory -ErrorAction SilentlyContinue |
+          Where-Object { $_.Name -match 'UE_5\.8' } |
+          Select-Object -ExpandProperty FullName
+      }
+    }
 
-- 2026-09-21 build after inventory definition-contract repair: `AetherInventorySubsystem.cpp` now reaches the expected enum boundary. Exact remaining inventory errors are all caused by comparing/using `EAetherDataEquipmentSlot` where `EAetherEquipmentSlot` is required in `EquipItem`; no mapping has been applied yet. Build also exposed independent blockers in ContentPackage/Interaction/ClassPresentation/InventoryLoot/ItemInventory/Character/Quest/Skill/Social/NetworkPlayerController. Inventory will be repaired only after confirming slot semantics.
+Expected evidence: project path + Unreal Engine 5.8.x installation path.
+After execution: paste the complete terminal output here. Do not run the next step yet.
 
-- 2026-09-21: Local repository-wide slot-enum scan found concrete data/runtime slot usages only in `AetherEquipmentVisualProfile.cpp`, `AetherItemDataTypes.cpp`, `AetherInventorySubsystem.cpp`, `AetherEquipmentVisualTests.cpp`, `AetherItemRegistryTests.cpp`, plus the corresponding type headers. No dedicated inventory-subsystem slot-conversion test was found. The next safe step is to inspect those exact local usages with line content before defining any adapter, especially because `Shield`, `Gloves`, `Ring1/Ring2`, `Necklace`, `Wings`, `Mount`, and `Cosmetic` have no one-to-one runtime slot in the current enum.
+## U0.2 — Verify exact engine version
+Status: PENDING
 
-- 2026-09-21: Exact local slot semantics inspection completed. `FAetherDataItemDefinition::IsStructurallyValid` explicitly requires an equipment slot only for `EAetherDataItemCategory::Equipment`, and forbids slots on non-equipment items. `AetherEquipmentVisualProfile` independently preserves the data-layer slot and validates it is non-None; current tests exercise `MainHand` and `Head`. `AetherItemRegistryEquipmentTest` likewise establishes `MainHand` as a valid equipment slot and rejects equipment without a slot. No evidence establishes mappings for `Shield`, `Gloves`, `Ring1/Ring2`, `Necklace`, `Wings`, `Mount`, or `Cosmetic` into the smaller runtime enum. Therefore no silent many-to-one mapping should be introduced. Next step: inspect the local inventory-related tests to determine expected `EquipItem` behavior and then add an explicit supported-slot adapter/test policy.
-- 2026-09-21: Local inventory-test inspection confirms `AetherInventoryLootTests.cpp` covers only loot-table validation and `FAetherInventoryItem::IsValid`; `AetherItemInventoryTests.cpp` targets the separate `FAetherItemService` runtime model and does not test `UAetherInventorySubsystem::EquipItem` or data/runtime equipment-slot conversion. Its helper also currently mixes `FAetherDataItemDefinition` with runtime `FAetherItemDefinition` fields, confirming it is an independent compile blocker rather than evidence for inventory-slot policy. No test establishes unsupported data slots as aliases. Safe policy remains: only exact one-to-one slots can be adapted; unsupported data slots must not be silently collapsed. Next step: inspect the local `UAetherInventorySubsystem` implementation/header and its surrounding item types to design the smallest explicit adapter and targeted automation tests.
-- 2026-09-21: Final pre-repair inspection confirms `UAetherInventorySubsystem::EquipItem` is the only production site crossing the data/runtime equipment-slot boundary. Current code incorrectly compares `EAetherDataEquipmentSlot` against `EAetherEquipmentSlot` and data category against the runtime category. The runtime enum has exact counterparts for data `MainHand`, `OffHand`, `Head`, `Chest`, `Legs`, `Gloves`→`Hands`, and `Feet`. Data `Shield`, `Ring1`, `Ring2`, `Necklace`, `Wings`, `Mount`, and `Cosmetic` have no exact runtime counterpart and must remain unsupported rather than being silently aliased. Next repair should use a localized explicit adapter that accepts only the exact/equivalent slots above and returns `None` for unsupported slots; `EquipItem` should require data category `Equipment` and a successful adapter result.
-- 2026-09-21: First local adapter patch attempt was safely aborted before writing because the PowerShell literal newline matcher did not match the file's actual line endings; no production file change was made by that attempt. Next patch must use line-ending-agnostic matching and verify the exact replacement count before writing.
-- 2026-09-21: Adapter replacement matched exactly one EquipItem block, but the write was aborted because this Windows PowerShell version does not support `-Encoding utf8NoBOM`. The source file was not written by that command.
-- 2026-09-21: Adapter write succeeded but exposed a second PowerShell replacement issue: the header replacement used an escaped replacement string, so literal backslashes and `\r\n` text were written into the beginning of `AetherInventorySubsystem.cpp`. The EquipItem block itself was replaced correctly. Next command must repair only the malformed generated prefix, then verify the file before any build.
-- 2026-09-21: Malformed adapter prefix in the local inventory subsystem was repaired successfully. The file now has a valid C++ namespace adapter with explicit data-slot to runtime-slot mapping, and the EquipItem replacement remains in place. No build has been run against this repair yet.
-- 2026-09-21: Final local verification confirms the inventory adapter and EquipItem data-category bridge are present exactly once; unsupported data slots resolve to runtime `None`. The malformed-prefix repair is also reflected in the source. Proceeding to the next validation step: targeted Unreal Editor build.
+## U0.3 — Backup/working-tree safety
+Status: PENDING
 
-## 2026-09-21 — Full repository audit before resuming local execution
-- GitHub default branch is `main`; current HEAD is `69ca9f8c8d0d12a7b732e417453fc5ad6f4eb9ee` (`docs: confirm inventory adapter before build`).
-- Repository tree is present and non-truncated; Unreal project, Source, Config, Content placeholders, Docs, project-memory continuity, targets and CI workflow are tracked.
-- Repository validation workflow has recently reported success, but that is repository validation only and is NOT evidence of Unreal Editor compilation or runtime success.
-- Important divergence found during audit: GitHub HEAD's tracked `AetherInventorySubsystem.cpp` still shows the pre-adapter runtime/data type boundary, while the provided local state reports the explicit adapter repair is already applied locally. Per project rule, local source remains authoritative; do NOT overwrite the local repair from GitHub.
-- GitHub continuity records the local adapter as repaired and explicitly says the next step is the real UE 5.8 Editor build.
-- Therefore the audit does not change the execution plan: run the real local Build.bat against the local working tree, capture `D:\Temp_AetherBuild.log`, and use only the resulting compiler/UHT errors to select the next blocker.
+## U0.4 — Generate project files / compile prerequisites
+Status: PENDING
+
+## U0.5 — First UHT/UBT build
+Status: PENDING
+
+# U1 — Editor Boot & Base Map
+Status: PENDING
+- Open project in Unreal 5.8.1.
+- Confirm no startup crash.
+- Confirm no new critical errors.
+- Open/create development map.
+- Confirm PlayerStart and base character.
+
+# U2 — Visual Foundation + Real FBX
+Status: PENDING
+- Import one real character FBX.
+- Validate skeleton, scale, materials and collision.
+- Create one reusable Visual Profile Data Asset.
+- Apply to AAetherCharacter.
+- Verify camera/movement.
+
+# U3 — Animation
+Status: PENDING
+- Create one reusable Anim Blueprint based on UAetherBaseAnimInstance.
+- Configure Idle/Walk/Run/Jump/Fall.
+- Import one attack montage.
+- Verify attack presentation.
+
+# U4 — Skills / Buffs / Debuffs / VFX
+Status: PENDING
+- Configure aether.skill.training_strike.
+- Import one simple VFX/SFX.
+- Test cast, range and cooldown.
+- Verify server authority with 2 clients.
+
+# U5 — Monsters / NPCs / Bosses
+Status: PENDING
+- Create one UAetherCreatureCatalog.
+- Add one Monster, one NPC and one Boss.
+- Reuse AAetherCreatureActor.
+- Import only one real creature FBX initially.
+- Spawn and validate MaxAlive.
+
+# U6 — World / Maps / Streaming
+Status: PENDING
+- Create first real development map.
+- Configure world/streaming using existing data contracts.
+- Validate player spawn and transitions.
+
+# U7 — Inventory / Loot / Equipment
+Status: PENDING
+- Create required Data Assets.
+- Create minimum inventory/equipment UI.
+- Equip one real item visual.
+- Validate server-authoritative mutations.
+
+# U8 — Crafting / Economy / Shops
+Status: PENDING
+- Create one shop.
+- Create one recipe.
+- Create one forge/crafting station.
+- Validate buy/sell/craft.
+
+# U9 — MMORPG UI/UX
+Status: PENDING
+Only four initial Widget Blueprints:
+- WBP_HUD
+- WBP_Inventory
+- WBP_Character
+- WBP_Skills
+
+# U10 — Audio
+Status: PENDING
+- Import minimum music/ambience/UI/combat SFX.
+- Create one Audio Catalog Data Asset.
+- Verify client playback and Dedicated Server guard.
+
+# U11 — Multiplayer / Persistence / Dedicated Server
+Status: PENDING
+- 2-client PIE.
+- Dedicated Server + clients.
+- Disconnect/reconnect.
+- Save/load character state.
+- Inventory/economy/quest persistence.
+
+# U12 — Performance / Streaming / Scale
+Status: PENDING
+- Run performance budget checks.
+- Profile first playable map.
+- Validate streaming.
+
+# U13 — Complete Content Package
+Status: PENDING
+- Assemble first playable content package Data Asset.
+- Validate required AssetIDs.
+
+# U14 — Alpha Gate
+Status: PENDING
+- Build, Content, Security, Persistence, Networking, Dedicated Server, Multiplayer, Performance, UI, Audio.
+- Any unverified check remains NOT PASSED.
+
+# U15 — Beta / RC / Release
+Status: PENDING
+- Fix runtime defects.
+- Repeat regression.
+- Package client/server.
+- Progress Beta → RC → Release only after gates pass.
+
+# Command/result journal
+
+## Entry 001 — U0.1
+Status: PENDING
+Command: See U0.1 above.
+Result: Awaiting Helder's terminal output.
+Analysis: No local Unreal environment facts have been assumed.
+Next: Analyze output, update this file, then issue exactly one next command.

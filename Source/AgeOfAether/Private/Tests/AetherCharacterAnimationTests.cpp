@@ -1,3 +1,4 @@
+#include <limits>
 #include "Misc/AutomationTest.h"
 #include "Characters/AetherCharacterAnimationProfile.h"
 
@@ -19,7 +20,7 @@ bool FAetherCharacterAnimationProfileValidationTest::RunTest(const FString& Para
     Profile->RunSpeedThreshold = 2.0f;
     TestFalse(TEXT("run threshold cannot be below walk threshold"), Profile->ValidateProfile(Error));
 
-    Profile->RunSpeedThreshold = TNumericLimits<float>::Infinity();
+    Profile->RunSpeedThreshold = std::numeric_limits<float>::infinity();
     TestFalse(TEXT("infinite threshold is rejected"), Profile->ValidateProfile(Error));
 
     return true;

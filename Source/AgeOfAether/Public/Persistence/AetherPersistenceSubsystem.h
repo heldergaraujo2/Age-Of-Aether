@@ -3,8 +3,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Persistence/AetherPersistenceService.h"
-#include "Persistence/AetherPersistenceSubsystem.generated.h"
-
+#include "AetherPersistenceSubsystem.generated.h"
 class UAetherPersistenceSaveGame;
 
 UCLASS()

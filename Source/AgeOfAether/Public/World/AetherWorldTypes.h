@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "World/AetherWorldTypes.generated.h"
+#include "AetherWorldTypes.generated.h"
 
 UENUM(BlueprintType)
 enum class EAetherWorldZoneType : uint8

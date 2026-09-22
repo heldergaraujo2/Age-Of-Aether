@@ -144,7 +144,7 @@ struct FAetherUINotification
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly) uint32 NotificationID = 0;
+    UPROPERTY() uint32 NotificationID = 0;
     UPROPERTY(BlueprintReadOnly) EAetherUINotificationType Type = EAetherUINotificationType::Info;
     UPROPERTY(BlueprintReadOnly) FString Title;
     UPROPERTY(BlueprintReadOnly) FString Message;

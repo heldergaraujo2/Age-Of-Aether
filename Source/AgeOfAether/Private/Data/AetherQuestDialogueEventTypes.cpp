@@ -36,29 +36,32 @@ bool ValidateConditions(const TArray<FAetherQuestCondition>& Conditions, FString
 bool FAetherQuestCondition::IsStructurallyValid(FString& OutError) const
 {
     OutError.Reset();
-    TArray<FAetherQuestCondition> Conditions;\n    Conditions.Add(*this);\n    return ValidateConditions(Conditions, OutError);
+    TArray<FAetherQuestCondition> Conditions;
+    Conditions.Add(*this);
+    return ValidateConditions(Conditions, OutError);
 }
 
-bool FAetherQuestObjectiveDefinition::IsStructurallyValid(FString& OutError) const
+bool FAetherDataQuestObjectiveDefinition::IsStructurallyValid(FString& OutError) const
 {
     OutError.Reset();
     if (!RequiredID(ObjectiveID)) { OutError = TEXT("ObjectiveID is required."); return false; }
     if (RequiredCount <= 0) { OutError = TEXT("RequiredCount must be positive."); return false; }
     if (!ValidLevelRange(MinimumLevel, MaximumLevel)) { OutError = TEXT("Invalid objective level range."); return false; }
     if (!ValidFiniteNonNegative(TimeLimitSeconds)) { OutError = TEXT("TimeLimitSeconds must be finite and non-negative."); return false; }
-    if ((Type == EAetherQuestObjectiveType::Kill || Type == EAetherQuestObjectiveType::Collect ||
-         Type == EAetherQuestObjectiveType::Interact || Type == EAetherQuestObjectiveType::Talk ||
-         Type == EAetherQuestObjectiveType::Craft) && !RequiredID(TargetID))
+    if (Type == EAetherDataQuestObjectiveType::Timed && TimeLimitSeconds <= 0.0) { OutError = TEXT("Timed objective requires a positive TimeLimitSeconds."); return false; }
+    if ((Type == EAetherDataQuestObjectiveType::Kill || Type == EAetherDataQuestObjectiveType::Collect ||
+         Type == EAetherDataQuestObjectiveType::Interact || Type == EAetherDataQuestObjectiveType::Talk ||
+         Type == EAetherDataQuestObjectiveType::Craft) && !RequiredID(TargetID))
     { OutError = TEXT("TargetID is required for this objective type."); return false; }
-    if (Type == EAetherQuestObjectiveType::ReachArea && !RequiredID(AreaTag))
+    if (Type == EAetherDataQuestObjectiveType::ReachArea && !RequiredID(AreaTag))
     { OutError = TEXT("AreaTag is required for ReachArea."); return false; }
-    if (Type == EAetherQuestObjectiveType::WorldEvent && !RequiredID(EventID))
+    if (Type == EAetherDataQuestObjectiveType::WorldEvent && !RequiredID(EventID))
     { OutError = TEXT("EventID is required for WorldEvent."); return false; }
     if (!ValidateConditions(Conditions, OutError)) return false;
     return true;
 }
 
-bool FAetherQuestDefinition::IsStructurallyValid(FString& OutError) const
+bool FAetherDataQuestDefinition::IsStructurallyValid(FString& OutError) const
 {
     OutError.Reset();
     if (!RequiredID(DefinitionID) || !RequiredID(DisplayName)) { OutError = TEXT("Quest ID and DisplayName are required."); return false; }

@@ -2,8 +2,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Multiplayer/AetherMultiplayerService.h"
-#include "Multiplayer/AetherMultiplayerSubsystem.generated.h"
-
+#include "AetherMultiplayerSubsystem.generated.h"
 UCLASS()
 class AGEOFAETHER_API UAetherMultiplayerSubsystem : public UGameInstanceSubsystem
 {

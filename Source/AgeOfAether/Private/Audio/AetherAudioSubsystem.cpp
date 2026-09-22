@@ -17,6 +17,6 @@ bool UAetherAudioSubsystem::PlayLoop(const FString& ID)
  UAudioComponent* C=UGameplayStatics::SpawnSound2D(GetWorld(),S,D->Volume,D->Pitch); if(!C)return false;
  C->bAutoDestroy=false; ActiveLoops.Add(D->AudioID,C); return true;
 }
-void UAetherAudioSubsystem::StopLoop(const FString& ID){if(UAudioComponent** C=ActiveLoops.Find(ID)){if(IsValid(*C)){(*C)->Stop();(*C)->DestroyComponent();}ActiveLoops.Remove(ID);}}
-bool UAetherAudioSubsystem::IsPlaying(const FString& ID) const {const UAudioComponent* const* C=ActiveLoops.Find(ID);return C&&IsValid(*C)&&(*C)->IsPlaying();}
+void UAetherAudioSubsystem::StopLoop(const FString& ID){if(TObjectPtr<UAudioComponent>* C=ActiveLoops.Find(ID)){if(IsValid(*C)){(*C)->Stop();(*C)->DestroyComponent();}ActiveLoops.Remove(ID);}}
+bool UAetherAudioSubsystem::IsPlaying(const FString& ID) const {const TObjectPtr<UAudioComponent>* C=ActiveLoops.Find(ID);return C&&IsValid(*C)&&(*C)->IsPlaying();}
 bool UAetherAudioSubsystem::Validate(TArray<FString>& Errors) const{return Registry.Validate(Errors);}

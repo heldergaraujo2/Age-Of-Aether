@@ -9,7 +9,7 @@ UENUM(BlueprintType)
 enum class EAetherCombatRule : uint8 { Peaceful, PvP, PvPWithPenalty, NoCombat };
 
 UENUM(BlueprintType)
-enum class EAetherInteractionType : uint8 { Talk, Use, Harvest, Enter, Exit, Teleport, Quest, Forge, Craft, Container, Custom };
+enum class EAetherWorldInteractionType : uint8 { Talk, Use, Harvest, Enter, Exit, Teleport, Quest, Forge, Craft, Container, Custom };
 
 UENUM(BlueprintType)
 enum class EAetherWorldRequirementType : uint8
@@ -126,11 +126,11 @@ struct FAetherWorldActorPlacementDefinition
 };
 
 USTRUCT(BlueprintType)
-struct FAetherInteractionDefinition
+struct FAetherWorldInteractionDefinition
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString DefinitionID;
-    UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherInteractionType Type = EAetherInteractionType::Use;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) EAetherWorldInteractionType Type = EAetherWorldInteractionType::Use;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString WorldActorID;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString PointID;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString StreamingCellID;
@@ -168,7 +168,7 @@ struct FAetherMapDefinition
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherWorldPointDefinition> Points;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherMapConnectionDefinition> Connections;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherWorldActorPlacementDefinition> ActorPlacements;
-    UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherInteractionDefinition> Interactions;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FAetherWorldInteractionDefinition> Interactions;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> WorldContentIDs;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> SpawnGroupIDs;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) TArray<FString> RecipeIDs;

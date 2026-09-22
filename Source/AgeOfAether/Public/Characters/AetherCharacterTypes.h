@@ -1,8 +1,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Accounts/AetherAccountSessionTypes.h"
 #include "World/AetherWorldTypes.h"
-#include "Characters/AetherCharacterTypes.generated.h"
+#include "AetherCharacterTypes.generated.h"
 
 UENUM(BlueprintType)
 enum class EAetherCharacterClass : uint8

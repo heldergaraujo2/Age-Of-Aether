@@ -83,22 +83,22 @@ void AAetherCharacter::PossessedBy(AController* NewController)
 
 void AAetherCharacter::UnPossessed()
 {
-    AController* PreviousController = GetController();
+    AController* PreviousCharacterController = GetController();
 
     if (HasAuthority())
     {
         if (AAetherCharacterPlayerState* CharacterState = GetPlayerState<AAetherCharacterPlayerState>())
         {
-            if (AAetherNetworkPlayerController* Controller = Cast<AAetherNetworkPlayerController>(PreviousController))
+            if (AAetherNetworkPlayerController* NetworkController = Cast<AAetherNetworkPlayerController>(PreviousCharacterController))
             {
-                if (Controller->IsAccountAuthenticated())
+                if (NetworkController->IsAccountAuthenticated())
                 {
                     if (UAetherCharacterSubsystem* Characters = GetGameInstance()
                         ? GetGameInstance()->GetSubsystem<UAetherCharacterSubsystem>()
                         : nullptr)
                     {
                         Characters->DeselectCharacter(
-                            Controller->GetAuthenticatedAccountId(),
+                            NetworkController->GetAuthenticatedAccountId(),
                             CharacterState->GetCharacterId());
                     }
                 }
@@ -362,8 +362,8 @@ void AAetherCharacter::ServerRequestBasicAttack_Implementation(const FAetherChar
         return;
     }
 
-    if (AAetherNetworkPlayerController* Controller = Cast<AAetherNetworkPlayerController>(GetController()))
+    if (AAetherNetworkPlayerController* NetworkController = Cast<AAetherNetworkPlayerController>(GetController()))
     {
-        Controller->BasicAttack(TargetCharacterId);
+        NetworkController->BasicAttack(TargetCharacterId);
     }
 }

@@ -8,7 +8,7 @@ namespace
     }
 }
 
-bool FAetherLootEntry::IsStructurallyValid(FString& OutError) const
+bool FAetherDataLootEntry::IsStructurallyValid(FString& OutError) const
 {
     OutError.Reset();
     if (ItemID.TrimStartAndEnd().IsEmpty())
@@ -52,7 +52,7 @@ bool FAetherLootTableDefinition::IsStructurallyValid(FString& OutError) const
         OutError = TEXT("Loot table level bounds are invalid.");
         return false;
     }
-    for (const FAetherLootEntry& Entry : Entries)
+    for (const FAetherDataLootEntry& Entry : Entries)
     {
         if (!Entry.IsStructurallyValid(OutError))
         {
@@ -62,7 +62,7 @@ bool FAetherLootTableDefinition::IsStructurallyValid(FString& OutError) const
     if (SelectionMode == EAetherLootSelectionMode::WeightedSingle)
     {
         double TotalWeight = 0.0;
-        for (const FAetherLootEntry& Entry : Entries) { TotalWeight += Entry.Weight; }
+        for (const FAetherDataLootEntry& Entry : Entries) { TotalWeight += Entry.Weight; }
         if (!FMath::IsFinite(TotalWeight) || TotalWeight <= 0.0)
         {
             OutError = TEXT("WeightedSingle requires a positive total weight.");
@@ -72,7 +72,7 @@ bool FAetherLootTableDefinition::IsStructurallyValid(FString& OutError) const
     if (SelectionMode == EAetherLootSelectionMode::ChanceEach)
     {
         bool HasPositiveChance = false;
-        for (const FAetherLootEntry& Entry : Entries) { HasPositiveChance |= Entry.Chance > 0.0; }
+        for (const FAetherDataLootEntry& Entry : Entries) { HasPositiveChance |= Entry.Chance > 0.0; }
         if (!HasPositiveChance)
         {
             OutError = TEXT("ChanceEach requires at least one positive chance.");

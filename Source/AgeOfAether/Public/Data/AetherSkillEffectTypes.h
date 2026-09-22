@@ -17,7 +17,7 @@ USTRUCT(BlueprintType)
 struct FAetherSkillCost { GENERATED_BODY() UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 Mana=0; UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 Health=0; UPROPERTY(EditAnywhere, BlueprintReadOnly) int32 Resource=0; UPROPERTY(EditAnywhere, BlueprintReadOnly) FString ResourceID; };
 
 USTRUCT(BlueprintType)
-struct FAetherSkillDefinition
+struct FAetherDataSkillDefinition
 {
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString DefinitionID;

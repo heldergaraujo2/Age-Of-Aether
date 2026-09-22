@@ -8,7 +8,7 @@ bool IsFiniteNonNegative(const double Value)
 }
 }
 
-bool FAetherItemDefinition::IsStructurallyValid(FString& OutError) const
+bool FAetherDataItemDefinition::IsStructurallyValid(FString& OutError) const
 {
     OutError.Reset();
     if (DefinitionID.TrimStartAndEnd().IsEmpty()) { OutError = TEXT("DefinitionID is required."); return false; }
@@ -18,8 +18,8 @@ bool FAetherItemDefinition::IsStructurallyValid(FString& OutError) const
     if (!IsFiniteNonNegative(Weight)) { OutError = TEXT("Weight must be finite and non-negative."); return false; }
     if (BaseDurability < 0 || MaxDurability < 0 || BaseDurability > MaxDurability) { OutError = TEXT("Invalid durability range."); return false; }
     if (Requirements.CharacterLevel < 0) { OutError = TEXT("Requirement CharacterLevel cannot be negative."); return false; }
-    if (Category == EAetherItemCategory::Equipment && EquipmentSlot == EAetherEquipmentSlot::None) { OutError = TEXT("Equipment items require an equipment slot."); return false; }
-    if (Category != EAetherItemCategory::Equipment && EquipmentSlot != EAetherEquipmentSlot::None) { OutError = TEXT("Non-equipment items cannot define an equipment slot."); return false; }
+    if (Category == EAetherDataItemCategory::Equipment && EquipmentSlot == EAetherDataEquipmentSlot::None) { OutError = TEXT("Equipment items require an equipment slot."); return false; }
+    if (Category != EAetherDataItemCategory::Equipment && EquipmentSlot != EAetherDataEquipmentSlot::None) { OutError = TEXT("Non-equipment items cannot define an equipment slot."); return false; }
     if (Economy.BuyValue < 0 || Economy.SellValue < 0) { OutError = TEXT("Economy values cannot be negative."); return false; }
     if (MaxEnhancementLevel < 0 || Enhancements.Num() != MaxEnhancementLevel + 1) { OutError = TEXT("Enhancements must contain exactly levels 0 through MaxEnhancementLevel."); return false; }
 

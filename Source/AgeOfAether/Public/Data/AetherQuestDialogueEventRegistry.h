@@ -11,12 +11,12 @@ class FAetherLootRewardRegistry;
 class FAetherQuestDialogueEventRegistry
 {
 public:
-    bool RegisterQuest(const FAetherQuestDefinition& Definition, FString& OutError);
+    bool RegisterQuest(const FAetherDataQuestDefinition& Definition, FString& OutError);
     bool RegisterDialogue(const FAetherDialogueDefinition& Definition, FString& OutError);
     bool RegisterWorldEvent(const FAetherWorldEventDefinition& Definition, FString& OutError);
     bool RegisterWorldContent(const FAetherWorldContentDefinition& Definition, FString& OutError);
 
-    bool ResolveQuest(const FString& ID, FAetherQuestDefinition& OutDefinition) const;
+    bool ResolveQuest(const FString& ID, FAetherDataQuestDefinition& OutDefinition) const;
     bool ResolveDialogue(const FString& ID, FAetherDialogueDefinition& OutDefinition) const;
     bool ResolveWorldEvent(const FString& ID, FAetherWorldEventDefinition& OutDefinition) const;
     bool ResolveWorldContent(const FString& ID, FAetherWorldContentDefinition& OutDefinition) const;
@@ -37,7 +37,7 @@ public:
     void Reset();
 
 private:
-    TMap<FString, FAetherQuestDefinition> Quests;
+    TMap<FString, FAetherDataQuestDefinition> Quests;
     TMap<FString, FAetherDialogueDefinition> Dialogues;
     TMap<FString, FAetherWorldEventDefinition> WorldEvents;
     TMap<FString, FAetherWorldContentDefinition> WorldContents;

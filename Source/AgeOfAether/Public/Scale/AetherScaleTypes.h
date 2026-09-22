@@ -90,7 +90,7 @@ USTRUCT(BlueprintType)
 struct FAetherServerTransferRequest
 {
     GENERATED_BODY()
-    UPROPERTY(BlueprintReadOnly) uint64 TransferId = 0;
+    UPROPERTY() uint64 TransferId = 0;
     UPROPERTY(BlueprintReadOnly) FString AccountId;
     UPROPERTY(BlueprintReadOnly) FString CharacterId;
     UPROPERTY(BlueprintReadOnly) FAetherServerNodeId SourceNode;

@@ -64,7 +64,6 @@ public:
     UFUNCTION(BlueprintCallable, Category="Age of Aether|UI")
     void SetSettings(const FAetherUISettings& Settings);
 
-    UFUNCTION(BlueprintCallable, Category="Age of Aether|UI")
     uint32 PushNotification(EAetherUINotificationType Type, const FString& Title, const FString& Message, double NowSeconds, double DurationSeconds = 5.0);
 
     UFUNCTION(BlueprintCallable, Category="Age of Aether|UI")

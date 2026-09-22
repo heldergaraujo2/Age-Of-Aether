@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Interaction/AetherInteractionTypes.generated.h"
+#include "AetherInteractionTypes.generated.h"
 
 UENUM(BlueprintType) enum class EAetherInteractionType:uint8 { Talk, Quest, Shop, Service, Event };
 UENUM(BlueprintType) enum class EAetherQuestState:uint8 { Locked, Available, Active, Completed, Failed };
@@ -17,7 +17,7 @@ USTRUCT(BlueprintType) struct FAetherInteractionDefinition{
  bool IsValid()const{return !InteractionID.TrimStartAndEnd().IsEmpty()&&!TargetID.TrimStartAndEnd().IsEmpty()&&!DisplayName.TrimStartAndEnd().IsEmpty()&&MinimumLevel>=1;}
 };
 
-USTRUCT(BlueprintType) struct FAetherQuestDefinition{
+USTRUCT(BlueprintType) struct FAetherInteractionQuestDefinition{
  GENERATED_BODY()
  UPROPERTY(EditAnywhere,BlueprintReadOnly) FString QuestID;
  UPROPERTY(EditAnywhere,BlueprintReadOnly) FString DisplayName;

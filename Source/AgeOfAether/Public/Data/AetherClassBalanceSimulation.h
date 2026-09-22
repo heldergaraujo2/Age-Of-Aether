@@ -9,6 +9,8 @@ struct FAetherBalanceSimulationCase
     GENERATED_BODY()
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString ClassID;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) FString EvolutionID;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) FString TargetClassID;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly) FString TargetEvolutionID;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) double BaseDamage = 100.0;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) double TargetDefense = 0.0;
     UPROPERTY(EditAnywhere, BlueprintReadOnly) double TargetResistancePercent = 0.0;

@@ -16,7 +16,7 @@ FAetherContentDefinition MakeDefinition(const TCHAR* ID, EAetherContentType Type
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherContentRegistryRegistrationTest,
     "AgeOfAether.ContentRegistry.Registration",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherContentRegistryRegistrationTest::RunTest(const FString&)
 {
@@ -39,7 +39,7 @@ bool FAetherContentRegistryRegistrationTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherContentRegistryReferenceTest,
     "AgeOfAether.ContentRegistry.References",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherContentRegistryReferenceTest::RunTest(const FString&)
 {
@@ -63,7 +63,7 @@ bool FAetherContentRegistryReferenceTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherContentRegistryCycleTest,
     "AgeOfAether.ContentRegistry.Cycles",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherContentRegistryCycleTest::RunTest(const FString&)
 {
@@ -90,7 +90,7 @@ bool FAetherContentRegistryCycleTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherContentRegistryNumericValidationTest,
     "AgeOfAether.ContentRegistry.NumericValidation",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherContentRegistryNumericValidationTest::RunTest(const FString&)
 {
@@ -113,7 +113,7 @@ bool FAetherContentRegistryNumericValidationTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherContentRegistryDeterministicOrderTest,
     "AgeOfAether.ContentRegistry.DeterministicOrder",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherContentRegistryDeterministicOrderTest::RunTest(const FString&)
 {
@@ -136,7 +136,7 @@ bool FAetherContentRegistryDeterministicOrderTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherContentRegistryNonNegativeTest,
     "AgeOfAether.ContentRegistry.NonNegative",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherContentRegistryNonNegativeTest::RunTest(const FString&)
 {
@@ -152,7 +152,7 @@ bool FAetherContentRegistryNonNegativeTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherContentRegistrySelfCycleTest,
     "AgeOfAether.ContentRegistry.SelfCycle",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherContentRegistrySelfCycleTest::RunTest(const FString&)
 {

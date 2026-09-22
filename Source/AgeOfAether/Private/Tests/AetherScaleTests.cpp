@@ -1,7 +1,7 @@
 #include "Misc/AutomationTest.h"
 #include "Scale/AetherScaleService.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleConfigTest, "AgeOfAether.Scale.Config", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleConfigTest, "AgeOfAether.Scale.Config", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherScaleConfigTest::RunTest(const FString&)
 {
     FAetherScaleConfig Config;
@@ -11,7 +11,7 @@ bool FAetherScaleConfigTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleAdmissionTest, "AgeOfAether.Scale.Admission", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleAdmissionTest, "AgeOfAether.Scale.Admission", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherScaleAdmissionTest::RunTest(const FString&)
 {
     FAetherScaleService Service;
@@ -25,7 +25,7 @@ bool FAetherScaleAdmissionTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleDrainTest, "AgeOfAether.Scale.Drain", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleDrainTest, "AgeOfAether.Scale.Drain", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherScaleDrainTest::RunTest(const FString&)
 {
     FAetherScaleService Service; FAetherScaleConfig Config; FAetherServerNodeId NodeId; NodeId.Value = TEXT("shard-1");
@@ -35,7 +35,7 @@ bool FAetherScaleDrainTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleHeartbeatTest, "AgeOfAether.Scale.Heartbeat", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleHeartbeatTest, "AgeOfAether.Scale.Heartbeat", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherScaleHeartbeatTest::RunTest(const FString&)
 {
     FAetherScaleService Service; FAetherScaleConfig Config; FAetherServerNodeId NodeId; NodeId.Value = TEXT("shard-1");
@@ -47,7 +47,7 @@ bool FAetherScaleHeartbeatTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleHardLoadTest, "AgeOfAether.Scale.HardLoad", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleHardLoadTest, "AgeOfAether.Scale.HardLoad", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherScaleHardLoadTest::RunTest(const FString&)
 {
     FAetherScaleService Service; FAetherScaleConfig Config; FAetherServerNodeId NodeId; NodeId.Value = TEXT("shard-1");
@@ -61,7 +61,7 @@ bool FAetherScaleHardLoadTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleTransferTest, "AgeOfAether.Scale.Transfer", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleTransferTest, "AgeOfAether.Scale.Transfer", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherScaleTransferTest::RunTest(const FString&)
 {
     FAetherScaleService Service; FAetherScaleConfig Config; Config.TransferTimeoutSeconds = 5.0;
@@ -74,7 +74,7 @@ bool FAetherScaleTransferTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleValidationTest, "AgeOfAether.Scale.Validation", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherScaleValidationTest, "AgeOfAether.Scale.Validation", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FAetherScaleValidationTest::RunTest(const FString&)
 {
     FAetherScaleService Service; FAetherScaleConfig Config; FAetherServerNodeId Source; Source.Value = TEXT("source");

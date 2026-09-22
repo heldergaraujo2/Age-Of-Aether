@@ -58,7 +58,7 @@ struct FAetherClientRequestState
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly) uint32 RequestID = 0;
+    UPROPERTY() uint32 RequestID = 0;
     UPROPERTY(BlueprintReadOnly) EAetherClientRequestState State = EAetherClientRequestState::Pending;
     UPROPERTY(BlueprintReadOnly) double CreatedAtSeconds = 0.0;
     UPROPERTY(BlueprintReadOnly) double TimeoutSeconds = 15.0;

@@ -3,7 +3,7 @@
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherReleaseManifestValidationTest,
     "AgeOfAether.Release.ManifestValidation",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherReleaseManifestValidationTest::RunTest(const FString&)
 {
@@ -20,7 +20,7 @@ bool FAetherReleaseManifestValidationTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherReleaseGateTest,
     "AgeOfAether.Release.Gate",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherReleaseGateTest::RunTest(const FString&)
 {
@@ -43,7 +43,7 @@ bool FAetherReleaseGateTest::RunTest(const FString&)
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherReleaseGateFailureTest,
     "AgeOfAether.Release.GateFailure",
-    EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 
 bool FAetherReleaseGateFailureTest::RunTest(const FString&)
 {

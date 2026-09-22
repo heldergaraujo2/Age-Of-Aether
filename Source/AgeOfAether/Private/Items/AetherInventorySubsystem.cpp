@@ -1,13 +1,30 @@
 #include "Items/AetherInventorySubsystem.h"
 
+namespace
+{
+EAetherEquipmentSlot ToRuntimeEquipmentSlot(const EAetherDataEquipmentSlot Slot)
+{
+    switch (Slot)
+    {
+    case EAetherDataEquipmentSlot::MainHand: return EAetherEquipmentSlot::MainHand;
+    case EAetherDataEquipmentSlot::OffHand:  return EAetherEquipmentSlot::OffHand;
+    case EAetherDataEquipmentSlot::Head:     return EAetherEquipmentSlot::Head;
+    case EAetherDataEquipmentSlot::Chest:    return EAetherEquipmentSlot::Chest;
+    case EAetherDataEquipmentSlot::Legs:     return EAetherEquipmentSlot::Legs;
+    case EAetherDataEquipmentSlot::Gloves:   return EAetherEquipmentSlot::Hands;
+    case EAetherDataEquipmentSlot::Feet:     return EAetherEquipmentSlot::Feet;
+    default:                                 return EAetherEquipmentSlot::None;
+    }
+}
+}
 FString UAetherInventorySubsystem::CharacterKey(const FAetherCharacterId& Id){ return Id.Value.ToLower(); }
 
-const FAetherItemDefinition* UAetherInventorySubsystem::ResolveDefinition(const FString& DefinitionID) const
+const FAetherDataItemDefinition* UAetherInventorySubsystem::ResolveDefinition(const FString& DefinitionID) const
 {
     if (!ItemRegistry) return nullptr;
-    FAetherItemDefinition Def;
+    FAetherDataItemDefinition Def;
     if (!ItemRegistry->Resolve(DefinitionID, Def)) return nullptr;
-    static thread_local FAetherItemDefinition CachedDefinition;
+    static thread_local FAetherDataItemDefinition CachedDefinition;
     CachedDefinition = MoveTemp(Def);
     return &CachedDefinition;
 }
@@ -22,7 +39,7 @@ bool UAetherInventorySubsystem::AddItem(const FAetherCharacterId& CharacterId,co
 {
     OutItem=FAetherInventoryItem{}; OutResult=EAetherInventoryResult::InvalidRequest;
     if(!CharacterId.IsValid()||Quantity<=0){OutResult=EAetherInventoryResult::InvalidQuantity;return false;}
-    const FAetherItemDefinition* Def=ResolveDefinition(DefinitionID);
+    const FAetherDataItemDefinition* Def=ResolveDefinition(DefinitionID);
     if(!Def){OutResult=EAetherInventoryResult::DefinitionNotFound;return false;}
     FAetherInventoryState& State=States.FindOrAdd(CharacterKey(CharacterId)); State.CharacterId=CharacterId; State.Capacity=64;
     int32 Remaining=Quantity;
@@ -61,10 +78,12 @@ bool UAetherInventorySubsystem::EquipItem(const FAetherCharacterId& CharacterId,
 {
     OutResult=EAetherInventoryResult::InvalidRequest; FAetherInventoryState* State=States.Find(CharacterKey(CharacterId)); if(!State){OutResult=EAetherInventoryResult::ItemNotFound;return false;}
     FAetherInventoryItem* Item=FindItem(*State,InstanceID); if(!Item){OutResult=EAetherInventoryResult::ItemNotFound;return false;}
-    const FAetherItemDefinition* Def=ResolveDefinition(Item->Snapshot.DefinitionID); if(!Def){OutResult=EAetherInventoryResult::DefinitionNotFound;return false;}
-    if(Def->EquipmentSlot==EAetherEquipmentSlot::None||Def->Category!=EAetherItemCategory::Equipment){OutResult=EAetherInventoryResult::CannotEquip;return false;}
-    if(State->Equipment.Equipped.Contains(Def->EquipmentSlot)){OutResult=EAetherInventoryResult::AlreadyEquipped;return false;}
-    State->Equipment.Equipped.Add(Def->EquipmentSlot,*Item); State->Items.RemoveAll([&](const FAetherInventoryItem& X){return X.Snapshot.InstanceID==InstanceID;}); OutResult=EAetherInventoryResult::Accepted; return true;
+    const FAetherDataItemDefinition* Def=ResolveDefinition(Item->Snapshot.DefinitionID); if(!Def){OutResult=EAetherInventoryResult::DefinitionNotFound;return false;}
+    if(Def->Category!=EAetherDataItemCategory::Equipment){OutResult=EAetherInventoryResult::CannotEquip;return false;}
+    const EAetherEquipmentSlot RuntimeSlot=ToRuntimeEquipmentSlot(Def->EquipmentSlot);
+    if(RuntimeSlot==EAetherEquipmentSlot::None){OutResult=EAetherInventoryResult::CannotEquip;return false;}
+    if(State->Equipment.Equipped.Contains(RuntimeSlot)){OutResult=EAetherInventoryResult::AlreadyEquipped;return false;}
+    State->Equipment.Equipped.Add(RuntimeSlot,*Item); State->Items.RemoveAll([&](const FAetherInventoryItem& X){return X.Snapshot.InstanceID==InstanceID;}); OutResult=EAetherInventoryResult::Accepted; return true;
 }
 
 bool UAetherInventorySubsystem::UnequipSlot(const FAetherCharacterId& CharacterId,EAetherEquipmentSlot Slot,EAetherInventoryResult& OutResult)

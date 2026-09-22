@@ -3,10 +3,10 @@
 #include "Data/AetherAssetRegistry.h"
 namespace { FString N(const FString& S){return S.TrimStartAndEnd();} }
 bool FAetherSkillEffectRegistry::IsIDAvailable(const FString& I)const{FString NID=N(I);return !Skills.Contains(NID)&&!Effects.Contains(NID)&&!Statuses.Contains(NID);}
-bool FAetherSkillEffectRegistry::RegisterSkill(const FAetherSkillDefinition&D,FString&E){E.Reset();if(!D.IsStructurallyValid(E))return false;FString I=N(D.DefinitionID);if(!IsIDAvailable(I)){E=FString::Printf(TEXT("Duplicate definition ID '%s'."),*I);return false;}auto C=D;C.DefinitionID=I;Skills.Add(I,MoveTemp(C));return true;}
+bool FAetherSkillEffectRegistry::RegisterSkill(const FAetherDataSkillDefinition&D,FString&E){E.Reset();if(!D.IsStructurallyValid(E))return false;FString I=N(D.DefinitionID);if(!IsIDAvailable(I)){E=FString::Printf(TEXT("Duplicate definition ID '%s'."),*I);return false;}auto C=D;C.DefinitionID=I;Skills.Add(I,MoveTemp(C));return true;}
 bool FAetherSkillEffectRegistry::RegisterEffect(const FAetherEffectDefinition&D,FString&E){E.Reset();if(!D.IsStructurallyValid(E))return false;FString I=N(D.DefinitionID);if(!IsIDAvailable(I)){E=FString::Printf(TEXT("Duplicate definition ID '%s'."),*I);return false;}auto C=D;C.DefinitionID=I;Effects.Add(I,MoveTemp(C));return true;}
 bool FAetherSkillEffectRegistry::RegisterStatus(const FAetherStatusDefinition&D,FString&E){E.Reset();if(!D.IsStructurallyValid(E))return false;FString I=N(D.DefinitionID);if(!IsIDAvailable(I)){E=FString::Printf(TEXT("Duplicate definition ID '%s'."),*I);return false;}auto C=D;C.DefinitionID=I;Statuses.Add(I,MoveTemp(C));return true;}
-bool FAetherSkillEffectRegistry::ResolveSkill(const FString&I,FAetherSkillDefinition&O)const{auto*P=Skills.Find(N(I));if(!P)return false;O=*P;return true;}
+bool FAetherSkillEffectRegistry::ResolveSkill(const FString&I,FAetherDataSkillDefinition&O)const{auto*P=Skills.Find(N(I));if(!P)return false;O=*P;return true;}
 bool FAetherSkillEffectRegistry::ResolveEffect(const FString&I,FAetherEffectDefinition&O)const{auto*P=Effects.Find(N(I));if(!P)return false;O=*P;return true;}
 bool FAetherSkillEffectRegistry::ResolveStatus(const FString&I,FAetherStatusDefinition&O)const{auto*P=Statuses.Find(N(I));if(!P)return false;O=*P;return true;}
 bool FAetherSkillEffectRegistry::Contains(const FString&I)const{FString X=N(I);return Skills.Contains(X)||Effects.Contains(X)||Statuses.Contains(X);}

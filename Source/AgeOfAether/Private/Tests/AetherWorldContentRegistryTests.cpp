@@ -37,8 +37,8 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherWorldContentDuplicateTest,"AgeOfAether.D
 bool FAetherWorldContentDuplicateTest::RunTest(const FString&)
 {
     FAetherWorldContentRegistry R; FString E; auto A=MakeMap(TEXT("Map.Dup")); TestTrue(TEXT("first map"),R.RegisterMap(A,E)); TestFalse(TEXT("duplicate map"),R.RegisterMap(A,E));
-    auto B=MakeMap(TEXT("Map.InternalDup")); B.StreamingCells.Add(B.StreamingCells[0]); TestFalse(TEXT("duplicate cell id"),R.RegisterMap(B,E));
-    auto C=MakeMap(TEXT("Map.PointDup")); C.Points.Add(C.Points[0]); TestFalse(TEXT("duplicate point id"),R.RegisterMap(C,E)); return true;
+    auto B=MakeMap(TEXT("Map.InternalDup")); auto DuplicateCell=B.StreamingCells[0]; B.StreamingCells.Add(DuplicateCell); TestFalse(TEXT("duplicate cell id"),R.RegisterMap(B,E));
+    auto C=MakeMap(TEXT("Map.PointDup")); auto DuplicatePoint=C.Points[0]; C.Points.Add(DuplicatePoint); TestFalse(TEXT("duplicate point id"),R.RegisterMap(C,E)); return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherWorldContentStreamingTest,"AgeOfAether.Data.WorldContent.Streaming",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)
@@ -73,7 +73,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherWorldContentInteractionTest,"AgeOfAether
 bool FAetherWorldContentInteractionTest::RunTest(const FString&)
 {
     FAetherMapDefinition A=MakeMap(TEXT("Map.Interaction")); FString Error;
-    FAetherInteractionDefinition I; I.DefinitionID=TEXT("Interaction.Bad"); I.PointID=A.DefaultSpawnPointID; I.WorldActorID=TEXT("Actor.AlsoSet"); TestFalse(TEXT("exactly one target"),I.IsStructurallyValid(Error));
+    FAetherWorldInteractionDefinition I; I.DefinitionID=TEXT("Interaction.Bad"); I.PointID=A.DefaultSpawnPointID; I.WorldActorID=TEXT("Actor.AlsoSet"); TestFalse(TEXT("exactly one target"),I.IsStructurallyValid(Error));
     I.WorldActorID.Reset(); I.InteractionRadius=0; TestFalse(TEXT("radius positive"),I.IsStructurallyValid(Error));
     I.InteractionRadius=100; FAetherWorldRequirement Q; Q.Type=EAetherWorldRequirementType::WorldTag; Q.RequiredTag=TEXT("Season.1"); I.Requirements.Add(Q);
     FAetherWorldOutcome O; O.Type=EAetherWorldOutcomeType::Teleport; O.TargetMapID=TEXT("Map.Target"); O.TargetPointID=TEXT("Point.Target"); I.Outcomes.Add(O); A.Interactions.Add(I);
@@ -85,7 +85,7 @@ bool FAetherWorldContentReferenceTest::RunTest(const FString&)
 {
     FAetherWorldContentRegistry R; FString E; auto A=MakeMap(TEXT("Map.Refs"));
     FAetherWorldActorPlacementDefinition P; P.DefinitionID=TEXT("Placement.Bad"); P.WorldActorID=TEXT("Actor.Missing"); P.StreamingCellID=TEXT("Cell.Missing"); P.SpawnGroupID=TEXT("Spawn.Missing"); A.ActorPlacements.Add(P);
-    FAetherInteractionDefinition I; I.DefinitionID=TEXT("Interaction.BadRefs"); I.PointID=TEXT("Point.Missing"); FAetherWorldRequirement Item; Item.Type=EAetherWorldRequirementType::ItemOwned; Item.ReferenceID=TEXT("Item.Missing"); I.Requirements.Add(Item); FAetherWorldOutcome Recipe; Recipe.Type=EAetherWorldOutcomeType::StartRecipe; Recipe.ReferenceID=TEXT("Recipe.Missing"); I.Outcomes.Add(Recipe); A.Interactions.Add(I);
+    FAetherWorldInteractionDefinition I; I.DefinitionID=TEXT("Interaction.BadRefs"); I.PointID=TEXT("Point.Missing"); FAetherWorldRequirement Item; Item.Type=EAetherWorldRequirementType::ItemOwned; Item.ReferenceID=TEXT("Item.Missing"); I.Requirements.Add(Item); FAetherWorldOutcome Recipe; Recipe.Type=EAetherWorldOutcomeType::StartRecipe; Recipe.ReferenceID=TEXT("Recipe.Missing"); I.Outcomes.Add(Recipe); A.Interactions.Add(I);
     TestTrue(TEXT("structural registration"),R.RegisterMap(A,E));
     FAetherWorldActorRegistry Actors; FAetherLootRewardRegistry Loot; FAetherQuestDialogueEventRegistry Quests; FAetherRecipeRegistry Recipes; FAetherItemRegistry Items; FAetherSkillEffectRegistry Skills;
     TArray<FAetherWorldContentValidationIssue> Issues; TestFalse(TEXT("missing references detected"),R.Validate(Issues,nullptr,nullptr,&Items,&Actors,&Loot,&Quests,&Recipes,&Skills)); TestTrue(TEXT("multiple reference issues"),Issues.Num()>=5); return true;
@@ -95,9 +95,9 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherWorldContentTeleportTest,"AgeOfAether.Da
 bool FAetherWorldContentTeleportTest::RunTest(const FString&)
 {
     FAetherWorldContentRegistry R; FString E; auto A=MakeMap(TEXT("Map.A")); auto B=MakeMap(TEXT("Map.B"));
-    FAetherInteractionDefinition I; I.DefinitionID=TEXT("Portal.A"); I.PointID=A.DefaultSpawnPointID; FAetherWorldOutcome O; O.Type=EAetherWorldOutcomeType::Teleport; O.TargetMapID=B.DefinitionID; O.TargetPointID=B.DefaultSpawnPointID; I.Outcomes.Add(O); A.Interactions.Add(I);
+    FAetherWorldInteractionDefinition I; I.DefinitionID=TEXT("Portal.A"); I.PointID=A.DefaultSpawnPointID; FAetherWorldOutcome O; O.Type=EAetherWorldOutcomeType::Teleport; O.TargetMapID=B.DefinitionID; O.TargetPointID=B.DefaultSpawnPointID; I.Outcomes.Add(O); A.Interactions.Add(I);
     TestTrue(TEXT("register A"),R.RegisterMap(A,E)); TestTrue(TEXT("register B"),R.RegisterMap(B,E)); TArray<FAetherWorldContentValidationIssue> Issues; TestTrue(TEXT("valid teleport"),R.Validate(Issues));
-    auto C=MakeMap(TEXT("Map.C")); FAetherInteractionDefinition Bad=I; Bad.DefinitionID=TEXT("Portal.Bad"); Bad.Outcomes[0].TargetPointID=TEXT("Point.Missing"); C.Interactions.Add(Bad); TestTrue(TEXT("register C"),R.RegisterMap(C,E)); Issues.Reset(); TestFalse(TEXT("bad target rejected"),R.Validate(Issues)); TestTrue(TEXT("target issue"),Issues.Num()>0); return true;
+    auto C=MakeMap(TEXT("Map.C")); FAetherWorldInteractionDefinition Bad=I; Bad.DefinitionID=TEXT("Portal.Bad"); Bad.Outcomes[0].TargetPointID=TEXT("Point.Missing"); C.Interactions.Add(Bad); TestTrue(TEXT("register C"),R.RegisterMap(C,E)); Issues.Reset(); TestFalse(TEXT("bad target rejected"),R.Validate(Issues)); TestTrue(TEXT("target issue"),Issues.Num()>0); return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherWorldContentDeterminismTest,"AgeOfAether.Data.WorldContent.Determinism",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)

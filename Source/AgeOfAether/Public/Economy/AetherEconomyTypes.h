@@ -150,7 +150,7 @@ struct FAetherEconomyTransaction
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint64 TransactionId = 0;
 
     UPROPERTY(BlueprintReadOnly)

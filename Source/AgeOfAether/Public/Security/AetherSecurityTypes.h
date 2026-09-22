@@ -70,7 +70,7 @@ struct FAetherSecurityConnectionState
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint32 ConnectionId = 0;
 
     UPROPERTY(BlueprintReadOnly)
@@ -98,7 +98,7 @@ struct FAetherSecurityAuditEvent
 {
     GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint32 ConnectionId = 0;
 
     UPROPERTY(BlueprintReadOnly)
@@ -107,7 +107,7 @@ struct FAetherSecurityAuditEvent
     UPROPERTY(BlueprintReadOnly)
     EAetherSecurityResult Result = EAetherSecurityResult::Accepted;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY()
     uint32 RequestId = 0;
 
     UPROPERTY(BlueprintReadOnly)

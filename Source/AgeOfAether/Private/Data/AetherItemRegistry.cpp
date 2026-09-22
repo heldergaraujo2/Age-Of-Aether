@@ -2,24 +2,24 @@
 #include "Data/AetherAssetRegistry.h"
 #include "Data/AetherContentRegistry.h"
 
-bool FAetherItemRegistry::RegisterItem(const FAetherItemDefinition& Definition, FString& OutError)
+bool FAetherItemRegistry::RegisterItem(const FAetherDataItemDefinition& Definition, FString& OutError)
 {
     OutError.Reset();
     if (!Definition.IsStructurallyValid(OutError)) return false;
     const FString ID = Definition.DefinitionID.TrimStartAndEnd();
     if (Definitions.Contains(ID)) { OutError = FString::Printf(TEXT("Duplicate Item DefinitionID '%s'."), *ID); return false; }
-    FAetherItemDefinition Copy = Definition;
+    FAetherDataItemDefinition Copy = Definition;
     Copy.DefinitionID = ID;
     Definitions.Add(ID, MoveTemp(Copy));
     return true;
 }
 
-bool FAetherItemRegistry::RegisterItems(const TArray<FAetherItemDefinition>& InDefinitions, TArray<FAetherItemValidationIssue>& OutIssues)
+bool FAetherItemRegistry::RegisterItems(const TArray<FAetherDataItemDefinition>& InDefinitions, TArray<FAetherItemValidationIssue>& OutIssues)
 {
     OutIssues.Reset();
     bool bSuccess = true;
     TArray<FAetherItemValidationIssue> RegistrationIssues;
-    for (const FAetherItemDefinition& Definition : InDefinitions)
+    for (const FAetherDataItemDefinition& Definition : InDefinitions)
     {
         FString Error;
         if (!RegisterItem(Definition, Error))
@@ -35,9 +35,9 @@ bool FAetherItemRegistry::RegisterItems(const TArray<FAetherItemDefinition>& InD
     return bSuccess;
 }
 
-bool FAetherItemRegistry::Resolve(const FString& DefinitionID, FAetherItemDefinition& OutDefinition) const
+bool FAetherItemRegistry::Resolve(const FString& DefinitionID, FAetherDataItemDefinition& OutDefinition) const
 {
-    const FAetherItemDefinition* Found = Definitions.Find(DefinitionID.TrimStartAndEnd());
+    const FAetherDataItemDefinition* Found = Definitions.Find(DefinitionID.TrimStartAndEnd());
     if (!Found) return false;
     OutDefinition = *Found;
     return true;
@@ -70,7 +70,7 @@ bool FAetherItemRegistry::Validate(TArray<FAetherItemValidationIssue>& OutIssues
 
     for (const FString& ID : IDs)
     {
-        const FAetherItemDefinition& Definition = Definitions.FindChecked(ID);
+        const FAetherDataItemDefinition& Definition = Definitions.FindChecked(ID);
         FString Error;
         if (!Definition.IsStructurallyValid(Error))
         {

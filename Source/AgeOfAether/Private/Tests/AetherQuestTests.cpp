@@ -32,7 +32,7 @@ namespace
     }
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestDefinitionValidationTest, "AgeOfAether.Quests.DefinitionValidation", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestDefinitionValidationTest, "AgeOfAether.Quests.DefinitionValidation", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 bool FAetherQuestDefinitionValidationTest::RunTest(const FString&)
 {
     FAetherQuestDefinition Definition = MakeQuest(TEXT("quest.test"));
@@ -43,7 +43,7 @@ bool FAetherQuestDefinitionValidationTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestRegistrationTest, "AgeOfAether.Quests.Registration", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestRegistrationTest, "AgeOfAether.Quests.Registration", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 bool FAetherQuestRegistrationTest::RunTest(const FString&)
 {
     FAetherQuestService Service;
@@ -53,7 +53,7 @@ bool FAetherQuestRegistrationTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestLifecycleTest, "AgeOfAether.Quests.Lifecycle", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestLifecycleTest, "AgeOfAether.Quests.Lifecycle", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 bool FAetherQuestLifecycleTest::RunTest(const FString&)
 {
     FAetherQuestService Service;
@@ -75,7 +75,7 @@ bool FAetherQuestLifecycleTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestProgressionTest, "AgeOfAether.Quests.ObjectiveProgression", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestProgressionTest, "AgeOfAether.Quests.ObjectiveProgression", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 bool FAetherQuestProgressionTest::RunTest(const FString&)
 {
     FAetherQuestService Service;
@@ -96,7 +96,7 @@ bool FAetherQuestProgressionTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestPrerequisiteTest, "AgeOfAether.Quests.Prerequisites", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestPrerequisiteTest, "AgeOfAether.Quests.Prerequisites", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 bool FAetherQuestPrerequisiteTest::RunTest(const FString&)
 {
     FAetherQuestService Service;
@@ -119,7 +119,7 @@ bool FAetherQuestPrerequisiteTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestSecurityTest, "AgeOfAether.Quests.Security", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestSecurityTest, "AgeOfAether.Quests.Security", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 bool FAetherQuestSecurityTest::RunTest(const FString&)
 {
     FAetherQuestService Service;
@@ -142,7 +142,7 @@ bool FAetherQuestSecurityTest::RunTest(const FString&)
     return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestCapacityTest, "AgeOfAether.Quests.Capacity", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestCapacityTest, "AgeOfAether.Quests.Capacity", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 bool FAetherQuestCapacityTest::RunTest(const FString&)
 {
     FAetherQuestService Service;
@@ -164,7 +164,7 @@ bool FAetherQuestCapacityTest::RunTest(const FString&)
 }
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestOptionalObjectiveTest, "AgeOfAether.Quests.OptionalObjective", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherQuestOptionalObjectiveTest, "AgeOfAether.Quests.OptionalObjective", EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 bool FAetherQuestOptionalObjectiveTest::RunTest(const FString&)
 {
     FAetherQuestService Service;

@@ -7,7 +7,7 @@ UCLASS(BlueprintType) class AGEOFAETHER_API UAetherInteractionCatalog:public UDa
  GENERATED_BODY()
 public:
  UPROPERTY(EditAnywhere,BlueprintReadOnly) TArray<FAetherInteractionDefinition> Interactions;
- UPROPERTY(EditAnywhere,BlueprintReadOnly) TArray<FAetherQuestDefinition> Quests;
+ UPROPERTY(EditAnywhere,BlueprintReadOnly) TArray<FAetherInteractionQuestDefinition> Quests;
  UPROPERTY(EditAnywhere,BlueprintReadOnly) TArray<FAetherEventDefinition> Events;
  bool IsValid(TArray<FString>&Errors)const;
  void RegisterInto(class UAetherInteractionSubsystem*Subsystem)const;
