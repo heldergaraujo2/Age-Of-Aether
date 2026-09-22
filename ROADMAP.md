@@ -3,9 +3,25 @@
 
 **Repository:** https://github.com/heldergaraujo2/Age-Of-Aether  
 **Technical project:** `AgeOfAether`  
-**Status:** Phase 39 — Playable Base Character (repository implementation complete; Unreal 5.8.1 runtime/content acceptance pending local validation)  
+**Status:** Unreal 5.8.2 local validation active — repository/source phases audited; real C++ build PASS; automation currently 280 total / 266 PASS / 14 FAIL / 0 WARN. Current repair block: ClassBalance and dependent runtime validation.  
 **Source of truth:** This repository  
 **Continuity file:** `PROJECT_MEMORY/00_CONTINUITY.md`
+
+
+
+## REAL UNREAL VALIDATION CHECKPOINT — 2026-09-21
+
+This section records the current execution truth and takes precedence over stale historical runtime statements elsewhere in this document.
+
+- Unreal Engine: **5.8.2-56702186+++UE5+Release-5.8-Windows**.
+- Local C++ build: **PASS** for AgeOfAetherEditor Win64 Development, exit code 0.
+- Automation: **280 total / 266 PASS / 14 FAIL / 0 WARN**.
+- Runtime acceptance: **NOT COMPLETE** while the 14 automation failures remain.
+- Current primary repair block: ClassBalance.
+- Remaining non-ClassBalance failures: BalanceSimulation.Neutral; ClassCombat.PvPSwitch; Data.QuestDialogueEvent.CrossReferences; Multiplayer.HeartbeatCannotRefillRequests; Multiplayer.RateLimit; Quests.Security; Security.Replay.
+- ClassBalance fixture repair was build-verified, but the latest automation report still contains the ClassBalance failures.
+- GitHub checkpoint: `a4a9d0738b4dbacb55ace3be93c3dfeb17d9fc40` is confirmed on `main`.
+- Next objective: repair ClassBalance without weakening contracts/tests, rebuild, rerun automation, and record actual evidence before advancing.
 
 ---
 
