@@ -199,3 +199,32 @@ The 40-city world is an end-state target. We must not lower visual quality simpl
 
 Production order:
 **world master plan → one-world terrain architecture → one exceptional region → production pipeline → expand city by city → populate jurisdictions → optimize/profile → scale to full world.**
+
+
+## REGRA DE ESCALA — CIDADES + JURISDIÇÕES DE EXPLORAÇÃO
+
+Cada uma das aproximadamente 40 cidades deve ser tratada como o núcleo de uma **grande região explorável**, e não como um pequeno ponto urbano cercado imediatamente por outra cidade.
+
+A estrutura conceitual de cada região é:
+**cidade/safezone → periferia → wilderness → sub-regiões → áreas de descoberta → fronteira natural → próxima jurisdição/cidade**.
+
+Requisitos:
+- cada cidade deve possuir uma área territorial externa extensa e densamente explorável;
+- a área externa deve ser parte integrante da jurisdição da cidade;
+- o jogador deve conseguir sair da cidade e realizar longas expedições de exploração/caça antes de alcançar outra grande cidade;
+- a distância entre grandes cidades deve ser suficientemente significativa para que uma viagem a pé possa durar **horas**, dependendo da rota, terreno, perigos e descobertas;
+- não preencher grandes distâncias com terreno vazio apenas para aumentar escala: a jornada deve possuir conteúdo, landmarks, criaturas, recursos, ruínas, cavernas, eventos, atalhos, perigos e descobertas;
+- cidades, wilderness e fronteiras devem formar uma geografia contínua e natural;
+- cada jurisdição deve possuir identidade ambiental própria e progressão de exploração coerente;
+- a sensação desejada é de **desbravamento/Hunt**: o jogador conhece a cidade como ponto seguro e precisa explorar progressivamente o território desconhecido ao redor;
+- a cidade não representa somente seus edifícios: sua identidade se estende para o ecossistema, arquitetura periférica, criaturas, NPCs, recursos, clima, VFX, landmarks e histórias encontrados em sua jurisdição.
+
+### REGRA DE TRAVESSIA
+
+A distância entre cidades será definida no **World Master Plan**, com estimativa de tempo de deslocamento a pé e por outros meios de viagem que possam existir futuramente.
+
+Não fixar ainda números de progressão, força de monstros ou qualidade de equipamentos por cidade. Esses sistemas serão definidos em fases posteriores. Por enquanto, a regra é estrutural: **cada cidade precisa justificar uma grande região própria de exploração e a escala do mundo deve tornar a viagem entre cidades uma jornada significativa**.
+
+### REGRA DO PRIMEIRO SLICE
+
+O primeiro território jogável deve representar uma amostra real desse modelo de cidade + grande jurisdição. Ele não deve ser um mapa pequeno artificialmente isolado que contradiga a escala final do mundo.
