@@ -743,9 +743,17 @@ Se encontrar discrepância entre source e runtime, runtime real tem precedência
 
 **Phase 0: COMPLETE — auditoria da base.**
 
+**Phase 1: IN PROGRESS — preparação concluída no repositório; runtime Unreal ainda pendente.**
+
 ### Gate atual
 
-**PHASE 1 — REAL UNREAL FOUNDATION**
+**PHASE 1 — REAL UNREAL FOUNDATION / RUNTIME GATE PENDING**
+
+Preparação source/repository: **READY**.
+
+Documentação: `Docs/PHASE_1_REAL_UNREAL_FOUNDATION.md`.
+
+A fase não pode ser marcada COMPLETE até existir evidência local real de UHT, UBT Editor/Game/Server, Editor startup, mapa real, PIE, 2-client PIE, Dedicated Server, replicação, Automation e logs.
 
 ### Próximo grande objetivo
 
@@ -762,6 +770,13 @@ Construir o primeiro benchmark visual jogável dentro da arquitetura do **único
 ### Regra de continuidade
 
 **Este arquivo deve ser atualizado a cada fase/gate concluído.**
+
+### Último avanço documental
+
+- `Docs/PHASE_1_REAL_UNREAL_FOUNDATION.md` criado.
+- `ROADMAP_OPEN_WORLD_ISOMETRIC.md` atualizado para refletir a Phase 1 como runtime gate pendente.
+- Nenhum mapa `.umap` ou asset Unreal binário foi fabricado.
+- Nenhum runtime PASS foi declarado sem execução local.
 
 ---
 
