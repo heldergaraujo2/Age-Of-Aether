@@ -210,3 +210,7 @@ Exemplos de implementação já presentes:
 Também foi confirmado que a árvore `Content/Aether` contém atualmente principalmente READMEs de organização, não um conjunto de mapas/meshes/materials/animations/VFX Unreal reais suficiente para representar o primeiro diorama.
 
 **Conclusão:** o próximo trabalho não deve reconstruir sistemas RPG. Deve priorizar o **gate real do Unreal**, a criação/integração de conteúdo Unreal real através do pipeline existente e a validação runtime.
+
+## FIRST PLAYABLE REGION PRODUCTION SPECIFICATION
+
+The real production specification for Phase 5 is now canonical at Docs/FIRST_PLAYABLE_WORLD_REGION_PRODUCTION_SPECIFICATION.md. It defines the permanent first world region, premium painterly-isometric quality bar, spatial composition, traversal, environmental storytelling, multiplayer considerations, performance-by-design and the Unreal materialization/runtime acceptance gate. This does not claim a real .umap exists; binary map creation remains a local Unreal Engine 5.8 operation.
