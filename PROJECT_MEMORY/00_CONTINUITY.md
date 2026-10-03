@@ -579,6 +579,31 @@ Sequência crítica:
 
 ---
 
+## 10A. AVANÇO DOCUMENTAL — PHASE 2
+
+### Phase 2 — Direção Visual Isométrica
+
+**SOURCE/DOCUMENTATION: COMPLETE**  
+**UNREAL RUNTIME: PENDING**
+
+A direção visual isométrica foi formalizada em Docs/PHASE_2_ISOMETRIC_VISUAL_DIRECTION.md, cobrindo:
+
+- câmera e leitura isométrica;
+- composição de diorama;
+- princípios painterly premium;
+- paleta e materiais;
+- iluminação e profundidade;
+- personagens e criaturas;
+- arquitetura e props;
+- VFX;
+- integração com o único mundo contínuo.
+
+Esta conclusão é **documental/source-level**. Não constitui aceitação visual no Unreal.
+
+**Pendência explícita:** continua faltando a **auditoria no ambiente real do Unreal Engine**. A auditoria deve comprovar a execução real da câmera, zoom, ângulo, movimento relativo, clipping/oclusão, iluminação, PIE, 2-client PIE e logs. Nenhuma dessas evidências foi fabricada ou presumida.
+
+A próxima fase de trabalho documental é **PHASE 3 — REAL ART PIPELINE**, enquanto a **PHASE 1 runtime gate permanece aberta** até a auditoria real do Unreal.
+
 # 11. BENCHMARK VISUAL INICIAL
 
 O primeiro benchmark deve conter, em pequena escala geográfica mas próximo da qualidade final:
@@ -745,6 +770,8 @@ Se encontrar discrepância entre source e runtime, runtime real tem precedência
 
 **Phase 1: IN PROGRESS — preparação concluída no repositório; runtime Unreal ainda pendente.**
 
+**Phase 2: SOURCE/DOCUMENTATION COMPLETE — direção visual isométrica formalizada; aceitação runtime ainda pendente.**
+
 ### Auditoria obrigatória do ambiente real do Unreal
 
 **PENDÊNCIA EXPLÍCITA E NÃO NEGOCIÁVEL:** ainda falta realizar a **auditoria no ambiente real do Unreal Engine**.
@@ -783,7 +810,7 @@ A fase não pode ser marcada COMPLETE até existir evidência local real de UHT,
 
 ### Próximo grande objetivo
 
-Provar o Unreal real e fechar a fundação runtime antes de avançar para a produção visual em escala.
+Continuar a preparação documental/source da transformação visual, mantendo explicitamente o gate de **auditoria no ambiente real do Unreal** aberto. A aceitação runtime da fundação e da direção visual só ocorrerá após execução local real.
 
 ### Depois do gate
 
