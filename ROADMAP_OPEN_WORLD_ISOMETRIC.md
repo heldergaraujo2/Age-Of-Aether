@@ -15,6 +15,13 @@ Gate: nenhuma grande alteração de arquitetura antes da matriz de dependências
 Fechar UHT, UBT Editor/Game, Dedicated Server, Editor startup, mapa de desenvolvimento, PIE, 2-client PIE, Automation, logs e replicação básica.
 Resultado: personagem placeholder jogável em multiplayer básico.
 
+**Estado atual:** SOURCE PREPARATION READY / REAL UNREAL RUNTIME PENDING.
+
+A preparação e o checklist desta fase estão documentados em:
+`Docs/PHASE_1_REAL_UNREAL_FOUNDATION.md`
+
+A fase só será marcada como COMPLETE após evidência local real de UHT/UBT, Editor, mapa, PIE, 2-client PIE, Dedicated Server, replicação, Automation e logs.
+
 ## FASE 2 — DIREÇÃO VISUAL ISOMÉTRICA
 Definir câmera ortográfica/isométrica, ângulo, zoom, escala, paleta, materiais, iluminação, sombras, pós-processamento, proporções, props, arquitetura, vegetação, personagens e VFX.
 Regra: aparência de diorama pintado à mão sem perder jogabilidade 3D no Unreal.
@@ -109,27 +116,6 @@ Requisito visual agora oficial: **Stylized Painterly Isometric / 2.5D Hand-Paint
 
 Benchmark visual inicial: **Vila → estrada → floresta → área de combate → entrada de dungeon**, pequeno em escala, mas produzido já próximo do padrão visual final.
 
-Evidências encontradas no repositório:
-
-Evidências encontradas no repositório:
-- AgeOfAether.uproject usa Unreal Engine 5.8 e Enhanced Input.
-- Arquitetura C++ server-authoritative já está estabelecida.
-- Phases 0–36 estão documentadas como implementadas em nível repository/source.
-- Phase 37 Unreal Visual Foundation está implementada em nível repository/source.
-- Phase 38 Real Asset Pipeline está documentada/implementada em nível repository/source.
-- Phase 39 Playable Base Character está implementada em nível repository/source.
-- Build C++ local anterior registrado como PASS.
-- Última automação registrada: 280 total / 266 PASS / 14 FAIL / 0 WARN.
-- Runtime acceptance ainda não está fechado.
-- Principal bloco de falhas registrado: ClassBalance.
-- Falhas adicionais registradas: BalanceSimulation.Neutral, ClassCombat.PvPSwitch, QuestDialogueEvent.CrossReferences, Multiplayer heartbeat/rate-limit, Quests.Security e Security.Replay.
-- Mapa Unreal real, assets reais e validação runtime continuam sendo gates locais.
-
-## PRÓXIMO GATE
-**FASE 1 — FUNDAÇÃO REAL DO UNREAL**
-
-Antes da produção visual em escala, executar e fechar localmente o Unreal 5.8: UHT/UBT, Editor startup, mapa real, PIE, 2-client PIE, Dedicated Server, Automation e logs. A transformação isométrica e o primeiro benchmark visual começam sobre essa fundação runtime comprovada.
-
 ## OPEN WORLD — SINGLE CONTINUOUS WORLD REQUIREMENT
 
 The final world is **one continuous open-world map**, not a collection of disconnected gameplay maps.
@@ -140,91 +126,30 @@ Target scale:
 - every city has a surrounding **jurisdiction/biome region**;
 - the biome, creatures, NPCs, resources, weather, architecture, VFX and environmental storytelling of that jurisdiction must visually and mechanically belong to its city.
 
-Examples:
-- **Ice city:** frozen terrain, snow, glaciers, frozen rivers, ice caves, cold-weather VFX, ice creatures and ice-themed NPCs.
-- **Fire city:** volcanic terrain, lava rivers, ash, basalt, heat distortion, fire creatures and fire-themed NPCs.
-- Other jurisdictions follow the same principle: the city is the center of a coherent regional ecosystem rather than an isolated settlement.
+"One map" is a player/world continuity requirement, not a requirement that every world cell be loaded simultaneously. World Partition, streaming and HLOD may divide the world internally while preserving one world identity, continuous geography, persistent regional state and seamless normal overworld traversal.
 
-### WORLD ARCHITECTURE RULE
+Before final terrain production, create a World Master Plan with 40 city locations/identities, jurisdiction boundaries, biome transitions, roads, rivers/coasts, mountains, ecological/resource distribution, dungeons/landmarks, progression bands and travel times.
 
-The world must feel like **one enormous connected continent/world**:
-- no teleporting between ordinary cities as the primary traversal model;
-- roads, wilderness, rivers, mountains, passes, bridges and natural barriers connect regions;
-- seamless traversal is the target;
-- cities are embedded into the world rather than placed on separate maps;
-- dungeons and special interiors may use instancing where technically necessary, but the overworld remains one continuous world.
-
-### WORLD SCALE / TECHNICAL INTERPRETATION
-
-"One map" is a **player/world continuity requirement**, not a requirement that every world cell be loaded into memory simultaneously.
-
-Unreal World Partition / streaming / HLOD may divide the world internally for performance while preserving:
-- one world identity;
-- seamless player traversal;
-- continuous geography;
-- consistent world coordinates;
-- persistent regional state;
-- no gameplay map-transition screens between normal overworld regions.
-
-### 40-CITY WORLD PLANNING GATE
-
-Before authoring the final terrain, create a world master plan containing:
-1. 40 city locations;
-2. city names and identities;
-3. jurisdiction boundaries;
-4. biome transitions;
-5. major roads;
-6. rivers/coasts;
-7. mountain ranges;
-8. forests/deserts/swamps/frozen/volcanic regions as appropriate;
-9. faction/cultural territories;
-10. creature ecology by jurisdiction;
-11. NPC ecology;
-12. resource distribution;
-13. dungeon/landmark distribution;
-14. level/progression bands;
-15. travel times and points of interest.
-
-The 40 cities must **not** be 40 copies of the same settlement. Each needs a distinct visual identity, silhouette, architecture, palette/material language and surrounding ecosystem.
-
-### FIRST IMPLEMENTATION RULE
-
-The first playable vertical slice remains small, but it must be built as a **region of the eventual single-world architecture**, not as a throwaway isolated map.
-
-The large-world plan should therefore exist before final terrain production, even though only a limited region is initially populated.
-
-### QUALITY BAR
-
-The 40-city world is an end-state target. We must not lower visual quality simply to fill the world.
-
-Production order:
-**world master plan → one-world terrain architecture → one exceptional region → production pipeline → expand city by city → populate jurisdictions → optimize/profile → scale to full world.**
-
+The first playable slice must be a region of the eventual single-world architecture, not a throwaway isolated map.
 
 ## REGRA DE ESCALA — CIDADES + JURISDIÇÕES DE EXPLORAÇÃO
 
-Cada uma das aproximadamente 40 cidades deve ser tratada como o núcleo de uma **grande região explorável**, e não como um pequeno ponto urbano cercado imediatamente por outra cidade.
+Cada uma das aproximadamente 40 cidades deve ser o núcleo de uma **grande região explorável**:
 
-A estrutura conceitual de cada região é:
-**cidade/safezone → periferia → wilderness → sub-regiões → áreas de descoberta → fronteira natural → próxima jurisdição/cidade**.
+**cidade/safezone → periferia → wilderness → sub-regiões → áreas de descoberta → fronteira natural → próxima jurisdição/cidade**
 
-Requisitos:
-- cada cidade deve possuir uma área territorial externa extensa e densamente explorável;
-- a área externa deve ser parte integrante da jurisdição da cidade;
-- o jogador deve conseguir sair da cidade e realizar longas expedições de exploração/caça antes de alcançar outra grande cidade;
-- a distância entre grandes cidades deve ser suficientemente significativa para que uma viagem a pé possa durar **horas**, dependendo da rota, terreno, perigos e descobertas;
-- não preencher grandes distâncias com terreno vazio apenas para aumentar escala: a jornada deve possuir conteúdo, landmarks, criaturas, recursos, ruínas, cavernas, eventos, atalhos, perigos e descobertas;
-- cidades, wilderness e fronteiras devem formar uma geografia contínua e natural;
-- cada jurisdição deve possuir identidade ambiental própria e progressão de exploração coerente;
-- a sensação desejada é de **desbravamento/Hunt**: o jogador conhece a cidade como ponto seguro e precisa explorar progressivamente o território desconhecido ao redor;
-- a cidade não representa somente seus edifícios: sua identidade se estende para o ecossistema, arquitetura periférica, criaturas, NPCs, recursos, clima, VFX, landmarks e histórias encontrados em sua jurisdição.
+Cada jurisdição deve justificar longas expedições de exploração/caça. A distância entre grandes cidades pode exigir horas de caminhada dependendo da rota, terreno, perigos e descobertas. Não preencher a escala com terreno vazio.
 
-### REGRA DE TRAVESSIA
+Não fixar ainda números de progressão, força de monstros ou qualidade de equipamentos por cidade. Esses sistemas serão definidos nas fases apropriadas.
 
-A distância entre cidades será definida no **World Master Plan**, com estimativa de tempo de deslocamento a pé e por outros meios de viagem que possam existir futuramente.
+## CONTROLE DE CONTINUIDADE
 
-Não fixar ainda números de progressão, força de monstros ou qualidade de equipamentos por cidade. Esses sistemas serão definidos em fases posteriores. Por enquanto, a regra é estrutural: **cada cidade precisa justificar uma grande região própria de exploração e a escala do mundo deve tornar a viagem entre cidades uma jornada significativa**.
+A cada fase/gate concluído:
+1. atualizar documentação da fase;
+2. registrar evidência real;
+3. atualizar este roadmap;
+4. atualizar `PROJECT_MEMORY/00_CONTINUITY.md`;
+5. registrar o commit;
+6. somente então avançar para a próxima fase.
 
-### REGRA DO PRIMEIRO SLICE
-
-O primeiro território jogável deve representar uma amostra real desse modelo de cidade + grande jurisdição. Ele não deve ser um mapa pequeno artificialmente isolado que contradiga a escala final do mundo.
+**Fase atual: PHASE 1 — REAL UNREAL FOUNDATION / RUNTIME GATE PENDING.**
