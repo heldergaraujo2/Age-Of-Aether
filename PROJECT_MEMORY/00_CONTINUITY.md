@@ -21,7 +21,7 @@
 - As fases técnicas/source do roadmap legado **0–56 estão implementadas em nível de repositório/source**, mas isso **não significa que o jogo esteja runtime-complete**.
 - O novo roadmap de transformação **Open World + Isometric 2.5D + Painterly Diorama** teve a **FASE 0 — AUDITORIA DA BASE** concluída.
 - O gate runtime obrigatório continua sendo **FASE 1 — FUNDAÇÃO REAL DO UNREAL**, cuja auditoria no ambiente Unreal real ainda está pendente.
-- Em nível source/documentation, a transformação avançou até **FASE 5 — PRIMEIRO DIORAMA JOGÁVEL**; as Fases 2, 3, 4 e 5 estão fechadas somente em nível de source/documentação.
+- Em nível source/documentation, a transformação avançou até **FASE 6 — NÚCLEO RPG JOGÁVEL**; as Fases 2, 3, 4, 5 e 6 estão fechadas somente em nível de source/documentação.
 - O projeto ainda precisa de validação real no Unreal para fechar os gates de build/runtime/PIE/2-client/Dedicated Server/Automation e, depois, produção/aceitação de conteúdo real.
 - A transformação visual e de mundo aberto deve acontecer **sobre a arquitetura existente**, sem apagar sistemas já implementados.
 
@@ -923,3 +923,49 @@ Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
 Phase 5 define o primeiro diorama jogável de produção como região extensível do mundo contínuo: vila/núcleo urbano → praça → serviços/NPCs → estrada → floresta/campo → área de combate → entrada de dungeon. O benchmark visual oficial permanece Stylized Painterly Isometric / 2.5D Hand-Painted Diorama / 2.5D Isometric Cutaway. Referência conceitual de imagem: 4096 × 2304 (4K, 16:9), sem transformar isso em requisito de runtime/textura.
 
 A aceitação Unreal/runtime permanece pendente, incluindo mapa, assets, câmera, player/NPCs, interação, PIE, 2-client PIE, Dedicated Server, logs, Automation e profiling. O gate da Phase 1 — auditoria no ambiente real do Unreal — continua aberto.
+
+
+---
+
+# 11. PHASE 6 — NÚCLEO RPG JOGÁVEL
+
+**Status:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
+
+Documento canônico: `Docs/PHASE_6_PLAYABLE_RPG_CORE.md`.
+
+A Phase 6 fechou o contrato do núcleo RPG que habita o primeiro diorama:
+
+**personagem → level/XP → atributos → HP/recurso → ataque básico → dano → morte/respawn → equipamento → inventário → loot**
+
+Foram explicitados:
+- estado autoritativo do jogador;
+- progressão e XP;
+- atributos e valores derivados;
+- HP/recurso e limites de estado;
+- ataque básico e dano server-authoritative;
+- morte e respawn;
+- equipamento;
+- inventário;
+- loot e prevenção de duplicidade;
+- transações e limites de autoridade;
+- compatibilidade com persistência;
+- compatibilidade com 1-client PIE, 2-client PIE e Dedicated Server;
+- contrato de automação;
+- integração com o fluxo da Phase 5.
+
+Nenhum sistema paralelo foi criado e nenhum binário Unreal falso foi fabricado.
+
+### Evidência e limite
+
+A conclusão é **somente source/documentation**. Não há evidência nova de runtime Unreal nesta fase.
+
+A **Phase 1 — Real Unreal Foundation / runtime gate** continua aberta e obrigatória. A aceitação runtime das Phases 1–6 permanece pendente de execução local real.
+
+### Próxima fase documental
+
+**PHASE 7 — PRIMEIRO INIMIGO E COMBATE**
+
+Fluxo-alvo:
+
+**enemy → AI/aggro → pursuit → attack → hit reaction → death → XP → drop → respawn**
+
