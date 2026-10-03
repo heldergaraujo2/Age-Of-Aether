@@ -34,6 +34,10 @@ A direção foi formalizada para câmera, composição, materiais, iluminação,
 Estabelecer Concept -> source/asset -> cleanup -> import -> Unreal asset -> material/skeleton/collision -> Asset Registry -> Stable AssetID -> runtime.
 Validar FBX, Skeletal/Static Mesh, materiais, texturas, animações, Physics Assets, sockets, LOD/Nanite quando apropriado, VFX, ícones, origem/licença e fallbacks.
 
+**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
+Documentação: `Docs/PHASE_3_REAL_ART_PIPELINE.md`.
+A fase formaliza o lifecycle de assets, provenance/licença, AssetID/dependencies/fallbacks, política de LOD/Nanite/collision/sockets, requisitos painterly premium e o primeiro asset de aceitação. A aceitação real continua dependente do Unreal local.
+
 ## FASE 4 — CÂMERA E EXPLORAÇÃO ISOMÉTRICA
 Implementar câmera, zoom, pan, rotação se desejada, collision, movimento relativo à câmera, seleção, targeting, interação e controles.
 Gate: exploração confortável e consistente em multiplayer.
@@ -156,7 +160,12 @@ A cada fase/gate concluído:
 5. registrar o commit;
 6. somente então avançar para a próxima fase.
 
-**Fase documental avançada: PHASE 2 — ISOMETRIC VISUAL DIRECTION — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
+**Fase documental avançada: PHASE 3 — REAL ART PIPELINE — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
+
+**Phase 2:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
+
+**Phase 3:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
+Documentação: `Docs/PHASE_3_REAL_ART_PIPELINE.md`.
 
 **Gate runtime ainda aberto:** PHASE 1 — REAL UNREAL FOUNDATION / AUDITORIA NO AMBIENTE REAL DO UNREAL PENDENTE.
 
