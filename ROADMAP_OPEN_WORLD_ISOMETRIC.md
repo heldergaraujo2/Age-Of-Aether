@@ -54,7 +54,11 @@ Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
 A fase define o primeiro benchmark real de apresentação e gameplay, integrado à arquitetura do futuro mundo único contínuo. O diorama não é um mapa descartável; é uma região extensível do mundo definitivo. A aceitação real de mapa, assets, câmera, player/NPCs, interação, 2-client PIE, Dedicated Server, logs e performance permanece pendente no Unreal local.
 
 ## FASE 6 — NÚCLEO RPG JOGÁVEL
-Validar level, XP, atributos, HP, recurso, ataque básico, dano, morte, respawn, equipamento, inventário e loot.
+Definir e integrar o loop canônico: personagem → level/XP → atributos → HP/recurso → ataque básico → dano → morte/respawn → equipamento → inventário → loot.
+
+**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
+Documentação: `Docs/PHASE_6_PLAYABLE_RPG_CORE.md`.
+A fase formaliza estado autoritativo do jogador, progressão, atributos/recursos, ataque/dano, morte/respawn, equipamento, inventário, loot, limites transacionais, compatibilidade com persistência/multiplayer e matriz de automação. Não introduz arquitetura duplicada nem declara validação runtime.
 
 ## FASE 7 — PRIMEIRO INIMIGO E COMBATE
 Adicionar um inimigo comum com AI, aggro, perseguição, ataque, hit reaction, morte, XP, drop e respawn.
@@ -168,7 +172,7 @@ A cada fase/gate concluído:
 5. registrar o commit;
 6. somente então avançar para a próxima fase.
 
-**Fase documental avançada: PHASE 5 — PRIMEIRO DIORAMA JOGÁVEL — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
+**Fase documental avançada: PHASE 6 — NÚCLEO RPG JOGÁVEL — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
 
 **Phase 5:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
 Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
@@ -185,3 +189,14 @@ Documentação: `Docs/PHASE_3_REAL_ART_PIPELINE.md`.
 **Gate runtime ainda aberto:** PHASE 1 — REAL UNREAL FOUNDATION / AUDITORIA NO AMBIENTE REAL DO UNREAL PENDENTE.
 
 A Phase 2 foi fechada somente em nível de source/documentação; nenhuma validação visual/runtime foi inventada.
+
+
+## AVANÇO DOCUMENTAL — PHASE 6
+
+**PHASE 6 — NÚCLEO RPG JOGÁVEL: SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.**
+
+Documento: `Docs/PHASE_6_PLAYABLE_RPG_CORE.md`.
+
+O contrato do núcleo RPG está fechado em nível source/documentation. A aceitação real do loop no Unreal continua pendente e depende também do gate da Phase 1.
+
+**Próxima fase documental:** PHASE 7 — PRIMEIRO INIMIGO E COMBATE.
