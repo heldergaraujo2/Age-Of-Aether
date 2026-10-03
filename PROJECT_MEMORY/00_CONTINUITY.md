@@ -550,8 +550,8 @@ Objetivo:
 
 ### Fases seguintes do novo roadmap
 
-2. Direção Visual Isométrica  
-3. Pipeline de Arte Real  
+2. Direção Visual Isométrica — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING  
+3. Pipeline de Arte Real — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING  
 4. Câmera e Exploração Isométrica  
 5. Primeiro Diorama Jogável  
 6. Núcleo RPG Jogável  
@@ -602,7 +602,33 @@ Esta conclusão é **documental/source-level**. Não constitui aceitação visua
 
 **Pendência explícita:** continua faltando a **auditoria no ambiente real do Unreal Engine**. A auditoria deve comprovar a execução real da câmera, zoom, ângulo, movimento relativo, clipping/oclusão, iluminação, PIE, 2-client PIE e logs. Nenhuma dessas evidências foi fabricada ou presumida.
 
-A próxima fase de trabalho documental é **PHASE 3 — REAL ART PIPELINE**, enquanto a **PHASE 1 runtime gate permanece aberta** até a auditoria real do Unreal.
+A próxima fase documental, agora concluída, foi **PHASE 3 — REAL ART PIPELINE**. A **PHASE 1 runtime gate permanece aberta** até a auditoria real do Unreal.
+
+### Phase 3 — Pipeline de Arte Real
+
+**SOURCE/DOCUMENTATION: COMPLETE**  
+**UNREAL RUNTIME / REAL ASSET ACCEPTANCE: PENDING**
+
+A documentação PHASE_3_REAL_ART_PIPELINE.md formaliza o pipeline único de Concept/Source → Cleanup → Import → Unreal Asset → Materials/Skeleton/Collision → Asset Registry → Stable AssetID → Runtime.
+
+Foram explicitados:
+- provenance/licença/origem e versão;
+- lifecycle e critérios por classe de asset;
+- integração com os contratos existentes da Phase 38;
+- AssetID, dependências e fallbacks;
+- materiais/texturas e requisitos painterly premium;
+- skeleton/Physics Asset/animações;
+- sockets e collision;
+- política de LOD/Nanite baseada em profiling real;
+- VFX e integração com os consumidores existentes;
+- primeiro asset real de aceitação e ordem de expansão;
+- separação rigorosa entre validação source e Unreal runtime.
+
+Nenhum .uasset, .umap, FBX ou outro binário Unreal foi fabricado.
+
+**Pendência explícita:** continua faltando a **auditoria no ambiente real do Unreal Engine**. A Phase 3 não é considerada runtime-validada até existir evidência local de import real de asset, inspeção, Asset Manager, PIE, 2-client PIE, Dedicated Server e logs, além do gate de fundação da Phase 1.
+
+**Próxima fase documental:** PHASE 4 — CÂMERA E EXPLORAÇÃO ISOMÉTRICA.
 
 # 11. BENCHMARK VISUAL INICIAL
 
@@ -772,6 +798,8 @@ Se encontrar discrepância entre source e runtime, runtime real tem precedência
 
 **Phase 2: SOURCE/DOCUMENTATION COMPLETE — direção visual isométrica formalizada; aceitação runtime ainda pendente.**
 
+**Phase 3: SOURCE/DOCUMENTATION COMPLETE — pipeline de arte real formalizado; aceitação de assets no Unreal runtime ainda pendente.**
+
 ### Auditoria obrigatória do ambiente real do Unreal
 
 **PENDÊNCIA EXPLÍCITA E NÃO NEGOCIÁVEL:** ainda falta realizar a **auditoria no ambiente real do Unreal Engine**.
@@ -826,7 +854,8 @@ Construir o primeiro benchmark visual jogável dentro da arquitetura do **único
 
 ### Último avanço documental
 
-- `Docs/PHASE_1_REAL_UNREAL_FOUNDATION.md` criado.
+- PHASE_3_REAL_ART_PIPELINE.md criado e fechado em nível source/documentation.
+- PHASE_1_REAL_UNREAL_FOUNDATION.md permanece como referência do gate runtime.
 - `ROADMAP_OPEN_WORLD_ISOMETRIC.md` atualizado para refletir a Phase 1 como runtime gate pendente.
 - Nenhum mapa `.umap` ou asset Unreal binário foi fabricado.
 - Nenhum runtime PASS foi declarado sem execução local.
@@ -840,6 +869,7 @@ Construir o primeiro benchmark visual jogável dentro da arquitetura do **único
 - `ROADMAP_VISUAL_AND_PLAYABLE.md` — implementação visual/runtime.
 - `ROADMAP_OPEN_WORLD_ISOMETRIC.md` — transformação Open World + Isometric + Painterly.
 - `Docs/PHASE_0_OPEN_WORLD_ISOMETRIC_AUDIT.md` — auditoria da transformação.
+- `Docs/PHASE_3_REAL_ART_PIPELINE.md` — pipeline de arte real.
 - `Docs/PHASE_37_UNREAL_VISUAL_FOUNDATION.md`
 - `Docs/PHASE_38_REAL_ASSET_PIPELINE.md`
 - `Docs/PHASE_39_PLAYABLE_BASE_CHARACTER.md`
