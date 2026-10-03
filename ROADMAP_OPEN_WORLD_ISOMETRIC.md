@@ -129,3 +129,73 @@ Evidências encontradas no repositório:
 **FASE 1 — FUNDAÇÃO REAL DO UNREAL**
 
 Antes da produção visual em escala, executar e fechar localmente o Unreal 5.8: UHT/UBT, Editor startup, mapa real, PIE, 2-client PIE, Dedicated Server, Automation e logs. A transformação isométrica e o primeiro benchmark visual começam sobre essa fundação runtime comprovada.
+
+## OPEN WORLD — SINGLE CONTINUOUS WORLD REQUIREMENT
+
+The final world is **one continuous open-world map**, not a collection of disconnected gameplay maps.
+
+Target scale:
+- approximately **40 major cities** distributed across the same world;
+- each city is a geographic, cultural and gameplay center;
+- every city has a surrounding **jurisdiction/biome region**;
+- the biome, creatures, NPCs, resources, weather, architecture, VFX and environmental storytelling of that jurisdiction must visually and mechanically belong to its city.
+
+Examples:
+- **Ice city:** frozen terrain, snow, glaciers, frozen rivers, ice caves, cold-weather VFX, ice creatures and ice-themed NPCs.
+- **Fire city:** volcanic terrain, lava rivers, ash, basalt, heat distortion, fire creatures and fire-themed NPCs.
+- Other jurisdictions follow the same principle: the city is the center of a coherent regional ecosystem rather than an isolated settlement.
+
+### WORLD ARCHITECTURE RULE
+
+The world must feel like **one enormous connected continent/world**:
+- no teleporting between ordinary cities as the primary traversal model;
+- roads, wilderness, rivers, mountains, passes, bridges and natural barriers connect regions;
+- seamless traversal is the target;
+- cities are embedded into the world rather than placed on separate maps;
+- dungeons and special interiors may use instancing where technically necessary, but the overworld remains one continuous world.
+
+### WORLD SCALE / TECHNICAL INTERPRETATION
+
+"One map" is a **player/world continuity requirement**, not a requirement that every world cell be loaded into memory simultaneously.
+
+Unreal World Partition / streaming / HLOD may divide the world internally for performance while preserving:
+- one world identity;
+- seamless player traversal;
+- continuous geography;
+- consistent world coordinates;
+- persistent regional state;
+- no gameplay map-transition screens between normal overworld regions.
+
+### 40-CITY WORLD PLANNING GATE
+
+Before authoring the final terrain, create a world master plan containing:
+1. 40 city locations;
+2. city names and identities;
+3. jurisdiction boundaries;
+4. biome transitions;
+5. major roads;
+6. rivers/coasts;
+7. mountain ranges;
+8. forests/deserts/swamps/frozen/volcanic regions as appropriate;
+9. faction/cultural territories;
+10. creature ecology by jurisdiction;
+11. NPC ecology;
+12. resource distribution;
+13. dungeon/landmark distribution;
+14. level/progression bands;
+15. travel times and points of interest.
+
+The 40 cities must **not** be 40 copies of the same settlement. Each needs a distinct visual identity, silhouette, architecture, palette/material language and surrounding ecosystem.
+
+### FIRST IMPLEMENTATION RULE
+
+The first playable vertical slice remains small, but it must be built as a **region of the eventual single-world architecture**, not as a throwaway isolated map.
+
+The large-world plan should therefore exist before final terrain production, even though only a limited region is initially populated.
+
+### QUALITY BAR
+
+The 40-city world is an end-state target. We must not lower visual quality simply to fill the world.
+
+Production order:
+**world master plan → one-world terrain architecture → one exceptional region → production pipeline → expand city by city → populate jurisdictions → optimize/profile → scale to full world.**
