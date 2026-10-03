@@ -47,7 +47,11 @@ Documentação: `Docs/PHASE_4_ISOMETRIC_CAMERA_EXPLORATION.md`.
 A fase reutiliza a fundação source-level da Phase 40 e formaliza câmera isométrica, zoom, collision/occlusion, movimento relativo à câmera, framing, seleção/targeting/interação, multiplayer e compatibilidade com o mundo contínuo. A aceitação real permanece dependente da auditoria no Unreal local.
 
 ## FASE 5 — PRIMEIRO DIORAMA JOGÁVEL
-Construir uma pequena vila com praça, casas, loja, NPC, estrada, floresta, campo, obstáculos, vegetação, iluminação e props de storytelling.
+Construir a primeira região jogável de produção: vila/núcleo urbano, praça, casas, serviços, NPCs, estrada, transição natural, floresta/campo, área de combate, entrada de dungeon, vegetação, iluminação e storytelling ambiental.
+
+**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
+Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
+A fase define o primeiro benchmark real de apresentação e gameplay, integrado à arquitetura do futuro mundo único contínuo. O diorama não é um mapa descartável; é uma região extensível do mundo definitivo. A aceitação real de mapa, assets, câmera, player/NPCs, interação, 2-client PIE, Dedicated Server, logs e performance permanece pendente no Unreal local.
 
 ## FASE 6 — NÚCLEO RPG JOGÁVEL
 Validar level, XP, atributos, HP, recurso, ataque básico, dano, morte, respawn, equipamento, inventário e loot.
@@ -164,9 +168,13 @@ A cada fase/gate concluído:
 5. registrar o commit;
 6. somente então avançar para a próxima fase.
 
-**Fase documental avançada: PHASE 4 — CÂMERA E EXPLORAÇÃO ISOMÉTRICA — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
+**Fase documental avançada: PHASE 5 — PRIMEIRO DIORAMA JOGÁVEL — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
+
+**Phase 5:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
+Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
 
 **Phase 4:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
+
 Documentação: `Docs/PHASE_4_ISOMETRIC_CAMERA_EXPLORATION.md`.
 
 **Phase 2:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
