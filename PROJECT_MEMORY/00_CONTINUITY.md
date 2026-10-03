@@ -745,6 +745,32 @@ Se encontrar discrepância entre source e runtime, runtime real tem precedência
 
 **Phase 1: IN PROGRESS — preparação concluída no repositório; runtime Unreal ainda pendente.**
 
+### Auditoria obrigatória do ambiente real do Unreal
+
+**PENDÊNCIA EXPLÍCITA E NÃO NEGOCIÁVEL:** ainda falta realizar a **auditoria no ambiente real do Unreal Engine**.
+
+Isso significa que o próximo avanço não pode ser considerado validado apenas pelo GitHub/source. É necessário executar localmente, no ambiente Unreal instalado pelo usuário, a auditoria dos artefatos e do runtime reais, incluindo:
+
+- versão/toolchain efetivamente instalada;
+- geração/atualização dos project files;
+- UHT;
+- UBT Editor;
+- UBT Game;
+- UBT Dedicated Server;
+- abertura real do `AgeOfAether.uproject`;
+- existência/abertura do mapa de desenvolvimento real;
+- GameMode/PlayerStart reais;
+- PIE de 1 cliente;
+- PIE de 2 clientes;
+- Dedicated Server + cliente;
+- spawn/posse/movimento/câmera reais;
+- replicação básica observável;
+- Automation Framework real;
+- Output Log e erros críticos;
+- reprodutibilidade após novo pull limpo.
+
+**Regra:** até essa auditoria ser executada e suas evidências serem registradas, a Phase 1 permanece **IN PROGRESS / RUNTIME GATE PENDING**. Não avançar documentalmente para uma aceitação runtime fictícia e não transformar "source/repository complete" em "Unreal validated".
+
 ### Gate atual
 
 **PHASE 1 — REAL UNREAL FOUNDATION / RUNTIME GATE PENDING**
