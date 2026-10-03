@@ -54,11 +54,11 @@ Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
 A fase define o primeiro benchmark real de apresentação e gameplay, integrado à arquitetura do futuro mundo único contínuo. O diorama não é um mapa descartável; é uma região extensível do mundo definitivo. A aceitação real de mapa, assets, câmera, player/NPCs, interação, 2-client PIE, Dedicated Server, logs e performance permanece pendente no Unreal local.
 
 ## FASE 6 — NÚCLEO RPG JOGÁVEL
-Definir e integrar o loop canônico: personagem → level/XP → atributos → HP/recurso → ataque básico → dano → morte/respawn → equipamento → inventário → loot.
+Auditar e integrar os sistemas RPG já existentes no roadmap técnico legado — progression, attributes/state, combat, items, inventory, equipment, loot/reward/respawn, persistence e multiplayer authority — sem recriá-los.
 
-**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
-Documentação: `Docs/PHASE_6_PLAYABLE_RPG_CORE.md`.
-A fase formaliza estado autoritativo do jogador, progressão, atributos/recursos, ataque/dano, morte/respawn, equipamento, inventário, loot, limites transacionais, compatibilidade com persistência/multiplayer e matriz de automação. Não introduz arquitetura duplicada nem declara validação runtime.
+**Estado correto após auditoria do repositório:** a implementação source desses sistemas já existe nas fases legadas correspondentes, incluindo testes dedicados. A Fase 6 do novo roadmap é um marco de integração/validação, não uma nova implementação.
+
+O que falta é comprovar a integração no Unreal runtime real e corrigir somente lacunas encontradas nessa validação.
 
 ## FASE 7 — PRIMEIRO INIMIGO E COMBATE
 Adicionar um inimigo comum com AI, aggro, perseguição, ataque, hit reaction, morte, XP, drop e respawn.
@@ -172,7 +172,7 @@ A cada fase/gate concluído:
 5. registrar o commit;
 6. somente então avançar para a próxima fase.
 
-**Fase documental avançada: PHASE 6 — NÚCLEO RPG JOGÁVEL — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
+**Fase documental avançada: PHASE 5 — PRIMEIRO DIORAMA JOGÁVEL — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
 
 **Phase 5:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
 Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
@@ -191,12 +191,22 @@ Documentação: `Docs/PHASE_3_REAL_ART_PIPELINE.md`.
 A Phase 2 foi fechada somente em nível de source/documentação; nenhuma validação visual/runtime foi inventada.
 
 
-## AVANÇO DOCUMENTAL — PHASE 6
+## RECONCILIAÇÃO DA AUDITORIA DO REPOSITÓRIO — 2026-10-03
 
-**PHASE 6 — NÚCLEO RPG JOGÁVEL: SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.**
+A auditoria confirmou que o novo roadmap não deve duplicar o roadmap técnico legado.
 
-Documento: `Docs/PHASE_6_PLAYABLE_RPG_CORE.md`.
+Os sistemas de **progression, combat, inventory, items, loot/reward/respawn, creatures/AI, world/maps/streaming, persistence, networking, interaction, quests, economy, skills, UI e presentation** já possuem implementação C++/data-contract e testes no repositório.
 
-O contrato do núcleo RPG está fechado em nível source/documentation. A aceitação real do loop no Unreal continua pendente e depende também do gate da Phase 1.
+Exemplos de implementação já presentes:
+- `AetherProgressionSubsystem/Service`;
+- `AetherCombatSubsystem/Service`;
+- `AetherInventorySubsystem`, `AetherItemSubsystem` e `AetherLootSubsystem`;
+- `AetherCreatureSubsystem/Actor/Registry`;
+- `AetherWorldMapSubsystem/Registry/Catalog` e `AetherWorldStreamingCoordinator`;
+- `AetherPersistenceSubsystem/Service`;
+- `AetherCharacterPlayerState`;
+- testes de Progression, Combat, Inventory/Loot, Creatures, World Map e Persistence.
 
-**Próxima fase documental:** PHASE 7 — PRIMEIRO INIMIGO E COMBATE.
+Também foi confirmado que a árvore `Content/Aether` contém atualmente principalmente READMEs de organização, não um conjunto de mapas/meshes/materials/animations/VFX Unreal reais suficiente para representar o primeiro diorama.
+
+**Conclusão:** o próximo trabalho não deve reconstruir sistemas RPG. Deve priorizar o **gate real do Unreal**, a criação/integração de conteúdo Unreal real através do pipeline existente e a validação runtime.
