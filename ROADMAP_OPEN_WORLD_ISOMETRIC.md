@@ -26,6 +26,10 @@ A fase só será marcada como COMPLETE após evidência local real de UHT/UBT, E
 Definir câmera ortográfica/isométrica, ângulo, zoom, escala, paleta, materiais, iluminação, sombras, pós-processamento, proporções, props, arquitetura, vegetação, personagens e VFX.
 Regra: aparência de diorama pintado à mão sem perder jogabilidade 3D no Unreal.
 
+**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
+Documentação: `Docs/PHASE_2_ISOMETRIC_VISUAL_DIRECTION.md`.
+A direção foi formalizada para câmera, composição, materiais, iluminação, personagens, arquitetura, props, VFX e integração com o mundo contínuo. A calibração/aceitação final permanece dependente da auditoria no ambiente real do Unreal.
+
 ## FASE 3 — PIPELINE DE ARTE REAL
 Estabelecer Concept -> source/asset -> cleanup -> import -> Unreal asset -> material/skeleton/collision -> Asset Registry -> Stable AssetID -> runtime.
 Validar FBX, Skeletal/Static Mesh, materiais, texturas, animações, Physics Assets, sockets, LOD/Nanite quando apropriado, VFX, ícones, origem/licença e fallbacks.
@@ -152,4 +156,8 @@ A cada fase/gate concluído:
 5. registrar o commit;
 6. somente então avançar para a próxima fase.
 
-**Fase atual: PHASE 1 — REAL UNREAL FOUNDATION / RUNTIME GATE PENDING.**
+**Fase documental avançada: PHASE 2 — ISOMETRIC VISUAL DIRECTION — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
+
+**Gate runtime ainda aberto:** PHASE 1 — REAL UNREAL FOUNDATION / AUDITORIA NO AMBIENTE REAL DO UNREAL PENDENTE.
+
+A Phase 2 foi fechada somente em nível de source/documentação; nenhuma validação visual/runtime foi inventada.
