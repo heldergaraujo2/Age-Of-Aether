@@ -98,8 +98,18 @@ ROADMAP_CONTENT_AND_CLIENT.md continua sendo a referência de conteúdo, dados e
 ROADMAP_VISUAL_AND_PLAYABLE.md continua sendo a referência de implementação visual/runtime.
 Este documento define a ordem de transformação do produto para Open World + Isometric 2.5D + Painterly Diorama.
 
-## ESTADO INICIAL DA FASE 0
-Auditoria iniciada.
+## ESTADO DA FASE 0
+**COMPLETE at repository/source audit level.**
+
+A auditoria completa e a matriz de transformação estão registradas em `Docs/PHASE_0_OPEN_WORLD_ISOMETRIC_AUDIT.md`.
+
+Decisão central: preservar a arquitetura MMORPG/server-authoritative existente e transformar principalmente câmera, mundo, assets, materiais, iluminação, animação, VFX e apresentação.
+
+Requisito visual agora oficial: **Stylized Painterly Isometric / 2.5D Hand-Painted Diorama em qualidade gráfica premium**.
+
+Benchmark visual inicial: **Vila → estrada → floresta → área de combate → entrada de dungeon**, pequeno em escala, mas produzido já próximo do padrão visual final.
+
+Evidências encontradas no repositório:
 
 Evidências encontradas no repositório:
 - AgeOfAether.uproject usa Unreal Engine 5.8 e Enhanced Input.
@@ -116,4 +126,6 @@ Evidências encontradas no repositório:
 - Mapa Unreal real, assets reais e validação runtime continuam sendo gates locais.
 
 ## PRÓXIMO GATE
-Concluir a matriz PRESERVAR / ADAPTAR / CORRIGIR / SUBSTITUIR / CRIAR e reconciliá-la com o estado real do projeto antes das alterações específicas da transformação isométrica.
+**FASE 1 — FUNDAÇÃO REAL DO UNREAL**
+
+Antes da produção visual em escala, executar e fechar localmente o Unreal 5.8: UHT/UBT, Editor startup, mapa real, PIE, 2-client PIE, Dedicated Server, Automation e logs. A transformação isométrica e o primeiro benchmark visual começam sobre essa fundação runtime comprovada.
