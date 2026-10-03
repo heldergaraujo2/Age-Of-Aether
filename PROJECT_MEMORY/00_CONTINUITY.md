@@ -628,7 +628,7 @@ Nenhum .uasset, .umap, FBX ou outro binário Unreal foi fabricado.
 
 **Pendência explícita:** continua faltando a **auditoria no ambiente real do Unreal Engine**. A Phase 3 não é considerada runtime-validada até existir evidência local de import real de asset, inspeção, Asset Manager, PIE, 2-client PIE, Dedicated Server e logs, além do gate de fundação da Phase 1.
 
-**Próxima fase documental:** PHASE 4 — CÂMERA E EXPLORAÇÃO ISOMÉTRICA.
+**Próxima fase documental:** PHASE 5 — PRIMEIRO DIORAMA JOGÁVEL.
 
 # 11. BENCHMARK VISUAL INICIAL
 
@@ -800,6 +800,34 @@ Se encontrar discrepância entre source e runtime, runtime real tem precedência
 
 **Phase 3: SOURCE/DOCUMENTATION COMPLETE — pipeline de arte real formalizado; aceitação de assets no Unreal runtime ainda pendente.**
 
+**Phase 4: SOURCE/DOCUMENTATION COMPLETE — câmera e exploração isométrica formalizadas; aceitação no Unreal runtime ainda pendente.**
+
+
+
+### Phase 4 — Câmera e Exploração Isométrica
+
+**SOURCE/DOCUMENTATION: COMPLETE**  
+**UNREAL RUNTIME: PENDING**
+
+A documentação `Docs/PHASE_4_ISOMETRIC_CAMERA_EXPLORATION.md` formaliza a experiência de exploração isométrica usando a fundação source-level existente da Phase 40, sem criar uma segunda implementação de movimento/câmera.
+
+Foram definidos:
+- modelo de câmera isométrica e framing;
+- zoom limitado e independente da autoridade de gameplay;
+- collision/occlusion;
+- movimento relativo à câmera;
+- política de rotação;
+- seleção, targeting e interação;
+- multiplayer e limites de autoridade;
+- compatibilidade com o mundo contínuo e World Partition/streaming;
+- requisitos de performance e matriz de aceitação runtime.
+
+Nenhum `.uasset`, `.umap`, FBX ou outro binário Unreal foi fabricado e nenhuma validação runtime foi presumida.
+
+**Pendência explícita e não negociável:** continua faltando a **auditoria no ambiente real do Unreal Engine**. A Phase 4 só poderá receber aceitação runtime após execução local real da câmera, zoom, collision/occlusion, movimento relativo, seleção/targeting/interação, PIE, 2-client PIE, Dedicated Server, logs e profiling, além do gate de fundação da Phase 1.
+
+**Próxima fase documental:** PHASE 5 — PRIMEIRO DIORAMA JOGÁVEL.
+
 ### Auditoria obrigatória do ambiente real do Unreal
 
 **PENDÊNCIA EXPLÍCITA E NÃO NEGOCIÁVEL:** ainda falta realizar a **auditoria no ambiente real do Unreal Engine**.
@@ -854,7 +882,8 @@ Construir o primeiro benchmark visual jogável dentro da arquitetura do **único
 
 ### Último avanço documental
 
-- PHASE_3_REAL_ART_PIPELINE.md criado e fechado em nível source/documentation.
+- PHASE_4_ISOMETRIC_CAMERA_EXPLORATION.md criado e fechado em nível source/documentation.
+- PHASE_3_REAL_ART_PIPELINE.md permanece fechado em nível source/documentation.
 - PHASE_1_REAL_UNREAL_FOUNDATION.md permanece como referência do gate runtime.
 - `ROADMAP_OPEN_WORLD_ISOMETRIC.md` atualizado para refletir a Phase 1 como runtime gate pendente.
 - Nenhum mapa `.umap` ou asset Unreal binário foi fabricado.
@@ -870,6 +899,7 @@ Construir o primeiro benchmark visual jogável dentro da arquitetura do **único
 - `ROADMAP_OPEN_WORLD_ISOMETRIC.md` — transformação Open World + Isometric + Painterly.
 - `Docs/PHASE_0_OPEN_WORLD_ISOMETRIC_AUDIT.md` — auditoria da transformação.
 - `Docs/PHASE_3_REAL_ART_PIPELINE.md` — pipeline de arte real.
+- `Docs/PHASE_4_ISOMETRIC_CAMERA_EXPLORATION.md` — câmera e exploração isométrica.
 - `Docs/PHASE_37_UNREAL_VISUAL_FOUNDATION.md`
 - `Docs/PHASE_38_REAL_ASSET_PIPELINE.md`
 - `Docs/PHASE_39_PLAYABLE_BASE_CHARACTER.md`
