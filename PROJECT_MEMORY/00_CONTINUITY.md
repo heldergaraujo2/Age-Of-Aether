@@ -21,7 +21,7 @@
 - As fases técnicas/source do roadmap legado **0–56 estão implementadas em nível de repositório/source**, mas isso **não significa que o jogo esteja runtime-complete**.
 - O novo roadmap de transformação **Open World + Isometric 2.5D + Painterly Diorama** teve a **FASE 0 — AUDITORIA DA BASE** concluída.
 - O gate runtime obrigatório continua sendo **FASE 1 — FUNDAÇÃO REAL DO UNREAL**, cuja auditoria no ambiente Unreal real ainda está pendente.
-- Em nível source/documentation, a transformação avançou até **FASE 6 — NÚCLEO RPG JOGÁVEL**; as Fases 2, 3, 4, 5 e 6 estão fechadas somente em nível de source/documentação.
+- Em nível source/documentation, a transformação avançou até **FASE 5 — PRIMEIRO DIORAMA JOGÁVEL**; as Fases 2, 3, 4 e 5 estão fechadas somente em nível de source/documentação. A Fase 6 do novo roadmap foi reconciliada como integração/auditoria dos sistemas RPG já existentes, não como uma nova implementação.
 - O projeto ainda precisa de validação real no Unreal para fechar os gates de build/runtime/PIE/2-client/Dedicated Server/Automation e, depois, produção/aceitação de conteúdo real.
 - A transformação visual e de mundo aberto deve acontecer **sobre a arquitetura existente**, sem apagar sistemas já implementados.
 
@@ -927,45 +927,78 @@ A aceitação Unreal/runtime permanece pendente, incluindo mapa, assets, câmera
 
 ---
 
-# 11. PHASE 6 — NÚCLEO RPG JOGÁVEL
+# 11. RECONCILIAÇÃO DA AUDITORIA DO REPOSITÓRIO — 2026-10-03
 
-**Status:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
+A auditoria minuciosa do repositório confirmou uma distinção fundamental entre o **roadmap técnico legado** e o **novo roadmap de transformação Open World/Isometric/Painterly**.
 
-Documento canônico: `Docs/PHASE_6_PLAYABLE_RPG_CORE.md`.
+## Sistemas que já existem em source/repository
 
-A Phase 6 fechou o contrato do núcleo RPG que habita o primeiro diorama:
+Não devem ser reconstruídos:
 
-**personagem → level/XP → atributos → HP/recurso → ataque básico → dano → morte/respawn → equipamento → inventário → loot**
+- progression / XP;
+- combat / server authority;
+- items;
+- inventory;
+- equipment;
+- loot / rewards / respawn;
+- character/player state;
+- creatures / NPC / boss / AI contracts;
+- skills/effects;
+- quests/events/interactions;
+- economy/crafting;
+- world maps/streaming;
+- persistence;
+- networking/multiplayer;
+- UI/presentation;
+- asset pipeline;
+- visual foundation;
+- playable character;
+- input/movement/camera.
 
-Foram explicitados:
-- estado autoritativo do jogador;
-- progressão e XP;
-- atributos e valores derivados;
-- HP/recurso e limites de estado;
-- ataque básico e dano server-authoritative;
-- morte e respawn;
-- equipamento;
-- inventário;
-- loot e prevenção de duplicidade;
-- transações e limites de autoridade;
-- compatibilidade com persistência;
-- compatibilidade com 1-client PIE, 2-client PIE e Dedicated Server;
-- contrato de automação;
-- integração com o fluxo da Phase 5.
+A auditoria encontrou implementação C++ específica para esses domínios e testes dedicados. Entre os arquivos confirmados estão:
 
-Nenhum sistema paralelo foi criado e nenhum binário Unreal falso foi fabricado.
+- `AetherProgressionSubsystem/Service`;
+- `AetherCombatSubsystem/Service`;
+- `AetherInventorySubsystem`;
+- `AetherItemSubsystem`;
+- `AetherLootSubsystem`;
+- `AetherCharacterPlayerState`;
+- `AetherCreatureSubsystem`;
+- `AetherWorldMapSubsystem/Registry/Catalog`;
+- `AetherWorldStreamingCoordinator`;
+- `AetherPersistenceSubsystem/Service`;
+- `AetherNetworkGameMode`.
 
-### Evidência e limite
+Também existem testes específicos para Progression, Combat, Inventory/Loot, Item/Inventory, Creatures, World Map e Persistence.
 
-A conclusão é **somente source/documentation**. Não há evidência nova de runtime Unreal nesta fase.
+## O que a auditoria NÃO permite afirmar
 
-A **Phase 1 — Real Unreal Foundation / runtime gate** continua aberta e obrigatória. A aceitação runtime das Phases 1–6 permanece pendente de execução local real.
+A existência desses sistemas no GitHub não comprova execução correta no Unreal.
 
-### Próxima fase documental
+O último estado registrado continua indicando:
+- Development Editor build: PASS no checkpoint registrado;
+- Automation: 280 total / 266 PASS / 14 FAIL / 0 WARN no último relatório registrado;
+- runtime acceptance: pendente;
+- ClassBalance e outros failures históricos ainda precisam de nova execução para serem classificados.
 
-**PHASE 7 — PRIMEIRO INIMIGO E COMBATE**
+## Conteúdo Unreal real
 
-Fluxo-alvo:
+A árvore atual `Content/Aether` contém principalmente READMEs organizacionais para Maps, Characters, Items, Classes, Monsters, NPC, Materials, Textures, VFX, UI, Audio e Animations. Não há, no repositório atual, um conjunto suficiente de mapas/meshes/materials/animations/VFX binários para declarar o primeiro diorama como conteúdo Unreal real já produzido.
 
-**enemy → AI/aggro → pursuit → attack → hit reaction → death → XP → drop → respawn**
+## Decisão de continuidade
 
+O projeto deve seguir a regra:
+
+**auditar o que já existe → reutilizar → integrar → validar no Unreal → corrigir lacunas reais → só então criar o que realmente faltar.**
+
+O novo roadmap não deve reinterpretar uma funcionalidade já implementada no roadmap legado como uma solicitação para reconstruí-la.
+
+### Gate prioritário
+
+**PHASE 1 — REAL UNREAL FOUNDATION / RUNTIME GATE PENDING**
+
+Antes de novas implementações de gameplay que já existem em source, é prioritário executar a auditoria real do Unreal e usar os resultados para determinar as próximas correções.
+
+### Próximo trabalho após o gate
+
+Com a fundação runtime comprovada, avançar para o primeiro conteúdo real do diorama usando o pipeline de arte existente, sem fabricar binários Unreal e sem criar uma arquitetura paralela.
