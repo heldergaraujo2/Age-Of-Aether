@@ -42,6 +42,10 @@ A fase formaliza o lifecycle de assets, provenance/licença, AssetID/dependencie
 Implementar câmera, zoom, pan, rotação se desejada, collision, movimento relativo à câmera, seleção, targeting, interação e controles.
 Gate: exploração confortável e consistente em multiplayer.
 
+**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
+Documentação: `Docs/PHASE_4_ISOMETRIC_CAMERA_EXPLORATION.md`.
+A fase reutiliza a fundação source-level da Phase 40 e formaliza câmera isométrica, zoom, collision/occlusion, movimento relativo à câmera, framing, seleção/targeting/interação, multiplayer e compatibilidade com o mundo contínuo. A aceitação real permanece dependente da auditoria no Unreal local.
+
 ## FASE 5 — PRIMEIRO DIORAMA JOGÁVEL
 Construir uma pequena vila com praça, casas, loja, NPC, estrada, floresta, campo, obstáculos, vegetação, iluminação e props de storytelling.
 
@@ -160,7 +164,10 @@ A cada fase/gate concluído:
 5. registrar o commit;
 6. somente então avançar para a próxima fase.
 
-**Fase documental avançada: PHASE 3 — REAL ART PIPELINE — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
+**Fase documental avançada: PHASE 4 — CÂMERA E EXPLORAÇÃO ISOMÉTRICA — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
+
+**Phase 4:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
+Documentação: `Docs/PHASE_4_ISOMETRIC_CAMERA_EXPLORATION.md`.
 
 **Phase 2:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
 
