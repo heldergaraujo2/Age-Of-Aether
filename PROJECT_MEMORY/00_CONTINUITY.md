@@ -1002,3 +1002,8 @@ Antes de novas implementações de gameplay que já existem em source, é priori
 ### Próximo trabalho após o gate
 
 Com a fundação runtime comprovada, avançar para o primeiro conteúdo real do diorama usando o pipeline de arte existente, sem fabricar binários Unreal e sem criar uma arquitetura paralela.
+
+
+## 2026-10-03 — FIRST PLAYABLE WORLD REGION PRODUCTION START
+
+A canonical production specification was added at Docs/FIRST_PLAYABLE_WORLD_REGION_PRODUCTION_SPECIFICATION.md. It defines the first permanent world region as settlement -> plaza/services -> outskirts -> road -> natural transition -> wilderness -> exploration -> combat territory -> dungeon entrance, with the official premium painterly-isometric visual bar. No fabricated Unreal binary content was introduced. The real .umap remains pending materialization in Unreal Engine 5.8 and runtime validation.
