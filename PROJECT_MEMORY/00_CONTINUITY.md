@@ -20,7 +20,8 @@
 - A arquitetura MMORPG/server-authoritative existente deve ser **preservada e evoluída**, não reconstruída.
 - As fases técnicas/source do roadmap legado **0–56 estão implementadas em nível de repositório/source**, mas isso **não significa que o jogo esteja runtime-complete**.
 - O novo roadmap de transformação **Open World + Isometric 2.5D + Painterly Diorama** teve a **FASE 0 — AUDITORIA DA BASE** concluída.
-- O próximo gate formal da transformação é **FASE 1 — FUNDAÇÃO REAL DO UNREAL**.
+- O gate runtime obrigatório continua sendo **FASE 1 — FUNDAÇÃO REAL DO UNREAL**, cuja auditoria no ambiente Unreal real ainda está pendente.
+- Em nível source/documentation, a transformação avançou até **FASE 5 — PRIMEIRO DIORAMA JOGÁVEL**; as Fases 2, 3, 4 e 5 estão fechadas somente em nível de source/documentação.
 - O projeto ainda precisa de validação real no Unreal para fechar os gates de build/runtime/PIE/2-client/Dedicated Server/Automation e, depois, produção/aceitação de conteúdo real.
 - A transformação visual e de mundo aberto deve acontecer **sobre a arquitetura existente**, sem apagar sistemas já implementados.
 
@@ -909,3 +910,16 @@ Construir o primeiro benchmark visual jogável dentro da arquitetura do **único
 **Fonte de verdade:** repositório oficial GitHub.
 
 **Última regra:** nunca perder a visão completa do AGE OF AETHER ao trabalhar em uma fase específica. Cada implementação deve contribuir para o MMORPG final, seu mundo contínuo, suas cidades, suas jurisdições, sua exploração e todos os sistemas já planejados.
+
+
+---
+
+# 10. PHASE 5 — PRIMEIRO DIORAMA JOGÁVEL
+
+**Status:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
+
+Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
+
+Phase 5 define o primeiro diorama jogável de produção como região extensível do mundo contínuo: vila/núcleo urbano → praça → serviços/NPCs → estrada → floresta/campo → área de combate → entrada de dungeon. O benchmark visual oficial permanece Stylized Painterly Isometric / 2.5D Hand-Painted Diorama / 2.5D Isometric Cutaway. Referência conceitual de imagem: 4096 × 2304 (4K, 16:9), sem transformar isso em requisito de runtime/textura.
+
+A aceitação Unreal/runtime permanece pendente, incluindo mapa, assets, câmera, player/NPCs, interação, PIE, 2-client PIE, Dedicated Server, logs, Automation e profiling. O gate da Phase 1 — auditoria no ambiente real do Unreal — continua aberto.
