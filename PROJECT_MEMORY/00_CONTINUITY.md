@@ -504,3 +504,15 @@ Foi criado `Content/Aether/Art/2D_ASSET_MANIFEST.json` com AssetIDs canônicos p
 **Estado:** 🟩 contrato/source do kit definido; 🟥 imagens-fonte reais ainda precisam ser produzidas/ingressadas e materializadas no Unreal. Nenhum `.uasset`, `.umap`, Sprite ou Flipbook binário foi fabricado.
 
 **Próxima prioridade:** produzir o primeiro conjunto visual real e então validar a importação Paper2D, perfis, escala, anchors, ordenação, animação e caminhada na primeira região.
+
+## F42 — PRIMEIRA SUBSTITUIÇÃO REAL DAS PRIMITIVAS POR ARTE 2D
+
+**Mudança oficial:** a ponte F40/F41 foi evoluída para uma materialização 2D dentro do próprio módulo Unreal. O projeto agora habilita explicitamente o plugin Paper2D e possui uma biblioteca `FAetherRuntime2DArt` que cria texturas transitórias e `UPaperSprite` para personagem, árvores, rochas e casas.
+
+**Mapa:** `AetherDevelopmentWorldActor` deixou de usar cilindro + esfera como representação final de árvores, esfera como rocha e cubo + cone como casa. Esses elementos agora são instanciados como sprites 2D; chão, estrada, água, portão e demais elementos estruturais continuam como geometria de suporte.
+
+**Personagem:** o corpo/cabeça/manto geométricos F40 passam a ficar ocultos quando o sprite 2D runtime é criado. A apresentação é uma imagem 2D com cabeça, cabelo, braços, pernas, botas, manto e espada, mantendo o `AAetherCharacter` e toda a lógica de gameplay existentes.
+
+**Estado:** 🟩 implementação source oficial concluída; 🟨 validação real no Unreal pendente. O resultado visual ainda precisa ser julgado no PC: escala, orientação isométrica, leitura à distância, transparência, sorting e aparência premium. Não declarar PASS de runtime antes dessa validação.
+
+**Nota:** estes sprites são uma ponte de materialização 2D procedural para eliminar os placeholders geométricos. A evolução posterior poderá substituir as texturas transitórias por arte-fonte premium importada, sem alterar os contratos de gameplay.
