@@ -97,17 +97,17 @@ AAetherCharacter::AAetherCharacter()
     {
         if (UMaterialInstanceDynamic* BodyMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
         {
-            BodyMaterial->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor(0.08f, 0.16f, 0.28f, 1.0f));
+            BodyMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.08f, 0.16f, 0.28f, 1.0f));
             RuntimeBodyVisual->SetMaterial(0, BodyMaterial);
         }
         if (UMaterialInstanceDynamic* HeadMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
         {
-            HeadMaterial->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor(0.72f, 0.45f, 0.28f, 1.0f));
+            HeadMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.72f, 0.45f, 0.28f, 1.0f));
             RuntimeHeadVisual->SetMaterial(0, HeadMaterial);
         }
         if (UMaterialInstanceDynamic* MantleMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
         {
-            MantleMaterial->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor(0.42f, 0.08f, 0.07f, 1.0f));
+            MantleMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.42f, 0.08f, 0.07f, 1.0f));
             RuntimeMantleVisual->SetMaterial(0, MantleMaterial);
         }
     }
