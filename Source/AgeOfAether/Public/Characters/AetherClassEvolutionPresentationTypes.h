@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "AetherClassEvolutionPresentationTypes.generated.h"
-class UAetherPlayableCharacterVisualProfile; class UAetherCharacterAnimationProfile; class USoundBase; class UTexture2D; class UFXSystemAsset;
+class UAetherPlayableCharacterVisualProfile; class UAetherCharacterAnimationProfile; class UAether2DCharacterVisualProfile; class USoundBase; class UTexture2D; class UFXSystemAsset;
 USTRUCT(BlueprintType)
 struct AGEOFAETHER_API FAetherClassEvolutionPresentationDefinition
 {
@@ -14,6 +14,7 @@ struct AGEOFAETHER_API FAetherClassEvolutionPresentationDefinition
  UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Age of Aether|Class Presentation") FName FallbackEvolutionID;
  UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Age of Aether|Class Presentation") TObjectPtr<UAetherPlayableCharacterVisualProfile> VisualProfile=nullptr;
  UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Age of Aether|Class Presentation") TObjectPtr<UAetherCharacterAnimationProfile> AnimationProfile=nullptr;
+ UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Age of Aether|Class Presentation|2D") TObjectPtr<UAether2DCharacterVisualProfile> Visual2DProfile=nullptr;
  UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Age of Aether|Class Presentation") TSoftObjectPtr<UTexture2D> Icon;
  UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Age of Aether|Class Presentation") TSoftObjectPtr<UFXSystemAsset> PresentationVFX;
  UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Age of Aether|Class Presentation") TSoftObjectPtr<USoundBase> PresentationSFX;
