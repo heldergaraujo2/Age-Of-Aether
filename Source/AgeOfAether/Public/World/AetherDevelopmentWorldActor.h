@@ -10,6 +10,8 @@ class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class UStaticMesh;
 class UStaticMeshComponent;
+class UPaperSpriteComponent;
+class UPaperSprite;
 
 UCLASS()
 class AGEOFAETHER_API AAetherDevelopmentWorldActor : public AActor
@@ -38,6 +40,12 @@ protected:
 private:
     void ConfigureGround();
     void BuildFirstRegionDiorama();
+    UPaperSpriteComponent* AddSpriteArt(
+        UPaperSprite* Sprite,
+        const FName& Name,
+        const FVector& Location,
+        float Scale,
+        float Yaw);
     UStaticMeshComponent* AddPrimitive(
         UStaticMesh* Mesh,
         const FName& Name,
