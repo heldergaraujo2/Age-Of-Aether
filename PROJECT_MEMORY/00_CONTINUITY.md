@@ -17,6 +17,12 @@ O AGE OF AETHER já possui a raiz sistêmica. Não reconstruir skills, níveis/p
 
 Regra: preservar → adaptar → integrar → testar → validar → expandir.
 
+## Diretriz permanente de qualidade visual
+
+**REQUISITO TRANSVERSAL A TODAS AS FASES VISUAIS:** produzir imagens/arte na melhor qualidade possível e buscar animações 2D extremamente fluidas, naturais e responsivas. Essa exigência vale para personagens, criaturas, NPCs, VFX, ambientes, mapas, iluminação, sombras, UI e qualquer conteúdo visual. Qualidade e fluidez são requisitos de projeto, não apenas polish final.
+
+**Regra:** não sacrificar qualidade visual ou fluidez por conveniência de produção sem registrar e justificar tecnicamente a decisão.
+
 ## Direção visual oficial
 
 RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clássicos, com identidade própria. O jogo não precisa ser 3D. Pode usar imagens, sprites, sprite sheets, Flipbooks, camadas, paralaxe, luz, sombras, VFX e partículas. 3D é opcional.
