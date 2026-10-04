@@ -2,6 +2,7 @@
 #include "Characters/AetherPlayableCharacterVisualComponent.h"
 #include "Characters/Aether2DCharacterVisualComponent.h"
 #include "World/Aether2DIsometricCameraComponent.h"
+#include "World/AetherRuntime2DArt.h"
 #include "Characters/AetherEquipmentVisualComponent.h"
 #include "Characters/AetherClassEvolutionPresentationComponent.h"
 #include "Characters/AetherSkillVisualComponent.h"
@@ -15,6 +16,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "PaperSpriteComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -74,6 +76,11 @@ AAetherCharacter::AAetherCharacter()
     RuntimeMantleVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeMantleVisual"));
     RuntimeMantleVisual->SetupAttachment(GetCapsuleComponent());
     RuntimeMantleVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    Runtime2DArtVisual = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Runtime2DArtVisual"));
+    Runtime2DArtVisual->SetupAttachment(GetCapsuleComponent());
+    Runtime2DArtVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    Runtime2DArtVisual->SetCastShadow(false);
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
@@ -197,15 +204,27 @@ void AAetherCharacter::InitializeRuntimeVisual()
 {
     if (RuntimeBodyVisual)
     {
-        RuntimeBodyVisual->SetVisibility(true, true);
+        RuntimeBodyVisual->SetVisibility(false, true);
     }
     if (RuntimeHeadVisual)
     {
-        RuntimeHeadVisual->SetVisibility(true, true);
+        RuntimeHeadVisual->SetVisibility(false, true);
     }
     if (RuntimeMantleVisual)
     {
-        RuntimeMantleVisual->SetVisibility(true, true);
+        RuntimeMantleVisual->SetVisibility(false, true);
+    }
+
+    if (Runtime2DArtVisual)
+    {
+        if (UPaperSprite* Sprite = FAetherRuntime2DArt::CreateCharacterSprite(this))
+        {
+            Runtime2DArtVisual->SetSprite(Sprite);
+            Runtime2DArtVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 132.0f));
+            Runtime2DArtVisual->SetRelativeRotation(FRotator(0.0f, 45.0f, 0.0f));
+            Runtime2DArtVisual->SetRelativeScale3D(FVector(1.0f));
+            Runtime2DArtVisual->SetVisibility(true, true);
+        }
     }
 }
 
