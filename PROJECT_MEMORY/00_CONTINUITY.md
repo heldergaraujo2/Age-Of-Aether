@@ -482,3 +482,14 @@ Foi implementada no GitHub a primeira ponte legítima de materialização visual
 Documento: Docs/PHASE_40_RUNTIME_ISOMETRIC_VISUAL_FOUNDATION.md.
 
 **Regra:** F40 só poderá receber PASS de runtime depois de recompilar, abrir a primeira região, executar PIE e caminhar fisicamente pela composição no Unreal, com evidência.
+
+
+## F41 — CORREÇÃO DA APARÊNCIA RUNTIME
+
+**Evidência real:** após sincronizar `00e7c65` e recompilar com UBT (`UBT_EXIT=0`), o usuário executou a primeira região no Unreal. A câmera, personagem e composição do mapa passaram a aparecer, mas o personagem e os elementos ambientais apareceram como primitivas brancas/sem aparência visual aplicada.
+
+**Diagnóstico:** a ponte F40 atribuía o parâmetro `BaseColor` ao `BasicShapeMaterial` nativo. A instância runtime deve receber o parâmetro `Color` para aplicar as cores configuradas.
+
+**Correção F41:** atualizado o visual runtime do personagem e o materializador da primeira região para usar `Color`. Nenhum asset binário foi fabricado.
+
+**Estado:** correção em GitHub aguardando sincronização, recompilação e nova validação real no Unreal. A F40/F41 ainda não recebe PASS visual final. Depois da correção imediata, a produção deve avançar para sprites/texturas/camadas/iluminação/VFX reais, mantendo a direção 2D isométrica premium.
