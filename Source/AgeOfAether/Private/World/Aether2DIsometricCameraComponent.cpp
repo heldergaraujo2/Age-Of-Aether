@@ -12,9 +12,13 @@ void UAether2DIsometricCameraComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (bApplyOnBeginPlay && Profile)
+    if (Profile && bApplyOnBeginPlay)
     {
         ApplyProfile();
+    }
+    else if (!Profile && bUseRuntimeFallbackProfile)
+    {
+        ApplyRuntimeFallback();
     }
 }
 
@@ -22,7 +26,7 @@ void UAether2DIsometricCameraComponent::TickComponent(float DeltaTime, ELevelTic
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-    if (Profile && GetNetMode() != NM_DedicatedServer)
+    if ((Profile || bRuntimeFallbackActive) && GetNetMode() != NM_DedicatedServer)
     {
         ApplyCameraPolicy();
     }
@@ -35,6 +39,7 @@ bool UAether2DIsometricCameraComponent::ApplyProfile()
         return false;
     }
 
+    bRuntimeFallbackActive = false;
     return ApplyLoadedProfile(Profile);
 }
 
@@ -51,20 +56,44 @@ bool UAether2DIsometricCameraComponent::ApplyProfileAsset(UAether2DIsometricCame
 
 void UAether2DIsometricCameraComponent::AddZoomInput(float AxisValue)
 {
-    if (!Profile || !FMath::IsFinite(AxisValue) || FMath::IsNearlyZero(AxisValue))
+    if (!FMath::IsFinite(AxisValue) || FMath::IsNearlyZero(AxisValue))
     {
         return;
     }
 
-    CurrentDistance = FMath::Clamp(
-        CurrentDistance - AxisValue * Profile->ZoomStep,
-        Profile->MinCameraDistance,
-        Profile->MaxCameraDistance);
+    const float MinDistance = Profile ? Profile->MinCameraDistance : 320.0f;
+    const float MaxDistance = Profile ? Profile->MaxCameraDistance : 900.0f;
+    const float ZoomStep = Profile ? Profile->ZoomStep : 60.0f;
+
+    CurrentDistance = FMath::Clamp(CurrentDistance - AxisValue * ZoomStep, MinDistance, MaxDistance);
 
     if (USpringArmComponent* Boom = ResolveCameraBoom())
     {
         Boom->TargetArmLength = CurrentDistance;
     }
+}
+
+bool UAether2DIsometricCameraComponent::ApplyRuntimeFallback()
+{
+    if (GetNetMode() == NM_DedicatedServer)
+    {
+        return false;
+    }
+
+    CurrentDistance = 650.0f;
+    bRuntimeFallbackActive = true;
+
+    if (USpringArmComponent* Boom = ResolveCameraBoom())
+    {
+        Boom->TargetArmLength = CurrentDistance;
+        Boom->bDoCollisionTest = true;
+        Boom->bUsePawnControlRotation = false;
+        Boom->bEnableCameraLag = true;
+        Boom->CameraLagSpeed = 12.0f;
+        Boom->SetRelativeRotation(FRotator(-55.0f, 45.0f, 0.0f));
+    }
+
+    return true;
 }
 
 bool UAether2DIsometricCameraComponent::ApplyLoadedProfile(UAether2DIsometricCameraProfile* InProfile)
@@ -93,24 +122,37 @@ bool UAether2DIsometricCameraComponent::ApplyLoadedProfile(UAether2DIsometricCam
 
 bool UAether2DIsometricCameraComponent::AllowsFreeLook() const
 {
+    if (bRuntimeFallbackActive)
+    {
+        return false;
+    }
+
     return !Profile || Profile->CameraMode == EAether2DIsometricCameraMode::Orbit;
 }
 
 void UAether2DIsometricCameraComponent::ApplyCameraPolicy()
 {
-    if (!Profile || Profile->CameraMode != EAether2DIsometricCameraMode::FixedIsometric)
+    if (Profile && Profile->CameraMode == EAether2DIsometricCameraMode::FixedIsometric)
     {
+        if (USpringArmComponent* Boom = ResolveCameraBoom())
+        {
+            const FRotator Desired(Profile->Pitch, Profile->Yaw, 0.0f);
+            Boom->SetRelativeRotation(Desired);
+            Boom->TargetArmLength = FMath::Clamp(
+                Boom->TargetArmLength,
+                Profile->MinCameraDistance,
+                Profile->MaxCameraDistance);
+        }
         return;
     }
 
-    if (USpringArmComponent* Boom = ResolveCameraBoom())
+    if (bRuntimeFallbackActive)
     {
-        const FRotator Desired(Profile->Pitch, Profile->Yaw, 0.0f);
-        Boom->SetRelativeRotation(Desired);
-        Boom->TargetArmLength = FMath::Clamp(
-            Boom->TargetArmLength,
-            Profile->MinCameraDistance,
-            Profile->MaxCameraDistance);
+        if (USpringArmComponent* Boom = ResolveCameraBoom())
+        {
+            Boom->SetRelativeRotation(FRotator(-55.0f, 45.0f, 0.0f));
+            Boom->TargetArmLength = FMath::Clamp(Boom->TargetArmLength, 320.0f, 900.0f);
+        }
     }
 }
 
