@@ -56,6 +56,7 @@ bool FAetherCreatureCombatAdapter::ResolveBasicAttackAgainstCreature(
         AttackSequence,
         ServerTimeSeconds,
         OutResult);
+    OutResult.RequestId = AttackSequence;
 
     if (!bResolved || OutResult.Result == EAetherCombatResultCode::Missed)
     {
@@ -91,10 +92,12 @@ bool FAetherCreatureCombatAdapter::ResolveCreatureAttackAgainstCharacter(
     }
 
     const FAetherCharacterRecord Attacker = BuildCombatRecord(AttackerDefinition, AttackerCreature);
-    return CombatService.ResolveBasicAttack(
+    const bool bResolved = CombatService.ResolveBasicAttack(
         Attacker,
         TargetCharacter,
         AttackSequence,
         ServerTimeSeconds,
         OutResult);
+    OutResult.RequestId = AttackSequence;
+    return bResolved;
 }
