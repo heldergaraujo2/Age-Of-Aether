@@ -28,6 +28,9 @@ public:
     void AddZoomInput(float AxisValue);
 
     UFUNCTION(BlueprintPure, Category = "Age of Aether|2D Camera")
+    bool AllowsFreeLook() const;
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|2D Camera")
     UAether2DIsometricCameraProfile* GetProfile() const { return Profile; }
 
 protected:
