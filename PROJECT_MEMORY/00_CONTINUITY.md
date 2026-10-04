@@ -271,15 +271,31 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 **Próxima fase:** Fase 13 — Vertical Slice.
 
-### FASE 13 — Vertical slice 🟥
+### FASE 13 — Vertical slice 🟩 / 🟥
 
-**Objetivo:** Provar uma fatia completa reconhecível do Age of Aether.
+**Objetivo:** Consolidar no nível repository/source/architecture uma primeira experiência completa: assentamento → quest → exploração → combate → recompensa → dungeon → boss → retorno.
 
-**Criar e testar:** Assentamento → quest → exploração → combate → XP/loot → dungeon → boss → retorno; UI/áudio/VFX.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Estado:** Execução real pendente.
+**Evidência principal:** `Docs/PHASE_13_VERTICAL_SLICE.md`.
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Contrato canônico:** `AOA.VerticalSlice.FirstPermanent`.
+
+**Arquitetura criada:** `FAetherVerticalSliceStageDefinition`, `FAetherVerticalSliceDefinition`, `FAetherVerticalSliceRegistry`, `UAetherVerticalSliceCatalog` e `UAetherVerticalSliceSubsystem`, incluindo validação de oito etapas, unicidade, ordem e identidades de integração.
+
+**Factory canônica:** `FAetherVerticalSliceDefinition::CreateFirstPermanentSlice()`.
+
+**Fluxo:** Settlement → Quest → Exploration → Combat → Reward → Dungeon → Boss → Return.
+
+**Integrações:** Quest usa `FAetherQuestService`; combate usa `FAetherCombatService` + `FAetherCreatureCombatAdapter`; criaturas usam `UAetherCreatureSubsystem`; dungeon usa `UAetherDungeonSubsystem`; world/streaming, progression, inventory/items, loot/reward, persistence e multiplayer permanecem nos sistemas existentes.
+
+**IDs principais:** `AOA.Quest.FirstRegion.FirstHunt`, `AOA.Creature.FirstRegion.WildHound`, `AOA.Loot.FirstRegion.WildHound`, `AOA.Dungeon.FirstRegion.HollowedWatch`, `AOA.Creature.FirstRegion.HollowedWatchWarden` e `AOA.Quest.FirstRegion.HollowedWatch`.
+
+**Preservação:** nenhum novo combat, quest, reward, progression, inventory, world, streaming, networking, multiplayer ou persistence system foi criado.
+
+**Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Não foram fabricados .uasset/.umap ou outros binários Unreal. Materialização, exploração, combate, dungeon, boss, retorno, HUD, áudio, VFX, multiplayer e persistence permanecem para a janela posterior de Unreal.
+
+**Próxima fase:** Fase 14 — Primeiro teste real jogável.
 
 ### FASE 14 — Primeiro teste real jogável 🟥
 
