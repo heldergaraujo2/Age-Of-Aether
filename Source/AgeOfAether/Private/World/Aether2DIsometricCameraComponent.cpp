@@ -88,6 +88,7 @@ bool UAether2DIsometricCameraComponent::ApplyRuntimeFallback()
         Boom->TargetArmLength = CurrentDistance;
         Boom->bDoCollisionTest = true;
         Boom->bUsePawnControlRotation = false;
+        Boom->SetUsingAbsoluteRotation(true);
         Boom->bEnableCameraLag = true;
         Boom->CameraLagSpeed = 12.0f;
         Boom->SetRelativeRotation(FRotator(-55.0f, 45.0f, 0.0f));
@@ -112,6 +113,7 @@ bool UAether2DIsometricCameraComponent::ApplyLoadedProfile(UAether2DIsometricCam
         Boom->TargetArmLength = CurrentDistance;
         Boom->bDoCollisionTest = InProfile->bEnableCollisionTest;
         Boom->bUsePawnControlRotation = InProfile->CameraMode == EAether2DIsometricCameraMode::Orbit;
+        Boom->SetUsingAbsoluteRotation(InProfile->CameraMode == EAether2DIsometricCameraMode::FixedIsometric);
         Boom->bEnableCameraLag = InProfile->bEnableCameraLag;
         Boom->CameraLagSpeed = InProfile->PositionLagSpeed;
         Boom->SetRelativeRotation(FRotator(InProfile->Pitch, InProfile->Yaw, 0.0f));
