@@ -91,6 +91,11 @@ bool UAether2DIsometricCameraComponent::ApplyLoadedProfile(UAether2DIsometricCam
     return true;
 }
 
+bool UAether2DIsometricCameraComponent::AllowsFreeLook() const
+{
+    return !Profile || Profile->CameraMode == EAether2DIsometricCameraMode::Orbit;
+}
+
 void UAether2DIsometricCameraComponent::ApplyCameraPolicy()
 {
     if (!Profile || Profile->CameraMode != EAether2DIsometricCameraMode::FixedIsometric)
