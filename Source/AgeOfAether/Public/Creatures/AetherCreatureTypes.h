@@ -5,6 +5,7 @@
 #include "AetherCreatureTypes.generated.h"
 
 class USkeletalMesh;
+class UAether2DLivingVisualProfile;
 class UAnimInstance;
 class UAnimMontage;
 class UObject;
@@ -91,6 +92,9 @@ struct FAetherCreatureDefinition
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Creature")
     TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Creature|2D")
+    TObjectPtr<UAether2DLivingVisualProfile> Visual2DProfile;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Creature")
     TSoftClassPtr<UAnimInstance> AnimationClass;
