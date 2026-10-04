@@ -1007,3 +1007,106 @@ Com a fundação runtime comprovada, avançar para o primeiro conteúdo real do 
 ## 2026-10-03 — FIRST PLAYABLE WORLD REGION PRODUCTION START
 
 A canonical production specification was added at Docs/FIRST_PLAYABLE_WORLD_REGION_PRODUCTION_SPECIFICATION.md. It defines the first permanent world region as settlement -> plaza/services -> outskirts -> road -> natural transition -> wilderness -> exploration -> combat territory -> dungeon entrance, with the official premium painterly-isometric visual bar. No fabricated Unreal binary content was introduced. The real .umap remains pending materialization in Unreal Engine 5.8 and runtime validation.
+
+
+---
+
+# 2026-10-04 — REDEFINIÇÃO OFICIAL PARA PROJETO 2D ISOMÉTRICO
+
+A direção visual anterior "Stylized Painterly Isometric / 2.5D Hand-Painted Diorama" foi reconciliada e substituída como objetivo de produção visual pela direção:
+
+**RPG ISOMÉTRICO 2D PREMIUM**
+
+A referência de experiência continua sendo a linguagem de exploração isométrica de RPGs como Lords of Xulima, mas o AGE OF AETHER terá identidade própria e não copiará arte, mapas ou personagens de nenhum jogo.
+
+## Decisão técnica
+
+O AGE OF AETHER não precisa ser um jogo 3D.
+
+A representação visual pode ser predominantemente:
+- imagens;
+- sprites;
+- sprite sheets;
+- Flipbooks;
+- camadas;
+- paralaxe;
+- sombras;
+- iluminação;
+- VFX;
+- partículas;
+- composição isométrica.
+
+3D é opcional e só deve ser usado quando trouxer benefício comprovado.
+
+A Unreal Engine continua sendo a plataforma do projeto e a raiz sistêmica existente continua sendo a base do jogo.
+
+## Regra de adaptação
+
+Não reconstruir:
+- skills;
+- progression/XP/levels;
+- inventory;
+- items/equipment;
+- combat;
+- quests/events;
+- creatures/NPC/AI contracts;
+- economy/crafting;
+- persistence;
+- networking;
+- multiplayer;
+- UI framework;
+- world/streaming contracts;
+- registries e sistemas equivalentes já existentes.
+
+O trabalho novo é principalmente:
+**adaptação visual 2D + produção de conteúdo + integração + validação.**
+
+## Novo roadmap
+
+O roadmap oficial agora é ROADMAP_OPEN_WORLD_ISOMETRIC.md, reorganizado em fases 0–26:
+
+0. Auditoria e preservação da raiz
+1. Fundação real do Unreal
+2. Direção visual 2D isométrica
+3. Pipeline de arte 2D
+4. Sistema de personagens 2D
+5. Criaturas, NPCs e chefes 2D
+6. Ambientes e props 2D
+7. Profundidade 2D, luz e sombra
+8. Câmera e exploração isométrica
+9. Primeira região permanente
+10. Integração dos sistemas existentes
+11. Primeiro inimigo e loop de combate
+12. Primeira dungeon
+13. Vertical slice
+14. Primeiro teste real jogável
+15. World Master Plan
+16. Expansão das jurisdições
+17. Cidades vivas
+18. Mundo PvE
+19. Mundo vivo e social
+20. Polimento visual 2D premium
+21. Escala e performance
+22. Conteúdo inicial completo
+23. Alpha
+24. Beta
+25. Release Candidate
+26. Lançamento e evolução contínua
+
+A antiga sequência de fases continua preservada como histórico de implementação/source, mas não deve ser interpretada como autorização para reconstruir os sistemas já existentes.
+
+## Documentação canônica da direção 2D
+
+Docs/AGE_OF_AETHER_2D_ISOMETRIC_VISUAL_DIRECTION.md
+
+Esta documentação define a pipeline visual e os limites de fabricação/validação de assets.
+
+## Gate atual
+
+O gate de runtime da FASE 1 — FUNDAÇÃO REAL DO UNREAL continua aberto.
+
+Nenhuma validação runtime foi inventada por esta mudança documental.
+
+## Próxima regra
+
+Antes de produzir grandes quantidades de conteúdo visual, seguir a FASE 1 e depois a FASE 2/3 do novo roadmap. O primeiro personagem, mapa ou asset deve ser produzido como prova da nova pipeline 2D, e não como trabalho isolado descartável.
