@@ -461,3 +461,24 @@ Nunca declarar runtime PASS sem execução real no Unreal. Nunca fabricar .uasse
 - ROADMAP_OPEN_WORLD_ISOMETRIC.md — roadmap oficial por fases.
 - Docs/AGE_OF_AETHER_2D_ISOMETRIC_VISUAL_DIRECTION.md — direção visual 2D.
 - PROJECT_MEMORY/00_CONTINUITY.md — este arquivo.
+
+
+## F40 — PRIMEIRA MATERIALIZAÇÃO VISUAL ISOMÉTRICA
+
+**Estado repository/source:** 🟩 IMPLEMENTADO.
+
+**Estado Unreal runtime:** 🟨 AGUARDANDO VALIDAÇÃO REAL.
+
+A validação real da Fase 14 revelou que a câmera ainda estava livre/perspectiva e que o mapa continha essencialmente o chão de desenvolvimento, sem personagem visual ou composição ambiental suficiente.
+
+Foi implementada no GitHub a primeira ponte legítima de materialização visual:
+- fallback runtime de câmera isométrica fixa quando não há DataAsset de câmera;
+- rotação absoluta da câmera para impedir que a orientação do personagem gire a visão;
+- zoom isométrico;
+- personagem runtime visível usando primitivas e materiais nativos do Unreal;
+- primeira composição visual runtime com praça, estrada, casas, árvores, água, rochas, portão e landmark;
+- nenhuma fabricação de .uasset, .umap, FBX ou textura binária.
+
+Documento: Docs/PHASE_40_RUNTIME_ISOMETRIC_VISUAL_FOUNDATION.md.
+
+**Regra:** F40 só poderá receber PASS de runtime depois de recompilar, abrir a primeira região, executar PIE e caminhar fisicamente pela composição no Unreal, com evidência.
