@@ -324,6 +324,11 @@ void AAetherCharacter::ExecuteBasicAttack()
         VisualComponent->PlayBasicAttackAnimation();
     }
 
+    if (Visual2DComponent)
+    {
+        Visual2DComponent->SetVisualState(EAether2DCharacterVisualState::Attack, false);
+    }
+
     APlayerController* PC = Cast<APlayerController>(GetController());
     if (!PC)
     {
