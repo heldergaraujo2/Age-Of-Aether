@@ -200,15 +200,25 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 **Testes/validação:** nenhum Unreal runtime foi falsamente declarado. `.umap`, `.uasset`, importação de arte, collision, navigation, exploração, combate, multiplayer, PIE, Dedicated Server e validação visual permanecem deliberadamente para a janela posterior de Unreal.
 
 
-### FASE 10 — Integração dos sistemas existentes 🟥
+### FASE 10 — Integração dos sistemas existentes 🟩 / 🟥
 
-**Objetivo:** Conectar a camada 2D à raiz sem reconstruí-la.
+**Objetivo:** Conectar a apresentação premium 2D à raiz de gameplay existente sem reconstruir os sistemas já presentes.
 
-**Criar e testar:** Progression; classes; skills; combat; inventory; equipment; loot; quests; NPCs; creatures; economy; persistence; multiplayer.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Estado:** Integração runtime pendente.
+**Evidência principal:** `Docs/PHASE_10_GAMEPLAY_PRESENTATION_INTEGRATION.md`.
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Implementação principal:** a apresentação de class/evolution agora aceita um perfil 2D opcional; o sistema de equipment aceita `PaperSprite` opcional por slot e pode anexá-lo à apresentação 2D; skill presentation alimenta o estado `Cast`; basic attack já alimenta `Attack`; e a câmera isométrica expõe uma política explícita FixedIsometric/Orbit, recebendo o zoom existente quando o perfil 2D está ativo.
+
+**Integração preservada:** progression, classes/evolutions, movement, combat, skills/effects, inventory, items/equipment, loot, quests/events, creatures/NPC/AI, economy/crafting, persistence, networking, multiplayer, world/streaming e UI continuam sendo sistemas existentes e autoritativos. Nenhum desses sistemas foi recriado.
+
+**Equipment 2D:** o contrato agora permite representação visual por PaperSprite, com escala, offset e camada de renderização data-driven. Isso é apresentação; propriedade, slot, regras de equipamento e autoridade permanecem no sistema existente.
+
+**Skill 2D:** o cast aciona o estado visual `Cast` quando uma apresentação 2D estiver disponível. O impacto não força `Hit` no caster, evitando confundir apresentação do atacante com o estado do alvo.
+
+**Camera/input:** FixedIsometric bloqueia free-look quando o perfil 2D está ativo; Orbit mantém free-look permitido. O zoom existente passa pelo componente isométrico quando configurado.
+
+**Testes/validação:** nenhuma UHT/UBT/PIE/runtime foi falsamente declarada. Materialização de assets, class/evolution switching real, equipment layering real, skill presentation, combate, multiplayer e qualidade visual permanecem para a janela posterior de Unreal.
 
 ### FASE 11 — Primeiro inimigo e loop de combate 🟥
 
