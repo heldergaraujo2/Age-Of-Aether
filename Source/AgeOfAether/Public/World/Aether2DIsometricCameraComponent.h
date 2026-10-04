@@ -40,9 +40,14 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
     bool bApplyOnBeginPlay = true;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
+    bool bUseRuntimeFallbackProfile = true;
+
 private:
     bool ApplyLoadedProfile(UAether2DIsometricCameraProfile* InProfile);
+    bool ApplyRuntimeFallback();
     USpringArmComponent* ResolveCameraBoom() const;
     void ApplyCameraPolicy();
     float CurrentDistance = 0.0f;
+    bool bRuntimeFallbackActive = false;
 };
