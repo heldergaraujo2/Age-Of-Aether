@@ -68,13 +68,19 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 **Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
 
-### FASE 3 — Pipeline de arte 2D 🟥
+### FASE 3 — Pipeline de arte 2D 🟩 / 🟥
 
-**Objetivo:** Criar pipeline repetível para arte virar assets 2D utilizáveis.
+**Objetivo:** Criar pipeline repetível para arte virar assets 2D utilizáveis, preservando a raiz gameplay e preparando a materialização legítima no Unreal.
 
-**Criar e testar:** Proveniência; cleanup; textures; sprites/sprite sheets; Flipbooks; materiais; AssetID; registry; fallbacks.
+**Criar e testar:** Proveniência; cleanup; textures; sprites/sprite sheets; Flipbooks; materiais; AssetID; registry; fallbacks; qualidade visual; animação extremamente fluida; identidade isométrica; separação source/runtime.
 
-**Estado:** Aceitação com assets reais no Unreal pendente.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/PIPELINE CONTRACT.** A especificação operacional completa foi criada. 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS**, conforme decisão de continuar o progresso antes da janela de testes Unreal.
+
+**Evidência principal:** Docs/PHASE_3_2D_ART_PIPELINE.md, commit 295ba3a1a03797aa2a6265255cbd2f02c29415e9.
+
+**Resultado:** lifecycle canônico de arte definido; AssetID/proveniência; preparação e derivação 2D; regras de Sprite/Sprite Sheet/Flipbook; contrato de animação; composição isométrica; profundidade; integração com Asset Manager/visual registry; fallback; automação futura; e gates P0–P6 definidos. Nenhum Unreal binary foi fabricado.
+
+**Testes/validação:** testes que exigem Unreal foram deliberadamente adiados. A conclusão verde desta fase refere-se somente ao nível repository/source/contract; não significa que Textures, Sprites, Flipbooks ou materiais reais já existam no Unreal.
 
 **Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
 
@@ -310,9 +316,15 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 ## Gate atual
 
-**FASE 1 — FUNDAÇÃO REAL DO UNREAL 🟥**
+**FASE 1 — FUNDAÇÃO REAL DO UNREAL 🟥 — RUNTIME DEFERIDO**
 
-É o próximo gate obrigatório. Exige UHT, UBT Editor/Game/Server, abertura real, mapa, GameMode/PlayerStart, PIE, 2-client PIE, Dedicated Server + cliente, spawn/posse/movimento/câmera, replicação, Automation e logs.
+O gate de runtime continua pendente e será executado posteriormente. Isso não bloqueia o avanço de trabalho repository/source nas fases seguintes.
+
+**FASE 3 — PIPELINE DE ARTE 2D 🟩 SOURCE / 🟥 RUNTIME**
+
+A produção documental e contratual da Fase 3 foi concluída. A materialização e validação no Unreal ficam para a janela de testes Unreal.
+
+**Regra operacional:** continuar o progresso repository/source enquanto os gates de runtime estiverem explicitamente deferidos; nunca transformar um gate deferido em PASS.
 
 ## Regra de fechamento
 
