@@ -233,7 +233,7 @@ O mesmo personagem gameplay deve continuar funcionando com a nova apresentação
 # FASE 5 — CRIATURAS, NPCs E CHEFES 2D
 
 ### Objetivo
-Aplicar a mesma abordagem aos habitantes do mundo.
+Aplicar a mesma abordagem aos habitantes do mundo sem reconstruir os sistemas de gameplay existentes.
 
 ### Produzir
 - criaturas comuns;
@@ -244,13 +244,22 @@ Aplicar a mesma abordagem aos habitantes do mundo.
 - comerciantes;
 - guardas;
 - quest givers;
-- personagens sociais.
+- personagens sociais;
+- perfis visuais 2D data-driven;
+- componente visual reutilizável;
+- estados Idle/Walk/Run/Attack/Hit/Death/Cast/Interaction.
 
 ### Preservar
-AI, aggro, combate, loot, quests e autoridade já existentes.
+AI, aggro, combate, loot, quests, navegação, spawning, persistência, networking e autoridade já existentes.
 
-### Gate
-Criatura/NPC real deve aparecer no runtime com comportamento existente e representação visual 2D.
+### Estado
+🟩 Repository/source/architecture concluído.
+
+🟥 Materialização dos assets Paper2D e validação real no Unreal deferidas.
+
+### Gate de runtime
+Criatura/NPC/boss real deve aparecer no runtime com o comportamento existente e representação visual 2D, incluindo validação de estados, qualidade visual, multiplayer e Dedicated Server.
+
 
 ---
 
