@@ -1,4 +1,6 @@
 #include "Characters/AetherSkillVisualComponent.h"
+#include "Characters/AetherCharacter.h"
+#include "Characters/Aether2DCharacterVisualComponent.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/Actor.h"
 
@@ -6,6 +8,17 @@ void UAetherSkillVisualComponent::PlaySkillPresentation(const FAetherSkillVisual
 {
     if (GetOwner() && GetOwner()->GetNetMode() == NM_DedicatedServer) return;
     if (!Profile.IsValid()) return;
+
+    if (!bImpact)
+    {
+        if (AAetherCharacter* Character = Cast<AAetherCharacter>(GetOwner()))
+        {
+            if (UAether2DCharacterVisualComponent* Visual2D = Character->Get2DVisualComponent())
+            {
+                Visual2D->SetVisualState(EAether2DCharacterVisualState::Cast, false);
+            }
+        }
+    }
 
     TSoftObjectPtr<UObject> Asset = bImpact ? Profile.ImpactVFX : Profile.CastVFX;
     if (Asset.IsValid())
