@@ -302,28 +302,23 @@ Os assets devem ser reutilizáveis e combináveis. Evitar desenhar cada região 
 # FASE 7 — PROFUNDIDADE 2D, LUZ E SOMBRA
 
 ### Objetivo
-Fazer o mundo 2D transmitir profundidade e presença.
+Criar profundidade convincente sem exigir 3D.
 
-### Implementar
-- camadas de profundidade;
-- ordem de renderização;
-- oclusão;
-- sombras;
-- luz;
-- highlights;
-- ambientação;
-- paralaxe;
-- partículas;
-- neblina;
-- clima;
-- efeitos mágicos;
-- pós-processamento quando apropriado.
+### Produzir
+- camadas Background/Far/World/Midground/Foreground/Overlay;
+- ordenação de renderização;
+- offset de profundidade;
+- oclusão visual;
+- paralaxe data-driven;
+- política de sombra;
+- base para atmosfera, neblina, clima, partículas e VFX.
 
-### Gate
-A cena deve parecer espacial e legível sem depender de modelos 3D.
+### Estado
+🟩 Repository/source/architecture concluído.
+🟥 Materialização e validação real no Unreal deferidas.
 
----
-
+### Regra
+A profundidade deve servir à leitura isométrica e ao acabamento premium sem substituir os sistemas de gameplay existentes.
 # FASE 8 — CÂMERA E EXPLORAÇÃO ISOMÉTRICA
 
 ### Objetivo
