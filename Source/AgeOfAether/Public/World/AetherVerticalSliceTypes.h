@@ -91,4 +91,5 @@ struct FAetherVerticalSliceDefinition
     bool bEnabled = true;
 
     bool IsValid(TArray<FString>* OutErrors = nullptr) const;
+    static FAetherVerticalSliceDefinition CreateFirstPermanentSlice();
 };
