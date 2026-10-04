@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PaperSprite.h"
 #include "GameFramework/Actor.h"
 
 #include "AetherDevelopmentWorldActor.generated.h"
