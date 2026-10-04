@@ -245,15 +245,31 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 **Commits principais da fase:** `9d81c39f53d8132b946436e56458eef252beef61`, `04124f67dfc793d8f0f7a98f9a7a80672dcb7409`, `9b64005bb508b07fa439a06caebdefb4328cdcf6`, `b477fa8af80b8ae686e241d638c5a7c0fbb30f62`, `402f4335ad9f4f4c9053e2c9f04605fb68df4e00`, `643dde8746c90f11fa2707a562da73b36cb19ba0`, `ab1cf7002e680e4a801d3381385bc9cea5496f8e`, `13d659fadfb11ebf7cb0e4e2917972a6152c7732` e `4dd32c1d35f8b243b2382832f2487d67f4304d47`.
 
 
-### FASE 12 — Primeira dungeon 🟥
+### FASE 12 — Primeira dungeon 🟩 / 🟥
 
-**Objetivo:** Criar dungeon integrada ao mundo e à linguagem visual 2D.
+**Objetivo:** Estabelecer no nível repository/source/architecture a primeira dungeon permanente, integrada ao mundo contínuo e aos sistemas existentes, sem recriar combat, quests, loot, progression ou streaming.
 
-**Criar e testar:** Entrada; áreas; salas; obstáculos; criaturas; interações; loot; eventos; mini-boss; boss; retorno.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Estado:** Produção e validação pendentes.
+**Evidência principal:** `Docs/PHASE_12_FIRST_DUNGEON.md`.
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Primeira dungeon canônica:** The Hollowed Watch — A Torre Vigia Oca.
+
+**IDs:** `AOA.Dungeon.FirstRegion.HollowedWatch`, `AOA.Map.FirstRegion.HollowedWatch`, `AOA.Portal.FirstRegion.DungeonEntrance`, `AOA.Quest.FirstRegion.HollowedWatch`, `AOA.Loot.FirstRegion.HollowedWatch` e `AOA.Reward.FirstRegion.HollowedWatch`.
+
+**Arquitetura criada:** `FAetherDungeonDefinition`, `FAetherDungeonRoomDefinition`, `FAetherDungeonEncounterDefinition`, `FAetherDungeonRegistry`, `UAetherDungeonCatalog` e `UAetherDungeonSubsystem`, com validação de identidade, níveis, salas, encounters, referências e grafo.
+
+**Composição:** Entrance → Vestibule → BrokenGallery → AbandonedBarracks → Crypt → GuardianHall → LowerTower → BossChamber → Exit, com rotas secundárias para exploração e descoberta.
+
+**Combate:** reutiliza `FAetherCombatService` e `UAetherCreatureSubsystem`. Mini-boss `AOA.Creature.FirstRegion.HollowedWatchGuardian` e boss `AOA.Creature.FirstRegion.HollowedWatchWarden` são contratos de conteúdo, não um novo sistema de boss.
+
+**Integração:** dungeon aponta para quest, loot, reward, inventory, persistence, interaction e world streaming existentes. Configuração conceitual usa LoadMode Instance e a zona `Region.FirstPermanent.Dungeon`.
+
+**Visual:** segue a pipeline premium 2D, com profundidade/camadas, sombras, iluminação, VFX e animação fluida. Nenhum asset binário Unreal foi fabricado.
+
+**Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Entrada/saída, navigation, collision, combate, mini-boss, boss, loot, quest, persistence, multiplayer e qualidade visual permanecem para a janela posterior de Unreal.
+
+**Próxima fase:** Fase 13 — Vertical Slice.
 
 ### FASE 13 — Vertical slice 🟥
 
