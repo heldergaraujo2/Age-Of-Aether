@@ -6,6 +6,9 @@
 #include "AetherCreatureActor.generated.h"
 
 UCLASS()
+class UAether2DLivingVisualComponent;
+
+UCLASS()
 class AGEOFAETHER_API AAetherCreatureActor : public AActor
 {
     GENERATED_BODY()
@@ -24,6 +27,9 @@ public:
     UFUNCTION(BlueprintPure, Category="Age of Aether|Creature")
     bool IsAlive() const { return RuntimeState.bAlive; }
 
+    UFUNCTION(BlueprintPure, Category="Age of Aether|Creature|Combat")
+    const FAetherCreatureDefinition& GetDefinitionSnapshot() const { return DefinitionSnapshot; }
+
     UFUNCTION(BlueprintCallable, Category="Age of Aether|Creature")
     void ResetHealth();
 
@@ -34,11 +40,17 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Creature")
     TObjectPtr<USkeletalMeshComponent> CreatureMesh;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Creature|2D")
+    TObjectPtr<UAether2DLivingVisualComponent> Visual2DComponent;
+
     UPROPERTY(BlueprintReadOnly, Category="Creature")
     FAetherCreatureRuntimeState RuntimeState;
 
     UPROPERTY(Transient)
     TArray<TObjectPtr<UObject>> PresentationAssets;
+
+    UPROPERTY(Transient)
+    FAetherCreatureDefinition DefinitionSnapshot;
 
 private:
     void ApplyPresentation(const FAetherCreatureDefinition& Definition);
