@@ -553,14 +553,52 @@ Unreal ainda precisa validar criação/materialização do mapa, navigation, col
 
 # FASE 13 — VERTICAL SLICE
 
-### Fluxo obrigatório
+### Estado
 
-**entrar -> explorar assentamento -> conversar -> aceitar quest -> sair -> explorar -> combater -> ganhar XP -> loot -> dungeon -> boss -> retornar**
+🟩 **SOURCE / REPOSITORY / ARCHITECTURE CONCLUÍDO.**  
+🟥 **UNREAL MATERIALIZATION / RUNTIME VALIDATION DEFERIDOS.**
 
-### Resultado
-Primeiro trecho realmente reconhecível como Age of Aether.
+### Objetivo
 
----
+Consolidar a primeira experiência completa do Age of Aether:
+
+**assentamento → quest → exploração → combate → recompensa → dungeon → boss → retorno**
+
+### Contrato canônico
+
+`AOA.VerticalSlice.FirstPermanent`
+
+### Arquitetura
+
+- `FAetherVerticalSliceStageDefinition`;
+- `FAetherVerticalSliceDefinition`;
+- `FAetherVerticalSliceRegistry`;
+- `UAetherVerticalSliceCatalog`;
+- `UAetherVerticalSliceSubsystem`;
+- factory `FAetherVerticalSliceDefinition::CreateFirstPermanentSlice()`.
+
+### Etapas
+
+1. Settlement — `Region.FirstPermanent.Settlement`
+2. Quest — `AOA.Quest.FirstRegion.FirstHunt`
+3. Exploration — `Region.FirstPermanent.Wilderness`
+4. Combat — `AOA.Creature.FirstRegion.WildHound`
+5. Reward — `AOA.Loot.FirstRegion.WildHound`
+6. Dungeon — `AOA.Dungeon.FirstRegion.HollowedWatch`
+7. Boss — `AOA.Creature.FirstRegion.HollowedWatchWarden`
+8. Return — `Region.FirstPermanent.Settlement`
+
+### Regra
+
+A vertical slice orquestra os sistemas existentes. Não recriar combat, quest, progression, inventory, items, loot, reward, world, streaming, networking, multiplayer ou persistence.
+
+### Evidência
+
+`Docs/PHASE_13_VERTICAL_SLICE.md`
+
+### Gate posterior
+
+O Unreal ainda precisa materializar e validar a experiência completa, incluindo startup, assentamento, quest, exploração, combate, reward, dungeon, boss, retorno, HUD, áudio, VFX, multiplayer e persistence.
 
 # FASE 14 — PRIMEIRO TESTE REAL JOGÁVEL
 
