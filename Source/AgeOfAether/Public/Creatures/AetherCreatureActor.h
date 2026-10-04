@@ -5,7 +5,7 @@
 #include "Creatures/AetherCreatureTypes.h"
 #include "AetherCreatureActor.generated.h"
 
-UCLASS()
+class USkeletalMeshComponent;
 class UAether2DLivingVisualComponent;
 
 UCLASS()
