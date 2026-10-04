@@ -14,6 +14,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -23,7 +24,9 @@
 #include "InputActionValue.h"
 #include "InputModifiers.h"
 #include "InputMappingContext.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Net/UnrealNetwork.h"
+#include "UObject/ConstructorHelpers.h"
 
 AAetherCharacter::AAetherCharacter()
 {
@@ -59,6 +62,64 @@ AAetherCharacter::AAetherCharacter()
     SkillVisualComponent = CreateDefaultSubobject<UAetherSkillVisualComponent>(TEXT("SkillVisualComponent"));
     Visual2DComponent = CreateDefaultSubobject<UAether2DCharacterVisualComponent>(TEXT("Visual2DComponent"));
     IsometricCameraComponent = CreateDefaultSubobject<UAether2DIsometricCameraComponent>(TEXT("IsometricCameraComponent"));
+
+    RuntimeBodyVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeBodyVisual"));
+    RuntimeBodyVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeBodyVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeHeadVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeHeadVisual"));
+    RuntimeHeadVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeHeadVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeMantleVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeMantleVisual"));
+    RuntimeMantleVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeMantleVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeMesh(TEXT("/Engine/BasicShapes/Cone.Cone"));
+    static ConstructorHelpers::FObjectFinder<UMaterialInterface> BaseMaterial(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+
+    if (CylinderMesh.Succeeded())
+    {
+        RuntimeBodyVisual->SetStaticMesh(CylinderMesh.Object);
+    }
+    if (SphereMesh.Succeeded())
+    {
+        RuntimeHeadVisual->SetStaticMesh(SphereMesh.Object);
+    }
+    if (ConeMesh.Succeeded())
+    {
+        RuntimeMantleVisual->SetStaticMesh(ConeMesh.Object);
+    }
+
+    if (BaseMaterial.Succeeded())
+    {
+        if (UMaterialInstanceDynamic* BodyMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
+        {
+            BodyMaterial->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor(0.08f, 0.16f, 0.28f, 1.0f));
+            RuntimeBodyVisual->SetMaterial(0, BodyMaterial);
+        }
+        if (UMaterialInstanceDynamic* HeadMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
+        {
+            HeadMaterial->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor(0.72f, 0.45f, 0.28f, 1.0f));
+            RuntimeHeadVisual->SetMaterial(0, HeadMaterial);
+        }
+        if (UMaterialInstanceDynamic* MantleMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
+        {
+            MantleMaterial->SetVectorParameterValue(TEXT("BaseColor"), FLinearColor(0.42f, 0.08f, 0.07f, 1.0f));
+            RuntimeMantleVisual->SetMaterial(0, MantleMaterial);
+        }
+    }
+
+    RuntimeBodyVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 20.0f));
+    RuntimeBodyVisual->SetRelativeScale3D(FVector(0.48f, 0.48f, 1.35f));
+
+    RuntimeHeadVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 155.0f));
+    RuntimeHeadVisual->SetRelativeScale3D(FVector(0.62f, 0.62f, 0.62f));
+
+    RuntimeMantleVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 75.0f));
+    RuntimeMantleVisual->SetRelativeScale3D(FVector(0.85f, 0.85f, 0.70f));
 }
 
 void AAetherCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -124,9 +185,27 @@ void AAetherCharacter::BeginPlay()
         Movement->RotationRate = FRotator(0.0f, MovementCameraProfile ? MovementCameraProfile->RotationRate : 720.0f, 0.0f);
     }
 
+    InitializeRuntimeVisual();
+
     if (IsLocallyControlled())
     {
         InitializeFoundationInput();
+    }
+}
+
+void AAetherCharacter::InitializeRuntimeVisual()
+{
+    if (RuntimeBodyVisual)
+    {
+        RuntimeBodyVisual->SetVisibility(true, true);
+    }
+    if (RuntimeHeadVisual)
+    {
+        RuntimeHeadVisual->SetVisibility(true, true);
+    }
+    if (RuntimeMantleVisual)
+    {
+        RuntimeMantleVisual->SetVisibility(true, true);
     }
 }
 
@@ -233,13 +312,19 @@ void AAetherCharacter::MoveRight(const FInputActionValue& Value)
 
 void AAetherCharacter::LookYaw(const FInputActionValue& Value)
 {
-    if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook()) return;
+    if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook())
+    {
+        return;
+    }
     AddControllerYawInput(Value.Get<float>() * CameraTurnRate);
 }
 
 void AAetherCharacter::LookPitch(const FInputActionValue& Value)
 {
-    if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook()) return;
+    if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook())
+    {
+        return;
+    }
     const float Input = Value.Get<float>() * CameraTurnRate;
     const float MinPitch = MovementCameraProfile ? MovementCameraProfile->CameraMinPitch : -75.0f;
     const float MaxPitch = MovementCameraProfile ? MovementCameraProfile->CameraMaxPitch : 35.0f;
@@ -288,11 +373,12 @@ void AAetherCharacter::SprintStopped(const FInputActionValue& Value)
 
 void AAetherCharacter::CameraZoom(const FInputActionValue& Value)
 {
-    if (IsometricCameraComponent && IsometricCameraComponent->GetProfile())
+    if (IsometricCameraComponent)
     {
         IsometricCameraComponent->AddZoomInput(Value.Get<float>());
         return;
     }
+
     if (!CameraBoom) return;
     const float Step = MovementCameraProfile ? MovementCameraProfile->CameraZoomStep : 50.0f;
     const float MinDistance = MovementCameraProfile ? MovementCameraProfile->MinCameraDistance : 250.0f;
@@ -311,7 +397,6 @@ void AAetherCharacter::ServerSetSprinting_Implementation(bool bNewSprinting)
         Movement->MaxWalkSpeed = bSprinting ? Sprint : Walk;
     }
 }
-
 
 void AAetherCharacter::BasicAttackPressed(const FInputActionValue& Value)
 {
@@ -371,8 +456,6 @@ void AAetherCharacter::ExecuteBasicAttack()
 
 void AAetherCharacter::ServerRequestBasicAttack_Implementation(const FAetherCharacterId& TargetCharacterId)
 {
-    // The network controller remains the authoritative combat request gateway.
-    // This RPC is intentionally not used for direct damage mutation.
     if (!HasAuthority() || !TargetCharacterId.IsValid())
     {
         return;
