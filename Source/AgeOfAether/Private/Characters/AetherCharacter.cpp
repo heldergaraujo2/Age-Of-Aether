@@ -233,11 +233,13 @@ void AAetherCharacter::MoveRight(const FInputActionValue& Value)
 
 void AAetherCharacter::LookYaw(const FInputActionValue& Value)
 {
+    if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook()) return;
     AddControllerYawInput(Value.Get<float>() * CameraTurnRate);
 }
 
 void AAetherCharacter::LookPitch(const FInputActionValue& Value)
 {
+    if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook()) return;
     const float Input = Value.Get<float>() * CameraTurnRate;
     const float MinPitch = MovementCameraProfile ? MovementCameraProfile->CameraMinPitch : -75.0f;
     const float MaxPitch = MovementCameraProfile ? MovementCameraProfile->CameraMaxPitch : 35.0f;
@@ -286,6 +288,11 @@ void AAetherCharacter::SprintStopped(const FInputActionValue& Value)
 
 void AAetherCharacter::CameraZoom(const FInputActionValue& Value)
 {
+    if (IsometricCameraComponent && IsometricCameraComponent->GetProfile())
+    {
+        IsometricCameraComponent->AddZoomInput(Value.Get<float>());
+        return;
+    }
     if (!CameraBoom) return;
     const float Step = MovementCameraProfile ? MovementCameraProfile->CameraZoomStep : 50.0f;
     const float MinDistance = MovementCameraProfile ? MovementCameraProfile->MinCameraDistance : 250.0f;
