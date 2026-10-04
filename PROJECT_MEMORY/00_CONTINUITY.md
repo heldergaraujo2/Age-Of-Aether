@@ -493,3 +493,14 @@ Documento: Docs/PHASE_40_RUNTIME_ISOMETRIC_VISUAL_FOUNDATION.md.
 **Correção F41:** atualizado o visual runtime do personagem e o materializador da primeira região para usar `Color`. Nenhum asset binário foi fabricado.
 
 **Estado:** correção em GitHub aguardando sincronização, recompilação e nova validação real no Unreal. A F40/F41 ainda não recebe PASS visual final. Depois da correção imediata, a produção deve avançar para sprites/texturas/camadas/iluminação/VFX reais, mantendo a direção 2D isométrica premium.
+
+
+## F41 — PRIMEIRO KIT DE ARTE 2D REAL
+
+Após a validação real da ponte F40/F41, ficou comprovado que a geometria nativa serve apenas como fallback técnico: personagem e ambiente já aparecem, mas ainda não representam a qualidade visual final. A produção foi avançada para a primeira materialização de arte 2D real sem reconstruir a arquitetura existente.
+
+Foi criado `Content/Aether/Art/2D_ASSET_MANIFEST.json` com AssetIDs canônicos para Player Mage (Idle/Walk/Attack), árvore, rocha e casa. Também foi criado `Docs/PHASE_41_FIRST_REAL_2D_ART_KIT.md` definindo a produção, qualidade, proveniência, materialização legítima no Unreal e critérios de evidência.
+
+**Estado:** 🟩 contrato/source do kit definido; 🟥 imagens-fonte reais ainda precisam ser produzidas/ingressadas e materializadas no Unreal. Nenhum `.uasset`, `.umap`, Sprite ou Flipbook binário foi fabricado.
+
+**Próxima prioridade:** produzir o primeiro conjunto visual real e então validar a importação Paper2D, perfis, escala, anchors, ordenação, animação e caminhada na primeira região.
