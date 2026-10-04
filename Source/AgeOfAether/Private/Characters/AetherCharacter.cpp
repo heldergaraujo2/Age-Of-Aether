@@ -1,5 +1,6 @@
 #include "Characters/AetherCharacter.h"
 #include "Characters/AetherPlayableCharacterVisualComponent.h"
+#include "Characters/Aether2DCharacterVisualComponent.h"
 #include "Characters/AetherEquipmentVisualComponent.h"
 #include "Characters/AetherClassEvolutionPresentationComponent.h"
 #include "Characters/AetherSkillVisualComponent.h"
@@ -55,6 +56,7 @@ AAetherCharacter::AAetherCharacter()
     EquipmentVisualComponent = CreateDefaultSubobject<UAetherEquipmentVisualComponent>(TEXT("EquipmentVisualComponent"));
     ClassEvolutionPresentationComponent = CreateDefaultSubobject<UAetherClassEvolutionPresentationComponent>(TEXT("ClassEvolutionPresentationComponent"));
     SkillVisualComponent = CreateDefaultSubobject<UAetherSkillVisualComponent>(TEXT("SkillVisualComponent"));
+    Visual2DComponent = CreateDefaultSubobject<UAether2DCharacterVisualComponent>(TEXT("Visual2DComponent"));
 }
 
 void AAetherCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
