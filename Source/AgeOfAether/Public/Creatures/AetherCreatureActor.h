@@ -27,6 +27,9 @@ public:
     UFUNCTION(BlueprintCallable, Category="Age of Aether|Creature")
     void ResetHealth();
 
+    UFUNCTION(BlueprintCallable, Category="Age of Aether|Creature|Combat")
+    bool ApplyCombatDamage(float Damage);
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Creature")
     TObjectPtr<USkeletalMeshComponent> CreatureMesh;
