@@ -20,7 +20,6 @@ bool UAetherEquipmentVisualComponent::ApplyEquipmentVisual(UAetherEquipmentVisua
     RemoveEquipmentVisual(Profile->EquipmentSlot);
     AAetherCharacter* Character = Cast<AAetherCharacter>(GetOwner());
     USkeletalMeshComponent* CharacterMesh = Character ? Character->GetMesh() : nullptr;
-    if (!CharacterMesh) return false;
     UMeshComponent* Visual = nullptr;
     if (Profile->VisualType == EAetherEquipmentVisualType::PaperSprite)
     {
@@ -45,15 +44,18 @@ bool UAetherEquipmentVisualComponent::ApplyEquipmentVisual(UAetherEquipmentVisua
     }
     else if (Profile->VisualType == EAetherEquipmentVisualType::SkeletalMesh)
     {
+        if (!CharacterMesh) return false;
         USkeletalMeshComponent* Mesh = NewObject<USkeletalMeshComponent>(GetOwner());
         Mesh->SetSkeletalMesh(Profile->SkeletalMesh.LoadSynchronous()); if (!Mesh->GetSkeletalMeshAsset()) return false; Visual = Mesh;
     }
     else if (Profile->VisualType == EAetherEquipmentVisualType::StaticMesh)
     {
+        if (!CharacterMesh) return false;
         UStaticMeshComponent* Mesh = NewObject<UStaticMeshComponent>(GetOwner());
         Mesh->SetStaticMesh(Profile->StaticMesh.LoadSynchronous()); if (!Mesh->GetStaticMesh()) return false; Visual = Mesh;
     }
-    if (!Visual || !AttachMesh(Visual, Profile)) { if (Visual) Visual->DestroyComponent(); return false; }
+    if (!Visual) return false;
+    if (Profile->VisualType != EAetherEquipmentVisualType::PaperSprite && !AttachMesh(Visual, Profile)) { if (Visual) Visual->DestroyComponent(); return false; }
     for (int32 Index=0; Index<Profile->MaterialOverrides.Num(); ++Index)
         if (UMaterialInterface* Material=Profile->MaterialOverrides[Index].LoadSynchronous()) Visual->SetMaterial(Index, Material);
     ActiveVisuals.Add(Profile->EquipmentSlot, Visual);
