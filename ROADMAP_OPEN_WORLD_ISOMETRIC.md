@@ -363,16 +363,42 @@ A experiência real de exploração, conforto do zoom, obstrução, multiplayer,
 # FASE 9 — PRIMEIRA REGIÃO PERMANENTE
 
 ### Objetivo
-Construir a primeira região real do mundo definitivo.
+Definir e preparar a primeira região permanente do mundo definitivo como uma unidade de produção reutilizável e expansível.
+
+### Estado
+🟩 **REPOSITORY/SOURCE/ARCHITECTURE CONCLUÍDO.**
+🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
+
+### Documento canônico
+`Docs/PHASE_9_FIRST_PERMANENT_REGION.md`
 
 ### Composição
 
-**assentamento -> praça -> serviços -> NPCs -> saída -> estrada -> campo -> floresta -> exploração -> combate -> ruínas/landmark -> aproximação da dungeon -> dungeon**
+**arrival -> assentamento -> praça/serviços -> arredores -> portão -> estrada -> campo -> borda da floresta -> exploração -> fronteira de combate -> ruínas/landmark -> aproximação da dungeon -> entrada da dungeon**
+
+A região é deliberadamente não-linear e possui rota principal, rotas secundárias e pontos de descoberta.
+
+### Escopo concluído no source
+
+- identidade permanente da primeira região;
+- composição espacial completa;
+- zonas e regras de combate;
+- gramática de streaming cells;
+- pontos de spawn, serviço, exploração, combate e dungeon;
+- hooks para quests/events, interação, criaturas/NPCs, economia, combate e persistência;
+- famílias visuais reutilizáveis para assentamento, natureza, fronteira e profundidade 2D;
+- compatibilidade com os contratos existentes de world/content/streaming;
+- reconciliação dos documentos históricos da primeira região com a direção atual premium 2D isométrica.
 
 ### Regra
+
 Não é um mapa descartável.
 
-É a primeira região da arquitetura do mundo contínuo.
+É a primeira região permanente da arquitetura do mundo contínuo de aproximadamente 40 grandes cidades/jurisdições.
+
+### Gate posterior
+
+A criação do `.umap`, importação de arte, collision, navigation, exploração real, combate, multiplayer, PIE, Dedicated Server e validação visual permanecem para a janela posterior de Unreal.
 
 ---
 
