@@ -10,6 +10,20 @@ O projeto não exige personagens, criaturas, mapas ou ambientes 3D. A apresenta�
 
 Elementos 3D somente serão utilizados quando trouxerem benefício comprovado. Não são requisito do projeto.
 
+## DIRETRIZ VISUAL NÃO NEGOCIÁVEL — QUALIDADE MÁXIMA
+
+Esta diretriz vale para **todas as fases visuais do projeto** e não deve ser perdida em nenhuma atualização do roadmap.
+
+- **ANIMAÇÕES:** buscar animações 2D extremamente fluidas, naturais e responsivas, com frames, timing, antecipação, follow-through e transições adequados. Fluidez é requisito de qualidade, não acabamento opcional.
+- **IMAGENS E ARTE:** todo conteúdo visual deve ser produzido na **melhor qualidade possível**, priorizando resolução, detalhe, coerência artística, legibilidade, acabamento e aparência premium.
+- **PERSONAGENS E CRIATURAS:** movimentos, ataques, habilidades, reações e estados devem possuir transições convincentes.
+- **AMBIENTES E MAPAS:** arquitetura, vegetação, props, efeitos, iluminação e composição devem manter o mesmo padrão elevado.
+- **VFX E PROFUNDIDADE:** luz, sombra, partículas, paralaxe, camadas e oclusão devem criar profundidade rica sem exigir 3D.
+- **REGRA DE VERDADE:** imagem ou animação criada fora do Unreal só é considerada integrada após materialização legítima na pipeline e validação real quando a fase exigir.
+
+**Prioridade permanente:** qualidade visual máxima → animação extremamente fluida → consistência artística → integração técnica → performance baseada em evidência.
+
+
 ## PRINCÍPIO CENTRAL
 
 O AGE OF AETHER **já possui a raiz sistêmica do jogo**.
