@@ -27,9 +27,6 @@ public:
     UFUNCTION(BlueprintPure, Category="Age of Aether|Creature")
     bool IsAlive() const { return RuntimeState.bAlive; }
 
-    UFUNCTION(BlueprintPure, Category="Age of Aether|Creature|Combat")
-    const FAetherCreatureDefinition& GetDefinitionSnapshot() const { return DefinitionSnapshot; }
-
     UFUNCTION(BlueprintCallable, Category="Age of Aether|Creature")
     void ResetHealth();
 
