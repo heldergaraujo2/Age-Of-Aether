@@ -136,7 +136,6 @@ namespace
         Params.bOverridePixelsPerUnrealUnit = true;
         Params.PixelsPerUnrealUnit = PixelsPerUnit;
         Sprite->InitializeSprite(Params, true);
-        Sprite->SetCollisionDomain(ESpriteCollisionMode::None);
         return Sprite;
     }
 
