@@ -1,283 +1,125 @@
-# PHASE 0 — OPEN WORLD ISOMETRIC RPG BASE AUDIT
+# AGE OF AETHER — FASE 0 — AUDITORIA E PRESERVAÇÃO DA RAIZ
 
 ## STATUS
+**🟩 CONCLUÍDA — repository/source audit**
 
-**COMPLETE at repository/source audit level.**
+This phase establishes the boundary between the existing systemic root and the new 2D isometric project. It does not claim Unreal runtime completion; runtime remains a separate Phase 1 gate.
 
-This phase establishes the transformation boundary for AGE OF AETHER without replacing the existing MMORPG foundation.
+## 1. OBJETIVO
+Audit what already exists before new implementation: systems, reusable architecture, temporary/bootstrap pieces, missing production content, known gaps, existing test evidence, and runtime gates.
 
-Important truth:
-- This is a repository/source audit.
-- It does not claim Unreal Editor runtime acceptance.
-- Unreal runtime remains the mandatory gate for Phase 1.
+**Rule: PRESERVE → ADAPT → INTEGRATE → TEST → VALIDATE → EXPAND.**
 
-## OBJECTIVE
+## 2. DIREÇÃO OFICIAL
+**RPG ISOMÉTRICO 2D PREMIUM.** The game does not need to be 3D. Presentation may use images, sprites, sprite sheets, Flipbooks, layers, parallax, lighting, shadows, VFX, particles and 2D materials. 3D is optional. The project has its own identity and must not copy third-party art, maps or characters.
 
-Transform the existing AGE OF AETHER into a high-quality open-world isometric 2.5D RPG with a stylized painterly diorama identity while preserving the mature server-authoritative architecture.
+## 3. ESCOPO AUDITADO
+The repository audit recorded 454 files: 342 source, 54 test-related, 79 docs, 14 Content and 7 Config. Domain evidence:
 
-Target product:
-- open world;
-- isometric 2.5D presentation;
-- hand-painted / painterly visual language;
-- premium-quality environments, characters, materials, lighting and VFX;
-- MMORPG progression and multiplayer foundation;
-- data-driven content expansion;
-- Unreal Engine 5.8 runtime.
+| Domain | Evidence | Decision |
+|---|---:|---|
+| Progression | 7 | 🟩 PRESERVE |
+| Combat | 10 | 🟩 PRESERVE |
+| Inventory | 5 | 🟩 PRESERVE |
+| Items | 20 | 🟩 PRESERVE |
+| Loot | 10 | 🟩 PRESERVE |
+| Creatures | 11 | 🟩 PRESERVE |
+| World Map | 9 | 🟩 PRESERVE |
+| World Streaming | 2 | 🟩 PRESERVE |
+| Persistence | 7 | 🟩 PRESERVE |
+| Economy | 7 | 🟩 PRESERVE |
+| Quest | 12 | 🟩 PRESERVE |
+| Skill | 14 | 🟩 PRESERVE |
+| UI | 20 | 🟩 PRESERVE |
+| Equipment | 5 | 🟩 PRESERVE |
+| Movement/Camera | 4 | 🟩 PRESERVE |
+| Classes | 20 | 🟩 PRESERVE |
 
-## AUDIT RESULT
+These counts are repository/source evidence, not runtime acceptance.
 
-The repository already contains a broad MMORPG/gameplay foundation and a complete source-level visual/playable framework. The transformation therefore **must not be a rewrite**.
+## 4. DECISÃO ARQUITETURAL
+### PRESERVAR
+Gameplay/domain C++; server authority; networking; multiplayer; persistence; progression; combat; inventory; items; equipment; loot; quests/events; creatures/NPC/AI contracts; economy/crafting; skills/effects; world/map registries; streaming abstractions; UI; audio; Asset Manager; stable Asset IDs; visual/presentation contracts; Automation contracts.
 
-The correct strategy is:
+### ADAPTAR
+Character presentation; camera; movement presentation; targeting; interaction; HUD; equipment presentation; creatures; NPCs; environments; maps; lighting; composition; VFX.
 
-**PRESERVE the gameplay architecture → ADAPT presentation/camera/world → CORRECT known repository/runtime gates → REPLACE only temporary/bootstrap presentation → CREATE the real art/content layer.**
+### SUBSTITUIR SOMENTE TEMPORÁRIOS
+BasicShapes/development ground, debug HUD, placeholder visual assets and development-only composition, only when real replacements exist.
 
-## CLASSIFICATION MATRIX
+## 5. SISTEMAS CONFIRMADOS
+Gameplay: progression, classes/evolutions, combat, skills/effects, inventory, items, equipment, loot, quests, events, economy and crafting.
+World: world identity, map/world registry, streaming abstractions, persistence, world-scale planning, single-world architecture and city/jurisdiction planning.
+Entities: player character, creatures, NPC contracts, boss/AI contracts and generic catalogs.
+Presentation: playable character visual component, equipment visual component, animation profile, class/evolution presentation catalog, visual profiles, asset registry and asset pipeline contracts.
 
-| Area | Decision | Finding | Transformation |
-|---|---|---|---|
-| Unreal project | PRESERVE | UE 5.8 project exists and Enhanced Input is enabled | Keep project/module structure |
-| Server authority | PRESERVE | Existing gameplay architecture is server-authoritative | Never move gameplay authority into presentation |
-| Networking | PRESERVE | Request/validation/replication foundations already exist | Adapt movement/camera presentation only |
-| Accounts/sessions | PRESERVE | Existing account/session foundation | No redesign for visual transformation |
-| Persistence | PRESERVE | Persistence contracts and SaveGame-backed implementation exist | Reuse for open-world state |
-| Progression | PRESERVE | Level/XP/class/evolution foundation exists | Present through new UI/art |
-| Inventory/equipment | PRESERVE | Data-driven inventory/equipment exists | Adapt visual attachment and UI |
-| Economy/crafting | PRESERVE | Economy, shops and recipes exist | Build world-facing presentation |
-| Quests/events | PRESERVE | Quest/event contracts exist | Integrate with living-world presentation |
-| Combat | PRESERVE | Server-authoritative combat exists | Adapt targeting/camera/animation/VFX |
-| Skills/effects | PRESERVE | Skill/effect/status foundation exists | Create premium VFX/animation layer |
-| Creatures/AI contracts | PRESERVE | Generic creature/catalog foundation exists | Create real monsters/NPCs/bosses |
-| World registry | PRESERVE | World/map identity and streaming contracts exist | Build real World Partition maps |
-| Streaming/scale | PRESERVE | Streaming/performance abstractions exist | Validate and tune with real profiling |
-| UI architecture | PRESERVE | Presentation/controller/catalog foundation exists | Replace placeholder visuals with final UI |
-| Audio architecture | PRESERVE | Data-driven audio subsystem exists | Create real audio content |
-| Asset Manager | PRESERVE | Primary asset scanning/stable identity foundation exists | Extend to production art |
-| Visual profiles | PRESERVE | Character/equipment/class visual bridges exist | Use as reusable presentation layer |
-| Temporary BasicShapes ground | REPLACE | Development ground is explicitly a bootstrap placeholder | Replace with authored terrain |
-| Runtime fallback input | ADAPT | Useful for foundation but not final UX | Move toward authored mappings/settings |
-| Native debug HUD | REPLACE | Debug-only presentation | Replace/augment with final HUD |
-| Spring-arm third-person camera | ADAPT | Existing camera proves character foundation | Transform into controlled isometric camera |
-| Placeholder/no real art | REPLACE | Repository deliberately avoids fake binary assets | Import production assets through real pipeline |
-| Empty/placeholder maps | CREATE | Real world maps are still local Unreal content | Create first production diorama |
-| Production environment art | CREATE | No production art library is committed | Build/import coherent art set |
-| Production characters | CREATE | Source contracts exist; real meshes are pending | Create/import hero, NPC and creature assets |
-| Production animation | CREATE | Contracts exist; real animation assets pending | Build locomotion/combat animation set |
-| Production VFX | CREATE | Contracts exist; real VFX pending | Build painterly combat/world VFX |
-| Production lighting | CREATE | No final map lighting exists | Establish art-directed lighting recipe |
-| Isometric camera UX | CREATE | Not yet the product-defining camera | Build final camera/controller behavior |
-| World composition | CREATE | World contracts exist, content does not | Build village/forest/dungeon composition |
-| Painterly material language | CREATE | No final material library | Establish master materials and texture rules |
-| Visual QA/performance budget | CREATE | Performance contracts exist but visual target is not locked | Establish measurable visual budgets |
+Conclusion: the new 2D direction does not require a new gameplay architecture.
 
-## ARCHITECTURAL DECISION
+## 6. CONTENT GAP
+Source contracts and presentation infrastructure exist, but the repository does not yet contain a complete production library of final 2D characters, creatures, NPCs, architecture, vegetation, props, final VFX, production maps and complete regions. This is a content-production gap, not evidence that the gameplay architecture must be rebuilt.
 
-The existing architecture is suitable for the new product.
+## 7. WORLD ARCHITECTURE EVIDENCE
+- db6085d93f4a772fc6cec10119aa990f9fb875f7 — single-world / forty-city architecture.
+- 4d05c506383ed9ba776fffda5d09bab44c3440da — large city jurisdictions and exploration scale.
+- 3bc8f6ba6a01964cc6eaec6f07bc9578972bb152 — first permanent region specification.
+- 055eacf6d4f6460b666769588590376a47689d4e — first-region isometric layout.
+- a19791d22003e65db50fd2e4f31fe25693077f2b — first-region asset kit.
 
-No second game architecture should be introduced.
+These remain production-architecture evidence; their visual language must follow the new 2D direction.
 
-### Keep
+## 8. ROADMAP RECONCILIATION
+- 363b19a24ea400c54c51b7527a54f8baa0982e74 — redundant Phase 6 documentation removed.
+- 7a0a003173295bf0ef7f3407cf9e42d1e4ef24c9 — roadmap reconciled with existing RPG implementations.
+- de219133274f1616bacdd850cf1c3d51cf91b6710 — repository audit and architecture reconciliation recorded.
 
-- C++ gameplay/domain rules;
-- server authority;
-- data-driven definitions;
-- registries;
-- stable IDs;
-- persistence;
-- networking;
-- security;
-- generic reusable presentation components;
-- Asset Manager;
-- Automation contracts.
+## 9. TEST EVIDENCE
+Historical audit evidence recorded 280 automation tests: 266 PASS, 14 FAIL, 0 WARN.
+Recorded failures: ClassBalance; BalanceSimulation.Neutral; ClassCombat.PvPSwitch; QuestDialogueEvent.CrossReferences; Multiplayer heartbeat/rate-limit; Quests.Security; Security.Replay.
 
-### Change
+These are historical evidence, not a fresh execution in this turn. They are preserved as known gates and must not be reported as newly re-run.
 
-- camera model;
-- world presentation;
-- visual asset quality;
-- map composition;
-- materials;
-- lighting;
-- animation presentation;
-- VFX;
-- UI art direction;
-- environmental storytelling.
+## 10. MAIN RISK
+The main risk is confusing source architecture with completed runtime/content. Source complete ≠ runtime complete; contract ≠ asset; image ≠ Unreal asset; documentation ≠ playable map; external/old asset ≠ official repository asset.
 
-### Replace
+## 11. ASSET TRUTH
+Do not fabricate Unreal binaries. Never manufacture .uasset, .umap or other Unreal binary content to simulate progress. Real visual sources must be legitimately imported/created in Unreal and then runtime-validated.
 
-Only explicitly temporary/bootstrap pieces:
-- BasicShapes development floor;
-- debug HUD;
-- placeholder visual assets;
-- development-only map composition.
+## 12. PHASE 0 EXIT CHECKLIST
+| Criterion | Status |
+|---|---|
+| Existing architecture audited | 🟩 |
+| Existing systems identified | 🟩 |
+| Systems to preserve defined | 🟩 |
+| Systems to adapt defined | 🟩 |
+| Temporary pieces identified | 🟩 |
+| Missing production content identified | 🟩 |
+| 2D visual direction defined | 🟩 |
+| Asset fabrication limits defined | 🟩 |
+| Source/runtime distinction defined | 🟩 |
+| Roadmap reconciled | 🟩 |
+| Phase-based continuity established | 🟩 |
+| Next gate identified | 🟩 |
 
-## PREMIUM VISUAL QUALITY TARGET
+## 13. RESULT
+**🟩 FASE 0 — TOTALMENTE CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE.**
 
-The project now adopts the following non-negotiable visual target:
+The audit establishes that the Age of Aether already has a broad gameplay/systemic root. The new work is primarily visual adaptation, content production, integration and validation. No gameplay-system rewrite is authorized by this phase.
 
-**Stylized Painterly Isometric / 2.5D Hand-Painted Diorama at premium game quality.**
+## 14. NEXT PHASE
+**FASE 1 — FUNDAÇÃO REAL DO UNREAL 🟥**
 
-The target is not low-poly placeholder art and not a generic orthographic camera placed above a conventional 3D level.
+Required runtime evidence: UHT; UBT Editor/Game/Dedicated Server; Editor startup; real map; GameMode; PlayerStart; PIE; 2-client PIE; Dedicated Server + client; spawn/possession/movement/camera; replication; Automation; Output Log.
 
-### Environment
-
-- dense, authored composition;
-- strong silhouettes;
-- layered depth;
-- high-quality hand-painted or painterly textures;
-- detailed architecture;
-- rich vegetation;
-- rocks, roads, props and clutter;
-- believable material separation;
-- deliberate color/value hierarchy;
-- environmental storytelling.
-
-### Characters
-
-- distinctive silhouettes;
-- high-quality sculpt/model;
-- coherent stylized proportions;
-- detailed materials;
-- clean deformation;
-- polished locomotion and combat animation;
-- equipment that visibly changes the character;
-- readable at the gameplay camera distance.
-
-### Lighting
-
-- art-directed key/fill/rim relationships;
-- high-quality shadows;
-- ambient occlusion/contact grounding where appropriate;
-- atmospheric depth;
-- day/night or lighting-state support when justified;
-- controlled post-processing;
-- no dependence on excessive bloom or effects to hide weak assets.
-
-### Materials
-
-- coherent master-material family;
-- painterly albedo/value treatment;
-- controlled roughness/specular response;
-- detail layers;
-- weather/variation support where useful;
-- consistent visual language across environment, characters and props.
-
-### VFX
-
-- readable silhouettes;
-- impact feedback;
-- spell identity;
-- restrained but high-quality particles;
-- ground effects;
-- boss telegraphs;
-- lighting interaction;
-- scalability tiers.
-
-### Camera
-
-- deliberate isometric composition;
-- stable readable framing;
-- controlled zoom;
-- occlusion handling;
-- target readability;
-- comfortable traversal;
-- no camera behavior that destroys the diorama composition.
-
-## FIRST VISUAL QUALITY BENCHMARK
-
-The first production benchmark is one small but polished playable diorama:
-
-**Village → road → forest → combat clearing → dungeon entrance.**
-
-It must contain:
-- playable character;
-- one class/evolution presentation;
-- one weapon;
-- one armor set;
-- NPC;
-- interaction;
-- quest;
-- three creature presentations;
-- combat;
-- three skills;
-- loot;
-- dungeon entrance;
-- boss presentation;
-- essential HUD;
-- lighting;
-- ambient audio;
-- VFX.
-
-The benchmark is intentionally small in geographic scope but high in visual quality.
-
-No mass production should begin before this benchmark establishes the final visual language.
-
-## QUALITY RULE
-
-A new asset is not accepted merely because it technically imports.
-
-It must satisfy:
-1. silhouette/readability at gameplay camera distance;
-2. material consistency;
-3. lighting compatibility;
-4. animation/interaction compatibility where applicable;
-5. performance budget;
-6. stable asset identity;
-7. fallback behavior when applicable;
-8. runtime proof.
-
-## RUNTIME TRUTH
-
-The repository contains many source-level implementations, but the following remain runtime gates:
-- Unreal 5.8 editor startup;
-- UHT/UBT builds;
-- real map creation;
-- real asset import;
-- PIE;
-- 2-client PIE;
-- Dedicated Server;
-- Automation Framework;
-- replication;
-- runtime visual presentation;
-- performance profiling.
-
-Therefore **source completeness must never be reported as runtime completion**.
-
-## KNOWN REPOSITORY VALIDATION STATE
-
-The project continuity records:
-- previous real C++ Development Editor build: PASS;
-- latest recorded automation: 280 total / 266 PASS / 14 FAIL / 0 WARN;
-- ClassBalance remains the principal recorded failure block;
-- additional recorded failures include BalanceSimulation.Neutral, ClassCombat.PvPSwitch, QuestDialogueEvent.CrossReferences, Multiplayer heartbeat/rate-limit, Quests.Security and Security.Replay.
-
-These are technical gates and are not caused by the isometric art direction. They must be handled before declaring the runtime foundation closed.
-
-## PHASE 0 GATE
-
-Phase 0 is complete when:
-- existing systems are classified;
-- no duplicate architecture is planned;
-- temporary presentation is identified;
-- production visual target is explicit;
-- first benchmark is defined;
-- runtime/source distinction is explicit;
-- transformation risks are documented.
-
-All repository-level criteria above are now satisfied.
-
-## NEXT PHASE
-
-**PHASE 1 — REAL UNREAL FOUNDATION**
-
-Priority order:
-1. synchronize local clone with main;
-2. execute Unreal 5.8 runtime gate;
-3. close known build/Automation blockers;
-4. create the real development map;
-5. prove PIE;
-6. prove 2-client PIE;
-7. prove Dedicated Server smoke;
-8. only then begin the final isometric camera and production visual implementation.
-
-The first real art asset should not be used as a substitute for a broken runtime foundation.
+## EVIDENCE
+| Evidence | Status |
+|---|---|
+| Initial Phase 0 audit | 🟩 b3c7609f7e6655bf753cf7dbce5d88df200fef4c |
+| Architecture reconciliation | 🟩 de219133274f1616bacdd850cf1c3d51cf91b6710 |
+| Roadmap reconciliation | 🟩 7a0a003173295bf0ef7f3407cf9e42d1e4ef24c9 |
+| Single-world architecture | 🟩 db6085d93f4a772fc6cec10119aa990f9fb875f7 |
+| City/jurisdiction scale | 🟩 4d05c506383ed9ba776fffda5d09bab44c3440da |
+| First-region specification | 🟩 3bc8f6ba6a01964cc6eaec6f07bc9578972bb152 |
+| First-region layout | 🟩 055eacf6d4f6460b666769588590376a47689d4e |
+| Asset kit | 🟩 a19791d22003e65db50fd2e4f31fe25693077f2b |
+| 2D visual direction | 🟩 Docs/AGE_OF_AETHER_2D_ISOMETRIC_VISUAL_DIRECTION.md |
+| Phase-based continuity | 🟩 PROJECT_MEMORY/00_CONTINUITY.md |
