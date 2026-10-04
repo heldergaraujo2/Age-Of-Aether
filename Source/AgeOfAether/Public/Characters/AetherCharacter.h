@@ -11,6 +11,7 @@ class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
 class UStaticMeshComponent;
+class UPaperSpriteComponent;
 class UAetherPlayableCharacterVisualComponent;
 class UAetherMovementCameraProfile;
 class UAetherEquipmentVisualComponent;
@@ -98,6 +99,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
     TObjectPtr<UStaticMeshComponent> RuntimeMantleVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime 2D Art")
+    TObjectPtr<UPaperSpriteComponent> Runtime2DArtVisual;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
     float FoundationWalkSpeed = 420.0f;
