@@ -6,6 +6,7 @@
 AAetherDevelopmentWorldActor::AAetherDevelopmentWorldActor()
 {
     Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+    Root->SetMobility(EComponentMobility::Static);
     SetRootComponent(Root);
 
     Ground = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ground"));
