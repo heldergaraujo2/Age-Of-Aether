@@ -25,13 +25,22 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 ### FASE 0 — Auditoria e preservação da raiz 🟩
 
-**Objetivo:** Auditar a arquitetura e confirmar que os sistemas já existentes serão preservados.
+**Objetivo:** Auditar a arquitetura e confirmar que os sistemas já existentes serão preservados, sem reconstrução desnecessária.
 
-**Criar e testar:** Auditoria source; inventário dos sistemas; testes relevantes; gaps.
+**Criar e testar:** Auditoria repository/source; inventário dos sistemas; classificação preservar/adaptar/substituir; identificação de conteúdo ausente; reconciliação do roadmap; registro dos gates de teste e da separação source/runtime.
 
-**Estado:** Concluída em nível repository/source.
+**Estado:** 🟩 **TOTALMENTE CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE.**
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Resultado:** A auditoria confirmou a raiz de progression, classes/evoluções, combat, skills/effects, inventory, items, equipment, loot, quests/events, creatures/NPC/AI contracts, economy/crafting, persistence, networking/multiplayer, world/map/streaming, UI, audio, Asset Manager, registries, visual/presentation contracts e Automation. A decisão oficial é preservar esses sistemas e adaptar a apresentação para o projeto RPG isométrico 2D premium.
+
+**Evidência principal:** `Docs/PHASE_0_OPEN_WORLD_ISOMETRIC_AUDIT.md`, commit `87a13e3cbdd92da70472960f553015b7475e06ab`.
+
+**Evidências históricas relacionadas:** `b3c7609f7e6655bf753cf7dbce5d88df200fef4c` (auditoria inicial), `de219133274f1616bacdd850cf1c3d51cf91b6710` (reconciliação da arquitetura) e `7a0a003173295bf0ef7f3407cf9e42d1e4ef24c9` (reconciliação do roadmap).
+
+**Testes:** a auditoria preserva como evidência histórica 280 automações: 266 PASS, 14 FAIL, 0 WARN. Esses números não são apresentados como execução nova nesta sessão. As falhas históricas permanecem registradas como gates técnicos e não foram falsamente marcadas como resolvidas.
+
+**Gate:** Fase 0 não exige runtime para ser encerrada. O runtime permanece explicitamente separado na Fase 1.
+
 
 ### FASE 1 — Fundação real do Unreal 🟥
 
