@@ -319,10 +319,24 @@ Criar profundidade convincente sem exigir 3D.
 
 ### Regra
 A profundidade deve servir à leitura isométrica e ao acabamento premium sem substituir os sistemas de gameplay existentes.
+
+---
+
 # FASE 8 — CÂMERA E EXPLORAÇÃO ISOMÉTRICA
 
 ### Objetivo
-Adaptar a exploração existente à nova apresentação.
+Adaptar a exploração existente à nova apresentação 2D isométrica.
+
+### Implementação repository/source
+- perfil de câmera data-driven;
+- modo FixedIsometric e Orbit;
+- yaw/pitch;
+- distância inicial;
+- zoom com limites;
+- zoom step;
+- camera lag opcional;
+- spring-arm collision test;
+- componente reutilizável sobre a câmera existente.
 
 ### Preservar/adaptar
 - movimento;
@@ -330,13 +344,19 @@ Adaptar a exploração existente à nova apresentação.
 - targeting;
 - interação;
 - seleção;
-- câmera;
-- zoom;
 - collision;
-- multiplayer.
+- multiplayer;
+- streaming.
 
-### Resultado
-Uma experiência de exploração isométrica controlada, confortável e consistente.
+### Estado
+🟩 Repository/source/architecture concluído.
+🟥 Materialização e validação real no Unreal deferidas.
+
+### Compatibilidade com o mundo
+A câmera é uma camada reutilizável para o mundo contínuo planejado, incluindo as aproximadamente 40 grandes cidades/jurisdições, wilderness, estradas, dungeons e landmarks.
+
+### Gate de runtime
+A experiência real de exploração, conforto do zoom, obstrução, multiplayer, performance e leitura visual serão validados posteriormente no Unreal.
 
 ---
 
