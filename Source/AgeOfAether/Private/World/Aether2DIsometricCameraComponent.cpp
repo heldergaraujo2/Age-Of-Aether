@@ -82,6 +82,7 @@ bool UAether2DIsometricCameraComponent::ApplyLoadedProfile(UAether2DIsometricCam
     {
         Boom->TargetArmLength = CurrentDistance;
         Boom->bDoCollisionTest = InProfile->bEnableCollisionTest;
+        Boom->bUsePawnControlRotation = InProfile->CameraMode == EAether2DIsometricCameraMode::Orbit;
         Boom->bEnableCameraLag = InProfile->bEnableCameraLag;
         Boom->CameraLagSpeed = InProfile->PositionLagSpeed;
         Boom->SetRelativeRotation(FRotator(InProfile->Pitch, InProfile->Yaw, 0.0f));
