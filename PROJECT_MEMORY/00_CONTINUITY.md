@@ -121,15 +121,26 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 **Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Conforme decisão operacional, Unreal fica deliberadamente para a janela posterior de testes.
 
 
-### FASE 6 — Ambientes e props 2D 🟥
+### FASE 6 — Ambientes e props 2D 🟩 / 🟥
 
-**Objetivo:** Criar biblioteca reutilizável de cenário.
+**Objetivo:** Criar uma biblioteca modular e reutilizável de cenário 2D isométrico premium.
 
-**Criar e testar:** Casas; arquitetura; estradas; vegetação; rochas; água; ruínas; dungeons; props; objetos interativos.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Estado:** Biblioteca real pendente.
+**Evidência principal:** `Docs/PHASE_6_2D_ENVIRONMENTS_AND_PROPS.md`.
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Implementação principal:** `UAether2DEnvironmentVisualProfile` e `UAether2DEnvironmentVisualComponent`.
+
+**Resultado:** criado contrato data-driven para Architecture, Road, Vegetation, Rock, Water, Ruin, Dungeon, Prop e Interactive, com VisualProfileID, FamilyID, Sprite, escala, offset, render layer e sombra opcional. O componente aplica esses dados através de Paper2D sem executar apresentação no Dedicated Server.
+
+**Regra de produção:** ambientes devem ser compostos por famílias reutilizáveis, e não por imagens únicas descartáveis. Isso permite combinar casas, muralhas, portas, torres, templos, estradas, pontes, vegetação, rochas, água, ruínas, dungeons, fogueiras, móveis, decoração e props interativos em múltiplas regiões.
+
+**Preservação:** collision, navigation, interaction logic, destruction, economy, quests, combat, spawning, persistence, networking e world streaming existentes não foram reconstruídos.
+
+**Qualidade:** máxima qualidade visual, perspectiva isométrica consistente, silhuetas limpas, iluminação coerente, modularidade e consistência entre famílias permanecem obrigatórias.
+
+**Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Unreal permanece deliberadamente para a janela posterior de validação.
+
 
 ### FASE 7 — Profundidade 2D, luz e sombra 🟥
 
