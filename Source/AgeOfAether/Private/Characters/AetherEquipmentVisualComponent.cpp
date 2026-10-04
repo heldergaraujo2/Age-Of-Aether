@@ -1,11 +1,15 @@
 #include "Characters/AetherEquipmentVisualComponent.h"
 #include "Characters/AetherCharacter.h"
 #include "Characters/AetherEquipmentVisualProfile.h"
+#include "Characters/Aether2DCharacterVisualComponent.h"
+#include "PaperFlipbookComponent.h"
 #include "Components/MeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
+#include "PaperSpriteComponent.h"
+#include "PaperSprite.h"
 #include "Materials/MaterialInterface.h"
 UAetherEquipmentVisualComponent::UAetherEquipmentVisualComponent() { PrimaryComponentTick.bCanEverTick = false; }
 void UAetherEquipmentVisualComponent::BeginPlay() { Super::BeginPlay(); }
@@ -18,7 +22,28 @@ bool UAetherEquipmentVisualComponent::ApplyEquipmentVisual(UAetherEquipmentVisua
     USkeletalMeshComponent* CharacterMesh = Character ? Character->GetMesh() : nullptr;
     if (!CharacterMesh) return false;
     UMeshComponent* Visual = nullptr;
-    if (Profile->VisualType == EAetherEquipmentVisualType::SkeletalMesh)
+    if (Profile->VisualType == EAetherEquipmentVisualType::PaperSprite)
+    {
+        UPaperSpriteComponent* SpriteComponent = NewObject<UPaperSpriteComponent>(GetOwner());
+        SpriteComponent->SetSprite(Profile->Sprite.LoadSynchronous());
+        if (!SpriteComponent->GetSprite()) return false;
+        SpriteComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        SpriteComponent->SetGenerateOverlapEvents(false);
+        SpriteComponent->SetRelativeLocation(Profile->SpriteWorldOffset);
+        SpriteComponent->SetRelativeScale3D(FVector(Profile->SpriteScale.X, Profile->SpriteScale.Y, 1.0f));
+        SpriteComponent->TranslucencySortPriority = Profile->RenderLayer;
+        if (UAether2DCharacterVisualComponent* Visual2D = Character ? Character->Get2DVisualComponent() : nullptr)
+        {
+            if (UPaperFlipbookComponent* Flipbook = Visual2D->GetFlipbookComponent())
+            {
+                SpriteComponent->RegisterComponent();
+                SpriteComponent->AttachToComponent(Flipbook, FAttachmentTransformRules::KeepRelativeTransform);
+                Visual = SpriteComponent;
+            }
+        }
+        if (!Visual) { SpriteComponent->DestroyComponent(); return false; }
+    }
+    else if (Profile->VisualType == EAetherEquipmentVisualType::SkeletalMesh)
     {
         USkeletalMeshComponent* Mesh = NewObject<USkeletalMeshComponent>(GetOwner());
         Mesh->SetSkeletalMesh(Profile->SkeletalMesh.LoadSynchronous()); if (!Mesh->GetSkeletalMeshAsset()) return false; Visual = Mesh;
