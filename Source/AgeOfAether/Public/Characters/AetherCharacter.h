@@ -15,6 +15,7 @@ class UAetherMovementCameraProfile;
 class UAetherEquipmentVisualComponent;
 class UAetherClassEvolutionPresentationComponent;
 class UAetherSkillVisualComponent;
+class UAether2DCharacterVisualComponent;
 
 UCLASS()
 class AGEOFAETHER_API AAetherCharacter : public ACharacter
@@ -38,6 +39,9 @@ public:
 
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Visual")
     UAetherPlayableCharacterVisualComponent* GetVisualComponent() const { return VisualComponent; }
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|2D Visual")
+    UAether2DCharacterVisualComponent* Get2DVisualComponent() const { return Visual2DComponent; }
 
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Equipment")
     UAetherEquipmentVisualComponent* GetEquipmentVisualComponent() const { return EquipmentVisualComponent; }
@@ -65,6 +69,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Visual")
     TObjectPtr<UAetherPlayableCharacterVisualComponent> VisualComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Visual")
+    TObjectPtr<UAether2DCharacterVisualComponent> Visual2DComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Equipment")
     TObjectPtr<UAetherEquipmentVisualComponent> EquipmentVisualComponent;
