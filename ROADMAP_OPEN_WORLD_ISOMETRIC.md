@@ -488,21 +488,66 @@ O Unreal ainda precisa validar materialização real, spawn, targeting, combate,
 
 # FASE 12 — PRIMEIRA DUNGEON
 
-### Produzir
-- entrada;
-- corredores/áreas;
-- salas;
-- obstáculos;
-- criaturas;
-- interações;
-- loot;
-- eventos;
-- mini-boss;
-- boss;
-- retorno.
+### Estado
+
+🟩 **SOURCE / REPOSITORY / ARCHITECTURE CONCLUÍDO.**  
+🟥 **UNREAL MATERIALIZATION / RUNTIME VALIDATION DEFERIDOS.**
+
+### Primeira dungeon canônica
+
+**The Hollowed Watch — A Torre Vigia Oca**
+
+IDs principais:
+
+- `AOA.Dungeon.FirstRegion.HollowedWatch`
+- `AOA.Map.FirstRegion.HollowedWatch`
+- `AOA.Portal.FirstRegion.DungeonEntrance`
+- `AOA.Quest.FirstRegion.HollowedWatch`
+- `AOA.Loot.FirstRegion.HollowedWatch`
+- `AOA.Reward.FirstRegion.HollowedWatch`
+
+### Arquitetura criada
+
+- `FAetherDungeonDefinition`;
+- `FAetherDungeonRoomDefinition`;
+- `FAetherDungeonEncounterDefinition`;
+- `FAetherDungeonRegistry`;
+- `UAetherDungeonCatalog`;
+- `UAetherDungeonSubsystem`.
+
+A definição valida identidade, níveis, salas, encounters e referências de grafo.
+
+### Composição
+
+`Entrance → Vestibule → BrokenGallery → AbandonedBarracks → Crypt → GuardianHall → LowerTower → BossChamber → Exit`
+
+Rotas secundárias:
+
+- Vestibule → AbandonedBarracks;
+- BrokenGallery → Crypt;
+- AbandonedBarracks → LowerTower.
+
+### Conteúdo
+
+- Wild Hound como criatura de referência;
+- mini-boss `AOA.Creature.FirstRegion.HollowedWatchGuardian`;
+- boss `AOA.Creature.FirstRegion.HollowedWatchWarden`;
+- quest, loot e reward apontando para os sistemas existentes;
+- checkpoint no GuardianHall;
+- entrada/saída integradas conceitualmente ao mundo contínuo.
 
 ### Regra
-A dungeon deve utilizar a mesma linguagem visual 2D do mundo externo.
+
+Não recriar combat, progression, XP, inventory, items, loot, reward, quest, skills, creatures, AI, networking, multiplayer, persistence ou world streaming.
+
+### Evidência
+
+`Docs/PHASE_12_FIRST_DUNGEON.md`
+
+### Gate posterior
+
+Unreal ainda precisa validar criação/materialização do mapa, navigation, collision, entrada/saída, exploração, combate, mini-boss, boss, loot, quest, persistence, multiplayer, Dedicated Server e qualidade visual.
+
 
 ---
 
