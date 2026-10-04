@@ -404,30 +404,31 @@ A criação do `.umap`, importação de arte, collision, navigation, exploraçã
 
 # FASE 10 — INTEGRAÇÃO DOS SISTEMAS EXISTENTES
 
+### Estado
+🟩 **SOURCE / REPOSITORY / ARCHITECTURE CONCLUÍDO.**
+🟥 **UNREAL MATERIALIZATION / RUNTIME VALIDATION DEFERIDOS.**
+
 ### Objetivo
-Conectar a nova apresentação 2D ao gameplay já criado.
+Conectar a apresentação 2D premium à raiz de gameplay já criada, sem reconstruir sistemas existentes.
 
-### Validar
-- progression;
-- levels/XP;
-- classes;
-- skills;
-- combat;
-- inventory;
-- equipment;
-- loot;
-- quests;
-- interactions;
-- NPCs;
-- creatures;
-- economy;
-- persistence;
-- multiplayer.
+### Implementado
+- class/evolution presentation pode selecionar perfil 2D;
+- equipment visual profile suporta PaperSprite opcional por slot;
+- equipment sprite pode ser anexado à apresentação 2D existente;
+- skill presentation alimenta o estado Cast 2D;
+- basic attack continua alimentando Attack 2D;
+- câmera isométrica expõe política FixedIsometric/Orbit;
+- zoom existente é encaminhado ao componente de câmera 2D quando ativo;
+- integração preserva autoridade de combat, skills, inventory, equipment, quests, NPCs, creatures, economy, persistence e multiplayer.
 
-### Importante
-Esta fase **não implementa esses sistemas novamente**.
+### Regra
+Esta fase **não implementa novamente** progression, classes, skills, combat, inventory, equipment, loot, quests, interactions, NPCs, creatures, economy, persistence ou multiplayer.
 
-Ela verifica a adaptação da apresentação 2D a eles e corrige somente lacunas reais.
+### Evidência
+`Docs/PHASE_10_GAMEPLAY_PRESENTATION_INTEGRATION.md`
+
+### Gate posterior
+UHT, UBT, Editor, PIE, 2-client, Dedicated Server, importação real de assets, exploração, combate, integração visual e multiplayer permanecem para a janela posterior de Unreal.
 
 ---
 
