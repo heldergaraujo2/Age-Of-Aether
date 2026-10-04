@@ -2,7 +2,7 @@
 
 namespace
 {
-bool IsFiniteNonNegative(const double Value)
+bool IsFiniteNonNegativeItemData(const double Value)
 {
     return FMath::IsFinite(Value) && Value >= 0.0;
 }
@@ -15,7 +15,7 @@ bool FAetherDataItemDefinition::IsStructurallyValid(FString& OutError) const
     if (DisplayName.TrimStartAndEnd().IsEmpty()) { OutError = TEXT("DisplayName is required."); return false; }
     if (RequiredCharacterLevel < 0 || ItemLevel < 0) { OutError = TEXT("Item levels cannot be negative."); return false; }
     if (MaxStack <= 0) { OutError = TEXT("MaxStack must be positive."); return false; }
-    if (!IsFiniteNonNegative(Weight)) { OutError = TEXT("Weight must be finite and non-negative."); return false; }
+    if (!IsFiniteNonNegativeItemData(Weight)) { OutError = TEXT("Weight must be finite and non-negative."); return false; }
     if (BaseDurability < 0 || MaxDurability < 0 || BaseDurability > MaxDurability) { OutError = TEXT("Invalid durability range."); return false; }
     if (Requirements.CharacterLevel < 0) { OutError = TEXT("Requirement CharacterLevel cannot be negative."); return false; }
     if (Category == EAetherDataItemCategory::Equipment && EquipmentSlot == EAetherDataEquipmentSlot::None) { OutError = TEXT("Equipment items require an equipment slot."); return false; }
@@ -36,7 +36,7 @@ bool FAetherDataItemDefinition::IsStructurallyValid(FString& OutError) const
         }
         for (const TPair<FString, double>& Pair : Enhancement.StatScaling)
         {
-            if (!IsFiniteNonNegative(Pair.Value)) { OutError = FString::Printf(TEXT("Enhancement stat scaling '%s' must be finite and non-negative."), *Pair.Key); return false; }
+            if (!IsFiniteNonNegativeItemData(Pair.Value)) { OutError = FString::Printf(TEXT("Enhancement stat scaling '%s' must be finite and non-negative."), *Pair.Key); return false; }
         }
     }
     for (const TPair<FString, double>& Pair : BaseStats)
