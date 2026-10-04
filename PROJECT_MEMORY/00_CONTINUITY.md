@@ -162,16 +162,23 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 **Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Unreal permanece deliberadamente para a janela posterior de validação.
 
-### FASE 8 — Câmera e exploração isométrica 🟥
+### FASE 8 — Câmera e exploração isométrica 🟩 / 🟥
 
-**Objetivo:** Adaptar movimento, câmera, zoom, seleção e interação existentes.
+**Objetivo:** Adaptar a exploração à apresentação 2D isométrica sem reconstruir movimento, targeting, interação, networking ou gameplay.
 
-**Criar e testar:** Câmera; zoom; framing; movimento relativo; collision/occlusion; targeting; interação; multiplayer; performance.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Estado:** Runtime pendente.
+**Evidência principal:** `Docs/PHASE_8_2D_ISOMETRIC_CAMERA_EXPLORATION.md`.
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Implementação principal:** `UAether2DIsometricCameraProfile`, `UAether2DIsometricCameraComponent` e `EAether2DIsometricCameraMode`.
 
+**Resultado:** criada política data-driven para câmera isométrica fixa/orbitável, yaw/pitch, distância, zoom limitado, lag e collision test do spring arm. O componente atua como camada de apresentação sobre a câmera existente.
+
+**Compatibilidade:** a solução foi desenhada para exploração de cidades, wilderness, estradas, dungeons e landmarks dentro da arquitetura de mundo contínuo e aproximadamente 40 grandes cidades/jurisdições.
+
+**Preservação:** movement, targeting, interaction, collision, navigation, combat, networking, multiplayer, persistence e world streaming existentes não foram reconstruídos.
+
+**Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Unreal permanece deliberadamente para a janela posterior de validação.
 ### FASE 9 — Primeira região permanente 🟥
 
 **Objetivo:** Construir a primeira região real do mundo definitivo.
@@ -358,9 +365,6 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 Os gates de UHT/UBT/PIE/multiplayer/server e demais validações reais continuam pendentes e não bloqueiam o progresso repository/source.
 
-**FASE 5 — CRIATURAS, NPCs E CHEFES 2D 🟩 SOURCE / 🟥 RUNTIME**
-
-A arquitetura visual para criaturas, NPCs e bosses foi implementada no repository/source. A materialização dos assets Paper2D e a validação real no Unreal permanecem deliberadamente deferidas.
 
 **Regra operacional:** continuar o progresso repository/source enquanto os gates de runtime estiverem explicitamente deferidos; nunca transformar um gate deferido em PASS.
 
