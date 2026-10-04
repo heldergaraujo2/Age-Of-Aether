@@ -13,7 +13,8 @@ public class AgeOfAether : ModuleRules
             "Engine",
             "UMG",
             "InputCore",
-            "EnhancedInput"
+            "EnhancedInput",
+            "Paper2D"
         });
     }
 }
