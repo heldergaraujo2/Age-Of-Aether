@@ -3,6 +3,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "UObject/ConstructorHelpers.h"
+#include "PaperSpriteComponent.h"
+#include "World/AetherRuntime2DArt.h"
 
 AAetherDevelopmentWorldActor::AAetherDevelopmentWorldActor()
 {
@@ -113,6 +115,35 @@ UStaticMeshComponent* AAetherDevelopmentWorldActor::AddPrimitive(
     return Component;
 }
 
+UPaperSpriteComponent* AAetherDevelopmentWorldActor::AddSpriteArt(
+    UPaperSprite* Sprite,
+    const FName& Name,
+    const FVector& Location,
+    float Scale,
+    float Yaw)
+{
+    if (!Sprite)
+    {
+        return nullptr;
+    }
+
+    UPaperSpriteComponent* Component = NewObject<UPaperSpriteComponent>(this, Name);
+    if (!Component)
+    {
+        return nullptr;
+    }
+
+    Component->SetupAttachment(Root);
+    Component->SetSprite(Sprite);
+    Component->SetRelativeLocation(Location);
+    Component->SetRelativeRotation(FRotator(0.0f, Yaw, 0.0f));
+    Component->SetRelativeScale3D(FVector(Scale));
+    Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    Component->SetCastShadow(false);
+    Component->RegisterComponent();
+    return Component;
+}
+
 void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
 {
     if (bDioramaBuilt || !GetWorld())
@@ -165,12 +196,12 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
     for (int32 Index = 0; Index < UE_ARRAY_COUNT(HouseLocations); ++Index)
     {
         const FVector Location = HouseLocations[Index];
-        AddPrimitive(CubeMesh, FName(*FString::Printf(TEXT("HouseBody_%d"), Index)),
-            Location, FVector(2.8, 2.2, 2.4), Wood, true);
-        AddPrimitive(ConeMesh, FName(*FString::Printf(TEXT("HouseRoof_%d"), Index)),
-            Location + FVector(0, 0, 290), FVector(3.2, 2.6, 1.7), Roof, true);
-        AddPrimitive(CubeMesh, FName(*FString::Printf(TEXT("HouseDoor_%d"), Index)),
-            Location + FVector(0, -225, 20), FVector(0.65, 0.10, 1.15), Gold, false);
+        AddSpriteArt(
+            FAetherRuntime2DArt::CreateHouseSprite(this, Index),
+            FName(*FString::Printf(TEXT("HouseArt_%d"), Index)),
+            Location + FVector(0, 0, 178),
+            1.0f,
+            45.0f);
     }
 
     const FVector TreeLocations[] = {
@@ -182,11 +213,12 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
     for (int32 Index = 0; Index < UE_ARRAY_COUNT(TreeLocations); ++Index)
     {
         const FVector Location = TreeLocations[Index];
-        AddPrimitive(CylinderMesh, FName(*FString::Printf(TEXT("TreeTrunk_%d"), Index)),
-            Location + FVector(0, 0, 100), FVector(0.45, 0.45, 2.0), Wood, true);
-        AddPrimitive(SphereMesh, FName(*FString::Printf(TEXT("TreeCrown_%d"), Index)),
-            Location + FVector(0, 0, 300), FVector(1.8, 1.8, 1.9),
-            Index % 2 ? Leaf : GrassAlt, false);
+        AddSpriteArt(
+            FAetherRuntime2DArt::CreateTreeSprite(this, Index % 2),
+            FName(*FString::Printf(TEXT("TreeArt_%d"), Index)),
+            Location + FVector(0, 0, 128),
+            1.55f,
+            45.0f);
     }
 
     const FVector RockLocations[] = {
@@ -196,8 +228,12 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
 
     for (int32 Index = 0; Index < UE_ARRAY_COUNT(RockLocations); ++Index)
     {
-        AddPrimitive(SphereMesh, FName(*FString::Printf(TEXT("Rock_%d"), Index)),
-            RockLocations[Index], FVector(0.8, 0.65, 0.45), Stone, false);
+        AddSpriteArt(
+            FAetherRuntime2DArt::CreateRockSprite(this, Index % 2),
+            FName(*FString::Printf(TEXT("RockArt_%d"), Index)),
+            RockLocations[Index] + FVector(0, 0, 48),
+            1.15f,
+            45.0f);
     }
 
     AddPrimitive(CubeMesh, TEXT("GateLeft"), FVector(-300, 700, 220), FVector(0.5, 0.8, 4.0), Stone, true);
