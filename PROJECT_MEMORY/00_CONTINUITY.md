@@ -100,15 +100,26 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 **Testes/validação:** validação de source/arquitetura realizada por inspeção e consistência dos arquivos modificados. Build/UHT/PIE/runtime e materialização dos assets Unreal ficam deliberadamente para a janela de testes Unreal.
 
-### FASE 5 — Criaturas, NPCs e chefes 2D 🟥
+### FASE 5 — Criaturas, NPCs e chefes 2D 🟩 / 🟥
 
-**Objetivo:** Adaptar conteúdo vivo existente sem substituir AI, combate, quests ou autoridade.
+**Objetivo:** Adaptar a apresentação visual de criaturas, NPCs e chefes existentes para a direção premium 2D isométrica, sem reconstruir AI, combate, quests, loot, autoridade ou qualquer sistema de gameplay já existente.
 
-**Criar e testar:** Assets 2D; animações; variações; integração com AI/loot/quests; runtime.
+**Criar e testar:** Perfil visual 2D; componente visual reutilizável; classificação Creature/NPC/Boss; FamilyID; estados Idle/Walk/Run/Attack/Hit/Death/Cast/Interaction; integração orientada por estado; variações data-driven; qualidade visual; compatibilidade com servidor/autoria; materialização posterior no Unreal.
 
-**Estado:** Produção e validação pendentes.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Evidência principal:** `Docs/PHASE_5_2D_CREATURES_NPCS_BOSSES.md`.
+
+**Implementação principal:** `UAether2DLivingVisualProfile` e `UAether2DLivingVisualComponent`. A camada é actor-agnostic e pode ser anexada a atores existentes de criatura, NPC ou boss. O gameplay continua sendo a fonte de verdade; a camada visual apenas apresenta estados.
+
+**Resultado:** criada uma base única para criaturas, NPCs e chefes, evitando três sistemas visuais duplicados. O perfil suporta identidade estável, família visual, escala, offset, Flipbooks por estado e escolha explícita da apresentação 2D primária. O componente cria a apresentação Paper2D, dirige Idle/Walk/Run pela velocidade e expõe estados explícitos para ataque, hit, morte, cast e interação.
+
+**Preservação:** AI, combat, damage, skills, loot, quests/events, navigation, spawning, persistence, networking e server authority não foram reconstruídos.
+
+**Qualidade:** o contrato permanente de máxima qualidade visual e animação 2D extremamente fluida continua obrigatório para todo conteúdo de produção.
+
+**Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Conforme decisão operacional, Unreal fica deliberadamente para a janela posterior de testes.
+
 
 ### FASE 6 — Ambientes e props 2D 🟥
 
@@ -324,17 +335,14 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 **FASE 1 — FUNDAÇÃO REAL DO UNREAL 🟥 — RUNTIME DEFERIDO**
 
-O gate de runtime continua pendente e será executado posteriormente. Isso não bloqueia o avanço de trabalho repository/source nas fases seguintes.
-
-**FASE 4 — SISTEMA DE PERSONAGENS 2D 🟩 SOURCE / 🟥 RUNTIME**
-
-A fundação de personagens 2D foi implementada no repository/source. A materialização dos Flipbooks/assets e a validação no Unreal ficam para a janela de testes Unreal.
-
-**FASE 1 — FUNDAÇÃO REAL DO UNREAL 🟥 — RUNTIME DEFERIDO**
-
 Os gates de UHT/UBT/PIE/multiplayer/server e demais validações reais continuam pendentes e não bloqueiam o progresso repository/source.
 
+**FASE 5 — CRIATURAS, NPCs E CHEFES 2D 🟩 SOURCE / 🟥 RUNTIME**
+
+A arquitetura visual para criaturas, NPCs e bosses foi implementada no repository/source. A materialização dos assets Paper2D e a validação real no Unreal permanecem deliberadamente deferidas.
+
 **Regra operacional:** continuar o progresso repository/source enquanto os gates de runtime estiverem explicitamente deferidos; nunca transformar um gate deferido em PASS.
+
 
 ## Regra de fechamento
 
