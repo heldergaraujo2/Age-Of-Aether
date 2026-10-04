@@ -70,7 +70,7 @@ UMaterialInstanceDynamic* AAetherDevelopmentWorldActor::CreateColorMaterial(cons
 
     if (Material)
     {
-        Material->SetVectorParameterValue(TEXT("BaseColor"), Color);
+        Material->SetVectorParameterValue(TEXT("Color"), Color);
     }
 
     return Material;
