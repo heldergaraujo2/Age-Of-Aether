@@ -2,7 +2,7 @@
 
 #include "PaperFlipbook.h"
 #include "PaperFlipbookComponent.h"
-#include "Components/PrimitiveComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 UAether2DLivingVisualComponent::UAether2DLivingVisualComponent()
 {
@@ -129,18 +129,9 @@ bool UAether2DLivingVisualComponent::ApplyLoadedProfile(UAether2DLivingVisualPro
 
     if (InProfile->bUseAsPrimaryPresentation)
     {
-        TArray<UActorComponent*> PrimitiveComponents;
-        Owner->GetComponents(PrimitiveComponents);
-
-        for (UActorComponent* Component : PrimitiveComponents)
+        if (USkeletalMeshComponent* SkeletalMesh = Owner->FindComponentByClass<USkeletalMeshComponent>())
         {
-            if (UPrimitiveComponent* Primitive = Cast<UPrimitiveComponent>(Component))
-            {
-                if (Primitive != FlipbookComponent && Primitive->GetCollisionEnabled() == ECollisionEnabled::NoCollision)
-                {
-                    Primitive->SetVisibility(false, true);
-                }
-            }
+            SkeletalMesh->SetVisibility(false, true);
         }
     }
 
