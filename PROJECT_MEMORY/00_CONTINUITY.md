@@ -220,15 +220,30 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 **Testes/validação:** nenhuma UHT/UBT/PIE/runtime foi falsamente declarada. Materialização de assets, class/evolution switching real, equipment layering real, skill presentation, combate, multiplayer e qualidade visual permanecem para a janela posterior de Unreal.
 
-### FASE 11 — Primeiro inimigo e loop de combate 🟥
+### FASE 11 — Primeiro inimigo e loop de combate 🟩 / 🟥
 
-**Objetivo:** Provar o loop completo com a apresentação 2D.
+**Objetivo:** Estabelecer no nível repository/source/architecture o primeiro inimigo da primeira região e a ponte entre o combat service existente e o domínio de criaturas, sem criar um segundo sistema de combate.
 
-**Criar e testar:** Explorar → encontrar → atacar → dano → skill → derrota → XP → loot; logs e multiplayer.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Estado:** Prova runtime pendente.
+**Evidência principal:** `Docs/PHASE_11_FIRST_ENEMY_COMBAT_LOOP.md`.
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Primeiro inimigo canônico:** Wild Hound — Cão Selvagem da Fronteira.
+
+**IDs de produção:** `AOA.Creature.FirstRegion.WildHound`, `AOA.Creature.WildHound`, `AOA.Loot.FirstRegion.WildHound`, `AOA.Reward.FirstRegion.WildHound` e `AOA.Spawn.FirstRegion.WildHound.Frontier`.
+
+**Implementação:** criada `FAetherCreatureCombatAdapter`, reutilizando `FAetherCombatService` para jogador→criatura e criatura→jogador. `AAetherCreatureActor` agora possui `ApplyCombatDamage` e snapshot de definição, e a definição de criatura aceita perfil 2D opcional.
+
+**Apresentação 2D:** criaturas podem receber `UAether2DLivingVisualComponent`; dano alimenta `Hit`, derrota alimenta `Death` e reset alimenta `Idle`.
+
+**Preservação:** combat, progression/XP, inventory, items, loot/reward, respawn, quests/events, AI, networking, multiplayer, persistence e world/streaming continuam sendo os sistemas existentes. Nenhum sistema paralelo de combat ou reward foi criado.
+
+**Loop-alvo:** exploração → encontro → target → ataque/skill → dano → derrota → XP → loot → continuidade. A ligação real entre derrota e os serviços de XP/loot/persistence será validada na janela posterior de Unreal.
+
+**Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Nenhum asset binário Unreal foi fabricado. A fase foi fechada no nível source/repository/architecture conforme a decisão de continuar o progresso enquanto Unreal está deferido.
+
+**Commits principais da fase:** `9d81c39f53d8132b946436e56458eef252beef61`, `04124f67dfc793d8f0f7a98f9a7a80672dcb7409`, `9b64005bb508b07fa439a06caebdefb4328cdcf6`, `b477fa8af80b8ae686e241d638c5a7c0fbb30f62`, `402f4335ad9f4f4c9053e2c9f04605fb68df4e00`, `643dde8746c90f11fa2707a562da73b36cb19ba0`, `ab1cf7002e680e4a801d3381385bc9cea5496f8e`, `13d659fadfb11ebf7cb0e4e2917972a6152c7732` e `4dd32c1d35f8b243b2382832f2487d67f4304d47`.
+
 
 ### FASE 12 — Primeira dungeon 🟥
 
