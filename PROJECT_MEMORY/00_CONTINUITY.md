@@ -142,15 +142,25 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 **Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Unreal permanece deliberadamente para a janela posterior de validação.
 
 
-### FASE 7 — Profundidade 2D, luz e sombra 🟥
+### FASE 7 — Profundidade 2D, luz e sombra 🟩 / 🟥
 
-**Objetivo:** Criar profundidade convincente sem exigir 3D.
+**Objetivo:** Criar a fundação de profundidade visual para a apresentação 2D isométrica sem exigir um mundo 3D.
 
-**Criar e testar:** Camadas; render order; oclusão; sombras; iluminação; paralaxe; partículas; neblina; clima; pós-processamento.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Estado:** Prova visual/runtime pendente.
+**Evidência principal:** `Docs/PHASE_7_2D_DEPTH_LIGHTING_SHADOWS.md`.
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Implementação principal:** `UAether2DDepthLightingProfile` e `UAether2DDepthLightingComponent`.
+
+**Resultado:** criada política data-driven de camadas Background/Far/World/Midground/Foreground/Overlay, ordenação de renderização, offset de profundidade, sombra opcional e paralaxe opcional. A paralaxe usa fator normalizado e permanece exclusivamente na apresentação.
+
+**Preservação:** movement, collision, navigation, combat, AI, quests, inventory, economy, persistence, networking e world streaming existentes não foram reconstruídos.
+
+**Extensibilidade:** a arquitetura deixa espaço para oclusão de foreground, atmosfera, neblina, clima, partículas, VFX e materiais de iluminação nas etapas de materialização e produção.
+
+**Qualidade:** profundidade deve reforçar leitura isométrica, hierarquia visual, silhuetas, oclusão, iluminação natural e acabamento premium.
+
+**Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Unreal permanece deliberadamente para a janela posterior de validação.
 
 ### FASE 8 — Câmera e exploração isométrica 🟥
 
