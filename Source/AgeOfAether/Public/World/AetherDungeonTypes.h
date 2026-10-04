@@ -134,6 +134,15 @@ struct FAetherDungeonDefinition
     FString BossRoomID;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    FString CompletionQuestID;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    FString LootTableID;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    FString RewardDefinitionID;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     int32 MinimumLevel = 1;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
