@@ -6,7 +6,7 @@
 #include "Data/AetherQuestDialogueEventRegistry.h"
 #include "Data/AetherWorldActorRegistry.h"
 
-namespace{FString NormalizeDefinitionID(const FString& ID){return ID.TrimStartAndEnd();}}
+namespace{FString NormalizeRecipeDefinitionID(const FString& ID){return ID.TrimStartAndEnd();}}
 
 void FAetherRecipeRegistry::AddIssue(TArray<FAetherRecipeValidationIssue>& OutIssues,const FString& ID,const FString& Code,const FString& Message)const
 {FAetherRecipeValidationIssue& I=OutIssues.AddDefaulted_GetRef();I.DefinitionID=ID;I.Code=Code;I.Message=Message;}
@@ -14,16 +14,16 @@ void FAetherRecipeRegistry::AddIssue(TArray<FAetherRecipeValidationIssue>& OutIs
 bool FAetherRecipeRegistry::RegisterRecipe(const FAetherRecipeDefinition& Definition,FString& OutError)
 {
     OutError.Reset();
-    FAetherRecipeDefinition Copy=Definition; Copy.DefinitionID=NormalizeDefinitionID(Copy.DefinitionID);
+    FAetherRecipeDefinition Copy=Definition; Copy.DefinitionID=NormalizeRecipeDefinitionID(Copy.DefinitionID);
     if(!Copy.IsStructurallyValid(OutError))return false;
     if(Copy.DefinitionID.IsEmpty()||Definitions.Contains(Copy.DefinitionID)){OutError=FString::Printf(TEXT("Duplicate or empty Recipe DefinitionID '%s'."),*Copy.DefinitionID);return false;}
     Definitions.Add(Copy.DefinitionID,MoveTemp(Copy));return true;
 }
 
 bool FAetherRecipeRegistry::Resolve(const FString& DefinitionID,FAetherRecipeDefinition& OutDefinition)const
-{const FAetherRecipeDefinition* Found=Definitions.Find(NormalizeDefinitionID(DefinitionID));if(!Found)return false;OutDefinition=*Found;return true;}
+{const FAetherRecipeDefinition* Found=Definitions.Find(NormalizeRecipeDefinitionID(DefinitionID));if(!Found)return false;OutDefinition=*Found;return true;}
 
-bool FAetherRecipeRegistry::Contains(const FString& DefinitionID)const{return Definitions.Contains(NormalizeDefinitionID(DefinitionID));}
+bool FAetherRecipeRegistry::Contains(const FString& DefinitionID)const{return Definitions.Contains(NormalizeRecipeDefinitionID(DefinitionID));}
 
 bool FAetherRecipeRegistry::Validate(TArray<FAetherRecipeValidationIssue>& OutIssues,const FAetherContentRegistry* ContentRegistry,const FAetherAssetRegistry*,const FAetherItemRegistry* ItemRegistry,const FAetherSkillEffectRegistry* SkillRegistry,const FAetherQuestDialogueEventRegistry* QuestRegistry,const FAetherWorldActorRegistry* WorldActorRegistry)const
 {
