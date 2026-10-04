@@ -266,7 +266,7 @@ Criatura/NPC/boss real deve aparecer no runtime com o comportamento existente e 
 # FASE 6 — AMBIENTES E PROPS 2D
 
 ### Objetivo
-Criar a biblioteca visual reutilizável do mundo.
+Criar a biblioteca visual reutilizável do mundo e sua fundação data-driven.
 
 ### Produzir
 - casas;
@@ -281,14 +281,22 @@ Criar a biblioteca visual reutilizável do mundo.
 - vegetação;
 - água;
 - ruínas;
+- dungeons;
 - fogueiras;
 - móveis;
 - objetos interativos;
-- elementos decorativos.
+- elementos decorativos;
+- perfis visuais por família;
+- componentes Paper2D reutilizáveis;
+- ordenação de renderização e configuração de sombra.
+
+### Estado
+🟩 Repository/source/architecture concluído.
+
+🟥 Materialização dos assets e validação real no Unreal deferidas.
 
 ### Regra
 Os assets devem ser reutilizáveis e combináveis. Evitar desenhar cada região como uma imagem descartável e impossível de expandir.
-
 ---
 
 # FASE 7 — PROFUNDIDADE 2D, LUZ E SOMBRA
