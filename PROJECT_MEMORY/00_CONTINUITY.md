@@ -297,15 +297,24 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 **Próxima fase:** Fase 14 — Primeiro teste real jogável.
 
-### FASE 14 — Primeiro teste real jogável 🟥
+### FASE 14 — Primeiro teste real jogável 🟨
 
-**Objetivo:** Aceitar o primeiro slice somente após jogar e observar o fluxo no Unreal.
+**Objetivo:** preparar a primeira validação real da vertical slice no Unreal/PC, sem declarar runtime PASS antes da execução.
 
-**Criar e testar:** Startup; câmera; personagem; exploração; NPCs; combate; skills; XP; loot; dungeon; boss; HUD; áudio; VFX; 2-client; server smoke; logs; profiling.
+**Estado:** 🟨 **PREPARADA PARA VALIDAÇÃO REAL NO UNREAL / PC.** 🟥 **RUNTIME AINDA NÃO VALIDADO.**
 
-**Estado:** Gate não concluído.
+**Documento canônico:** `Docs/PHASE_14_FIRST_PLAYABLE_TEST.md`.
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Escopo de validação:** sincronização oficial → UHT/UBT → startup → personagem/câmera → assentamento → quest → exploração → Wild Hound → XP/loot/reward → entrada na Hollowed Watch → dungeon → Warden → retorno → persistence → 2-client → Dedicated Server → logs → qualidade visual → performance inicial.
+
+**Regra de evidência:** cada gate deve ser classificado como 🟩 PASS, 🟥 FAIL, 🟨 BLOCKED ou ⬜ NOT RUN, com commit, configuração, resultado e evidência real. Caminhar/explorar fisicamente os mapas faz parte da validação; apenas carregar/buildar mapa não é suficiente.
+
+**Regra de correção:** falhas devem ser corrigidas no GitHub, sincronizadas no PC e revalidadas, com regressão dos gates dependentes.
+
+**Preparação concluída:** matriz de testes, critérios de fechamento, ordem de execução, requisitos de evidência e critérios de qualidade/performance foram formalizados. Nenhum teste Unreal foi executado nesta fase.
+
+**Gate de fechamento:** a Fase 14 somente recebe 🟩 após a vertical slice ser realmente percorrida no Unreal e os gates obrigatórios possuírem evidência.
+
 
 ### FASE 15 — World Master Plan 🟥
 
