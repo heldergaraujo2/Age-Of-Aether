@@ -516,3 +516,14 @@ Foi criado `Content/Aether/Art/2D_ASSET_MANIFEST.json` com AssetIDs canônicos p
 **Estado:** 🟩 implementação source oficial concluída; 🟨 validação real no Unreal pendente. O resultado visual ainda precisa ser julgado no PC: escala, orientação isométrica, leitura à distância, transparência, sorting e aparência premium. Não declarar PASS de runtime antes dessa validação.
 
 **Nota:** estes sprites são uma ponte de materialização 2D procedural para eliminar os placeholders geométricos. A evolução posterior poderá substituir as texturas transitórias por arte-fonte premium importada, sem alterar os contratos de gameplay.
+
+
+## F42 — CORREÇÃO DE COMPILAÇÃO REAL NO PC
+
+Após sincronizar cf1fb78, o primeiro UBT real da F42 foi executado no PC e falhou com UBT_EXIT=6. O erro estava localizado em AetherDevelopmentWorldActor.cpp: AddSpriteArt() era implementada e chamada, mas não havia sido declarada em AetherDevelopmentWorldActor.h, causando também os erros derivados de this e Root fora de um método reconhecido.
+
+**Correção aplicada primeiro no GitHub:** AetherDevelopmentWorldActor.h agora declara UPaperSpriteComponent, UPaperSprite e o helper privado AddSpriteArt(...).
+
+**Commit da correção:** 2d288b30425392033fde4faf9449407cb1d1fe78.
+
+**Estado:** 🟨 F42 continua aguardando nova compilação real no PC. Nenhum runtime PASS foi declarado.
