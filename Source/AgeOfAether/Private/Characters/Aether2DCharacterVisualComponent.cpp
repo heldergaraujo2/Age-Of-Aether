@@ -25,6 +25,15 @@ void UAether2DCharacterVisualComponent::TickComponent(float DeltaTime, ELevelTic
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+    if (FlipbookComponent && (CurrentState == EAether2DCharacterVisualState::Attack || CurrentState == EAether2DCharacterVisualState::Hit) && !FlipbookComponent->IsPlaying())
+    {
+        if (Profile->HasState(EAether2DCharacterVisualState::Idle))
+        {
+            SetVisualState(EAether2DCharacterVisualState::Idle, true);
+        }
+        return;
+    }
+
     if (bDriveStateFromMovement && FlipbookComponent && CurrentState != EAether2DCharacterVisualState::Attack &&
         CurrentState != EAether2DCharacterVisualState::Hit && CurrentState != EAether2DCharacterVisualState::Death)
     {
