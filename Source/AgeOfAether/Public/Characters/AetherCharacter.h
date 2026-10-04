@@ -16,6 +16,7 @@ class UAetherEquipmentVisualComponent;
 class UAetherClassEvolutionPresentationComponent;
 class UAetherSkillVisualComponent;
 class UAether2DCharacterVisualComponent;
+class UAether2DIsometricCameraComponent;
 
 UCLASS()
 class AGEOFAETHER_API AAetherCharacter : public ACharacter
@@ -52,6 +53,9 @@ public:
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Visual")
     UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|2D Camera")
+    UAether2DIsometricCameraComponent* Get2DIsometricCameraComponent() const { return IsometricCameraComponent; }
+
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Skills")
     UAetherSkillVisualComponent* GetSkillVisualComponent() const { return SkillVisualComponent; }
 
@@ -72,6 +76,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Visual")
     TObjectPtr<UAether2DCharacterVisualComponent> Visual2DComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
+    TObjectPtr<UAether2DIsometricCameraComponent> IsometricCameraComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Equipment")
     TObjectPtr<UAetherEquipmentVisualComponent> EquipmentVisualComponent;
