@@ -4,9 +4,20 @@
   "Category": "Games",
   "Description": "AGE OF AETHER MMORPG",
   "Modules": [
-    { "Name": "AgeOfAether", "Type": "Runtime", "LoadingPhase": "Default" }
+    {
+      "Name": "AgeOfAether",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
   ],
   "Plugins": [
-    { "Name": "EnhancedInput", "Enabled": true }
+    {
+      "Name": "EnhancedInput",
+      "Enabled": true
+    },
+    {
+      "Name": "Paper2D",
+      "Enabled": true
+    }
   ]
 }
