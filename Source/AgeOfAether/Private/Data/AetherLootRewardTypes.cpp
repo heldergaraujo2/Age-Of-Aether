@@ -2,7 +2,7 @@
 
 namespace
 {
-    bool IsFiniteNonNegative(const double Value)
+    bool IsFiniteNonNegativeLootReward(const double Value)
     {
         return FMath::IsFinite(Value) && Value >= 0.0;
     }
@@ -21,7 +21,7 @@ bool FAetherDataLootEntry::IsStructurallyValid(FString& OutError) const
         OutError = TEXT("Loot quantities must be positive and MaxQuantity must be >= MinQuantity.");
         return false;
     }
-    if (!IsFiniteNonNegative(Weight) || !IsFiniteNonNegative(Chance))
+    if (!IsFiniteNonNegativeLootReward(Weight) || !IsFiniteNonNegativeLootReward(Chance))
     {
         OutError = TEXT("Loot Weight and Chance must be finite and non-negative.");
         return false;
@@ -90,7 +90,7 @@ bool FAetherDropRuleDefinition::IsStructurallyValid(FString& OutError) const
         OutError = TEXT("Drop rule ID, SourceWorldActorID and LootTableID are required.");
         return false;
     }
-    if (!IsFiniteNonNegative(Chance) || Chance > 1.0)
+    if (!IsFiniteNonNegativeLootReward(Chance) || Chance > 1.0)
     {
         OutError = TEXT("Drop rule Chance must be in [0,1].");
         return false;
@@ -138,7 +138,7 @@ bool FAetherRewardDefinition::IsStructurallyValid(FString& OutError) const
         OutError = TEXT("Reward ID and display name are required.");
         return false;
     }
-    if (!IsFiniteNonNegative(Experience))
+    if (!IsFiniteNonNegativeLootReward(Experience))
     {
         OutError = TEXT("Experience must be finite and non-negative.");
         return false;
@@ -174,7 +174,7 @@ bool FAetherRespawnDefinition::IsStructurallyValid(FString& OutError) const
         OutError = TEXT("Respawn definition and WorldActorID are required.");
         return false;
     }
-    if (!IsFiniteNonNegative(RespawnSeconds) || !IsFiniteNonNegative(RespawnJitterSeconds))
+    if (!IsFiniteNonNegativeLootReward(RespawnSeconds) || !IsFiniteNonNegativeLootReward(RespawnJitterSeconds))
     {
         OutError = TEXT("Respawn timing must be finite and non-negative.");
         return false;
