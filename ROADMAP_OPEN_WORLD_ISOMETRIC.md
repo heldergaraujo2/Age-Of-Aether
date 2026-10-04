@@ -434,15 +434,55 @@ UHT, UBT, Editor, PIE, 2-client, Dedicated Server, importação real de assets, 
 
 # FASE 11 — PRIMEIRO INIMIGO E LOOP DE COMBATE
 
+### Estado
+
+🟩 **SOURCE / REPOSITORY / ARCHITECTURE CONCLUÍDO.**  
+🟥 **UNREAL MATERIALIZATION / RUNTIME VALIDATION DEFERIDOS.**
+
 ### Objetivo
-Comprovar o loop completo com representação 2D.
+
+Estabelecer o primeiro inimigo da primeira região e conectar o domínio de criaturas ao combat service existente sem criar um segundo combat system.
+
+### Primeiro inimigo canônico
+
+**Wild Hound — Cão Selvagem da Fronteira**
+
+IDs:
+
+- `AOA.Creature.FirstRegion.WildHound`
+- `AOA.Creature.WildHound`
+- `AOA.Loot.FirstRegion.WildHound`
+- `AOA.Reward.FirstRegion.WildHound`
+- `AOA.Spawn.FirstRegion.WildHound.Frontier`
+
+### Implementado no source
+
+- `FAetherCreatureCombatAdapter`;
+- jogador → criatura usando `FAetherCombatService`;
+- criatura → jogador usando o mesmo serviço;
+- aplicação de dano através de `AAetherCreatureActor::ApplyCombatDamage`;
+- estado `Hit` quando a criatura sofre dano e permanece viva;
+- estado `Death` quando a criatura é derrotada;
+- estado `Idle` ao resetar vida;
+- perfil 2D opcional em `FAetherCreatureDefinition`;
+- `UAether2DLivingVisualComponent` integrado ao actor de criatura;
+- contrato de integração com XP, loot, reward e respawn já existentes.
 
 ### Fluxo
 
-**explorar -> encontrar -> atacar -> receber dano -> usar skill -> derrotar -> XP -> loot -> continuar**
+**explorar → encontrar → target → atacar/skill → dano → derrota → XP → loot → continuar**
 
-### Gate
-Gameplay existente + apresentação 2D funcionando juntos no Unreal real.
+### Regra
+
+Não recriar combat, progression, XP, inventory, item, loot, reward, respawn, quest, AI, networking, multiplayer ou persistence.
+
+### Evidência
+
+`Docs/PHASE_11_FIRST_ENEMY_COMBAT_LOOP.md`
+
+### Gate posterior
+
+O Unreal ainda precisa validar materialização real, spawn, targeting, combate, animações, Hit/Death, XP, loot, respawn, multiplayer, Dedicated Server, logs e qualidade visual.
 
 ---
 
