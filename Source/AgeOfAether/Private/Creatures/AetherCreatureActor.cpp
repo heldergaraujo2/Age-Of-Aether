@@ -99,20 +99,3 @@ void AAetherCreatureActor::ApplyPresentation(const FAetherCreatureDefinition& De
         if (UObject* Asset = Definition.SpawnSFX.LoadSynchronous()) PresentationAssets.Add(Asset);
 }
 
-
-bool AAetherCreatureActor::ApplyCombatDamage(float Damage)
-{
-    if (!RuntimeState.bAlive || !FMath::IsFinite(Damage) || Damage < 0.0f)
-    {
-        return false;
-    }
-
-    RuntimeState.CurrentHealth = FMath::Max(0.0f, RuntimeState.CurrentHealth - Damage);
-    if (RuntimeState.CurrentHealth <= 0.0f)
-    {
-        RuntimeState.CurrentHealth = 0.0f;
-        RuntimeState.bAlive = false;
-    }
-
-    return true;
-}
