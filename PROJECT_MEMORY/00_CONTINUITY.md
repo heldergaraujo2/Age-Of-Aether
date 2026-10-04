@@ -326,9 +326,13 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 O gate de runtime continua pendente e será executado posteriormente. Isso não bloqueia o avanço de trabalho repository/source nas fases seguintes.
 
-**FASE 3 — PIPELINE DE ARTE 2D 🟩 SOURCE / 🟥 RUNTIME**
+**FASE 4 — SISTEMA DE PERSONAGENS 2D 🟩 SOURCE / 🟥 RUNTIME**
 
-A produção documental e contratual da Fase 3 foi concluída. A materialização e validação no Unreal ficam para a janela de testes Unreal.
+A fundação de personagens 2D foi implementada no repository/source. A materialização dos Flipbooks/assets e a validação no Unreal ficam para a janela de testes Unreal.
+
+**FASE 1 — FUNDAÇÃO REAL DO UNREAL 🟥 — RUNTIME DEFERIDO**
+
+Os gates de UHT/UBT/PIE/multiplayer/server e demais validações reais continuam pendentes e não bloqueiam o progresso repository/source.
 
 **Regra operacional:** continuar o progresso repository/source enquanto os gates de runtime estiverem explicitamente deferidos; nunca transformar um gate deferido em PASS.
 
