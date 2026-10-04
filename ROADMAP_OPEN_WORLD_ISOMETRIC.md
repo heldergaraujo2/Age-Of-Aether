@@ -1,216 +1,780 @@
-# AGE OF AETHER — OPEN WORLD ISOMETRIC RPG ROADMAP
+# AGE OF AETHER — ROADMAP OFICIAL 2D ISOMÉTRICO
 
 ## Objetivo
-Transformar o AGE OF AETHER existente em um RPG de mundo aberto com identidade visual Stylized Painterly Isometric / 2.5D Hand-Painted Diorama, preservando a arquitetura MMORPG, os sistemas server-authoritative e o conteúdo já implementado.
 
-Fonte de verdade: este repositório.
-Princípio: preservar -> adaptar -> integrar -> validar -> expandir.
+Transformar o AGE OF AETHER existente em um RPG de exploração isométrica inspirado na linguagem de apresentação de RPGs como Lords of Xulima, porém com identidade própria e qualidade visual premium.
+
+**A principal representação visual será 2D.**
 
-## FASE 0 — AUDITORIA DA BASE
-Mapear Unreal, build, Automation, GameInstance/GameMode/GameState, PlayerController/PlayerState/Character, networking, accounts, progression, items, inventory, equipment, combat, world, quests, social, economy, persistence, security, AI, registries, asset pipeline, visual foundation, playable character, mapas e documentação.
-Classificar tudo como PRESERVAR, ADAPTAR, CORRIGIR, SUBSTITUIR ou CRIAR.
-Gate: nenhuma grande alteração de arquitetura antes da matriz de dependências e riscos.
+O projeto não exige personagens, criaturas, mapas ou ambientes 3D. A apresentação poderá utilizar imagens, sprites, sprite sheets, Flipbooks, camadas, paralaxe, iluminação, sombras, VFX, partículas e outros recursos da Unreal para criar profundidade visual convincente.
 
-## FASE 1 — FUNDAÇÃO REAL DO UNREAL
-Fechar UHT, UBT Editor/Game, Dedicated Server, Editor startup, mapa de desenvolvimento, PIE, 2-client PIE, Automation, logs e replicação básica.
-Resultado: personagem placeholder jogável em multiplayer básico.
+Elementos 3D somente serão utilizados quando trouxerem benefício comprovado. Não são requisito do projeto.
 
-**Estado atual:** SOURCE PREPARATION READY / REAL UNREAL RUNTIME PENDING.
+## PRINCÍPIO CENTRAL
 
-A preparação e o checklist desta fase estão documentados em:
-`Docs/PHASE_1_REAL_UNREAL_FOUNDATION.md`
+O AGE OF AETHER **já possui a raiz sistêmica do jogo**.
 
-A fase só será marcada como COMPLETE após evidência local real de UHT/UBT, Editor, mapa, PIE, 2-client PIE, Dedicated Server, replicação, Automation e logs.
-
-## FASE 2 — DIREÇÃO VISUAL ISOMÉTRICA
-Definir câmera ortográfica/isométrica, ângulo, zoom, escala, paleta, materiais, iluminação, sombras, pós-processamento, proporções, props, arquitetura, vegetação, personagens e VFX.
-Regra: aparência de diorama pintado à mão sem perder jogabilidade 3D no Unreal.
-
-**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
-Documentação: `Docs/PHASE_2_ISOMETRIC_VISUAL_DIRECTION.md`.
-A direção foi formalizada para câmera, composição, materiais, iluminação, personagens, arquitetura, props, VFX e integração com o mundo contínuo. A calibração/aceitação final permanece dependente da auditoria no ambiente real do Unreal.
-
-## FASE 3 — PIPELINE DE ARTE REAL
-Estabelecer Concept -> source/asset -> cleanup -> import -> Unreal asset -> material/skeleton/collision -> Asset Registry -> Stable AssetID -> runtime.
-Validar FBX, Skeletal/Static Mesh, materiais, texturas, animações, Physics Assets, sockets, LOD/Nanite quando apropriado, VFX, ícones, origem/licença e fallbacks.
-
-**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
-Documentação: `Docs/PHASE_3_REAL_ART_PIPELINE.md`.
-A fase formaliza o lifecycle de assets, provenance/licença, AssetID/dependencies/fallbacks, política de LOD/Nanite/collision/sockets, requisitos painterly premium e o primeiro asset de aceitação. A aceitação real continua dependente do Unreal local.
-
-## FASE 4 — CÂMERA E EXPLORAÇÃO ISOMÉTRICA
-Implementar câmera, zoom, pan, rotação se desejada, collision, movimento relativo à câmera, seleção, targeting, interação e controles.
-Gate: exploração confortável e consistente em multiplayer.
-
-**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
-Documentação: `Docs/PHASE_4_ISOMETRIC_CAMERA_EXPLORATION.md`.
-A fase reutiliza a fundação source-level da Phase 40 e formaliza câmera isométrica, zoom, collision/occlusion, movimento relativo à câmera, framing, seleção/targeting/interação, multiplayer e compatibilidade com o mundo contínuo. A aceitação real permanece dependente da auditoria no Unreal local.
-
-## FASE 5 — PRIMEIRO DIORAMA JOGÁVEL
-Construir a primeira região jogável de produção: vila/núcleo urbano, praça, casas, serviços, NPCs, estrada, transição natural, floresta/campo, área de combate, entrada de dungeon, vegetação, iluminação e storytelling ambiental.
-
-**Estado:** SOURCE/DOCUMENTATION COMPLETE / UNREAL RUNTIME PENDING.
-Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
-A fase define o primeiro benchmark real de apresentação e gameplay, integrado à arquitetura do futuro mundo único contínuo. O diorama não é um mapa descartável; é uma região extensível do mundo definitivo. A aceitação real de mapa, assets, câmera, player/NPCs, interação, 2-client PIE, Dedicated Server, logs e performance permanece pendente no Unreal local.
-
-## FASE 6 — NÚCLEO RPG JOGÁVEL
-Auditar e integrar os sistemas RPG já existentes no roadmap técnico legado — progression, attributes/state, combat, items, inventory, equipment, loot/reward/respawn, persistence e multiplayer authority — sem recriá-los.
-
-**Estado correto após auditoria do repositório:** a implementação source desses sistemas já existe nas fases legadas correspondentes, incluindo testes dedicados. A Fase 6 do novo roadmap é um marco de integração/validação, não uma nova implementação.
-
-O que falta é comprovar a integração no Unreal runtime real e corrigir somente lacunas encontradas nessa validação.
-
-## FASE 7 — PRIMEIRO INIMIGO E COMBATE
-Adicionar um inimigo comum com AI, aggro, perseguição, ataque, hit reaction, morte, XP, drop e respawn.
-Gate: explorar -> combater -> vencer -> receber XP/loot -> continuar.
-
-## FASE 8 — PRIMEIRA DUNGEON
-Construir entrada, áreas, inimigos, obstáculos, loot, mini-boss/boss e retorno.
-
-## FASE 9 — VERTICAL SLICE COMPLETO
-Fluxo obrigatório: entrar -> explorar vila -> sair -> explorar mundo -> combater -> ganhar XP -> loot -> dungeon -> boss -> voltar.
-Este é o primeiro trecho reconhecível como o jogo final.
-
-## FASE 10 — PRIMEIRO TESTE REAL JOGÁVEL
-Executar no Unreal: início sem erro crítico, câmera isométrica, personagem, movimento, exploração, interação, combate, inimigo, XP, loot, dungeon, boss, retorno à vila, HUD, Automation relevante, 2-client PIE, Dedicated Server smoke test e Output Log limpo de erros críticos.
-GO: expandir mundo. NO-GO: corrigir fundação.
-
-## FASE 11 — WORLD MAP
-Criar estrutura de mundo aberto com cidade principal, vilas, campos, florestas, montanhas, rios, ruínas, áreas corrompidas, desertos, dungeons, boss arenas, estradas e pontos de interesse.
-Usar World Partition, Landscape, Data Layers, HLOD, streaming, NavMesh, zones e spawn system.
-
-## FASE 12 — CIDADES VIVAS
-NPC schedules, comerciantes, ferreiros, quest givers, guardas, tavernas, serviços, animais, eventos, diálogos e storytelling ambiental.
-
-## FASE 13 — MUNDO PvE
-Famílias de monstros, elites, bosses, zonas por nível, loot tables, respawns, eventos, world bosses, dungeons, quests e recompensas.
-
-## FASE 14 — PROGRESSÃO MMORPG
-Integrar classes, 25 evoluções, skills, equipamentos, enhancement, crafting, economy, quests, party, guild, social e progression.
-
-## FASE 15 — MUNDO VIVO
-World events, invasões, bosses, ciclos, eventos sazonais, mudanças de estado, economia, zonas PvP, zonas seguras, descobertas e reputação.
-
-## FASE 16 — POLIMENTO ARTÍSTICO
-Polir materiais, iluminação, sombras, vegetação, arquitetura, props, personagens, VFX, UI, animações, composição e storytelling ambiental.
-
-## FASE 17 — ESCALA E PERFORMANCE
-Medir FPS, Game/Render Thread, GPU, memória, streaming, draw calls, actors, AI, replication, bandwidth, server CPU e World Partition. Otimizar somente com profiling real.
-
-## FASE 18 — MULTIPLAYER REAL
-Validar 1/2/múltiplos jogadores, party, guild, combate simultâneo, loot, eventos, bosses, dungeons, troca, crafting, reconnect, logout e restart do servidor.
-
-## FASE 19 — CONTEÚDO INICIAL COMPLETO
-Cidade principal, múltiplas regiões e dungeons, bosses, classes/evoluções, equipamentos, skills, quests, NPCs, crafting, economia, social, eventos e world bosses.
-
-## FASE 20 — ALPHA
-Loop principal completo, mundo explorável, combate, progressão, conteúdo, multiplayer, persistência e ausência de blockers críticos.
-
-## FASE 21 — BETA
-Balanceamento, bugs, performance, UX, conteúdo, economia, estabilidade, multiplayer e segurança.
-
-## FASE 22 — RELEASE CANDIDATE
-Build limpa, servidor, cliente, persistência, patch/update, recuperação de falhas, segurança, performance, conteúdo e regressão.
-
-## FASE 23 — LANÇAMENTO E EVOLUÇÃO
-Novos mapas, classes/evoluções, dungeons, bosses, eventos, temporadas e regiões sem reescrever os sistemas centrais.
-
-## REGRA CENTRAL
-Não construir o MMORPG inteiro antes de provar o jogo.
-Sequência: base existente -> Unreal real -> câmera isométrica -> diorama -> personagem -> exploração -> RPG -> combate -> dungeon -> vertical slice -> PRIMEIRO TESTE REAL -> mundo aberto -> MMORPG em escala.
-
-## RELAÇÃO COM ROADMAPS EXISTENTES
-ROADMAP.md continua sendo a referência da arquitetura MMORPG e execução técnica.
-ROADMAP_CONTENT_AND_CLIENT.md continua sendo a referência de conteúdo, dados e cliente.
-ROADMAP_VISUAL_AND_PLAYABLE.md continua sendo a referência de implementação visual/runtime.
-Este documento define a ordem de transformação do produto para Open World + Isometric 2.5D + Painterly Diorama.
-
-## ESTADO DA FASE 0
-**COMPLETE at repository/source audit level.**
-
-A auditoria completa e a matriz de transformação estão registradas em `Docs/PHASE_0_OPEN_WORLD_ISOMETRIC_AUDIT.md`.
-
-Decisão central: preservar a arquitetura MMORPG/server-authoritative existente e transformar principalmente câmera, mundo, assets, materiais, iluminação, animação, VFX e apresentação.
-
-Requisito visual agora oficial: **Stylized Painterly Isometric / 2.5D Hand-Painted Diorama em qualidade gráfica premium**.
-
-Benchmark visual inicial: **Vila → estrada → floresta → área de combate → entrada de dungeon**, pequeno em escala, mas produzido já próximo do padrão visual final.
-
-## OPEN WORLD — SINGLE CONTINUOUS WORLD REQUIREMENT
-
-The final world is **one continuous open-world map**, not a collection of disconnected gameplay maps.
-
-Target scale:
-- approximately **40 major cities** distributed across the same world;
-- each city is a geographic, cultural and gameplay center;
-- every city has a surrounding **jurisdiction/biome region**;
-- the biome, creatures, NPCs, resources, weather, architecture, VFX and environmental storytelling of that jurisdiction must visually and mechanically belong to its city.
-
-"One map" is a player/world continuity requirement, not a requirement that every world cell be loaded simultaneously. World Partition, streaming and HLOD may divide the world internally while preserving one world identity, continuous geography, persistent regional state and seamless normal overworld traversal.
-
-Before final terrain production, create a World Master Plan with 40 city locations/identities, jurisdiction boundaries, biome transitions, roads, rivers/coasts, mountains, ecological/resource distribution, dungeons/landmarks, progression bands and travel times.
-
-The first playable slice must be a region of the eventual single-world architecture, not a throwaway isolated map.
-
-## REGRA DE ESCALA — CIDADES + JURISDIÇÕES DE EXPLORAÇÃO
-
-Cada uma das aproximadamente 40 cidades deve ser o núcleo de uma **grande região explorável**:
-
-**cidade/safezone → periferia → wilderness → sub-regiões → áreas de descoberta → fronteira natural → próxima jurisdição/cidade**
-
-Cada jurisdição deve justificar longas expedições de exploração/caça. A distância entre grandes cidades pode exigir horas de caminhada dependendo da rota, terreno, perigos e descobertas. Não preencher a escala com terreno vazio.
-
-Não fixar ainda números de progressão, força de monstros ou qualidade de equipamentos por cidade. Esses sistemas serão definidos nas fases apropriadas.
-
-## CONTROLE DE CONTINUIDADE
-
-A cada fase/gate concluído:
-1. atualizar documentação da fase;
-2. registrar evidência real;
-3. atualizar este roadmap;
-4. atualizar `PROJECT_MEMORY/00_CONTINUITY.md`;
-5. registrar o commit;
-6. somente então avançar para a próxima fase.
-
-**Fase documental avançada: PHASE 5 — PRIMEIRO DIORAMA JOGÁVEL — SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.**
-
-**Phase 5:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
-Documentação: `Docs/PHASE_5_FIRST_PLAYABLE_DIORAMA.md`.
-
-**Phase 4:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
-
-Documentação: `Docs/PHASE_4_ISOMETRIC_CAMERA_EXPLORATION.md`.
-
-**Phase 2:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
-
-**Phase 3:** SOURCE/DOCUMENTATION COMPLETE / RUNTIME PENDING.
-Documentação: `Docs/PHASE_3_REAL_ART_PIPELINE.md`.
-
-**Gate runtime ainda aberto:** PHASE 1 — REAL UNREAL FOUNDATION / AUDITORIA NO AMBIENTE REAL DO UNREAL PENDENTE.
-
-A Phase 2 foi fechada somente em nível de source/documentação; nenhuma validação visual/runtime foi inventada.
-
-
-## RECONCILIAÇÃO DA AUDITORIA DO REPOSITÓRIO — 2026-10-03
-
-A auditoria confirmou que o novo roadmap não deve duplicar o roadmap técnico legado.
-
-Os sistemas de **progression, combat, inventory, items, loot/reward/respawn, creatures/AI, world/maps/streaming, persistence, networking, interaction, quests, economy, skills, UI e presentation** já possuem implementação C++/data-contract e testes no repositório.
-
-Exemplos de implementação já presentes:
-- `AetherProgressionSubsystem/Service`;
-- `AetherCombatSubsystem/Service`;
-- `AetherInventorySubsystem`, `AetherItemSubsystem` e `AetherLootSubsystem`;
-- `AetherCreatureSubsystem/Actor/Registry`;
-- `AetherWorldMapSubsystem/Registry/Catalog` e `AetherWorldStreamingCoordinator`;
-- `AetherPersistenceSubsystem/Service`;
-- `AetherCharacterPlayerState`;
-- testes de Progression, Combat, Inventory/Loot, Creatures, World Map e Persistence.
-
-Também foi confirmado que a árvore `Content/Aether` contém atualmente principalmente READMEs de organização, não um conjunto de mapas/meshes/materials/animations/VFX Unreal reais suficiente para representar o primeiro diorama.
-
-**Conclusão:** o próximo trabalho não deve reconstruir sistemas RPG. Deve priorizar o **gate real do Unreal**, a criação/integração de conteúdo Unreal real através do pipeline existente e a validação runtime.
-
-## FIRST PLAYABLE REGION PRODUCTION SPECIFICATION
-
-The real production specification for Phase 5 is now canonical at Docs/FIRST_PLAYABLE_WORLD_REGION_PRODUCTION_SPECIFICATION.md. It defines the permanent first world region, premium painterly-isometric quality bar, spatial composition, traversal, environmental storytelling, multiplayer considerations, performance-by-design and the Unreal materialization/runtime acceptance gate. This does not claim a real .umap exists; binary map creation remains a local Unreal Engine 5.8 operation.
+Não recriar:
+
+- skills;
+- progression/XP/levels;
+- attributes/state;
+- inventory;
+- items/equipment;
+- loot/reward/respawn;
+- combat;
+- quests/events/dialogue;
+- creatures/NPC/AI contracts;
+- economy/crafting/shops;
+- persistence;
+- networking/server authority;
+- multiplayer;
+- UI framework;
+- world/streaming contracts;
+- registries e contratos de conteúdo existentes.
+
+O objetivo deste roadmap é **adaptar a apresentação e produzir o conteúdo visual/jogável 2D sobre essa base**.
+
+Regra obrigatória:
+
+**preservar -> adaptar -> integrar -> validar -> expandir**
+
+Nenhuma nova arquitetura deve substituir uma existente sem auditoria e justificativa técnica.
+
+---
+
+# FASE 0 — AUDITORIA E PRESERVAÇÃO DA RAIZ
+
+### Objetivo
+Confirmar exatamente quais sistemas já existem e definir o que será apenas adaptado para a apresentação 2D.
+
+### Escopo
+- gameplay existente;
+- progression;
+- combat;
+- inventory/equipment;
+- skills/effects;
+- quests/events;
+- creatures/NPC/bosses;
+- economy/crafting;
+- persistence;
+- networking;
+- multiplayer;
+- world/streaming;
+- UI;
+- presentation;
+- registries;
+- asset pipeline.
+
+### Gate
+Nenhum sistema já existente deve ser reconstruído.
+
+**Estado: CONCLUÍDA em nível repository/source.**
+
+---
+
+# FASE 1 — FUNDAÇÃO REAL DO UNREAL
+
+### Objetivo
+Comprovar que a raiz do projeto funciona no Unreal real antes da produção visual.
+
+### Validar
+- UHT;
+- UBT Editor/Game;
+- Dedicated Server;
+- abertura do projeto;
+- mapa real;
+- GameMode;
+- PlayerStart;
+- PIE;
+- 2-client PIE;
+- Dedicated Server + cliente;
+- spawn;
+- posse;
+- movimento;
+- câmera;
+- replicação;
+- Automation;
+- Output Log.
+
+### Gate
+Sem evidência local real, a fase permanece pendente.
+
+**Estado: RUNTIME PENDING.**
+
+---
+
+# FASE 2 — DIREÇÃO VISUAL 2D ISOMÉTRICA
+
+### Objetivo
+Substituir a premissa anterior de 3D/2.5D painterly por uma direção oficialmente **2D isométrica premium**.
+
+### Definir
+- ângulo isométrico;
+- framing;
+- escala;
+- zoom;
+- leitura de profundidade;
+- silhueta;
+- composição;
+- paleta;
+- linguagem artística;
+- proporções;
+- contraste;
+- iluminação;
+- sombras;
+- oclusão;
+- camadas;
+- paralaxe;
+- VFX;
+- apresentação de personagens;
+- apresentação de criaturas;
+- apresentação de arquitetura;
+- apresentação de mapas.
+
+### Resultado
+Um padrão visual que permita produzir todo o conteúdo do jogo sem depender de modelos 3D.
+
+**Documentação:** `Docs/AGE_OF_AETHER_2D_ISOMETRIC_VISUAL_DIRECTION.md`
+
+**Estado: DIREÇÃO DOCUMENTADA / RUNTIME PENDING.**
+
+---
+
+# FASE 3 — PIPELINE DE ARTE 2D
+
+### Objetivo
+Criar uma pipeline repetível para transformar arte em conteúdo utilizável no Unreal.
+
+### Fluxo
+
+**Concept/arte -> source -> cleanup -> Texture -> Sprite/Sprite Sheet -> Flipbook quando necessário -> material -> perfil/Asset Registry -> consumidor de gameplay -> runtime**
+
+### Produzir
+- sprites;
+- sprite sheets;
+- animações;
+- personagens;
+- criaturas;
+- NPCs;
+- props;
+- arquitetura;
+- vegetação;
+- efeitos;
+- ícones;
+- elementos de cenário.
+
+### Gate
+Cada categoria deve possuir:
+- nomenclatura;
+- origem/proveniência;
+- convenção de escala;
+- pivot;
+- transparência;
+- resolução;
+- animação;
+- collision quando necessária;
+- AssetID;
+- fallback;
+- validação.
+
+---
+
+# FASE 4 — SISTEMA DE PERSONAGENS 2D
+
+### Objetivo
+Adaptar o personagem já existente para receber uma representação 2D sem alterar sua autoridade de gameplay.
+
+### Preservar
+- Character;
+- PlayerState;
+- progression;
+- combat;
+- inventory;
+- equipment;
+- skills;
+- multiplayer.
+
+### Criar/adaptar
+- visual 2D;
+- Sprite/Flipbook;
+- estados Idle;
+- Walk;
+- Run;
+- Attack;
+- Hit;
+- Death;
+- Cast;
+- Interaction;
+- sombras;
+- efeitos;
+- variações por classe/evolução;
+- integração com equipamentos visuais quando aplicável.
+
+### Gate
+O mesmo personagem gameplay deve continuar funcionando com a nova apresentação.
+
+---
+
+# FASE 5 — CRIATURAS, NPCs E CHEFES 2D
+
+### Objetivo
+Aplicar a mesma abordagem aos habitantes do mundo.
+
+### Produzir
+- criaturas comuns;
+- elites;
+- bosses;
+- animais;
+- NPCs;
+- comerciantes;
+- guardas;
+- quest givers;
+- personagens sociais.
+
+### Preservar
+AI, aggro, combate, loot, quests e autoridade já existentes.
+
+### Gate
+Criatura/NPC real deve aparecer no runtime com comportamento existente e representação visual 2D.
+
+---
+
+# FASE 6 — AMBIENTES E PROPS 2D
+
+### Objetivo
+Criar a biblioteca visual reutilizável do mundo.
+
+### Produzir
+- casas;
+- muralhas;
+- portas;
+- torres;
+- templos;
+- pontes;
+- estradas;
+- árvores;
+- rochas;
+- vegetação;
+- água;
+- ruínas;
+- fogueiras;
+- móveis;
+- objetos interativos;
+- elementos decorativos.
+
+### Regra
+Os assets devem ser reutilizáveis e combináveis. Evitar desenhar cada região como uma imagem descartável e impossível de expandir.
+
+---
+
+# FASE 7 — PROFUNDIDADE 2D, LUZ E SOMBRA
+
+### Objetivo
+Fazer o mundo 2D transmitir profundidade e presença.
+
+### Implementar
+- camadas de profundidade;
+- ordem de renderização;
+- oclusão;
+- sombras;
+- luz;
+- highlights;
+- ambientação;
+- paralaxe;
+- partículas;
+- neblina;
+- clima;
+- efeitos mágicos;
+- pós-processamento quando apropriado.
+
+### Gate
+A cena deve parecer espacial e legível sem depender de modelos 3D.
+
+---
+
+# FASE 8 — CÂMERA E EXPLORAÇÃO ISOMÉTRICA
+
+### Objetivo
+Adaptar a exploração existente à nova apresentação.
+
+### Preservar/adaptar
+- movimento;
+- input;
+- targeting;
+- interação;
+- seleção;
+- câmera;
+- zoom;
+- collision;
+- multiplayer.
+
+### Resultado
+Uma experiência de exploração isométrica controlada, confortável e consistente.
+
+---
+
+# FASE 9 — PRIMEIRA REGIÃO PERMANENTE
+
+### Objetivo
+Construir a primeira região real do mundo definitivo.
+
+### Composição
+
+**assentamento -> praça -> serviços -> NPCs -> saída -> estrada -> campo -> floresta -> exploração -> combate -> ruínas/landmark -> aproximação da dungeon -> dungeon**
+
+### Regra
+Não é um mapa descartável.
+
+É a primeira região da arquitetura do mundo contínuo.
+
+---
+
+# FASE 10 — INTEGRAÇÃO DOS SISTEMAS EXISTENTES
+
+### Objetivo
+Conectar a nova apresentação 2D ao gameplay já criado.
+
+### Validar
+- progression;
+- levels/XP;
+- classes;
+- skills;
+- combat;
+- inventory;
+- equipment;
+- loot;
+- quests;
+- interactions;
+- NPCs;
+- creatures;
+- economy;
+- persistence;
+- multiplayer.
+
+### Importante
+Esta fase **não implementa esses sistemas novamente**.
+
+Ela verifica a adaptação da apresentação 2D a eles e corrige somente lacunas reais.
+
+---
+
+# FASE 11 — PRIMEIRO INIMIGO E LOOP DE COMBATE
+
+### Objetivo
+Comprovar o loop completo com representação 2D.
+
+### Fluxo
+
+**explorar -> encontrar -> atacar -> receber dano -> usar skill -> derrotar -> XP -> loot -> continuar**
+
+### Gate
+Gameplay existente + apresentação 2D funcionando juntos no Unreal real.
+
+---
+
+# FASE 12 — PRIMEIRA DUNGEON
+
+### Produzir
+- entrada;
+- corredores/áreas;
+- salas;
+- obstáculos;
+- criaturas;
+- interações;
+- loot;
+- eventos;
+- mini-boss;
+- boss;
+- retorno.
+
+### Regra
+A dungeon deve utilizar a mesma linguagem visual 2D do mundo externo.
+
+---
+
+# FASE 13 — VERTICAL SLICE
+
+### Fluxo obrigatório
+
+**entrar -> explorar assentamento -> conversar -> aceitar quest -> sair -> explorar -> combater -> ganhar XP -> loot -> dungeon -> boss -> retornar**
+
+### Resultado
+Primeiro trecho realmente reconhecível como Age of Aether.
+
+---
+
+# FASE 14 — PRIMEIRO TESTE REAL JOGÁVEL
+
+### Validar no Unreal
+- startup;
+- câmera;
+- personagem 2D;
+- movimento;
+- exploração;
+- interação;
+- NPCs;
+- criaturas;
+- combate;
+- skills;
+- XP;
+- loot;
+- dungeon;
+- boss;
+- retorno;
+- HUD;
+- áudio;
+- VFX;
+- 2-client PIE;
+- Dedicated Server smoke test;
+- logs;
+- profiling.
+
+### Gate
+**GO:** expandir.
+
+**NO-GO:** corrigir a fundação.
+
+---
+
+# FASE 15 — WORLD MASTER PLAN
+
+### Objetivo
+Planejar o único mundo contínuo definitivo.
+
+### Definir aproximadamente 40 grandes cidades
+Cada cidade deve possuir:
+- identidade;
+- jurisdição;
+- bioma;
+- cultura;
+- arquitetura;
+- ecologia;
+- recursos;
+- estradas;
+- landmarks;
+- dungeons;
+- eventos;
+- pontos de interesse.
+
+### Regra
+Não criar 40 mapas desconectados.
+
+O objetivo é um único mundo contínuo, com streaming interno quando necessário.
+
+---
+
+# FASE 16 — EXPANSÃO DAS JURISDIÇÕES
+
+### Objetivo
+Transformar cada cidade em núcleo de uma grande região explorável.
+
+### Estrutura
+
+**cidade -> periferia -> wilderness -> sub-regiões -> descobertas -> fronteira -> próxima jurisdição**
+
+### Conteúdo
+- estradas;
+- florestas;
+- campos;
+- montanhas;
+- rios;
+- cavernas;
+- ruínas;
+- dungeons;
+- criaturas;
+- NPCs;
+- recursos;
+- eventos;
+- atalhos;
+- landmarks.
+
+Não preencher escala com terreno vazio.
+
+---
+
+# FASE 17 — CIDADES VIVAS
+
+### Integrar conteúdo visual 2D com os sistemas existentes:
+- comerciantes;
+- ferreiros;
+- tavernas;
+- guardas;
+- quest givers;
+- serviços;
+- animais;
+- diálogos;
+- eventos;
+- storytelling ambiental.
+
+---
+
+# FASE 18 — MUNDO PvE
+
+### Produzir
+- famílias de criaturas;
+- elites;
+- bosses;
+- dungeons;
+- world bosses;
+- eventos;
+- loot;
+- respawns;
+- quests;
+- áreas de descoberta.
+
+Tudo deve usar a pipeline visual 2D.
+
+---
+
+# FASE 19 — MUNDO VIVO E SOCIAL
+
+### Integrar e apresentar visualmente
+- party;
+- guild;
+- eventos;
+- invasões;
+- bosses;
+- ciclos;
+- reputação;
+- descobertas;
+- economia;
+- zonas seguras;
+- zonas PvP quando previstas pelos sistemas existentes.
+
+---
+
+# FASE 20 — POLIMENTO VISUAL 2D PREMIUM
+
+### Objetivo
+Eliminar aparência de protótipo.
+
+### Polir
+- personagens;
+- criaturas;
+- arquitetura;
+- ambientes;
+- sombras;
+- iluminação;
+- VFX;
+- animações;
+- UI;
+- composição;
+- clima;
+- áudio;
+- storytelling ambiental.
+
+### Gate
+Qualidade consistente entre regiões.
+
+---
+
+# FASE 21 — ESCALA E PERFORMANCE
+
+### Medir com profiling real
+- FPS;
+- Game Thread;
+- Render Thread;
+- GPU;
+- memória;
+- draw calls;
+- sprites;
+- partículas;
+- animações;
+- streaming;
+- AI;
+- replication;
+- bandwidth;
+- server CPU.
+
+### Regra
+Otimizar baseado em evidência, não em suposição.
+
+---
+
+# FASE 22 — CONTEÚDO INICIAL COMPLETO
+
+### Objetivo
+Produzir a primeira grande entrega de conteúdo:
+- cidades;
+- regiões;
+- dungeons;
+- criaturas;
+- bosses;
+- NPCs;
+- personagens;
+- quests;
+- equipamentos;
+- skills já existentes;
+- crafting;
+- economia;
+- eventos;
+- conteúdo social.
+
+Os sistemas continuam sendo os já existentes; esta fase concentra-se principalmente em **conteúdo e apresentação**.
+
+---
+
+# FASE 23 — ALPHA
+
+### Gate
+- loop principal;
+- mundo explorável;
+- conteúdo;
+- combate;
+- progressão;
+- multiplayer;
+- persistência;
+- estabilidade;
+- sem blockers críticos.
+
+---
+
+# FASE 24 — BETA
+
+### Validar
+- bugs;
+- balanceamento;
+- performance;
+- UX;
+- economia;
+- multiplayer;
+- segurança;
+- conteúdo;
+- estabilidade.
+
+---
+
+# FASE 25 — RELEASE CANDIDATE
+
+### Validar
+- build limpa;
+- cliente;
+- servidor;
+- persistência;
+- recuperação de falhas;
+- patch/update;
+- regressão;
+- segurança;
+- performance;
+- conteúdo.
+
+---
+
+# FASE 26 — LANÇAMENTO E EVOLUÇÃO CONTÍNUA
+
+Adicionar continuamente:
+- novas regiões;
+- cidades;
+- dungeons;
+- criaturas;
+- bosses;
+- personagens;
+- eventos;
+- histórias;
+- conteúdo visual 2D.
+
+Sem reescrever os sistemas centrais.
+
+---
+
+# DEFINIÇÃO DE PRONTO DO PROJETO VISUAL
+
+O projeto será considerado visualmente coerente quando:
+
+1. o personagem gameplay existente funcionar com representação 2D;
+2. classes/evoluções possuírem identidade visual;
+3. criaturas/NPCs/bosses forem apresentados em 2D;
+4. ambientes puderem ser produzidos com assets 2D reutilizáveis;
+5. luz/sombra/camadas criarem profundidade;
+6. câmera e exploração forem isométricas;
+7. combate e interação utilizarem os sistemas já existentes;
+8. a primeira região permanente estiver jogável;
+9. o vertical slice estiver validado;
+10. o pipeline puder escalar para o mundo inteiro.
+
+---
+
+# O QUE ESTE ROADMAP NÃO FAZ
+
+Não cria novamente:
+- skill system;
+- level system;
+- inventory system;
+- combat system;
+- quest system;
+- progression system;
+- economy system;
+- persistence system;
+- multiplayer system;
+- networking architecture.
+
+Esses elementos pertencem à raiz existente do AGE OF AETHER.
+
+O novo projeto é uma **transformação de apresentação + produção de conteúdo + integração + validação**, não uma reconstrução do jogo.
+
+---
+
+# REGRA DE VERDADE
+
+Sempre separar:
+
+### SOURCE/REPOSITORY
+Pode ser validado por:
+- inspeção;
+- compilação;
+- testes;
+- contratos;
+- documentação;
+- registries.
+
+### UNREAL RUNTIME
+Precisa de:
+- Unreal Editor;
+- UHT/UBT;
+- import real;
+- assets reais;
+- mapas reais;
+- PIE;
+- 2-client PIE;
+- Dedicated Server;
+- gameplay;
+- logs;
+- profiling.
+
+Nunca declarar runtime PASS sem execução real.
+
+---
+
+# WORKFLOW OBRIGATÓRIO
+
+Para cada fase:
+
+1. ler `PROJECT_MEMORY/00_CONTINUITY.md`;
+2. ler este roadmap;
+3. auditar o que já existe;
+4. preservar a raiz;
+5. adaptar apenas o necessário;
+6. produzir conteúdo;
+7. criar/atualizar testes;
+8. executar os testes possíveis;
+9. validar Unreal quando a fase exigir;
+10. registrar evidências;
+11. atualizar documentação;
+12. atualizar continuidade;
+13. commit no GitHub;
+14. somente então avançar.
+
+---
+
+# ESTADO INICIAL DA NOVA DIREÇÃO
+
+**FASE 0 — AUDITORIA E PRESERVAÇÃO DA RAIZ: CONCLUÍDA.**
+
+**FASE 1 — FUNDAÇÃO REAL DO UNREAL: RUNTIME GATE PENDING.**
+
+A documentação oficial da nova direção 2D está em:
+
+`Docs/AGE_OF_AETHER_2D_ISOMETRIC_VISUAL_DIRECTION.md`
+
+O próximo trabalho visual deve seguir este roadmap e **não deve reconstruir os sistemas de gameplay já existentes**.
