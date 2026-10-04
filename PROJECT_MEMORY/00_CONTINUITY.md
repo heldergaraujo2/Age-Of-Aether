@@ -84,15 +84,21 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 
 **Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
 
-### FASE 4 — Sistema de personagens 2D 🟥
+### FASE 4 — Sistema de personagens 2D 🟩 / 🟥
 
-**Objetivo:** Adaptar o personagem gameplay existente para representação 2D.
+**Objetivo:** Adaptar o personagem gameplay existente para representação 2D sem reconstruir a raiz de gameplay.
 
-**Criar e testar:** Idle/Walk/Run/Attack/Hit/Death/Cast/Interaction; sombras; efeitos; classes/evoluções; integração visual.
+**Criar e testar:** Idle/Walk/Run/Attack/Hit/Death/Cast/Interaction; perfil 2D; Flipbooks; escala/offset; transições; integração com AAetherCharacter; compatibilidade com classe/evolução/equipment; qualidade e fluidez.
 
-**Estado:** Materialização e runtime pendentes.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** Foi implementada uma camada 2D aditiva sobre AAetherCharacter, mantendo o sistema visual existente. 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Evidência principal:** Docs/PHASE_4_2D_CHARACTER_SYSTEM.md, commit 8cc61bf515e4dd68663828af123870750dc28807.
+
+**Implementação principal:** UAether2DCharacterVisualProfile, UAether2DCharacterVisualComponent, EAether2DCharacterVisualState, dependência Paper2D e integração no AAetherCharacter. Movimento alimenta Idle/Walk/Run; ataque alimenta Attack; ataques não-looping retornam a Idle quando o Flipbook termina.
+
+**Arquitetura preservada:** gameplay, movimento, combate, networking, autoridade, classes/evoluções e equipamento não foram reconstruídos nem substituídos. A apresentação 2D é opcional e ativada por perfil.
+
+**Testes/validação:** validação de source/arquitetura realizada por inspeção e consistência dos arquivos modificados. Build/UHT/PIE/runtime e materialização dos assets Unreal ficam deliberadamente para a janela de testes Unreal.
 
 ### FASE 5 — Criaturas, NPCs e chefes 2D 🟥
 
