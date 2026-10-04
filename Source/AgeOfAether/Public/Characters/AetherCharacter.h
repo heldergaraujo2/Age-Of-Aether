@@ -10,6 +10,7 @@ class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
+class UStaticMeshComponent;
 class UAetherPlayableCharacterVisualComponent;
 class UAetherMovementCameraProfile;
 class UAetherEquipmentVisualComponent;
@@ -89,6 +90,15 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Skills")
     TObjectPtr<UAetherSkillVisualComponent> SkillVisualComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeBodyVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeHeadVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeMantleVisual;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
     float FoundationWalkSpeed = 420.0f;
 
@@ -109,6 +119,7 @@ protected:
 
 private:
     void InitializeFoundationInput();
+    void InitializeRuntimeVisual();
     void MoveForward(const struct FInputActionValue& Value);
     void MoveRight(const struct FInputActionValue& Value);
     void LookYaw(const struct FInputActionValue& Value);
