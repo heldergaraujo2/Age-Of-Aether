@@ -602,36 +602,40 @@ O Unreal ainda precisa materializar e validar a experiência completa, incluindo
 
 # FASE 14 — PRIMEIRO TESTE REAL JOGÁVEL
 
-### Validar no Unreal
-- startup;
-- câmera;
-- personagem 2D;
-- movimento;
-- exploração;
-- interação;
-- NPCs;
-- criaturas;
-- combate;
-- skills;
-- XP;
-- loot;
-- dungeon;
-- boss;
-- retorno;
-- HUD;
-- áudio;
-- VFX;
-- 2-client PIE;
-- Dedicated Server smoke test;
-- logs;
-- profiling.
+### Estado
 
-### Gate
-**GO:** expandir.
+🟨 **PREPARADA PARA VALIDAÇÃO REAL NO UNREAL / PC.**  
+🟥 **RUNTIME AINDA NÃO VALIDADO.**
 
-**NO-GO:** corrigir a fundação.
+### Objetivo
 
----
+Percorrer a primeira vertical slice real:
+
+**Startup → Settlement → Quest → Exploration → Wild Hound → XP/Loot → Hollowed Watch → Warden → Return → Persistence → 2-client → Dedicated Server**
+
+### Preparação concluída
+
+- matriz completa de gates;
+- ordem de execução;
+- critérios de PASS/FAIL/BLOCKED/NOT RUN;
+- exigência de caminhada/exploração real dos mapas;
+- critérios de evidência;
+- critérios de correção e regressão;
+- avaliação visual;
+- avaliação inicial de performance;
+- validação multiplayer e Dedicated Server.
+
+### Documento canônico
+
+`Docs/PHASE_14_FIRST_PLAYABLE_TEST.md`
+
+### Gate de fechamento
+
+A fase somente poderá receber 🟩 após execução real no Unreal com evidências suficientes. Source/documentação/build isolado não fecha a fase.
+
+### Regra operacional
+
+Nenhum resultado Unreal foi inventado ou declarado. A próxima janela de trabalho no PC deve validar o projeto oficial e a vertical slice da Fase 13, sem criar projeto paralelo.
 
 # FASE 15 — WORLD MASTER PLAN
 
