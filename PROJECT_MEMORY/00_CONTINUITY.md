@@ -179,15 +179,26 @@ RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clás
 **Preservação:** movement, targeting, interaction, collision, navigation, combat, networking, multiplayer, persistence e world streaming existentes não foram reconstruídos.
 
 **Testes/validação:** não foram declarados UHT/UBT/PIE/runtime. Unreal permanece deliberadamente para a janela posterior de validação.
-### FASE 9 — Primeira região permanente 🟥
+### FASE 9 — Primeira região permanente 🟩 / 🟥
 
-**Objetivo:** Construir a primeira região real do mundo definitivo.
+**Objetivo:** Definir e preparar a primeira região permanente do mundo definitivo como a primeira unidade de produção reutilizável do mundo contínuo de aproximadamente 40 grandes cidades/jurisdições.
 
-**Criar e testar:** Assentamento; praça; serviços; NPCs; saída; estrada; campo; floresta; exploração; combate; landmark; dungeon.
+**Estado:** 🟩 **CONCLUÍDA NO NÍVEL REPOSITORY/SOURCE/ARCHITECTURE.** 🟥 **MATERIALIZAÇÃO E VALIDAÇÃO REAL NO UNREAL DEFERIDAS.**
 
-**Estado:** Especificação existe; conteúdo real pendente.
+**Evidência principal:** `Docs/PHASE_9_FIRST_PERMANENT_REGION.md`.
 
-**Evidência:** registrar commits, arquivos, testes, logs, execuções e resultados reais aplicáveis.
+**Implementação/resultado:** a fase agora possui identidade permanente, composição espacial não-linear, zonas, gramática de streaming cells, pontos de mundo, hooks de interação, quests/events, criaturas/NPCs, economia, combate e persistência, além da gramática visual reutilizável para assentamento, natureza, fronteira, ruínas e aproximação da dungeon. O contrato utiliza as estruturas existentes de `FAetherMapDefinition`, `FAetherWorldZoneDefinition`, `FAetherStreamingCellDefinition`, `FAetherWorldPointDefinition`, `FAetherMapConnectionDefinition`, `FAetherWorldActorPlacementDefinition` e `FAetherWorldInteractionDefinition`, sem criar um segundo sistema de mundo.
+
+**Composição canônica:** arrival → settlement → plaza/services → outskirts → gate → road → countryside → forest edge → exploration → combat frontier → ruins/landmark → dungeon approach → dungeon entrance.
+
+**Regra de produção:** a região não é um mapa descartável nem um corredor. Ela possui rota principal, rotas secundárias e descobertas e foi preparada para escalar para as demais jurisdições.
+
+**Direção visual:** a interpretação atual é premium 2D isométrica. Os documentos históricos da primeira região foram preservados como evidência de composição/produção e reconciliados com a direção 2D atual.
+
+**Documentação relacionada:** `Content/Aether/Maps/README.md`, `Docs/FIRST_PLAYABLE_WORLD_REGION_PRODUCTION_SPECIFICATION.md`, `Docs/FIRST_PLAYABLE_ISOMETRIC_DIORAMA_LAYOUT.md` e `Docs/FIRST_PLAYABLE_ISOMETRIC_DIORAMA_ASSET_KIT.md`.
+
+**Testes/validação:** nenhum Unreal runtime foi falsamente declarado. `.umap`, `.uasset`, importação de arte, collision, navigation, exploração, combate, multiplayer, PIE, Dedicated Server e validação visual permanecem deliberadamente para a janela posterior de Unreal.
+
 
 ### FASE 10 — Integração dos sistemas existentes 🟥
 
