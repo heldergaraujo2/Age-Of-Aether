@@ -1,11 +1,13 @@
 #include "World/AetherDevelopmentWorldActor.h"
 
 #include "Animation/AnimSequence.h"
+#include "CollisionQueryParams.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/World.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Math/RotationMatrix.h"
 #include "UObject/ConstructorHelpers.h"
@@ -1646,6 +1648,10 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
         FVector(-780.0f, -425.0f, 0.0f), FVector(-1160.0f, -500.0f, 0.0f),
         FVector(-1560.0f, -565.0f, 0.0f), FVector(-1930.0f, -780.0f, 0.0f)
     };
+    const TArray<FVector> OrchardPath = {
+        FVector(-450.0f, 100.0f, 0.0f), FVector(-760.0f, 380.0f, 0.0f),
+        FVector(-1160.0f, 640.0f, 0.0f), FVector(-1530.0f, 810.0f, 0.0f)
+    };
     const auto IsNearPath = [](const FVector& Point, const TArray<FVector>& Path, float Radius)
     {
         const float RadiusSquared = Radius * Radius;
@@ -1672,7 +1678,7 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
 
     if (bHasFabTrees)
     {
-        for (int32 Index = 0; Index < 68; ++Index)
+        for (int32 Index = 0; Index < 260; ++Index)
         {
             const int32 Side = Random.RandRange(0, 3);
             FVector Location;
@@ -1696,6 +1702,7 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
             if (IsNearPath(Location, RiverPath, 370.0f)
                 || IsNearPath(Location, MainRoad, 390.0f)
                 || IsNearPath(Location, FarmRoad, 250.0f)
+                || IsNearPath(Location, OrchardPath, 225.0f)
                 || (RuntimeFabMansionMesh
                     && FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(3050.0f, 1380.0f)) < 1000.0f))
             {
@@ -1734,6 +1741,72 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
                 Height,
                 Random.FRandRange(0.86f, 1.24f),
                 FRotator(0.0f, Random.FRandRange(0.0f, 360.0f), 0.0f));
+        }
+
+        // Extend the woodland inward so the town and outer forest no longer feel
+        // separated by large, empty grass bands. These are lower, varied trees.
+        for (float GridX = -2440.0f; GridX <= 2440.0f; GridX += 460.0f)
+        {
+            for (float GridY = -2240.0f; GridY <= 2240.0f; GridY += 460.0f)
+            {
+                if (FMath::Abs(GridX) < 1380.0f && FMath::Abs(GridY) < 1120.0f)
+                {
+                    continue;
+                }
+
+                FVector Location(
+                    GridX + Random.FRandRange(-135.0f, 135.0f),
+                    GridY + Random.FRandRange(-135.0f, 135.0f),
+                    0.0f);
+                if (Random.FRand() > 0.58f
+                    || IsNearPath(Location, RiverPath, 310.0f)
+                    || IsNearPath(Location, MainRoad, 290.0f)
+                    || IsNearPath(Location, FarmRoad, 210.0f)
+                    || IsNearPath(Location, OrchardPath, 205.0f)
+                    || (FMath::Abs(Location.X + 1980.0f) < 650.0f && FMath::Abs(Location.Y) < 470.0f)
+                    || (FMath::Abs(Location.X + 1690.0f) < 650.0f && FMath::Abs(Location.Y + 1260.0f) < 430.0f)
+                    || (FMath::Abs(Location.X + 760.0f) < 510.0f && FMath::Abs(Location.Y + 1430.0f) < 390.0f)
+                    || FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(1050.0f, 1150.0f)) < 930.0f
+                    || FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(1980.0f, 780.0f)) < 380.0f
+                    || FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(-2050.0f, 720.0f)) < 330.0f
+                    || (RuntimeFabMansionMesh
+                        && FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(3050.0f, 1380.0f)) < 1000.0f))
+                {
+                    continue;
+                }
+
+                UStaticMesh* TreeMesh = RuntimeFabTreeBroadleafMesh.Get();
+                if (Random.FRand() < 0.22f && RuntimeFabPineMesh)
+                {
+                    TreeMesh = RuntimeFabPineMesh.Get();
+                }
+                else if (Random.FRand() < 0.34f && RuntimeFabTreeSmallMesh)
+                {
+                    TreeMesh = RuntimeFabTreeSmallMesh.Get();
+                }
+                if (!TreeMesh)
+                {
+                    TreeMesh = RuntimeFabTreeSmallMesh
+                        ? RuntimeFabTreeSmallMesh.Get()
+                        : RuntimeFabPineMesh.Get();
+                }
+                if (!TreeMesh)
+                {
+                    continue;
+                }
+
+                const FName BatchName = TreeMesh == RuntimeFabPineMesh.Get() ? TEXT("FabPineInstances")
+                    : (TreeMesh == RuntimeFabTreeSmallMesh.Get() ? TEXT("FabSmallTreeInstances") : TEXT("FabBroadleafInstances"));
+                AddFabFoliageInstance(
+                    TreeMesh,
+                    BatchName,
+                    Location,
+                    TreeMesh == RuntimeFabTreeSmallMesh.Get()
+                        ? Random.FRandRange(310.0f, 445.0f)
+                        : Random.FRandRange(405.0f, 590.0f),
+                    Random.FRandRange(0.82f, 1.16f),
+                    FRotator(0.0f, Random.FRandRange(0.0f, 360.0f), 0.0f));
+            }
         }
     }
 
@@ -1796,10 +1869,11 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
                     GridX + Random.FRandRange(-72.0f, 72.0f),
                     GridY + Random.FRandRange(-72.0f, 72.0f),
                     0.0f);
-                if (Random.FRand() > 0.56f
+                if (Random.FRand() > 0.40f
                     || IsNearPath(Location, RiverPath, 210.0f)
                     || IsNearPath(Location, MainRoad, 190.0f)
-                    || IsNearPath(Location, FarmRoad, 170.0f))
+                    || IsNearPath(Location, FarmRoad, 170.0f)
+                    || IsNearPath(Location, OrchardPath, 160.0f))
                 {
                     continue;
                 }
@@ -1828,7 +1902,7 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
             for (float GridY = -2860.0f; GridY <= 2860.0f; GridY += 285.0f)
             {
                 const bool bVillageCore = FMath::Abs(GridX) < 1420.0f && FMath::Abs(GridY) < 1090.0f;
-                if (bVillageCore || Random.FRand() > 0.34f)
+                if (bVillageCore || Random.FRand() > 0.48f)
                 {
                     continue;
                 }
@@ -1849,7 +1923,8 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
                 if (bInFarmPlot || bNearLandmark
                     || IsNearPath(Location, RiverPath, 255.0f)
                     || IsNearPath(Location, MainRoad, 260.0f)
-                    || IsNearPath(Location, FarmRoad, 200.0f))
+                    || IsNearPath(Location, FarmRoad, 200.0f)
+                    || IsNearPath(Location, OrchardPath, 200.0f))
                 {
                     continue;
                 }
@@ -1992,56 +2067,61 @@ void AAetherDevelopmentWorldActor::BuildFabHorseAtStable()
 
 void AAetherDevelopmentWorldActor::BuildAmbientVillageNPCs()
 {
+    if (RuntimeAmbientNPCComponents.Num() > 0)
+    {
+        return;
+    }
+
     USkeletalMesh* WalkerMesh = LoadObject<USkeletalMesh>(
         nullptr, TEXT("/Game/Aether/Characters/Mage/SK_Mago_AgeOfAether.SK_Mago_AgeOfAether"));
-    UAnimSequence* WalkAnimation = LoadObject<UAnimSequence>(
-        nullptr, TEXT("/Game/Aether/Characters/Mage/Animations/A_Walk_Anim.A_Walk_Anim"));
-    if (!WalkAnimation)
+    RuntimeAmbientNPCIdleAnimation = LoadObject<UAnimSequence>(
+        nullptr, TEXT("/Game/Aether/Characters/Mage/Animations/A_Idle_Anim.A_Idle_Anim"));
+    if (!RuntimeAmbientNPCIdleAnimation)
     {
-        WalkAnimation = LoadObject<UAnimSequence>(
+        RuntimeAmbientNPCIdleAnimation = LoadObject<UAnimSequence>(
+            nullptr, TEXT("/Game/Aether/Characters/Mage/Animations/A_Idle.A_Idle"));
+    }
+    RuntimeAmbientNPCWalkAnimation = LoadObject<UAnimSequence>(
+        nullptr, TEXT("/Game/Aether/Characters/Mage/Animations/A_Walk_Anim.A_Walk_Anim"));
+    if (!RuntimeAmbientNPCWalkAnimation)
+    {
+        RuntimeAmbientNPCWalkAnimation = LoadObject<UAnimSequence>(
             nullptr, TEXT("/Game/Aether/Characters/Mage/Animations/A_Walk.A_Walk"));
     }
-    if (!WalkerMesh || !WalkAnimation)
+    if (!WalkerMesh || !RuntimeAmbientNPCWalkAnimation)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Ambient walkers were not spawned: import the Mage skeletal mesh and Walk sequence first."));
+        UE_LOG(LogTemp, Warning, TEXT("Ambient Mage walkers were not spawned: import the Mage skeletal mesh and Walk sequence first."));
         return;
     }
+    if (!RuntimeAmbientNPCIdleAnimation)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Ambient Mage Idle sequence is missing; walkers will pause with the Walk sequence held."));
+    }
 
-    RuntimeAmbientRoutePoints = {
-        FVector(-130.0f, -700.0f, 0.0f),
-        FVector(-80.0f, -280.0f, 0.0f),
-        FVector(0.0f, 0.0f, 0.0f),
-        FVector(-60.0f, 280.0f, 0.0f),
-        FVector(120.0f, 490.0f, 0.0f),
-        FVector(350.0f, 720.0f, 0.0f),
-        FVector(420.0f, 540.0f, 0.0f),
-        FVector(700.0f, 520.0f, 0.0f),
-        FVector(970.0f, 580.0f, 0.0f),
-        FVector(1050.0f, 695.0f, 0.0f),
-        FVector(1050.0f, 1080.0f, 0.0f)
+    // Give each walker many reachable destinations along the town, farm, orchard,
+    // and castle paths instead of sending the whole group around one closed loop.
+    RuntimeAmbientWalkWaypoints = {
+        FVector(0.0f, -1740.0f, 0.0f), FVector(-40.0f, -1190.0f, 0.0f),
+        FVector(-130.0f, -700.0f, 0.0f), FVector(-80.0f, -280.0f, 0.0f),
+        FVector(0.0f, 0.0f, 0.0f), FVector(-60.0f, 280.0f, 0.0f),
+        FVector(120.0f, 490.0f, 0.0f), FVector(350.0f, 720.0f, 0.0f),
+        FVector(420.0f, 540.0f, 0.0f), FVector(700.0f, 520.0f, 0.0f),
+        FVector(970.0f, 580.0f, 0.0f), FVector(1050.0f, 695.0f, 0.0f),
+        FVector(1050.0f, 1080.0f, 0.0f),
+        FVector(-120.0f, -270.0f, 0.0f), FVector(-430.0f, -365.0f, 0.0f),
+        FVector(-780.0f, -425.0f, 0.0f), FVector(-1160.0f, -500.0f, 0.0f),
+        FVector(-1560.0f, -565.0f, 0.0f), FVector(-1930.0f, -780.0f, 0.0f),
+        FVector(-450.0f, 100.0f, 0.0f), FVector(-760.0f, 380.0f, 0.0f),
+        FVector(-1160.0f, 640.0f, 0.0f), FVector(-1530.0f, 810.0f, 0.0f)
     };
-    RuntimeAmbientRouteCumulativeDistances.Reset();
-    RuntimeAmbientRouteCumulativeDistances.Add(0.0f);
-    for (int32 PointIndex = 1; PointIndex < RuntimeAmbientRoutePoints.Num(); ++PointIndex)
-    {
-        const float SegmentLength = FVector::Dist2D(
-            RuntimeAmbientRoutePoints[PointIndex - 1], RuntimeAmbientRoutePoints[PointIndex]);
-        RuntimeAmbientRouteCumulativeDistances.Add(
-            RuntimeAmbientRouteCumulativeDistances.Last() + SegmentLength);
-    }
-    RuntimeAmbientRouteLength = RuntimeAmbientRouteCumulativeDistances.Last();
-    if (RuntimeAmbientRouteLength <= KINDA_SMALL_NUMBER)
-    {
-        return;
-    }
-
-    constexpr int32 WalkerCount = 10;
-    const float PingPongLength = RuntimeAmbientRouteLength * 2.0f;
+    RuntimeAmbientRandomStream.Initialize(FMath::Rand());
     RuntimeAmbientNPCComponents.Reset();
-    RuntimeAmbientNPCPathOffsets.Reset();
     RuntimeAmbientNPCWalkSpeeds.Reset();
     RuntimeAmbientNPCGroundOffsets.Reset();
+    RuntimeAmbientNPCPauseTimers.Reset();
+    RuntimeAmbientNPCTargets.Reset();
 
+    constexpr int32 WalkerCount = 10;
     for (int32 WalkerIndex = 0; WalkerIndex < WalkerCount; ++WalkerIndex)
     {
         USkeletalMeshComponent* Walker = NewObject<USkeletalMeshComponent>(
@@ -2053,89 +2133,159 @@ void AAetherDevelopmentWorldActor::BuildAmbientVillageNPCs()
         {
             continue;
         }
+
+        FVector StartLocation = RuntimeAmbientWalkWaypoints[
+            RuntimeAmbientRandomStream.RandRange(0, RuntimeAmbientWalkWaypoints.Num() - 1)];
+        StartLocation.X += RuntimeAmbientRandomStream.FRandRange(-65.0f, 65.0f);
+        StartLocation.Y += RuntimeAmbientRandomStream.FRandRange(-65.0f, 65.0f);
+        StartLocation.Z = 4.0f;
+
         Walker->SetupAttachment(Root);
         Walker->SetSkeletalMesh(WalkerMesh);
+        Walker->SetRelativeLocation(StartLocation);
         Walker->SetRelativeScale3D(FVector(0.84f + static_cast<float>(WalkerIndex % 3) * 0.06f));
         Walker->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         Walker->SetCanEverAffectNavigation(false);
         Walker->SetCastShadow(true);
         Walker->SetAnimationMode(EAnimationMode::AnimationSingleNode);
-        Walker->PlayAnimation(WalkAnimation, true);
         AddInstanceComponent(Walker);
         Walker->RegisterComponent();
+        Walker->PlayAnimation(RuntimeAmbientNPCWalkAnimation, true);
+
         RuntimeAmbientNPCComponents.Add(Walker);
         RuntimeAmbientNPCGroundOffsets.Add(4.0f);
-        RuntimeAmbientNPCPathOffsets.Add(PingPongLength * static_cast<float>(WalkerIndex) / WalkerCount);
-        RuntimeAmbientNPCWalkSpeeds.Add(76.0f + static_cast<float>((WalkerIndex * 17) % 37));
+        RuntimeAmbientNPCWalkSpeeds.Add(RuntimeAmbientRandomStream.FRandRange(82.0f, 124.0f));
+        RuntimeAmbientNPCPauseTimers.Add(RuntimeAmbientRandomStream.FRandRange(0.0f, 1.8f));
+        RuntimeAmbientNPCTargets.Add(ChooseAmbientNPCDestination(StartLocation));
     }
 
     if (RuntimeAmbientNPCComponents.Num() > 0)
     {
         SetActorTickEnabled(true);
     }
-    UE_LOG(LogTemp, Log, TEXT("Spawned %d decorative town walkers on the village-to-castle road. They use the existing Mage Walk animation."),
+    UE_LOG(LogTemp, Log,
+        TEXT("Spawned %d ambient Mage walkers with individual random destinations and Idle/Walk animation."),
         RuntimeAmbientNPCComponents.Num());
+}
+
+FVector AAetherDevelopmentWorldActor::ChooseAmbientNPCDestination(const FVector& FromLocal)
+{
+    if (RuntimeAmbientWalkWaypoints.Num() == 0)
+    {
+        return FromLocal;
+    }
+
+    constexpr int32 RandomAttempts = 64;
+    for (int32 Attempt = 0; Attempt < RandomAttempts; ++Attempt)
+    {
+        FVector Candidate = RuntimeAmbientWalkWaypoints[
+            RuntimeAmbientRandomStream.RandRange(0, RuntimeAmbientWalkWaypoints.Num() - 1)];
+        Candidate.X += RuntimeAmbientRandomStream.FRandRange(-95.0f, 95.0f);
+        Candidate.Y += RuntimeAmbientRandomStream.FRandRange(-95.0f, 95.0f);
+        const float DistanceSquared = FVector::DistSquared2D(FromLocal, Candidate);
+        if (DistanceSquared < FMath::Square(280.0f) || DistanceSquared > FMath::Square(1450.0f))
+        {
+            continue;
+        }
+        if (IsAmbientNPCPathClear(FromLocal, Candidate))
+        {
+            return Candidate;
+        }
+    }
+
+    // If random candidates were blocked, step toward the nearest clear path node
+    // rather than leaving a walker frozen in place.
+    TArray<int32> NearestWaypointIndices;
+    NearestWaypointIndices.Reserve(RuntimeAmbientWalkWaypoints.Num());
+    for (int32 Index = 0; Index < RuntimeAmbientWalkWaypoints.Num(); ++Index)
+    {
+        NearestWaypointIndices.Add(Index);
+    }
+    NearestWaypointIndices.Sort([this, &FromLocal](int32 A, int32 B)
+    {
+        return FVector::DistSquared2D(FromLocal, RuntimeAmbientWalkWaypoints[A])
+            < FVector::DistSquared2D(FromLocal, RuntimeAmbientWalkWaypoints[B]);
+    });
+    for (const int32 Index : NearestWaypointIndices)
+    {
+        const FVector& Candidate = RuntimeAmbientWalkWaypoints[Index];
+        if (FVector::DistSquared2D(FromLocal, Candidate) > FMath::Square(160.0f)
+            && IsAmbientNPCPathClear(FromLocal, Candidate))
+        {
+            return Candidate;
+        }
+    }
+    return FromLocal;
+}
+
+bool AAetherDevelopmentWorldActor::IsAmbientNPCPathClear(
+    const FVector& StartLocal,
+    const FVector& EndLocal) const
+{
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        return false;
+    }
+
+    const FTransform ActorTransform = GetActorTransform();
+    const FVector Start = ActorTransform.TransformPosition(StartLocal + FVector(0.0f, 0.0f, 70.0f));
+    const FVector End = ActorTransform.TransformPosition(EndLocal + FVector(0.0f, 0.0f, 70.0f));
+    FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(AetherAmbientNPCPath), false);
+    FHitResult Hit;
+    return !World->LineTraceSingleByChannel(Hit, Start, End, ECC_WorldStatic, QueryParams);
 }
 
 void AAetherDevelopmentWorldActor::UpdateAmbientVillageNPCs(float DeltaSeconds)
 {
-    if (RuntimeAmbientRouteLength <= KINDA_SMALL_NUMBER
-        || RuntimeAmbientRoutePoints.Num() < 2
-        || RuntimeAmbientRouteCumulativeDistances.Num() != RuntimeAmbientRoutePoints.Num())
-    {
-        return;
-    }
-
-    const float PingPongLength = RuntimeAmbientRouteLength * 2.0f;
-    const int32 WalkerCount = FMath::Min(
-        RuntimeAmbientNPCComponents.Num(),
-        FMath::Min(RuntimeAmbientNPCPathOffsets.Num(), RuntimeAmbientNPCWalkSpeeds.Num()));
+    const int32 WalkerCount = RuntimeAmbientNPCComponents.Num();
     for (int32 WalkerIndex = 0; WalkerIndex < WalkerCount; ++WalkerIndex)
     {
         USkeletalMeshComponent* Walker = RuntimeAmbientNPCComponents[WalkerIndex].Get();
-        if (!Walker)
+        if (!Walker || !RuntimeAmbientNPCTargets.IsValidIndex(WalkerIndex)
+            || !RuntimeAmbientNPCWalkSpeeds.IsValidIndex(WalkerIndex)
+            || !RuntimeAmbientNPCPauseTimers.IsValidIndex(WalkerIndex))
         {
             continue;
         }
 
-        float LoopDistance = FMath::Fmod(
-            RuntimeAmbientNPCPathOffsets[WalkerIndex] + RuntimeAmbientNPCWalkSpeeds[WalkerIndex] * DeltaSeconds,
-            PingPongLength);
-        if (LoopDistance < 0.0f)
+        float& PauseTimer = RuntimeAmbientNPCPauseTimers[WalkerIndex];
+        if (PauseTimer > 0.0f)
         {
-            LoopDistance += PingPongLength;
-        }
-        RuntimeAmbientNPCPathOffsets[WalkerIndex] = LoopDistance;
-
-        const bool bWalkingBackwards = LoopDistance > RuntimeAmbientRouteLength;
-        const float PathDistance = bWalkingBackwards
-            ? PingPongLength - LoopDistance
-            : LoopDistance;
-        int32 SegmentIndex = 0;
-        while (SegmentIndex < RuntimeAmbientRoutePoints.Num() - 2
-            && RuntimeAmbientRouteCumulativeDistances[SegmentIndex + 1] < PathDistance)
-        {
-            ++SegmentIndex;
+            PauseTimer = FMath::Max(0.0f, PauseTimer - DeltaSeconds);
+            if (PauseTimer <= 0.0f)
+            {
+                RuntimeAmbientNPCTargets[WalkerIndex] = ChooseAmbientNPCDestination(Walker->GetRelativeLocation());
+                if (RuntimeAmbientNPCWalkAnimation)
+                {
+                    Walker->PlayAnimation(RuntimeAmbientNPCWalkAnimation, true);
+                }
+            }
+            continue;
         }
 
-        const FVector& SegmentStart = RuntimeAmbientRoutePoints[SegmentIndex];
-        const FVector& SegmentEnd = RuntimeAmbientRoutePoints[SegmentIndex + 1];
-        const float SegmentStartDistance = RuntimeAmbientRouteCumulativeDistances[SegmentIndex];
-        const float SegmentLength = FMath::Max(
-            RuntimeAmbientRouteCumulativeDistances[SegmentIndex + 1] - SegmentStartDistance,
-            KINDA_SMALL_NUMBER);
-        const float Alpha = FMath::Clamp((PathDistance - SegmentStartDistance) / SegmentLength, 0.0f, 1.0f);
-        const FVector Position = FMath::Lerp(SegmentStart, SegmentEnd, Alpha);
-        FVector Direction = (SegmentEnd - SegmentStart).GetSafeNormal2D();
-        if (bWalkingBackwards)
+        const FVector CurrentLocation = Walker->GetRelativeLocation();
+        FVector ToTarget = RuntimeAmbientNPCTargets[WalkerIndex] - CurrentLocation;
+        ToTarget.Z = 0.0f;
+        if (ToTarget.SizeSquared2D() <= FMath::Square(58.0f))
         {
-            Direction *= -1.0f;
+            PauseTimer = RuntimeAmbientRandomStream.FRandRange(0.8f, 3.6f);
+            if (RuntimeAmbientNPCIdleAnimation)
+            {
+                Walker->PlayAnimation(RuntimeAmbientNPCIdleAnimation, true);
+            }
+            continue;
         }
 
-        const float GroundOffset = RuntimeAmbientNPCGroundOffsets.IsValidIndex(WalkerIndex)
+        const FVector Direction = ToTarget.GetSafeNormal2D();
+        const float StepDistance = FMath::Min(
+            RuntimeAmbientNPCWalkSpeeds[WalkerIndex] * DeltaSeconds,
+            ToTarget.Size2D());
+        FVector NewLocation = CurrentLocation + Direction * StepDistance;
+        NewLocation.Z = RuntimeAmbientNPCGroundOffsets.IsValidIndex(WalkerIndex)
             ? RuntimeAmbientNPCGroundOffsets[WalkerIndex]
             : 4.0f;
-        Walker->SetRelativeLocation(FVector(Position.X, Position.Y, GroundOffset));
+        Walker->SetRelativeLocation(NewLocation);
         Walker->SetRelativeRotation(FRotator(0.0f, Direction.Rotation().Yaw, 0.0f));
     }
 }

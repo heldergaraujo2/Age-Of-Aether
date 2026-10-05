@@ -15,7 +15,7 @@ It reuses the existing Phase 40 movement/camera source foundation rather than cr
 
 Provide a comfortable, readable and multiplayer-consistent exploration model:
 
-**Camera → input → movement relative to camera → character orientation → selection/targeting → interaction → authoritative gameplay → presentation**
+**Camera → cursor-to-world destination → click-to-move → character orientation → selection/targeting → interaction → authoritative gameplay → presentation**
 
 The camera must make the world readable while preserving real 3D traversal and the scale of the continuous world.
 
@@ -29,8 +29,9 @@ The repository already contains the Phase 40 source-level movement/camera founda
 - walk/sprint/jump/rotation values;
 - camera zoom range/step;
 - pitch limits;
-- W/A/S/D movement;
-- mouse look;
+- left-click-to-move;
+- right-click basic attack;
+- mouse look only when the selected camera profile permits orbit/free-look;
 - jump;
 - sprint;
 - mouse-wheel zoom;

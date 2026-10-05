@@ -23,7 +23,7 @@ void AAetherFoundationHUD::DrawHUD()
         : TEXT("AGE OF AETHER | Visual Foundation | Waiting for character");
 
     DrawText(Status, FLinearColor::White, 24.0f, 24.0f, GEngine ? GEngine->GetMediumFont() : nullptr, 1.0f, false);
-    DrawText(TEXT("WASD Move  |  Mouse Look  |  Space Jump"),
+    DrawText(TEXT("Left Click Move  |  Right Click Attack  |  Wheel Zoom  |  Space Jump"),
         FLinearColor::White, 24.0f, 48.0f, GEngine ? GEngine->GetSmallFont() : nullptr, 1.0f, false);
     DrawText(PlayerOwner->HasAuthority()
         ? TEXT("Authority: SERVER")

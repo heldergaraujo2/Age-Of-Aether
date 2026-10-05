@@ -70,6 +70,8 @@ private:
     void BuildFabHorseAtStable();
     void BuildAmbientVillageNPCs();
     void UpdateAmbientVillageNPCs(float DeltaSeconds);
+    FVector ChooseAmbientNPCDestination(const FVector& FromLocal);
+    bool IsAmbientNPCPathClear(const FVector& StartLocal, const FVector& EndLocal) const;
     void AddFabFoliageInstance(
         UStaticMesh* Mesh,
         const FName& BatchName,
@@ -203,12 +205,18 @@ private:
     UPROPERTY(Transient)
     TArray<TObjectPtr<USkeletalMeshComponent>> RuntimeAmbientNPCComponents;
 
-    TArray<float> RuntimeAmbientNPCPathOffsets;
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeAmbientNPCIdleAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeAmbientNPCWalkAnimation;
+
     TArray<float> RuntimeAmbientNPCWalkSpeeds;
     TArray<float> RuntimeAmbientNPCGroundOffsets;
-    TArray<FVector> RuntimeAmbientRoutePoints;
-    TArray<float> RuntimeAmbientRouteCumulativeDistances;
-    float RuntimeAmbientRouteLength = 0.0f;
+    TArray<float> RuntimeAmbientNPCPauseTimers;
+    TArray<FVector> RuntimeAmbientNPCTargets;
+    TArray<FVector> RuntimeAmbientWalkWaypoints;
+    FRandomStream RuntimeAmbientRandomStream;
 
     bool bDioramaBuilt = false;
 };

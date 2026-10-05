@@ -75,6 +75,21 @@ TREE_MESHES = (
     ("treesmall", "SM_Fab_TreeSmall"),
 )
 
+# The FBX pack's cards need the alpha from these atlas textures wired to a
+# masked opacity input. Keep the mushroom cluster on its original material.
+FOLIAGE_TEXTURE_BY_MESH = {
+    "bushbig2": "bushbig",
+    "bushflowersmall": "bushflowers",
+    "bushmed": "bushbig",
+    "bushmed2": "bushbig",
+    "bushsmall": "bushbig",
+    "bushsmall2": "bushbig",
+    "pine1": "pine1",
+    "pine2": "pine2",
+    "tree2": "tree2",
+    "treesmall": "tree1",
+}
+
 
 def _set(obj, property_name, value, required=True):
     try:
@@ -168,6 +183,67 @@ def _stage_tree_source():
     return staged_fbx
 
 
+def _create_masked_foliage_material(asset_name, texture):
+    material_name = "M_Fab_{}_Masked".format(asset_name.replace("SM_Fab_", ""))
+    material_path = TREE_DEST + "/Materials/" + material_name
+    material = unreal.EditorAssetLibrary.load_asset(material_path)
+    if material:
+        try:
+            for expression in list(material.get_editor_property("expressions")):
+                unreal.MaterialEditingLibrary.delete_material_expression(material, expression)
+        except Exception:
+            unreal.EditorAssetLibrary.delete_asset(material_path)
+            material = None
+
+    if not material:
+        unreal.EditorAssetLibrary.make_directory(TREE_DEST + "/Materials")
+        material = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+            material_name,
+            TREE_DEST + "/Materials",
+            unreal.Material,
+            unreal.MaterialFactoryNew(),
+        )
+    if not material:
+        raise RuntimeError("Could not create masked foliage material {}.".format(material_path))
+
+    _set(material, "blend_mode", unreal.BlendMode.BLEND_MASKED)
+    _set(material, "two_sided", True)
+    _set(material, "opacity_mask_clip_value", 0.35, required=False)
+
+    foliage_sample = unreal.MaterialEditingLibrary.create_material_expression(
+        material, unreal.MaterialExpressionTextureSample, -460, 0
+    )
+    _set(foliage_sample, "texture", texture)
+    unreal.MaterialEditingLibrary.connect_material_property(
+        foliage_sample, "RGB", unreal.MaterialProperty.MP_BASE_COLOR
+    )
+    unreal.MaterialEditingLibrary.connect_material_property(
+        foliage_sample, "A", unreal.MaterialProperty.MP_OPACITY_MASK
+    )
+
+    roughness = unreal.MaterialEditingLibrary.create_material_expression(
+        material, unreal.MaterialExpressionConstant, -170, 220
+    )
+    _set(roughness, "r", 0.82)
+    unreal.MaterialEditingLibrary.connect_material_property(
+        roughness, "", unreal.MaterialProperty.MP_ROUGHNESS
+    )
+
+    unreal.MaterialEditingLibrary.recompile_material(material)
+    unreal.EditorAssetLibrary.save_loaded_asset(material)
+    return material
+
+
+def _assign_static_material(mesh, material):
+    slots = list(mesh.get_editor_property("static_materials") or [])
+    if not slots:
+        mesh.add_material(material)
+    else:
+        for material_index in range(len(slots)):
+            mesh.set_material(material_index, material)
+    unreal.EditorAssetLibrary.save_loaded_asset(mesh)
+
+
 def _import_tree_bush_pack():
     staged_fbx = _stage_tree_source()
     options = unreal.FbxImportUI()
@@ -217,6 +293,7 @@ def _import_tree_bush_pack():
     # that still contain the pack author's original absolute Windows paths.
     texture_dest = TREE_DEST + "/Textures"
     unreal.EditorAssetLibrary.make_directory(texture_dest)
+    diffuse_textures = {}
     for filename in os.listdir(TREE_TEXTURE_DIR):
         if not filename.lower().endswith((".png", ".jpg", ".jpeg")):
             continue
@@ -224,17 +301,45 @@ def _import_tree_bush_pack():
         texture_paths = _run_import(
             _make_task(os.path.join(TREE_TEXTURE_DIR, filename), texture_dest, "T_Fab_" + name)
         )
-        if name.lower().endswith("normal"):
-            for texture in _load_assets(texture_paths, unreal.Texture2D):
+        textures = _load_assets(texture_paths, unreal.Texture2D)
+        if not textures:
+            texture = _load_asset(texture_dest + "/T_Fab_" + name, unreal.Texture2D)
+            textures = [texture] if texture else []
+
+        for texture in textures:
+            if name.lower().endswith("normal"):
                 _set(texture, "compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
                 _set(texture, "srgb", False)
-                unreal.EditorAssetLibrary.save_loaded_asset(texture)
+            elif name.lower() not in ("internal_ground_ao_texture",):
+                # Keep the imported RGBA alpha channel available to masked cards.
+                _set(texture, "compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT)
+                _set(texture, "srgb", True)
+                diffuse_textures[name.lower()] = texture
+            unreal.EditorAssetLibrary.save_loaded_asset(texture)
 
     for source_alias, asset_name in TREE_MESHES:
         asset = _load_asset(TREE_DEST + "/" + asset_name, unreal.StaticMesh)
-        if asset:
+        if not asset:
+            continue
+        texture_name = FOLIAGE_TEXTURE_BY_MESH.get(source_alias)
+        texture = diffuse_textures.get(texture_name)
+        if texture_name and texture:
+            material = _create_masked_foliage_material(asset_name, texture)
+            _assign_static_material(asset, material)
+            unreal.log(
+                "Assigned two-sided masked material {} to {} using alpha from {}".format(
+                    material.get_path_name(), asset.get_path_name(), texture.get_path_name()
+                )
+            )
+        else:
             unreal.EditorAssetLibrary.save_loaded_asset(asset)
-            unreal.log("Fab vegetation ready: {}".format(asset.get_path_name()))
+            if texture_name:
+                unreal.log_warning(
+                    "Could not assign masked foliage material to {}: texture '{}' was not imported.".format(
+                        asset.get_path_name(), texture_name
+                    )
+                )
+        unreal.log("Fab vegetation ready: {}".format(asset.get_path_name()))
 
 
 def _make_horse_fbx_options():

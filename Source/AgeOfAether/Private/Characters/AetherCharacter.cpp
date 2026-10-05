@@ -26,7 +26,6 @@
 #include "InputAction.h"
 #include "InputCoreTypes.h"
 #include "InputActionValue.h"
-#include "InputModifiers.h"
 #include "InputMappingContext.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Net/UnrealNetwork.h"
@@ -353,6 +352,7 @@ void AAetherCharacter::BeginPlay()
 void AAetherCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    UpdateClickToMove(DeltaSeconds);
     UpdateSkeletalVisualAnimation();
 }
 
@@ -543,8 +543,7 @@ void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
     if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent))
     {
-        EnhancedInput->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &AAetherCharacter::MoveForward);
-        EnhancedInput->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &AAetherCharacter::MoveRight);
+        EnhancedInput->BindAction(ClickMoveAction, ETriggerEvent::Started, this, &AAetherCharacter::ClickMovePressed);
         EnhancedInput->BindAction(LookYawAction, ETriggerEvent::Triggered, this, &AAetherCharacter::LookYaw);
         EnhancedInput->BindAction(LookPitchAction, ETriggerEvent::Triggered, this, &AAetherCharacter::LookPitch);
         EnhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &AAetherCharacter::JumpPressed);
@@ -570,8 +569,7 @@ void AAetherCharacter::InitializeFoundationInput()
     }
 
     RuntimeInputContext = NewObject<UInputMappingContext>(this, TEXT("AetherFoundationInput"));
-    MoveForwardAction = NewObject<UInputAction>(this, TEXT("MoveForward"));
-    MoveRightAction = NewObject<UInputAction>(this, TEXT("MoveRight"));
+    ClickMoveAction = NewObject<UInputAction>(this, TEXT("ClickMove"));
     LookYawAction = NewObject<UInputAction>(this, TEXT("LookYaw"));
     LookPitchAction = NewObject<UInputAction>(this, TEXT("LookPitch"));
     JumpAction = NewObject<UInputAction>(this, TEXT("Jump"));
@@ -579,8 +577,7 @@ void AAetherCharacter::InitializeFoundationInput()
     CameraZoomAction = NewObject<UInputAction>(this, TEXT("CameraZoom"));
     BasicAttackAction = NewObject<UInputAction>(this, TEXT("BasicAttack"));
 
-    MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
-    MoveRightAction->ValueType = EInputActionValueType::Axis1D;
+    ClickMoveAction->ValueType = EInputActionValueType::Boolean;
     LookYawAction->ValueType = EInputActionValueType::Axis1D;
     LookPitchAction->ValueType = EInputActionValueType::Axis1D;
     JumpAction->ValueType = EInputActionValueType::Boolean;
@@ -588,22 +585,21 @@ void AAetherCharacter::InitializeFoundationInput()
     CameraZoomAction->ValueType = EInputActionValueType::Axis1D;
     BasicAttackAction->ValueType = EInputActionValueType::Boolean;
 
-    RuntimeInputContext->MapKey(MoveForwardAction, EKeys::W);
-    {
-        FEnhancedActionKeyMapping& Mapping = RuntimeInputContext->MapKey(MoveForwardAction, EKeys::S);
-        Mapping.Modifiers.Add(NewObject<UInputModifierNegate>(RuntimeInputContext));
-    }
-    RuntimeInputContext->MapKey(MoveRightAction, EKeys::D);
-    {
-        FEnhancedActionKeyMapping& Mapping = RuntimeInputContext->MapKey(MoveRightAction, EKeys::A);
-        Mapping.Modifiers.Add(NewObject<UInputModifierNegate>(RuntimeInputContext));
-    }
+    RuntimeInputContext->MapKey(ClickMoveAction, EKeys::LeftMouseButton);
     RuntimeInputContext->MapKey(LookYawAction, EKeys::MouseX);
     RuntimeInputContext->MapKey(LookPitchAction, EKeys::MouseY);
     RuntimeInputContext->MapKey(JumpAction, EKeys::SpaceBar);
     RuntimeInputContext->MapKey(SprintAction, EKeys::LeftShift);
     RuntimeInputContext->MapKey(CameraZoomAction, EKeys::MouseWheelAxis);
-    RuntimeInputContext->MapKey(BasicAttackAction, EKeys::LeftMouseButton);
+    RuntimeInputContext->MapKey(BasicAttackAction, EKeys::RightMouseButton);
+
+    PC->bShowMouseCursor = true;
+    PC->bEnableClickEvents = true;
+    PC->bEnableMouseOverEvents = false;
+    FInputModeGameAndUI InputMode;
+    InputMode.SetHideCursorDuringCapture(false);
+    InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+    PC->SetInputMode(InputMode);
 
     if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem =
         PC->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -612,28 +608,72 @@ void AAetherCharacter::InitializeFoundationInput()
     }
 }
 
-void AAetherCharacter::MoveForward(const FInputActionValue& Value)
+void AAetherCharacter::ClickMovePressed(const FInputActionValue& Value)
 {
-    if (!Controller)
+    if (!Value.Get<bool>() || !IsLocallyControlled())
     {
         return;
     }
 
-    const float Axis = Value.Get<float>();
-    const FRotator ControlRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
-    AddMovementInput(FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X), Axis);
+    APlayerController* PC = Cast<APlayerController>(GetController());
+    if (!PC)
+    {
+        return;
+    }
+
+    FHitResult CursorHit;
+    FVector Destination;
+    if (PC->GetHitResultUnderCursorByChannel(ECC_Visibility, true, CursorHit))
+    {
+        Destination = CursorHit.ImpactPoint;
+    }
+    else
+    {
+        FVector RayOrigin;
+        FVector RayDirection;
+        if (!PC->DeprojectMousePositionToWorld(RayOrigin, RayDirection) || FMath::IsNearlyZero(RayDirection.Z))
+        {
+            return;
+        }
+
+        const float DistanceToGround = -RayOrigin.Z / RayDirection.Z;
+        if (DistanceToGround < 0.0f)
+        {
+            return;
+        }
+        Destination = RayOrigin + RayDirection * DistanceToGround;
+    }
+
+    // The cursor can hit a house, tree, or the ground. Only the XY destination
+    // matters; keep the character on its current floor and inside the arena.
+    Destination.X = FMath::Clamp(Destination.X, -4050.0f, 4050.0f);
+    Destination.Y = FMath::Clamp(Destination.Y, -3050.0f, 3050.0f);
+    Destination.Z = GetActorLocation().Z;
+    ClickMoveTarget = Destination;
+    bHasClickMoveTarget = true;
 }
 
-void AAetherCharacter::MoveRight(const FInputActionValue& Value)
+void AAetherCharacter::UpdateClickToMove(float /*DeltaSeconds*/)
 {
-    if (!Controller)
+    if (!bHasClickMoveTarget || !IsLocallyControlled())
     {
         return;
     }
 
-    const float Axis = Value.Get<float>();
-    const FRotator ControlRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
-    AddMovementInput(FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::Y), Axis);
+    FVector ToTarget = ClickMoveTarget - GetActorLocation();
+    ToTarget.Z = 0.0f;
+    if (ToTarget.SizeSquared2D() <= FMath::Square(55.0f))
+    {
+        bHasClickMoveTarget = false;
+        UCharacterMovementComponent* Movement = GetCharacterMovement();
+        if (Movement && !Movement->IsFalling())
+        {
+            Movement->StopMovementImmediately();
+        }
+        return;
+    }
+
+    AddMovementInput(ToTarget.GetSafeNormal2D());
 }
 
 void AAetherCharacter::LookYaw(const FInputActionValue& Value)

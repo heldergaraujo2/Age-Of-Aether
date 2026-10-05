@@ -22,8 +22,9 @@ Runtime fallback remains available when no profile is assigned:
 
 ## Input
 The first playable slice creates Enhanced Input actions at runtime, avoiding unnecessary manual Input Action/Mapping Context assets. Current controls:
-- W/A/S/D: movement
-- Mouse: camera
+- Left mouse click: move to the clicked ground position
+- Right mouse click: basic attack
+- Mouse: camera look when free look is enabled by the camera profile
 - Space: jump
 - Left Shift: sprint
 - Mouse wheel: zoom

@@ -210,8 +210,8 @@ private:
     void InitializeRuntimeVisual();
     void InitializeSkeletalVisual();
     void UpdateSkeletalVisualAnimation();
-    void MoveForward(const struct FInputActionValue& Value);
-    void MoveRight(const struct FInputActionValue& Value);
+    void ClickMovePressed(const struct FInputActionValue& Value);
+    void UpdateClickToMove(float DeltaSeconds);
     void LookYaw(const struct FInputActionValue& Value);
     void LookPitch(const struct FInputActionValue& Value);
     void JumpPressed(const struct FInputActionValue& Value);
@@ -230,10 +230,7 @@ private:
     TObjectPtr<UInputMappingContext> RuntimeInputContext;
 
     UPROPERTY(Transient)
-    TObjectPtr<UInputAction> MoveForwardAction;
-
-    UPROPERTY(Transient)
-    TObjectPtr<UInputAction> MoveRightAction;
+    TObjectPtr<UInputAction> ClickMoveAction;
 
     UPROPERTY(Transient)
     TObjectPtr<UInputAction> LookYawAction;
@@ -246,6 +243,8 @@ private:
     UPROPERTY(Transient) TObjectPtr<UInputAction> SprintAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraZoomAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> BasicAttackAction;
+    FVector ClickMoveTarget = FVector::ZeroVector;
+    bool bHasClickMoveTarget = false;
     bool bSprinting = false;
     uint32 LocalAttackSequence = 0;
 };

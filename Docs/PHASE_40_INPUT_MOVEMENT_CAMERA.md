@@ -1,23 +1,26 @@
 # PHASE 40 — INPUT, MOVEMENT & CAMERA
 
 ## STATUS
-**COMPLETE at repository/source level.** Unreal 5.8.1 runtime acceptance remains a local gate.
+**Implemented at repository/source level.** Unreal 5.8.1 compile and PIE acceptance remain a local gate.
 
 ## IMPLEMENTED
 - Added optional `UAetherMovementCameraProfile` Data Asset for movement/camera tuning.
 - Added validation for finite, safe movement and camera ranges.
 - Added configurable walk/sprint speed, jump velocity, rotation rate, camera distance range, zoom step and pitch limits.
-- Extended the existing Enhanced Input foundation with:
-  - WASD movement;
-  - mouse camera;
+- Extended the runtime Enhanced Input fallback with:
+  - left-click-to-move using the cursor hit point (with a ground-plane fallback);
+  - right-click basic attack;
+  - mouse camera input when free look is enabled by the isometric-camera profile;
   - Space jump;
   - Left Shift sprint;
   - Mouse Wheel zoom.
+- Removed W/A/S/D movement bindings. CharacterMovement still performs and replicates movement; the client does not send a trusted speed or raw position.
+- Shows the mouse cursor and uses a Game-and-UI input mode so the player can select destinations during play.
 - Added server-authoritative sprint transition through a Server RPC. The server chooses the configured speed; the client never supplies a speed value.
 - Added camera pitch clamping.
 - Preserved Unreal CharacterMovement replication/authority.
 - Kept the first-playable workflow asset-light: no mandatory hand-authored Input Action or Mapping Context assets.
-- Updated the character README with the minimal visual/input workflow.
+- Updated the in-game debug HUD control hint.
 - Added Automation coverage for movement/camera profile validation.
 - Updated continuity and roadmap documentation.
 
@@ -32,8 +35,9 @@ For the first playable slice:
 No per-class or per-character input C++ is required.
 
 ## DEFAULT CONTROLS
-- W/A/S/D = move
-- Mouse = camera
+- Left mouse click = move to the clicked ground position
+- Right mouse click = basic attack
+- Mouse = camera look only when free look is enabled by the profile
 - Space = jump
 - Left Shift = sprint
 - Mouse wheel = zoom
@@ -52,8 +56,9 @@ Local Unreal verification must confirm:
 - project opens without critical errors;
 - profile Data Asset can be created;
 - character spawns;
-- W/A/S/D works;
-- mouse look works;
+- left click moves to a ground destination;
+- right click triggers the basic attack;
+- mouse look respects the isometric/free-look setting;
 - pitch clamp works;
 - Space jumps;
 - Shift sprint reaches configured server-authoritative speed;

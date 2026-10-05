@@ -24,8 +24,8 @@ AAetherCharacter now provides:
 - spring-arm third-person camera;
 - camera collision;
 - follow camera;
-- mouse look;
-- WASD movement;
+- mouse click-to-move;
+- right-click basic attack;
 - Space jump;
 - Enhanced Input bindings created automatically at runtime when no authored input assets exist.
 
@@ -44,7 +44,7 @@ The GameMode also creates a PlayerStart automatically when the test level has no
 AAetherFoundationHUD was added with a lightweight native HUD:
 - current foundation state;
 - character presence;
-- WASD/mouse/Space controls;
+- left-click movement/right-click attack/Space controls;
 - server/client authority indicator.
 
 It is intentionally a native debug HUD rather than a Widget Blueprint at this stage, so visual gameplay can start immediately and the full MMORPG UI can be assembled in Phase 51.
@@ -150,8 +150,8 @@ A real Unreal Editor machine must perform the final acceptance:
 4. Set that level as the Game Default Map.
 5. Press Play.
 6. Confirm the placeholder character appears.
-7. Confirm WASD movement.
-8. Confirm mouse camera.
+7. Confirm left-click movement.
+8. Confirm right-click attack.
 9. Confirm Space jump.
 10. Confirm the debug HUD.
 11. Run the Phase 37 Automation tests.
