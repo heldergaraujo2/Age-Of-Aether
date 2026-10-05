@@ -608,3 +608,12 @@ O proprietário anexou duas referências: o objetivo é uma composição 3D isom
 **Source/documentação:** implementados nesta sessão. **UHT/UBT, PIE, collision/navigation, composição/câmera e desempenho:** não executados aqui; runtime permanece pendente porque este sandbox não possui Unreal Engine.
 
 No PC UE 5.8: fechar o Editor, compilar `AgeOfAetherEditor Win64 Development`, abrir a primeira região, executar PIE, conferir a leitura da vila/castelo/ponte/campos, caminhar nas rotas, checar o spawn/colisões/zoom e revisar Output Log/frame time. Enviar screenshot de PIE para a próxima calibração visual. Não marcar o alvo premium como concluído só porque o protótipo source existe.
+
+### Tentativa de UBT pelo proprietário e correções (2026-10-04)
+
+O proprietário sincronizou o commit `621d3e1` e iniciou `AgeOfAetherEditor Win64 Development` em UE 5.8. O UBT iniciou corretamente, mas a compilação falhou antes do PIE com:
+
+- MSVC C3495 em `AetherCharacter.cpp`: captura por referência de `BaseMaterial`, que é um `static FObjectFinder`. Correção: remover a captura de variável estática do lambda; manter `this`.
+- Unity build C2084: `RequiredID` e `ValidFiniteNonNegative` anônimos conflitavam entre `AetherRecipeTypes.cpp` e `AetherQuestDialogueEventTypes.cpp`. Correção: renomear os helpers de recipe com prefixos próprios para permanecerem únicos quando o UBT agrupa translation units.
+
+As duas correções foram aplicadas no branch de trabalho. Ainda é obrigatório fazer novo pull e rodar o UBT; não afirmar build PASS nem iniciar aceitação PIE até compilar com sucesso. O mapa `.umap`, FBX, textura e configurações locais do proprietário permanecem fora do commit e não devem ser removidos/resetados.

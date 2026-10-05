@@ -168,7 +168,7 @@ AAetherCharacter::AAetherCharacter()
         RuntimeRightBootVisual->SetStaticMesh(CubeMesh.Object);
     }
 
-    const auto ApplyColor = [this, &BaseMaterial](UStaticMeshComponent* Component, const FLinearColor& Color)
+    const auto ApplyColor = [this](UStaticMeshComponent* Component, const FLinearColor& Color)
     {
         if (BaseMaterial.Succeeded() && Component)
         {
