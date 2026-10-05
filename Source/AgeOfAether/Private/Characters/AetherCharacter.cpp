@@ -437,16 +437,16 @@ void AAetherCharacter::InitializeSkeletalVisual()
     RuntimeSkeletalVisual->SetRelativeRotation(FRotator::ZeroRotator);
     RuntimeSkeletalVisual->SetRelativeScale3D(FVector::OneVector);
 
-    // Existing Editor imports may retain the FBX convention suffix (for example,
-    // A_Walk_Anim) while the canonical import script uses A_Walk. Try the
-    // configured canonical path first, then resolve the known suffix variant.
-    const auto LoadMageAnimation = [](const TSoftObjectPtr<UAnimSequence>& ConfiguredAsset, const TCHAR* SuffixFallbackPath)
+    // The owner's verified Editor assets retain the FBX suffix (for example,
+    // A_Walk_Anim), while the canonical import script uses A_Walk. Prefer the
+    // verified suffix variant, then fall back to the configured canonical path.
+    const auto LoadMageAnimation = [](const TSoftObjectPtr<UAnimSequence>& ConfiguredAsset, const TCHAR* SuffixAssetPath)
     {
-        if (UAnimSequence* Animation = ConfiguredAsset.LoadSynchronous())
+        if (UAnimSequence* Animation = LoadObject<UAnimSequence>(nullptr, SuffixAssetPath))
         {
             return Animation;
         }
-        return LoadObject<UAnimSequence>(nullptr, SuffixFallbackPath);
+        return ConfiguredAsset.LoadSynchronous();
     };
 
     RuntimeIdleAnimation = LoadMageAnimation(
