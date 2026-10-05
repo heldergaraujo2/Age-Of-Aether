@@ -561,3 +561,11 @@ Preserve all existing local modified and untracked files.
 - GitHub-first correction: added the concrete `PaperSprite.h` include to `AetherCharacter.cpp`.
 - Correction commit: `3caf882d479d325b349ef347c31dd1366fd062f3`.
 - Runtime validation remains blocked until this compile succeeds and the F44 PIE result is observed.
+
+
+## F45 — Explicit Paper2D runtime material correction
+- Real PC validation after F44: UBT passed, but the user reported that PIE still showed no visible change; procedural Paper2D sprites remained absent while prior geometry remained.
+- Repository audit found runtime sprite creation via FSpriteAssetInitParameters was not explicitly assigning a Paper2D sprite material.
+- F45 GitHub-first correction: AetherRuntime2DArt now explicitly loads /Paper2D/DefaultSpriteMaterial.DefaultSpriteMaterial and assigns it through Params.DefaultMaterialOverride before InitializeSprite().
+- This targets the confirmed Paper2D rendering pipeline: sprite assets require a sprite material for visible rendering; UE 5.8 documents DefaultSpriteMaterial as the unlit Paper2D sprite material.
+- Runtime remains unvalidated until the user pulls, recompiles, opens Unreal, enters PIE, and physically explores the first region.
