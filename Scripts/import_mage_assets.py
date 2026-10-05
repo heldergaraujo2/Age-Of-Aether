@@ -2,7 +2,8 @@
 
 Run from Unreal Editor's Python console after enabling the Python Editor Script
 Plugin and Editor Scripting Utilities. The script is safe to rerun: it reimports
-source assets into the same /Game paths and reapplies the generated material.
+source assets, enforces the exact /Game paths expected by AetherCharacter, checks
+that every sequence uses the mage skeleton, and reapplies the generated material.
 """
 
 import os
@@ -106,6 +107,33 @@ def _load_imported_asset(imported_paths, asset_class, expected_path):
     )
 
 
+def _ensure_asset_path(asset, destination, asset_name, asset_class):
+    expected_package_path = destination + "/" + asset_name
+    current_package_path = asset.get_path_name().rsplit(".", 1)[0]
+    if current_package_path != expected_package_path:
+        if unreal.EditorAssetLibrary.does_asset_exist(expected_package_path):
+            existing_asset = unreal.EditorAssetLibrary.load_asset(expected_package_path)
+            if existing_asset and existing_asset != asset:
+                if not unreal.EditorAssetLibrary.delete_asset(expected_package_path):
+                    raise RuntimeError(
+                        "Could not replace the existing asset at {}. Close any asset editor using it and rerun the import.".format(
+                            expected_package_path
+                        )
+                    )
+        if not unreal.EditorAssetLibrary.rename_asset(current_package_path, expected_package_path):
+            raise RuntimeError(
+                "Could not rename imported asset {} to {}.".format(
+                    current_package_path, expected_package_path
+                )
+            )
+
+    return _load_imported_asset(
+        [],
+        asset_class,
+        expected_package_path,
+    )
+
+
 def _import_mage_mesh():
     source = os.path.join(SOURCE_DIR, "Parado.fbx")
     task = _make_import_task(
@@ -120,9 +148,11 @@ def _import_mage_mesh():
         unreal.SkeletalMesh,
         SKELETAL_MESH_PATH,
     )
+    mesh = _ensure_asset_path(mesh, MAGE_DIR, "SK_Mago_AgeOfAether", unreal.SkeletalMesh)
     skeleton = mesh.get_editor_property("skeleton")
     if not skeleton:
         raise RuntimeError("The imported mage Skeletal Mesh has no Skeleton asset.")
+    unreal.log("Mage mesh ready: {} using skeleton {}".format(mesh.get_path_name(), skeleton.get_path_name()))
     return mesh, skeleton
 
 
@@ -140,11 +170,22 @@ def _import_animations(skeleton):
             ),
         )
         imported_paths = _import_task(task)
-        _load_imported_asset(
+        animation = _load_imported_asset(
             imported_paths,
             unreal.AnimSequence,
             ANIMATION_DIR + "/" + asset_name,
         )
+        animation = _ensure_asset_path(animation, ANIMATION_DIR, asset_name, unreal.AnimSequence)
+        animation_skeleton = animation.get_editor_property("skeleton")
+        if not animation_skeleton or animation_skeleton.get_path_name() != skeleton.get_path_name():
+            raise RuntimeError(
+                "Animation {} imported against the wrong Skeleton: {} (expected {}).".format(
+                    asset_name,
+                    animation_skeleton.get_path_name() if animation_skeleton else "None",
+                    skeleton.get_path_name(),
+                )
+            )
+        unreal.log("Mage animation ready: {}".format(animation.get_path_name()))
 
 
 def _import_base_color_texture():
@@ -154,7 +195,8 @@ def _import_base_color_texture():
         "T_Mago_BaseColor",
     )
     imported_paths = _import_task(task)
-    return _load_imported_asset(imported_paths, unreal.Texture2D, TEXTURE_PATH)
+    texture = _load_imported_asset(imported_paths, unreal.Texture2D, TEXTURE_PATH)
+    return _ensure_asset_path(texture, TEXTURE_DIR, "T_Mago_BaseColor", unreal.Texture2D)
 
 
 def _create_base_color_material(texture):

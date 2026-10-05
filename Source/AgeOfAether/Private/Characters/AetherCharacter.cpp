@@ -418,6 +418,11 @@ void AAetherCharacter::InitializeSkeletalVisual()
     USkeletalMesh* LoadedSkeletalMesh = MageSkeletalMeshAsset.LoadSynchronous();
     if (!LoadedSkeletalMesh)
     {
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("AetherCharacter could not load skeletal mesh '%s'; keep the primitive fallback visible."),
+            *MageSkeletalMeshAsset.ToSoftObjectPath().ToString());
         return;
     }
 
@@ -437,6 +442,32 @@ void AAetherCharacter::InitializeSkeletalVisual()
     RuntimeRunAnimation = MageRunAnimationAsset.LoadSynchronous();
     RuntimeJumpAnimation = MageJumpAnimationAsset.LoadSynchronous();
     ActiveSkeletalAnimation = nullptr;
+
+    if (!RuntimeIdleAnimation || !RuntimeWalkAnimation || !RuntimeRunAnimation || !RuntimeJumpAnimation)
+    {
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("AetherCharacter loaded mage mesh '%s' with incomplete animation assets (idle=%s walk=%s run=%s jump=%s). Rerun Scripts/import_mage_assets.py in Unreal Editor."),
+            *GetNameSafe(LoadedSkeletalMesh),
+            *GetNameSafe(RuntimeIdleAnimation),
+            *GetNameSafe(RuntimeWalkAnimation),
+            *GetNameSafe(RuntimeRunAnimation),
+            *GetNameSafe(RuntimeJumpAnimation));
+    }
+    else
+    {
+        UE_LOG(
+            LogTemp,
+            Log,
+            TEXT("AetherCharacter loaded mage presentation: mesh=%s idle=%s walk=%s run=%s jump=%s"),
+            *GetNameSafe(LoadedSkeletalMesh),
+            *GetNameSafe(RuntimeIdleAnimation),
+            *GetNameSafe(RuntimeWalkAnimation),
+            *GetNameSafe(RuntimeRunAnimation),
+            *GetNameSafe(RuntimeJumpAnimation));
+    }
+
     UpdateSkeletalVisualAnimation();
 }
 
@@ -481,6 +512,7 @@ void AAetherCharacter::UpdateSkeletalVisualAnimation()
 
     RuntimeSkeletalVisual->PlayAnimation(DesiredAnimation, true);
     ActiveSkeletalAnimation = DesiredAnimation;
+    UE_LOG(LogTemp, Log, TEXT("AetherCharacter %s playing animation %s"), *GetName(), *DesiredAnimation->GetName());
 }
 
 void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
