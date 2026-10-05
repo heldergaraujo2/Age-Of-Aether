@@ -61,5 +61,8 @@ private:
     UPROPERTY(Transient)
     TArray<TObjectPtr<UStaticMeshComponent>> RuntimeVisualComponents;
 
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UPaperSpriteComponent>> RuntimeSpriteComponents;
+
     bool bDioramaBuilt = false;
 };
