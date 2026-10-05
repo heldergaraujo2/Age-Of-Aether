@@ -2,7 +2,6 @@
 #include "Characters/AetherPlayableCharacterVisualComponent.h"
 #include "Characters/Aether2DCharacterVisualComponent.h"
 #include "World/Aether2DIsometricCameraComponent.h"
-#include "World/AetherRuntime2DArt.h"
 #include "Characters/AetherEquipmentVisualComponent.h"
 #include "Characters/AetherClassEvolutionPresentationComponent.h"
 #include "Characters/AetherSkillVisualComponent.h"
@@ -17,7 +16,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "PaperSpriteComponent.h"
-#include "PaperSprite.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -78,11 +76,64 @@ AAetherCharacter::AAetherCharacter()
     RuntimeMantleVisual->SetupAttachment(GetCapsuleComponent());
     RuntimeMantleVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+    RuntimeLeftArmVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeLeftArmVisual"));
+    RuntimeLeftArmVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeLeftArmVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeRightArmVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeRightArmVisual"));
+    RuntimeRightArmVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeRightArmVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeLeftHandVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeLeftHandVisual"));
+    RuntimeLeftHandVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeLeftHandVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeRightHandVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeRightHandVisual"));
+    RuntimeRightHandVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeRightHandVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeLeftLegVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeLeftLegVisual"));
+    RuntimeLeftLegVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeLeftLegVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeRightLegVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeRightLegVisual"));
+    RuntimeRightLegVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeRightLegVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeLeftBootVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeLeftBootVisual"));
+    RuntimeLeftBootVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeLeftBootVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeRightBootVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeRightBootVisual"));
+    RuntimeRightBootVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeRightBootVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeHairVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeHairVisual"));
+    RuntimeHairVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeHairVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeHatVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeHatVisual"));
+    RuntimeHatVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeHatVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeBeltVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeBeltVisual"));
+    RuntimeBeltVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeBeltVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeStaffVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeStaffVisual"));
+    RuntimeStaffVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeStaffVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeOrbVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeOrbVisual"));
+    RuntimeOrbVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeOrbVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
     Runtime2DArtVisual = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Runtime2DArtVisual"));
     Runtime2DArtVisual->SetupAttachment(GetCapsuleComponent());
     Runtime2DArtVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     Runtime2DArtVisual->SetCastShadow(false);
 
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeMesh(TEXT("/Engine/BasicShapes/Cone.Cone"));
@@ -91,43 +142,113 @@ AAetherCharacter::AAetherCharacter()
     if (CylinderMesh.Succeeded())
     {
         RuntimeBodyVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeMantleVisual->SetStaticMesh(ConeMesh.Succeeded() ? ConeMesh.Object : CylinderMesh.Object);
+        RuntimeLeftArmVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeRightArmVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeLeftLegVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeRightLegVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeBeltVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeStaffVisual->SetStaticMesh(CylinderMesh.Object);
     }
     if (SphereMesh.Succeeded())
     {
         RuntimeHeadVisual->SetStaticMesh(SphereMesh.Object);
+        RuntimeLeftHandVisual->SetStaticMesh(SphereMesh.Object);
+        RuntimeRightHandVisual->SetStaticMesh(SphereMesh.Object);
+        RuntimeHairVisual->SetStaticMesh(SphereMesh.Object);
+        RuntimeOrbVisual->SetStaticMesh(SphereMesh.Object);
     }
     if (ConeMesh.Succeeded())
     {
-        RuntimeMantleVisual->SetStaticMesh(ConeMesh.Object);
+        RuntimeHatVisual->SetStaticMesh(ConeMesh.Object);
     }
-
-    if (BaseMaterial.Succeeded())
+    if (CubeMesh.Succeeded())
     {
-        if (UMaterialInstanceDynamic* BodyMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
-        {
-            BodyMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.08f, 0.16f, 0.28f, 1.0f));
-            RuntimeBodyVisual->SetMaterial(0, BodyMaterial);
-        }
-        if (UMaterialInstanceDynamic* HeadMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
-        {
-            HeadMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.72f, 0.45f, 0.28f, 1.0f));
-            RuntimeHeadVisual->SetMaterial(0, HeadMaterial);
-        }
-        if (UMaterialInstanceDynamic* MantleMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
-        {
-            MantleMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.42f, 0.08f, 0.07f, 1.0f));
-            RuntimeMantleVisual->SetMaterial(0, MantleMaterial);
-        }
+        RuntimeLeftBootVisual->SetStaticMesh(CubeMesh.Object);
+        RuntimeRightBootVisual->SetStaticMesh(CubeMesh.Object);
     }
 
-    RuntimeBodyVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 20.0f));
-    RuntimeBodyVisual->SetRelativeScale3D(FVector(0.48f, 0.48f, 1.35f));
+    const auto ApplyColor = [this, &BaseMaterial](UStaticMeshComponent* Component, const FLinearColor& Color)
+    {
+        if (BaseMaterial.Succeeded() && Component)
+        {
+            if (UMaterialInstanceDynamic* Material = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
+            {
+                Material->SetVectorParameterValue(TEXT("Color"), Color);
+                Component->SetMaterial(0, Material);
+            }
+        }
+    };
 
-    RuntimeHeadVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 155.0f));
-    RuntimeHeadVisual->SetRelativeScale3D(FVector(0.62f, 0.62f, 0.62f));
+    ApplyColor(RuntimeBodyVisual, FLinearColor(0.19f, 0.27f, 0.54f, 1.0f));
+    ApplyColor(RuntimeHeadVisual, FLinearColor(0.82f, 0.58f, 0.42f, 1.0f));
+    ApplyColor(RuntimeMantleVisual, FLinearColor(0.31f, 0.18f, 0.46f, 1.0f));
+    ApplyColor(RuntimeLeftArmVisual, FLinearColor(0.31f, 0.18f, 0.46f, 1.0f));
+    ApplyColor(RuntimeRightArmVisual, FLinearColor(0.31f, 0.18f, 0.46f, 1.0f));
+    ApplyColor(RuntimeLeftHandVisual, FLinearColor(0.82f, 0.58f, 0.42f, 1.0f));
+    ApplyColor(RuntimeRightHandVisual, FLinearColor(0.82f, 0.58f, 0.42f, 1.0f));
+    ApplyColor(RuntimeLeftLegVisual, FLinearColor(0.16f, 0.22f, 0.38f, 1.0f));
+    ApplyColor(RuntimeRightLegVisual, FLinearColor(0.16f, 0.22f, 0.38f, 1.0f));
+    ApplyColor(RuntimeLeftBootVisual, FLinearColor(0.20f, 0.12f, 0.07f, 1.0f));
+    ApplyColor(RuntimeRightBootVisual, FLinearColor(0.20f, 0.12f, 0.07f, 1.0f));
+    ApplyColor(RuntimeHairVisual, FLinearColor(0.18f, 0.12f, 0.20f, 1.0f));
+    ApplyColor(RuntimeHatVisual, FLinearColor(0.14f, 0.22f, 0.53f, 1.0f));
+    ApplyColor(RuntimeBeltVisual, FLinearColor(0.80f, 0.56f, 0.15f, 1.0f));
+    ApplyColor(RuntimeStaffVisual, FLinearColor(0.40f, 0.24f, 0.12f, 1.0f));
+    ApplyColor(RuntimeOrbVisual, FLinearColor(0.32f, 0.82f, 0.98f, 1.0f));
 
-    RuntimeMantleVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 75.0f));
-    RuntimeMantleVisual->SetRelativeScale3D(FVector(0.85f, 0.85f, 0.70f));
+    RuntimeBodyVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 12.0f));
+    RuntimeBodyVisual->SetRelativeScale3D(FVector(0.42f, 0.39f, 0.82f));
+    RuntimeHeadVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 66.0f));
+    RuntimeHeadVisual->SetRelativeScale3D(FVector(0.34f, 0.32f, 0.37f));
+    RuntimeMantleVisual->SetRelativeLocation(FVector(0.0f, 9.0f, -23.0f));
+    RuntimeMantleVisual->SetRelativeScale3D(FVector(0.62f, 0.59f, 0.73f));
+
+    RuntimeLeftArmVisual->SetRelativeLocation(FVector(-31.0f, 0.0f, 13.0f));
+    RuntimeLeftArmVisual->SetRelativeRotation(FRotator(-23.0f, 0.0f, 0.0f));
+    RuntimeLeftArmVisual->SetRelativeScale3D(FVector(0.16f, 0.16f, 0.55f));
+    RuntimeRightArmVisual->SetRelativeLocation(FVector(31.0f, 0.0f, 13.0f));
+    RuntimeRightArmVisual->SetRelativeRotation(FRotator(23.0f, 0.0f, 0.0f));
+    RuntimeRightArmVisual->SetRelativeScale3D(FVector(0.16f, 0.16f, 0.55f));
+
+    RuntimeLeftHandVisual->SetRelativeLocation(FVector(-49.0f, -3.0f, -12.0f));
+    RuntimeLeftHandVisual->SetRelativeScale3D(FVector(0.15f, 0.15f, 0.15f));
+    RuntimeRightHandVisual->SetRelativeLocation(FVector(49.0f, -3.0f, -12.0f));
+    RuntimeRightHandVisual->SetRelativeScale3D(FVector(0.15f, 0.15f, 0.15f));
+
+    RuntimeLeftLegVisual->SetRelativeLocation(FVector(-15.0f, 0.0f, -61.0f));
+    RuntimeLeftLegVisual->SetRelativeScale3D(FVector(0.16f, 0.16f, 0.53f));
+    RuntimeRightLegVisual->SetRelativeLocation(FVector(15.0f, 0.0f, -61.0f));
+    RuntimeRightLegVisual->SetRelativeScale3D(FVector(0.16f, 0.16f, 0.53f));
+    RuntimeLeftBootVisual->SetRelativeLocation(FVector(-15.0f, -6.0f, -91.0f));
+    RuntimeLeftBootVisual->SetRelativeScale3D(FVector(0.31f, 0.39f, 0.15f));
+    RuntimeRightBootVisual->SetRelativeLocation(FVector(15.0f, -6.0f, -91.0f));
+    RuntimeRightBootVisual->SetRelativeScale3D(FVector(0.31f, 0.39f, 0.15f));
+
+    RuntimeHairVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
+    RuntimeHairVisual->SetRelativeScale3D(FVector(0.36f, 0.34f, 0.17f));
+    RuntimeHatVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 105.0f));
+    RuntimeHatVisual->SetRelativeScale3D(FVector(0.38f, 0.38f, 0.46f));
+    RuntimeBeltVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -22.0f));
+    RuntimeBeltVisual->SetRelativeScale3D(FVector(0.44f, 0.42f, 0.10f));
+    RuntimeStaffVisual->SetRelativeLocation(FVector(67.0f, -11.0f, 18.0f));
+    RuntimeStaffVisual->SetRelativeScale3D(FVector(0.07f, 0.07f, 1.18f));
+    RuntimeOrbVisual->SetRelativeLocation(FVector(67.0f, -11.0f, 82.0f));
+    RuntimeOrbVisual->SetRelativeScale3D(FVector(0.22f, 0.22f, 0.22f));
+
+    for (UStaticMeshComponent* Part : {
+        RuntimeBodyVisual.Get(), RuntimeHeadVisual.Get(), RuntimeMantleVisual.Get(),
+        RuntimeLeftArmVisual.Get(), RuntimeRightArmVisual.Get(), RuntimeLeftHandVisual.Get(),
+        RuntimeRightHandVisual.Get(), RuntimeLeftLegVisual.Get(), RuntimeRightLegVisual.Get(),
+        RuntimeLeftBootVisual.Get(), RuntimeRightBootVisual.Get(), RuntimeHairVisual.Get(),
+        RuntimeHatVisual.Get(), RuntimeBeltVisual.Get(), RuntimeStaffVisual.Get(), RuntimeOrbVisual.Get()})
+    {
+        if (Part)
+        {
+            Part->SetCastShadow(true);
+            Part->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        }
+    }
 }
 
 void AAetherCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -203,32 +324,43 @@ void AAetherCharacter::BeginPlay()
 
 void AAetherCharacter::InitializeRuntimeVisual()
 {
-    if (RuntimeBodyVisual)
+    const UAether2DCharacterVisualProfile* TwoDProfile = Visual2DComponent
+        ? Visual2DComponent->GetProfile()
+        : nullptr;
+    const bool bUsePrimaryTwoDPresentation = TwoDProfile && TwoDProfile->bUseAsPrimaryPresentation;
+
+    UStaticMeshComponent* ProxyParts[] = {
+        RuntimeBodyVisual.Get(),
+        RuntimeHeadVisual.Get(),
+        RuntimeMantleVisual.Get(),
+        RuntimeLeftArmVisual.Get(),
+        RuntimeRightArmVisual.Get(),
+        RuntimeLeftHandVisual.Get(),
+        RuntimeRightHandVisual.Get(),
+        RuntimeLeftLegVisual.Get(),
+        RuntimeRightLegVisual.Get(),
+        RuntimeLeftBootVisual.Get(),
+        RuntimeRightBootVisual.Get(),
+        RuntimeHairVisual.Get(),
+        RuntimeHatVisual.Get(),
+        RuntimeBeltVisual.Get(),
+        RuntimeStaffVisual.Get(),
+        RuntimeOrbVisual.Get()
+    };
+
+    for (UStaticMeshComponent* Part : ProxyParts)
     {
-        RuntimeBodyVisual->SetVisibility(false, true);
-    }
-    if (RuntimeHeadVisual)
-    {
-        RuntimeHeadVisual->SetVisibility(false, true);
-    }
-    if (RuntimeMantleVisual)
-    {
-        RuntimeMantleVisual->SetVisibility(false, true);
+        if (Part)
+        {
+            Part->SetVisibility(!bUsePrimaryTwoDPresentation, true);
+        }
     }
 
+    // Keep the old Paper2D component as a compatibility hook for authored profiles,
+    // but never use the crude triangular runtime icon as the default character.
     if (Runtime2DArtVisual)
     {
-        if (UPaperSprite* Sprite = FAetherRuntime2DArt::CreateCharacterSprite(this))
-        {
-            Runtime2DArtSprite = Sprite;
-            Runtime2DArtTexture = Sprite->GetSourceTexture();
-            Runtime2DArtVisual->SetSprite(Sprite);
-            Runtime2DArtVisual->SetSpriteColor(FLinearColor::White);
-            Runtime2DArtVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 132.0f));
-            Runtime2DArtVisual->SetRelativeRotation(FRotator(90.0f, 45.0f, 0.0f));
-            Runtime2DArtVisual->SetRelativeScale3D(FVector(1.15f));
-            Runtime2DArtVisual->SetVisibility(true, true);
-        }
+        Runtime2DArtVisual->SetVisibility(false, true);
     }
 }
 

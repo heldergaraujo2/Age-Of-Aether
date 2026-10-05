@@ -8,9 +8,9 @@ It is a production layout specification, not a fabricated Unreal binary asset. T
 
 ## Visual target
 
-The region is a real 3D environment presented as a stylized painterly isometric 2.5D diorama.
+The current owner-supplied visual target is a bright, stylized 3D isometric diorama: a landmark castle with blue roofs, a winding river and stone bridge, a clustered village, planted fields, rolling meadows and layered woodland. The scene must read like a crafted storybook miniature while remaining a navigable game world.
 
-The camera, terrain, architecture, vegetation, materials, lighting, silhouettes, and landmark placement must work together as one composed scene. The target is not a flat background image and not a disposable graybox.
+The camera, terrain, architecture, vegetation, materials, lighting, silhouettes, and landmark placement must work together as one composed scene. The target is not a flat background image or an empty green plane. The current runtime blockout is described in `Docs/FIRST_REGION_ISOMETRIC_DIORAMA_RUNTIME_PROTOTYPE.md`; it is not yet final production art.
 
 ## Composition
 

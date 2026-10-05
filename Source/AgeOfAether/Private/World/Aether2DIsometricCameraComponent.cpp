@@ -61,9 +61,9 @@ void UAether2DIsometricCameraComponent::AddZoomInput(float AxisValue)
         return;
     }
 
-    const float MinDistance = Profile ? Profile->MinCameraDistance : 320.0f;
-    const float MaxDistance = Profile ? Profile->MaxCameraDistance : 900.0f;
-    const float ZoomStep = Profile ? Profile->ZoomStep : 60.0f;
+    const float MinDistance = Profile ? Profile->MinCameraDistance : 1050.0f;
+    const float MaxDistance = Profile ? Profile->MaxCameraDistance : 3600.0f;
+    const float ZoomStep = Profile ? Profile->ZoomStep : 180.0f;
 
     CurrentDistance = FMath::Clamp(CurrentDistance - AxisValue * ZoomStep, MinDistance, MaxDistance);
 
@@ -80,13 +80,13 @@ bool UAether2DIsometricCameraComponent::ApplyRuntimeFallback()
         return false;
     }
 
-    CurrentDistance = 650.0f;
+    CurrentDistance = 2100.0f;
     bRuntimeFallbackActive = true;
 
     if (USpringArmComponent* Boom = ResolveCameraBoom())
     {
         Boom->TargetArmLength = CurrentDistance;
-        Boom->bDoCollisionTest = true;
+        Boom->bDoCollisionTest = false;
         Boom->bUsePawnControlRotation = false;
         Boom->SetUsingAbsoluteRotation(true);
         Boom->bEnableCameraLag = true;
@@ -153,7 +153,7 @@ void UAether2DIsometricCameraComponent::ApplyCameraPolicy()
         if (USpringArmComponent* Boom = ResolveCameraBoom())
         {
             Boom->SetRelativeRotation(FRotator(-55.0f, 45.0f, 0.0f));
-            Boom->TargetArmLength = FMath::Clamp(Boom->TargetArmLength, 320.0f, 900.0f);
+            Boom->TargetArmLength = FMath::Clamp(Boom->TargetArmLength, 1050.0f, 3600.0f);
         }
     }
 }

@@ -19,13 +19,15 @@ Regra: preservar → adaptar → integrar → testar → validar → expandir.
 
 ## Diretriz permanente de qualidade visual
 
-**REQUISITO TRANSVERSAL A TODAS AS FASES VISUAIS:** produzir imagens/arte na melhor qualidade possível e buscar animações 2D extremamente fluidas, naturais e responsivas. Essa exigência vale para personagens, criaturas, NPCs, VFX, ambientes, mapas, iluminação, sombras, UI e qualquer conteúdo visual. Qualidade e fluidez são requisitos de projeto, não apenas polish final.
+**REQUISITO TRANSVERSAL A TODAS AS FASES VISUAIS:** produzir conteúdo visual de alta qualidade e animações naturais/responsivas em 2D ou 3D, conforme a apresentação escolhida para cada família. Personagens, criaturas, NPCs, VFX, ambientes, mapas, iluminação, sombras e UI devem ser tratados como conteúdo de produção, não como polish opcional.
 
 **Regra:** não sacrificar qualidade visual ou fluidez por conveniência de produção sem registrar e justificar tecnicamente a decisão.
 
-## Direção visual oficial
+## Direção visual vigente — atualização do proprietário em 2026-10-04
 
-RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clássicos, com identidade própria. O jogo não precisa ser 3D. Pode usar imagens, sprites, sprite sheets, Flipbooks, camadas, paralaxe, luz, sombras, VFX e partículas. 3D é opcional.
+A referência enviada pelo proprietário agora define a primeira região como um **diorama 3D isométrico estilizado, colorido e legível**: castelo azul, rio/ponte, vila, fazendas, colinas e floresta em composição de miniatura de conto. A imagem é uma referência de estilo, não deve ser copiada como mapa/arte.
+
+A pipeline Paper2D e os perfis 2D permanecem no projeto como caminhos opcionais para personagens, efeitos e conteúdo futuro; deixam de ser a apresentação principal do ambiente desta região. Ver `Docs/FIRST_REGION_ISOMETRIC_DIORAMA_RUNTIME_PROTOTYPE.md`.
 
 ## Fases
 
@@ -586,3 +588,23 @@ Preserve all existing local modified and untracked files.
 - GitHub-first F47 correction: AAetherDevelopmentWorldActor::AddSpriteArt now applies FRotator(90.0f, Yaw, 0.0f) so environment sprites stand vertically while preserving the isometric yaw. House/tree/rock runtime scales were modestly increased. AAetherCharacter::InitializeRuntimeVisual receives the same 90-degree pitch and a modest character scale increase.
 - This correction does not replace or recreate gameplay systems; it only corrects the 2D presentation bridge.
 - Required next evidence: pull main, compile with UE 5.8 UBT, restart Unreal with the latest binary, run PIE on AetherWorld_FirstRegion, verify the sprites now face the isometric camera, remain readable and persistent, and physically walk/explore the region. Runtime PASS remains blocked until that evidence is observed.
+
+
+## VISUAL TARGET UPDATE — STYLIZED 3D ISOMETRIC DIORAMA (2026-10-04)
+
+O proprietário anexou duas referências: o objetivo é uma composição 3D isométrica colorida, com castelo de telhados azuis, rio/ponte, vila, fazendas, colinas e floresta; o estado atual era um plano verde quase vazio, props Paper2D vistos de lado e personagem pequeno com silhueta de folha. Esta referência atualiza a apresentação principal da primeira região. A pipeline Paper2D permanece suportada como opção, não como representação principal do ambiente.
+
+### Alterações no source deste branch
+- `AAetherDevelopmentWorldActor` deixou de montar apenas poucos sprites/placas. Agora constrói em runtime um protótipo espacial com terreno, manchas de gramado, rio sinuoso e margens, rede de caminhos, ponte de pedra, praça/fonte, casas/mercado/lanternas, canteiros agrícolas cercados, castelo fortificado com torres/telhados azuis, floresta em variações, moinho, ruínas e rochas.
+- A cena usa meshes BasicShapes e materiais de cor do Unreal. É um **blockout de composição**, não a arte final da referência; ainda precisa de meshes/materials autorados e validação artística.
+- O fallback visual de `AAetherCharacter` agora usa partes 3D separadas (tronco, cabeça, braços/mãos, pernas/botas, manto curto, chapéu, cajado e orbe), em vez do ícone triangular Paper2D. Perfis Paper2D primários continuam opcionais.
+- A câmera isométrica fallback começa em 2100 unidades, com zoom de 1050–3600, para enquadrar os marcos da região.
+- Instâncias reutilizadas de terreno, água/estradas, árvores, plantações, cercas, ponte e crenelação são agrupadas por mesh/material/comportamento de colisão para limitar o custo de componentes.
+- A horta verde foi deslocada para noroeste para não bloquear a estrada agrícola que liga a vila à casa da fazenda.
+- Documentação da região e continuidade atualizadas para registrar a nova referência.
+
+### Validação e próximo passo obrigatório
+
+**Source/documentação:** implementados nesta sessão. **UHT/UBT, PIE, collision/navigation, composição/câmera e desempenho:** não executados aqui; runtime permanece pendente porque este sandbox não possui Unreal Engine.
+
+No PC UE 5.8: fechar o Editor, compilar `AgeOfAetherEditor Win64 Development`, abrir a primeira região, executar PIE, conferir a leitura da vila/castelo/ponte/campos, caminhar nas rotas, checar o spawn/colisões/zoom e revisar Output Log/frame time. Enviar screenshot de PIE para a próxima calibração visual. Não marcar o alvo premium como concluído só porque o protótipo source existe.

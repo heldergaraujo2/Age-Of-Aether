@@ -102,6 +102,45 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
     TObjectPtr<UStaticMeshComponent> RuntimeMantleVisual;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeLeftArmVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeRightArmVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeLeftHandVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeRightHandVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeLeftLegVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeRightLegVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeLeftBootVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeRightBootVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeHairVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeHatVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeBeltVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeStaffVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeOrbVisual;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime 2D Art")
     TObjectPtr<UPaperSpriteComponent> Runtime2DArtVisual;
 
@@ -118,7 +157,7 @@ protected:
     TObjectPtr<UAetherMovementCameraProfile> MovementCameraProfile;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Camera")
-    float CameraDistance = 450.0f;
+    float CameraDistance = 2100.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Camera")
     float CameraHeight = 120.0f;

@@ -16,7 +16,7 @@ Runtime fallback remains available when no profile is assigned:
 - walk 420;
 - sprint 630;
 - jump uses Unreal CharacterMovement default;
-- camera distance 250–650;
+- isometric overview camera starts around 2,100 units and zooms from 1,050 to 3,600 units;
 - mouse wheel zoom;
 - pitch clamp -75 to +35 degrees.
 

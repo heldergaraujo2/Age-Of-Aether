@@ -47,6 +47,6 @@ A F41 só será considerada materializada quando o PC conseguir sincronizar o co
 Até lá, o estado correto é SOURCE READY / RUNTIME MATERIALIZATION PENDING.
 
 ## Próxima produção
-Prioridade: 1) Player Mage; 2) árvore; 3) rocha; 4) casa; 5) expansão das famílias de vegetação, arquitetura, criaturas, NPCs, dungeon e VFX.
+Prioridade: 1. Player Mage; 2. árvore; 3. rocha; 4. casa; 5. expansão das famílias de vegetação, arquitetura, criaturas, NPCs, dungeon e VFX.
 
 A prioridade é provar uma família visual completa e reutilizável antes de multiplicar dezenas de assets inconsistentes.

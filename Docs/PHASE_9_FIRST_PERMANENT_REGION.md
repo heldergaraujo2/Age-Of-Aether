@@ -12,20 +12,9 @@ The region is the first permanent piece of the single continuous world planned f
 
 ## 1. Design decision
 
-The current official visual direction is **premium 2D isometric**.
+**Current first-region target (updated 2026-10-04):** a bright, stylized 3D isometric storybook diorama with a readable castle, river and bridge, village, cultivated fields, rolling terrain and layered forest. This owner-supplied reference supersedes the original Phase 9 assumption that the region environment would be premium 2D isometric. See `Docs/FIRST_REGION_ISOMETRIC_DIORAMA_RUNTIME_PROTOTYPE.md` for the current source implementation and its validation boundary.
 
-The region therefore must be authored so its final presentation can be built from:
-
-- characters and creatures represented by 2D sprites/Flipbooks;
-- modular 2D environment families;
-- depth layers;
-- parallax;
-- lighting and shadows;
-- particles/VFX;
-- atmospheric layers;
-- optional 3D only where it provides a proven benefit.
-
-The region must never depend on a single flattened background image. The visual world remains decomposable into reusable families so the same production grammar can scale to the other jurisdictions.
+The region must remain a navigable, decomposable world rather than one flattened background image. Build the environment from reusable 3D families for terrain, paths, buildings, vegetation and landmarks. Paper2D sprites/Flipbooks, depth layers, lighting, shadows, particles/VFX and atmospheric effects remain supported as optional character/effect or future content paths; they are not the primary environment representation for this region.
 
 ## 2. Permanent-region identity
 
@@ -422,7 +411,7 @@ Phase 9 source/repository scope is complete when:
 - the region is compatible with the existing map/content/streaming contracts;
 - integration hooks for quests, interaction, creatures/NPCs, economy, combat and persistence are defined;
 - visual families are reusable;
-- the region is explicitly designed for the premium 2D isometric direction;
+- the current first-region environment target is the owner-supplied stylized 3D isometric diorama (Paper2D remains optional);
 - no gameplay system has been rebuilt;
 - no Unreal binary has been fabricated;
 - the Unreal materialization/runtime gate remains explicitly separate.
@@ -456,7 +445,7 @@ Historical evidence retained:
 - `055eacf6d4f6460b666769588590376a47689d4e` — first-region spatial layout;
 - `a19791d22003e65db50fd2e4f31fe25693077f2b` — first-region asset kit.
 
-Those documents established the permanent-region composition, modular production kit and world continuity. Their earlier 3D/2.5D presentation assumptions are reconciled here with the current official premium 2D isometric direction.
+Those documents established the permanent-region composition, modular production kit and world continuity. The later owner-supplied 3D diorama target supersedes Phase 9's original 2D environment assumption; the historical 2D presentation and Paper2D integration remain optional rather than being removed from the project.
 
 ## Completion
 
@@ -464,4 +453,4 @@ Those documents established the permanent-region composition, modular production
 
 **🟥 PHASE 9 — UNREAL MATERIALIZATION / RUNTIME VALIDATION DEFERRED**
 
-Next: **Phase 10 — Integration of the existing gameplay systems with the 2D presentation**, still preserving the existing gameplay root.
+Next: **Phase 10 — Integration of the existing gameplay systems with presentation**, preserving the gameplay root; its original Paper2D path remains supported while the first-region environment target is 3D.
