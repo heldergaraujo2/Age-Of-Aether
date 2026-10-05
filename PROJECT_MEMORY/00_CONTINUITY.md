@@ -578,3 +578,11 @@ Preserve all existing local modified and untracked files.
 - Correction commit: 332021b6d482987ed47a56cca400d0d52ec20f85.
 - This is still a procedural runtime bridge, not final premium art.
 - Required next evidence: pull main, compile with UE 5.8 UBT, open AetherWorld_FirstRegion, run PIE, verify character/tree/rock/house sprites are visible, correctly oriented/scaled, persistent, and physically explorable. No runtime PASS until observed.
+
+
+## F47 — Paper2D isometric plane/orientation correction
+- Real PC F46 runtime evidence now confirms that the procedural Paper2D sprites are finally materializing: the captured PIE screen shows the 2D character, trees, houses and rocks rendered in the first region.
+- The remaining defect is presentation geometry: the sprites were created on the Paper2D plane without the required 90-degree pitch for a vertical billboard relative to the isometric camera, leaving several assets visibly compressed/edge-on. The character was also underscaled relative to the playable region.
+- GitHub-first F47 correction: AAetherDevelopmentWorldActor::AddSpriteArt now applies FRotator(90.0f, Yaw, 0.0f) so environment sprites stand vertically while preserving the isometric yaw. House/tree/rock runtime scales were modestly increased. AAetherCharacter::InitializeRuntimeVisual receives the same 90-degree pitch and a modest character scale increase.
+- This correction does not replace or recreate gameplay systems; it only corrects the 2D presentation bridge.
+- Required next evidence: pull main, compile with UE 5.8 UBT, restart Unreal with the latest binary, run PIE on AetherWorld_FirstRegion, verify the sprites now face the isometric camera, remain readable and persistent, and physically walk/explore the region. Runtime PASS remains blocked until that evidence is observed.
