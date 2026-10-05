@@ -225,8 +225,8 @@ void AAetherCharacter::InitializeRuntimeVisual()
             Runtime2DArtVisual->SetSprite(Sprite);
             Runtime2DArtVisual->SetSpriteColor(FLinearColor::White);
             Runtime2DArtVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 132.0f));
-            Runtime2DArtVisual->SetRelativeRotation(FRotator(0.0f, 45.0f, 0.0f));
-            Runtime2DArtVisual->SetRelativeScale3D(FVector(1.0f));
+            Runtime2DArtVisual->SetRelativeRotation(FRotator(90.0f, 45.0f, 0.0f));
+            Runtime2DArtVisual->SetRelativeScale3D(FVector(1.15f));
             Runtime2DArtVisual->SetVisibility(true, true);
         }
     }
