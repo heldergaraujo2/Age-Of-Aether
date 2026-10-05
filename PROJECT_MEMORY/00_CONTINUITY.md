@@ -545,3 +545,11 @@ Correction commits: 8b816177f13586ceecce757da0779795c05bbc03 and 55c86540b22011d
 Status: runtime correction committed; real PC compile and runtime revalidation pending.
 Next gate: pull main, compile AgeOfAetherEditor Win64 Development, launch Unreal, run PIE on AetherWorld_FirstRegion, and verify character/tree/rock/house sprites persist and are explorable.
 Preserve all existing local modified and untracked files.
+
+
+## F44 — runtime 2D resource lifetime/render hardening
+- User real-PC validation reported no visible change after F43: runtime still showed the previous geometric presentation instead of the intended Paper2D sprites.
+- Repository audit found F42/F43 created runtime UTexture2D resources with reused explicit names for procedural variants and did not explicitly force the transient texture resource update.
+- F44 hardens the runtime bridge by using unique transient texture creation, disabling mip generation/filtering for crisp pixel data, calling UpdateResource(), retaining generated UPaperSprite and source UTexture2D objects in transient UPROPERTY ownership on the world actor/character, and forcing sprite component visibility/render-state refresh.
+- This remains a procedural runtime bridge, not final premium art.
+- Real PC validation required: pull latest main, compile with UE 5.8 UBT, open the first-region map, PIE, verify sprites are actually visible and persistent, then physically walk/explore. No runtime PASS until observed evidence.
