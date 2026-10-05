@@ -114,7 +114,7 @@ namespace
             Canvas.Width,
             Canvas.Height,
             PF_B8G8R8A8,
-            FName(Name),
+            NAME_None,
             Raw);
 
         if (!Texture)
@@ -124,8 +124,12 @@ namespace
 
         Texture->SRGB = true;
         Texture->NeverStream = true;
+        Texture->CompressionSettings = TC_Default;
+        Texture->MipGenSettings = TMGS_NoMipmaps;
+        Texture->Filter = TF_Nearest;
+        Texture->UpdateResource();
 
-        UPaperSprite* Sprite = NewObject<UPaperSprite>(Outer, FName(Name));
+        UPaperSprite* Sprite = NewObject<UPaperSprite>(Outer, MakeUniqueObjectName(Outer, UPaperSprite::StaticClass(), FName(Name)));
         if (!Sprite)
         {
             return nullptr;
