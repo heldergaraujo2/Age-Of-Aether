@@ -1,7 +1,10 @@
 #include "World/AetherDevelopmentWorldActor.h"
 
+#include "Animation/AnimSequence.h"
 #include "Components/InstancedStaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Math/RotationMatrix.h"
@@ -28,6 +31,9 @@ namespace
 
 AAetherDevelopmentWorldActor::AAetherDevelopmentWorldActor()
 {
+    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bStartWithTickEnabled = false;
+
     Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
     Root->SetMobility(EComponentMobility::Movable);
     SetRootComponent(Root);
@@ -85,6 +91,12 @@ void AAetherDevelopmentWorldActor::BeginPlay()
     }
 }
 
+void AAetherDevelopmentWorldActor::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    UpdateAmbientVillageNPCs(DeltaSeconds);
+}
+
 void AAetherDevelopmentWorldActor::ConfigureGround()
 {
     if (!Ground)
@@ -94,6 +106,43 @@ void AAetherDevelopmentWorldActor::ConfigureGround()
 
     Ground->SetRelativeScale3D(GroundScale);
     Ground->SetRelativeLocation(FVector(0.0f, 0.0f, GroundZ));
+}
+
+void AAetherDevelopmentWorldActor::LoadFabEnvironmentAssets()
+{
+    RuntimeFabTreeBroadleafMesh = LoadObject<UStaticMesh>(
+        nullptr, TEXT("/Game/Aether/Environment/Fab/TreesBush/SM_Fab_Tree2.SM_Fab_Tree2"));
+    RuntimeFabTreeSmallMesh = LoadObject<UStaticMesh>(
+        nullptr, TEXT("/Game/Aether/Environment/Fab/TreesBush/SM_Fab_TreeSmall.SM_Fab_TreeSmall"));
+    RuntimeFabPineMesh = LoadObject<UStaticMesh>(
+        nullptr, TEXT("/Game/Aether/Environment/Fab/TreesBush/SM_Fab_Pine2.SM_Fab_Pine2"));
+    RuntimeFabBushLargeMesh = LoadObject<UStaticMesh>(
+        nullptr, TEXT("/Game/Aether/Environment/Fab/TreesBush/SM_Fab_BushBig.SM_Fab_BushBig"));
+    RuntimeFabBushMediumMesh = LoadObject<UStaticMesh>(
+        nullptr, TEXT("/Game/Aether/Environment/Fab/TreesBush/SM_Fab_BushMedium.SM_Fab_BushMedium"));
+    RuntimeFabBushFlowerMesh = LoadObject<UStaticMesh>(
+        nullptr, TEXT("/Game/Aether/Environment/Fab/TreesBush/SM_Fab_BushFlowers.SM_Fab_BushFlowers"));
+    RuntimeFabMansionMesh = LoadObject<UStaticMesh>(
+        nullptr, TEXT("/Game/Aether/Environment/Fab/Mansion/SM_Fab_HauntedMansion.SM_Fab_HauntedMansion"));
+    RuntimeFabHorseMesh = LoadObject<USkeletalMesh>(
+        nullptr, TEXT("/Game/Aether/Characters/FabHorse/SK_Fab_UnicornHorse.SK_Fab_UnicornHorse"));
+    RuntimeFabHorseIdleAnimation = LoadObject<UAnimSequence>(
+        nullptr, TEXT("/Game/Aether/Characters/FabHorse/Animations/A_Fab_UnicornHorse_Idle.A_Fab_UnicornHorse_Idle"));
+
+    const bool bHasAnyFabTrees = RuntimeFabTreeBroadleafMesh || RuntimeFabTreeSmallMesh || RuntimeFabPineMesh;
+    const bool bHasAnyFabBushes = RuntimeFabBushLargeMesh || RuntimeFabBushMediumMesh || RuntimeFabBushFlowerMesh;
+    if (bHasAnyFabTrees || bHasAnyFabBushes || RuntimeFabMansionMesh || RuntimeFabHorseMesh)
+    {
+        UE_LOG(LogTemp, Log, TEXT("Fab environment assets detected: trees=%s bushes=%s mansion=%s horse=%s."),
+            bHasAnyFabTrees ? TEXT("yes") : TEXT("no"),
+            bHasAnyFabBushes ? TEXT("yes") : TEXT("no"),
+            RuntimeFabMansionMesh ? TEXT("yes") : TEXT("no"),
+            RuntimeFabHorseMesh ? TEXT("yes") : TEXT("no"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Display, TEXT("Fab assets are not imported yet; the diorama will use its built-in fallback meshes."));
+    }
 }
 
 UMaterialInstanceDynamic* AAetherDevelopmentWorldActor::CreateColorMaterial(const FLinearColor& Color)
@@ -230,6 +279,78 @@ void AAetherDevelopmentWorldActor::AddInstancedPrimitive(
     {
         Component->AddInstance(FTransform(Rotation, Location, Scale), false);
     }
+}
+
+void AAetherDevelopmentWorldActor::AddFabFoliageInstance(
+    UStaticMesh* Mesh,
+    const FName& BatchName,
+    const FVector& GroundLocation,
+    float TargetHeight,
+    float WidthScale,
+    const FRotator& Rotation)
+{
+    if (!Mesh || !Root || TargetHeight <= 0.0f)
+    {
+        return;
+    }
+
+    const FBox Bounds = Mesh->GetBoundingBox();
+    const FVector MeshSize = Bounds.GetSize();
+    if (!Bounds.IsValid || MeshSize.Z <= KINDA_SMALL_NUMBER)
+    {
+        return;
+    }
+
+    UInstancedStaticMeshComponent* Component = nullptr;
+    if (TObjectPtr<UInstancedStaticMeshComponent>* Existing = RuntimeFabInstancedComponents.Find(BatchName))
+    {
+        Component = Existing->Get();
+        if (Component && Component->GetStaticMesh() != Mesh)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Fab foliage batch '%s' was reused with a different mesh; skipping instance."),
+                *BatchName.ToString());
+            return;
+        }
+    }
+    else
+    {
+        const FName UniqueName = MakeUniqueObjectName(
+            this, UInstancedStaticMeshComponent::StaticClass(),
+            FName(*FString::Printf(TEXT("%s_Instances"), *BatchName.ToString())));
+        Component = NewObject<UInstancedStaticMeshComponent>(this, UniqueName);
+        if (!Component)
+        {
+            return;
+        }
+
+        Component->SetupAttachment(Root);
+        Component->SetStaticMesh(Mesh);
+        Component->SetMobility(EComponentMobility::Movable);
+        Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        Component->SetCollisionProfileName(TEXT("NoCollision"));
+        Component->SetCanEverAffectNavigation(false);
+        Component->SetCastShadow(true);
+        AddInstanceComponent(Component);
+        Component->RegisterComponent();
+        RuntimeFabInstancedComponents.Add(BatchName, Component);
+        RuntimeVisualComponents.Add(Component);
+    }
+
+    if (!Component)
+    {
+        return;
+    }
+
+    const float UniformScale = TargetHeight / MeshSize.Z;
+    const FVector InstanceScale(
+        UniformScale * WidthScale,
+        UniformScale * WidthScale,
+        UniformScale);
+    const FVector Center = Bounds.GetCenter();
+    FVector LocalOffset(-Center.X * InstanceScale.X, -Center.Y * InstanceScale.Y,
+        -Bounds.Min.Z * InstanceScale.Z);
+    const FVector InstanceLocation = GroundLocation + Rotation.RotateVector(LocalOffset);
+    Component->AddInstance(FTransform(Rotation, InstanceLocation, InstanceScale), false);
 }
 
 void AAetherDevelopmentWorldActor::AddRibbon(
@@ -551,6 +672,30 @@ void AAetherDevelopmentWorldActor::BuildTree(
     int32 Variant,
     const FName& NamePrefix)
 {
+    if (RuntimeFabTreeBroadleafMesh || RuntimeFabTreeSmallMesh || RuntimeFabPineMesh)
+    {
+        const bool bPine = Variant % 3 == 1;
+        const bool bUseSmall = !bPine && (Variant % 2 == 0) && RuntimeFabTreeSmallMesh;
+        UStaticMesh* FabTree = bPine && RuntimeFabPineMesh
+            ? RuntimeFabPineMesh.Get()
+            : (bUseSmall ? RuntimeFabTreeSmallMesh.Get() : RuntimeFabTreeBroadleafMesh.Get());
+        if (!FabTree)
+        {
+            FabTree = RuntimeFabTreeSmallMesh ? RuntimeFabTreeSmallMesh.Get()
+                : (RuntimeFabPineMesh ? RuntimeFabPineMesh.Get() : RuntimeFabTreeBroadleafMesh.Get());
+        }
+        if (FabTree)
+        {
+            const FName BatchName = FabTree == RuntimeFabPineMesh.Get() ? TEXT("FabPineInstances")
+                : (FabTree == RuntimeFabTreeSmallMesh.Get() ? TEXT("FabSmallTreeInstances") : TEXT("FabBroadleafInstances"));
+            const float TargetHeight = (bPine ? 700.0f : (bUseSmall ? 420.0f : 560.0f)) * Scale;
+            const float WidthScale = 0.88f + static_cast<float>(GetTypeHash(NamePrefix) % 25u) / 100.0f;
+            const float Yaw = static_cast<float>(GetTypeHash(NamePrefix) % 360u);
+            AddFabFoliageInstance(FabTree, BatchName, Location, TargetHeight, WidthScale, FRotator(0.0f, Yaw, 0.0f));
+            return;
+        }
+    }
+
     const FString Prefix = NamePrefix.ToString();
     const float Height = (Variant % 3 == 1 ? 540.0f : 450.0f) * Scale;
     const float TrunkScale = 0.42f * Scale;
@@ -1471,6 +1616,249 @@ void AAetherDevelopmentWorldActor::BuildForest()
     BuildRockCluster(FVector(2160.0f, -1510.0f, 0.0f), 1.10f, TEXT("MountainRocksSouthEast"));
 }
 
+void AAetherDevelopmentWorldActor::BuildImportedVegetation()
+{
+    const bool bHasFabTrees = RuntimeFabTreeBroadleafMesh || RuntimeFabTreeSmallMesh || RuntimeFabPineMesh;
+    const bool bHasFabBushes = RuntimeFabBushLargeMesh || RuntimeFabBushMediumMesh || RuntimeFabBushFlowerMesh;
+    if (!bHasFabTrees && !bHasFabBushes)
+    {
+        return;
+    }
+
+    const TArray<FVector> RiverPath = {
+        FVector(-2660.0f, 1720.0f, 0.0f), FVector(-2180.0f, 1410.0f, 0.0f),
+        FVector(-1640.0f, 1130.0f, 0.0f), FVector(-1030.0f, 870.0f, 0.0f),
+        FVector(-470.0f, 660.0f, 0.0f), FVector(120.0f, 490.0f, 0.0f),
+        FVector(700.0f, 230.0f, 0.0f), FVector(1330.0f, -90.0f, 0.0f),
+        FVector(1950.0f, -400.0f, 0.0f), FVector(2660.0f, -750.0f, 0.0f)
+    };
+    const TArray<FVector> MainRoad = {
+        FVector(0.0f, -1740.0f, 0.0f), FVector(-40.0f, -1190.0f, 0.0f),
+        FVector(-130.0f, -700.0f, 0.0f), FVector(-80.0f, -280.0f, 0.0f),
+        FVector(0.0f, 0.0f, 0.0f), FVector(-60.0f, 280.0f, 0.0f),
+        FVector(120.0f, 490.0f, 0.0f), FVector(350.0f, 720.0f, 0.0f),
+        FVector(420.0f, 540.0f, 0.0f), FVector(700.0f, 520.0f, 0.0f),
+        FVector(970.0f, 580.0f, 0.0f), FVector(1050.0f, 695.0f, 0.0f),
+        FVector(1050.0f, 1080.0f, 0.0f)
+    };
+    const TArray<FVector> FarmRoad = {
+        FVector(-120.0f, -270.0f, 0.0f), FVector(-430.0f, -365.0f, 0.0f),
+        FVector(-780.0f, -425.0f, 0.0f), FVector(-1160.0f, -500.0f, 0.0f),
+        FVector(-1560.0f, -565.0f, 0.0f), FVector(-1930.0f, -780.0f, 0.0f)
+    };
+    const auto IsNearPath = [](const FVector& Point, const TArray<FVector>& Path, float Radius)
+    {
+        const float RadiusSquared = Radius * Radius;
+        for (int32 SegmentIndex = 0; SegmentIndex < Path.Num() - 1; ++SegmentIndex)
+        {
+            const FVector& Start = Path[SegmentIndex];
+            const FVector& End = Path[SegmentIndex + 1];
+            const FVector2D Delta(End.X - Start.X, End.Y - Start.Y);
+            const FVector2D ToPoint(Point.X - Start.X, Point.Y - Start.Y);
+            const float LengthSquared = Delta.SizeSquared();
+            const float Alpha = LengthSquared > SMALL_NUMBER
+                ? FMath::Clamp(FVector2D::DotProduct(ToPoint, Delta) / LengthSquared, 0.0f, 1.0f)
+                : 0.0f;
+            const FVector2D Offset = ToPoint - Delta * Alpha;
+            if (Offset.SizeSquared() <= RadiusSquared)
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    FRandomStream Random(390217);
+
+    if (bHasFabTrees)
+    {
+        for (int32 Index = 0; Index < 68; ++Index)
+        {
+            const int32 Side = Random.RandRange(0, 3);
+            FVector Location;
+            if (Side == 0)
+            {
+                Location = FVector(Random.FRandRange(-3500.0f, 3500.0f), Random.FRandRange(2320.0f, 2940.0f), 0.0f);
+            }
+            else if (Side == 1)
+            {
+                Location = FVector(Random.FRandRange(-3500.0f, 3500.0f), Random.FRandRange(-2940.0f, -2320.0f), 0.0f);
+            }
+            else if (Side == 2)
+            {
+                Location = FVector(Random.FRandRange(-3860.0f, -3120.0f), Random.FRandRange(-2050.0f, 2050.0f), 0.0f);
+            }
+            else
+            {
+                Location = FVector(Random.FRandRange(3120.0f, 3860.0f), Random.FRandRange(-2050.0f, 2050.0f), 0.0f);
+            }
+
+            if (IsNearPath(Location, RiverPath, 370.0f)
+                || IsNearPath(Location, MainRoad, 390.0f)
+                || IsNearPath(Location, FarmRoad, 250.0f)
+                || (RuntimeFabMansionMesh
+                    && FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(3050.0f, 1380.0f)) < 1000.0f))
+            {
+                continue;
+            }
+
+            UStaticMesh* TreeMesh = nullptr;
+            if (Random.FRand() < 0.23f && RuntimeFabPineMesh)
+            {
+                TreeMesh = RuntimeFabPineMesh.Get();
+            }
+            else if (Random.FRand() < 0.38f && RuntimeFabTreeSmallMesh)
+            {
+                TreeMesh = RuntimeFabTreeSmallMesh.Get();
+            }
+            else
+            {
+                TreeMesh = RuntimeFabTreeBroadleafMesh
+                    ? RuntimeFabTreeBroadleafMesh.Get()
+                    : (RuntimeFabTreeSmallMesh ? RuntimeFabTreeSmallMesh.Get() : RuntimeFabPineMesh.Get());
+            }
+            if (!TreeMesh)
+            {
+                continue;
+            }
+
+            const FName BatchName = TreeMesh == RuntimeFabPineMesh.Get() ? TEXT("FabPineInstances")
+                : (TreeMesh == RuntimeFabTreeSmallMesh.Get() ? TEXT("FabSmallTreeInstances") : TEXT("FabBroadleafInstances"));
+            const float Height = TreeMesh == RuntimeFabTreeSmallMesh.Get()
+                ? Random.FRandRange(390.0f, 520.0f)
+                : Random.FRandRange(520.0f, 790.0f);
+            AddFabFoliageInstance(
+                TreeMesh,
+                BatchName,
+                Location,
+                Height,
+                Random.FRandRange(0.86f, 1.24f),
+                FRotator(0.0f, Random.FRandRange(0.0f, 360.0f), 0.0f));
+        }
+    }
+
+    const auto AddBush = [this, &Random](const FVector& Location, float MinHeight, float MaxHeight, bool bFlowerBias)
+    {
+        UStaticMesh* BushMesh = nullptr;
+        const float Choice = Random.FRand();
+        if (RuntimeFabBushFlowerMesh && (Choice < (bFlowerBias ? 0.36f : 0.14f)))
+        {
+            BushMesh = RuntimeFabBushFlowerMesh.Get();
+        }
+        else if (RuntimeFabBushLargeMesh && Choice < 0.58f)
+        {
+            BushMesh = RuntimeFabBushLargeMesh.Get();
+        }
+        else if (RuntimeFabBushMediumMesh)
+        {
+            BushMesh = RuntimeFabBushMediumMesh.Get();
+        }
+        else
+        {
+            BushMesh = RuntimeFabBushLargeMesh
+                ? RuntimeFabBushLargeMesh.Get()
+                : RuntimeFabBushFlowerMesh.Get();
+        }
+        if (!BushMesh)
+        {
+            return;
+        }
+
+        const FName BatchName = BushMesh == RuntimeFabBushFlowerMesh.Get() ? TEXT("FabFlowerBushInstances")
+            : (BushMesh == RuntimeFabBushLargeMesh.Get() ? TEXT("FabLargeBushInstances") : TEXT("FabMediumBushInstances"));
+        AddFabFoliageInstance(
+            BushMesh,
+            BatchName,
+            Location,
+            Random.FRandRange(MinHeight, MaxHeight),
+            Random.FRandRange(0.78f, 1.35f),
+            FRotator(0.0f, Random.FRandRange(0.0f, 360.0f), 0.0f));
+    };
+
+    if (bHasFabBushes)
+    {
+        const FVector CitySites[] = {
+            FVector(-680.0f, -635.0f, 0.0f), FVector(-970.0f, 75.0f, 0.0f),
+            FVector(760.0f, -690.0f, 0.0f), FVector(860.0f, 20.0f, 0.0f),
+            FVector(-440.0f, -1110.0f, 0.0f), FVector(-1880.0f, -640.0f, 0.0f),
+            FVector(-170.0f, 142.0f, 0.0f), FVector(-320.0f, -320.0f, 0.0f),
+            FVector(310.0f, -330.0f, 0.0f), FVector(-360.0f, 360.0f, 0.0f),
+            FVector(-2210.0f, -330.0f, 0.0f), FVector(-2050.0f, 720.0f, 0.0f)
+        };
+        const float CitySiteRadii[] = { 320.0f, 285.0f, 315.0f, 285.0f, 260.0f, 320.0f,
+            210.0f, 190.0f, 190.0f, 190.0f, 210.0f, 260.0f };
+
+        for (float GridX = -1260.0f; GridX <= 1260.0f; GridX += 220.0f)
+        {
+            for (float GridY = -1180.0f; GridY <= 1020.0f; GridY += 220.0f)
+            {
+                FVector Location(
+                    GridX + Random.FRandRange(-72.0f, 72.0f),
+                    GridY + Random.FRandRange(-72.0f, 72.0f),
+                    0.0f);
+                if (Random.FRand() > 0.56f
+                    || IsNearPath(Location, RiverPath, 210.0f)
+                    || IsNearPath(Location, MainRoad, 190.0f)
+                    || IsNearPath(Location, FarmRoad, 170.0f))
+                {
+                    continue;
+                }
+
+                bool bNearStructure = false;
+                for (int32 SiteIndex = 0; SiteIndex < UE_ARRAY_COUNT(CitySites); ++SiteIndex)
+                {
+                    if (FVector2D::Distance(
+                            FVector2D(Location.X, Location.Y),
+                            FVector2D(CitySites[SiteIndex].X, CitySites[SiteIndex].Y)) < CitySiteRadii[SiteIndex])
+                    {
+                        bNearStructure = true;
+                        break;
+                    }
+                }
+                if (bNearStructure)
+                {
+                    continue;
+                }
+                AddBush(Location, 78.0f, 155.0f, true);
+            }
+        }
+
+        for (float GridX = -3860.0f; GridX <= 3860.0f; GridX += 285.0f)
+        {
+            for (float GridY = -2860.0f; GridY <= 2860.0f; GridY += 285.0f)
+            {
+                const bool bVillageCore = FMath::Abs(GridX) < 1420.0f && FMath::Abs(GridY) < 1090.0f;
+                if (bVillageCore || Random.FRand() > 0.34f)
+                {
+                    continue;
+                }
+                FVector Location(
+                    GridX + Random.FRandRange(-90.0f, 90.0f),
+                    GridY + Random.FRandRange(-90.0f, 90.0f),
+                    0.0f);
+                const bool bInFarmPlot =
+                    (FMath::Abs(Location.X + 1980.0f) < 650.0f && FMath::Abs(Location.Y) < 470.0f)
+                    || (FMath::Abs(Location.X + 1690.0f) < 650.0f && FMath::Abs(Location.Y + 1260.0f) < 430.0f)
+                    || (FMath::Abs(Location.X + 760.0f) < 510.0f && FMath::Abs(Location.Y + 1430.0f) < 390.0f);
+                const bool bNearLandmark =
+                    FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(1050.0f, 1150.0f)) < 940.0f
+                    || FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(1980.0f, 780.0f)) < 390.0f
+                    || FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(-2050.0f, 720.0f)) < 340.0f
+                    || (RuntimeFabMansionMesh
+                        && FVector2D::Distance(FVector2D(Location.X, Location.Y), FVector2D(3050.0f, 1380.0f)) < 980.0f);
+                if (bInFarmPlot || bNearLandmark
+                    || IsNearPath(Location, RiverPath, 255.0f)
+                    || IsNearPath(Location, MainRoad, 260.0f)
+                    || IsNearPath(Location, FarmRoad, 200.0f))
+                {
+                    continue;
+                }
+                AddBush(Location, 95.0f, 245.0f, false);
+            }
+        }
+    }
+}
+
 void AAetherDevelopmentWorldActor::BuildLandmarks()
 {
     const FVector Windmill(-2050.0f, 720.0f, 0.0f);
@@ -1518,6 +1906,240 @@ void AAetherDevelopmentWorldActor::BuildLandmarks()
         FLinearColor(0.45f, 0.18f, 0.13f, 1.0f));
 }
 
+void AAetherDevelopmentWorldActor::BuildFabMansionLandmark()
+{
+    if (!RuntimeFabMansionMesh || !Root)
+    {
+        return;
+    }
+
+    const FBox Bounds = RuntimeFabMansionMesh->GetBoundingBox();
+    const FVector Size = Bounds.GetSize();
+    const float HorizontalSize = FMath::Max(Size.X, Size.Y);
+    if (!Bounds.IsValid || HorizontalSize <= KINDA_SMALL_NUMBER)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Fab mansion mesh has invalid bounds; not placing it."));
+        return;
+    }
+
+    // GLB geometry is normalized around a unit box. Fit it by world width rather
+    // than applying a guessed fixed multiplier (the imported mesh may be 1 or 100 cm wide).
+    const float UniformScale = 1850.0f / HorizontalSize;
+    const FRotator Rotation(0.0f, -12.0f, 0.0f);
+    const FVector CenterLocation(3050.0f, 1380.0f, 0.0f);
+    const FVector MeshCenter = Bounds.GetCenter();
+    const FVector LocalOffset(
+        -MeshCenter.X * UniformScale,
+        -MeshCenter.Y * UniformScale,
+        -Bounds.Min.Z * UniformScale);
+    const FVector Location = CenterLocation + Rotation.RotateVector(LocalOffset);
+
+    RuntimeFabMansionComponent = NewObject<UStaticMeshComponent>(
+        this, MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("FabHauntedMansion")));
+    if (!RuntimeFabMansionComponent)
+    {
+        return;
+    }
+    RuntimeFabMansionComponent->SetupAttachment(Root);
+    RuntimeFabMansionComponent->SetStaticMesh(RuntimeFabMansionMesh);
+    RuntimeFabMansionComponent->SetRelativeLocation(Location);
+    RuntimeFabMansionComponent->SetRelativeRotation(Rotation);
+    RuntimeFabMansionComponent->SetRelativeScale3D(FVector(UniformScale));
+    RuntimeFabMansionComponent->SetMobility(EComponentMobility::Movable);
+    RuntimeFabMansionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    RuntimeFabMansionComponent->SetCollisionProfileName(TEXT("NoCollision"));
+    RuntimeFabMansionComponent->SetCanEverAffectNavigation(false);
+    RuntimeFabMansionComponent->SetCastShadow(true);
+    AddInstanceComponent(RuntimeFabMansionComponent);
+    RuntimeFabMansionComponent->RegisterComponent();
+    RuntimeVisualComponents.Add(RuntimeFabMansionComponent);
+    UE_LOG(LogTemp, Log, TEXT("Placed Fab mansion at forest edge; uniform scale %.2f (target width 18.5 m)."), UniformScale);
+}
+
+void AAetherDevelopmentWorldActor::BuildFabHorseAtStable()
+{
+    if (!RuntimeFabHorseMesh || !Root)
+    {
+        return;
+    }
+
+    RuntimeFabHorseComponent = NewObject<USkeletalMeshComponent>(
+        this, MakeUniqueObjectName(this, USkeletalMeshComponent::StaticClass(), TEXT("FabUnicornAtStable")));
+    if (!RuntimeFabHorseComponent)
+    {
+        return;
+    }
+    RuntimeFabHorseComponent->SetupAttachment(Root);
+    RuntimeFabHorseComponent->SetSkeletalMesh(RuntimeFabHorseMesh);
+    RuntimeFabHorseComponent->SetRelativeLocation(FVector(-2170.0f, -705.0f, 5.0f));
+    RuntimeFabHorseComponent->SetRelativeRotation(FRotator(0.0f, 18.0f, 0.0f));
+    RuntimeFabHorseComponent->SetRelativeScale3D(FVector(0.90f));
+    RuntimeFabHorseComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    RuntimeFabHorseComponent->SetCanEverAffectNavigation(false);
+    RuntimeFabHorseComponent->SetCastShadow(true);
+    RuntimeFabHorseComponent->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+    AddInstanceComponent(RuntimeFabHorseComponent);
+    RuntimeFabHorseComponent->RegisterComponent();
+    if (RuntimeFabHorseIdleAnimation)
+    {
+        RuntimeFabHorseComponent->PlayAnimation(RuntimeFabHorseIdleAnimation, true);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Fab horse mesh is present but the Idle animation asset is missing."));
+    }
+}
+
+void AAetherDevelopmentWorldActor::BuildAmbientVillageNPCs()
+{
+    USkeletalMesh* WalkerMesh = LoadObject<USkeletalMesh>(
+        nullptr, TEXT("/Game/Aether/Characters/Mage/SK_Mago_AgeOfAether.SK_Mago_AgeOfAether"));
+    UAnimSequence* WalkAnimation = LoadObject<UAnimSequence>(
+        nullptr, TEXT("/Game/Aether/Characters/Mage/Animations/A_Walk_Anim.A_Walk_Anim"));
+    if (!WalkAnimation)
+    {
+        WalkAnimation = LoadObject<UAnimSequence>(
+            nullptr, TEXT("/Game/Aether/Characters/Mage/Animations/A_Walk.A_Walk"));
+    }
+    if (!WalkerMesh || !WalkAnimation)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Ambient walkers were not spawned: import the Mage skeletal mesh and Walk sequence first."));
+        return;
+    }
+
+    RuntimeAmbientRoutePoints = {
+        FVector(-130.0f, -700.0f, 0.0f),
+        FVector(-80.0f, -280.0f, 0.0f),
+        FVector(0.0f, 0.0f, 0.0f),
+        FVector(-60.0f, 280.0f, 0.0f),
+        FVector(120.0f, 490.0f, 0.0f),
+        FVector(350.0f, 720.0f, 0.0f),
+        FVector(420.0f, 540.0f, 0.0f),
+        FVector(700.0f, 520.0f, 0.0f),
+        FVector(970.0f, 580.0f, 0.0f),
+        FVector(1050.0f, 695.0f, 0.0f),
+        FVector(1050.0f, 1080.0f, 0.0f)
+    };
+    RuntimeAmbientRouteCumulativeDistances.Reset();
+    RuntimeAmbientRouteCumulativeDistances.Add(0.0f);
+    for (int32 PointIndex = 1; PointIndex < RuntimeAmbientRoutePoints.Num(); ++PointIndex)
+    {
+        const float SegmentLength = FVector::Dist2D(
+            RuntimeAmbientRoutePoints[PointIndex - 1], RuntimeAmbientRoutePoints[PointIndex]);
+        RuntimeAmbientRouteCumulativeDistances.Add(
+            RuntimeAmbientRouteCumulativeDistances.Last() + SegmentLength);
+    }
+    RuntimeAmbientRouteLength = RuntimeAmbientRouteCumulativeDistances.Last();
+    if (RuntimeAmbientRouteLength <= KINDA_SMALL_NUMBER)
+    {
+        return;
+    }
+
+    constexpr int32 WalkerCount = 10;
+    const float PingPongLength = RuntimeAmbientRouteLength * 2.0f;
+    RuntimeAmbientNPCComponents.Reset();
+    RuntimeAmbientNPCPathOffsets.Reset();
+    RuntimeAmbientNPCWalkSpeeds.Reset();
+    RuntimeAmbientNPCGroundOffsets.Reset();
+
+    for (int32 WalkerIndex = 0; WalkerIndex < WalkerCount; ++WalkerIndex)
+    {
+        USkeletalMeshComponent* Walker = NewObject<USkeletalMeshComponent>(
+            this,
+            MakeUniqueObjectName(
+                this, USkeletalMeshComponent::StaticClass(),
+                FName(*FString::Printf(TEXT("AmbientTownWalker_%02d"), WalkerIndex))));
+        if (!Walker)
+        {
+            continue;
+        }
+        Walker->SetupAttachment(Root);
+        Walker->SetSkeletalMesh(WalkerMesh);
+        Walker->SetRelativeScale3D(FVector(0.84f + static_cast<float>(WalkerIndex % 3) * 0.06f));
+        Walker->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        Walker->SetCanEverAffectNavigation(false);
+        Walker->SetCastShadow(true);
+        Walker->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+        Walker->PlayAnimation(WalkAnimation, true);
+        AddInstanceComponent(Walker);
+        Walker->RegisterComponent();
+        RuntimeAmbientNPCComponents.Add(Walker);
+        RuntimeAmbientNPCGroundOffsets.Add(4.0f);
+        RuntimeAmbientNPCPathOffsets.Add(PingPongLength * static_cast<float>(WalkerIndex) / WalkerCount);
+        RuntimeAmbientNPCWalkSpeeds.Add(76.0f + static_cast<float>((WalkerIndex * 17) % 37));
+    }
+
+    if (RuntimeAmbientNPCComponents.Num() > 0)
+    {
+        SetActorTickEnabled(true);
+    }
+    UE_LOG(LogTemp, Log, TEXT("Spawned %d decorative town walkers on the village-to-castle road. They use the existing Mage Walk animation."),
+        RuntimeAmbientNPCComponents.Num());
+}
+
+void AAetherDevelopmentWorldActor::UpdateAmbientVillageNPCs(float DeltaSeconds)
+{
+    if (RuntimeAmbientRouteLength <= KINDA_SMALL_NUMBER
+        || RuntimeAmbientRoutePoints.Num() < 2
+        || RuntimeAmbientRouteCumulativeDistances.Num() != RuntimeAmbientRoutePoints.Num())
+    {
+        return;
+    }
+
+    const float PingPongLength = RuntimeAmbientRouteLength * 2.0f;
+    const int32 WalkerCount = FMath::Min(
+        RuntimeAmbientNPCComponents.Num(),
+        FMath::Min(RuntimeAmbientNPCPathOffsets.Num(), RuntimeAmbientNPCWalkSpeeds.Num()));
+    for (int32 WalkerIndex = 0; WalkerIndex < WalkerCount; ++WalkerIndex)
+    {
+        USkeletalMeshComponent* Walker = RuntimeAmbientNPCComponents[WalkerIndex].Get();
+        if (!Walker)
+        {
+            continue;
+        }
+
+        float LoopDistance = FMath::Fmod(
+            RuntimeAmbientNPCPathOffsets[WalkerIndex] + RuntimeAmbientNPCWalkSpeeds[WalkerIndex] * DeltaSeconds,
+            PingPongLength);
+        if (LoopDistance < 0.0f)
+        {
+            LoopDistance += PingPongLength;
+        }
+        RuntimeAmbientNPCPathOffsets[WalkerIndex] = LoopDistance;
+
+        const bool bWalkingBackwards = LoopDistance > RuntimeAmbientRouteLength;
+        const float PathDistance = bWalkingBackwards
+            ? PingPongLength - LoopDistance
+            : LoopDistance;
+        int32 SegmentIndex = 0;
+        while (SegmentIndex < RuntimeAmbientRoutePoints.Num() - 2
+            && RuntimeAmbientRouteCumulativeDistances[SegmentIndex + 1] < PathDistance)
+        {
+            ++SegmentIndex;
+        }
+
+        const FVector& SegmentStart = RuntimeAmbientRoutePoints[SegmentIndex];
+        const FVector& SegmentEnd = RuntimeAmbientRoutePoints[SegmentIndex + 1];
+        const float SegmentStartDistance = RuntimeAmbientRouteCumulativeDistances[SegmentIndex];
+        const float SegmentLength = FMath::Max(
+            RuntimeAmbientRouteCumulativeDistances[SegmentIndex + 1] - SegmentStartDistance,
+            KINDA_SMALL_NUMBER);
+        const float Alpha = FMath::Clamp((PathDistance - SegmentStartDistance) / SegmentLength, 0.0f, 1.0f);
+        const FVector Position = FMath::Lerp(SegmentStart, SegmentEnd, Alpha);
+        FVector Direction = (SegmentEnd - SegmentStart).GetSafeNormal2D();
+        if (bWalkingBackwards)
+        {
+            Direction *= -1.0f;
+        }
+
+        const float GroundOffset = RuntimeAmbientNPCGroundOffsets.IsValidIndex(WalkerIndex)
+            ? RuntimeAmbientNPCGroundOffsets[WalkerIndex]
+            : 4.0f;
+        Walker->SetRelativeLocation(FVector(Position.X, Position.Y, GroundOffset));
+        Walker->SetRelativeRotation(FRotator(0.0f, Direction.Rotation().Yaw, 0.0f));
+    }
+}
+
 void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
 {
     if (bDioramaBuilt || !GetWorld())
@@ -1531,6 +2153,7 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
         return;
     }
 
+    LoadFabEnvironmentAssets();
     bDioramaBuilt = true;
 
     BuildTerrain();
@@ -1541,7 +2164,17 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
     BuildBridge();
     BuildCastle();
     BuildForest();
+    BuildImportedVegetation();
     BuildLandmarks();
+    BuildFabMansionLandmark();
+    if (bPlaceIdleFabHorseAtStable)
+    {
+        BuildFabHorseAtStable();
+    }
+    if (bEnableMageWalkerPlaceholder)
+    {
+        BuildAmbientVillageNPCs();
+    }
 
-    UE_LOG(LogTemp, Log, TEXT("Age of Aether first-region diorama built: river, bridge, farms, village, castle, forest and landmarks."));
+    UE_LOG(LogTemp, Log, TEXT("Age of Aether first-region diorama built: river, bridge, farms, village, castle, authored forest vegetation and landmarks."));
 }

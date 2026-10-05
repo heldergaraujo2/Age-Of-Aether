@@ -8,15 +8,18 @@
 class UMaterialInstanceDynamic;
 class UInstancedStaticMeshComponent;
 class UMaterialInterface;
+class UAnimSequence;
+class USkeletalMesh;
+class USkeletalMeshComponent;
 class UStaticMesh;
 class UStaticMeshComponent;
 
 /**
  * Runtime-only, art-directed first-region diorama used by the development map.
  *
- * The scene is assembled from Unreal's built-in meshes so a clean project can
- * show the complete playable composition without fabricated .uasset/.umap
- * files. Production meshes/materials can replace these pieces incrementally.
+ * Built-in primitives keep a clean checkout playable; optional Fab imports add
+ * denser authored vegetation, a forest-edge mansion, and ambient town walkers
+ * after Scripts/import_fab_library_assets.py has run in the Unreal Editor.
  */
 UCLASS()
 class AGEOFAETHER_API AAetherDevelopmentWorldActor : public AActor
@@ -28,6 +31,7 @@ public:
 
     virtual void OnConstruction(const FTransform& Transform) override;
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Foundation")
@@ -42,6 +46,12 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Foundation")
     float GroundZ = -10.0f;
 
+    UPROPERTY(EditAnywhere, Category = "Age of Aether|Ambient Characters")
+    bool bEnableMageWalkerPlaceholder = true;
+
+    UPROPERTY(EditAnywhere, Category = "Age of Aether|Ambient Characters")
+    bool bPlaceIdleFabHorseAtStable = false;
+
 private:
     void ConfigureGround();
     void BuildFirstRegionDiorama();
@@ -54,6 +64,19 @@ private:
     void BuildFarms();
     void BuildForest();
     void BuildLandmarks();
+    void LoadFabEnvironmentAssets();
+    void BuildImportedVegetation();
+    void BuildFabMansionLandmark();
+    void BuildFabHorseAtStable();
+    void BuildAmbientVillageNPCs();
+    void UpdateAmbientVillageNPCs(float DeltaSeconds);
+    void AddFabFoliageInstance(
+        UStaticMesh* Mesh,
+        const FName& BatchName,
+        const FVector& GroundLocation,
+        float TargetHeight,
+        float WidthScale,
+        const FRotator& Rotation = FRotator::ZeroRotator);
 
     UStaticMeshComponent* AddPrimitive(
         UStaticMesh* Mesh,
@@ -140,6 +163,52 @@ private:
 
     UPROPERTY(Transient)
     TMap<uint32, TObjectPtr<UInstancedStaticMeshComponent>> RuntimeInstancedComponents;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabTreeBroadleafMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabTreeSmallMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabPineMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabBushLargeMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabBushMediumMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabBushFlowerMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabMansionMesh;
+
+    UPROPERTY(Transient)
+    TMap<FName, TObjectPtr<UInstancedStaticMeshComponent>> RuntimeFabInstancedComponents;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMeshComponent> RuntimeFabMansionComponent;
+
+    UPROPERTY(Transient)
+    TObjectPtr<USkeletalMesh> RuntimeFabHorseMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeFabHorseIdleAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<USkeletalMeshComponent> RuntimeFabHorseComponent;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<USkeletalMeshComponent>> RuntimeAmbientNPCComponents;
+
+    TArray<float> RuntimeAmbientNPCPathOffsets;
+    TArray<float> RuntimeAmbientNPCWalkSpeeds;
+    TArray<float> RuntimeAmbientNPCGroundOffsets;
+    TArray<FVector> RuntimeAmbientRoutePoints;
+    TArray<float> RuntimeAmbientRouteCumulativeDistances;
+    float RuntimeAmbientRouteLength = 0.0f;
 
     bool bDioramaBuilt = false;
 };
