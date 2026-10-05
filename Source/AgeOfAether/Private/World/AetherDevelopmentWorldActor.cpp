@@ -140,9 +140,20 @@ UPaperSpriteComponent* AAetherDevelopmentWorldActor::AddSpriteArt(
     Component->SetRelativeScale3D(FVector(Scale));
     Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     Component->SetCastShadow(false);
+    Component->SetMobility(EComponentMobility::Movable);
+
     AddInstanceComponent(Component);
-    Component->RegisterComponent();
     RuntimeSpriteComponents.Add(Component);
+    RuntimeSprites.Add(Sprite);
+    if (UTexture2D* SourceTexture = Sprite->GetSourceTexture())
+    {
+        RuntimeSpriteTextures.Add(SourceTexture);
+    }
+
+    Component->RegisterComponent();
+    Component->SetSpriteColor(FLinearColor::White);
+    Component->SetVisibility(true, true);
+    Component->MarkRenderStateDirty();
     return Component;
 }
 
