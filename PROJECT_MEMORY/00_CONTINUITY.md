@@ -535,3 +535,13 @@ Após sincronizar a correção da declaração de `AddSpriteArt(...)`, o segundo
 Próximo gate obrigatório: abrir a primeira região no Unreal, executar PIE e verificar os sprites Paper2D runtime de personagem, árvores, rochas e casas, incluindo escala, orientação isométrica, transparência, sorting, legibilidade e caminhada/exploração física. Nenhum PASS visual/runtime deve ser declarado antes dessa evidência.
 
 **Preservação:** os arquivos locais modificados/não rastreados do usuário não foram alterados, limpos ou resetados.
+
+
+## F43 — Runtime Paper2D persistence correction
+Real PIE evidence: only geometric support primitives remained visible after F42; intended Paper2D environment art disappeared.
+Diagnosis: AddSpriteArt created dynamic UPaperSpriteComponent instances and registered them, but did not add them as Actor instance components or retain them in a UPROPERTY collection. Primitive components were retained separately.
+Correction: AetherDevelopmentWorldActor now calls AddInstanceComponent(Component) and retains sprite components in RuntimeSpriteComponents.
+Correction commits: 8b816177f13586ceecce757da0779795c05bbc03 and 55c86540b22011de08180b4a48247735abeb88c7.
+Status: runtime correction committed; real PC compile and runtime revalidation pending.
+Next gate: pull main, compile AgeOfAetherEditor Win64 Development, launch Unreal, run PIE on AetherWorld_FirstRegion, and verify character/tree/rock/house sprites persist and are explorable.
+Preserve all existing local modified and untracked files.
