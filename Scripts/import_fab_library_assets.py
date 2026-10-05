@@ -221,7 +221,14 @@ def _import_tree_bush_pack():
         if not filename.lower().endswith((".png", ".jpg", ".jpeg")):
             continue
         name = os.path.splitext(filename)[0]
-        _run_import(_make_task(os.path.join(TREE_TEXTURE_DIR, filename), texture_dest, "T_Fab_" + name))
+        texture_paths = _run_import(
+            _make_task(os.path.join(TREE_TEXTURE_DIR, filename), texture_dest, "T_Fab_" + name)
+        )
+        if name.lower().endswith("normal"):
+            for texture in _load_assets(texture_paths, unreal.Texture2D):
+                _set(texture, "compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
+                _set(texture, "srgb", False)
+                unreal.EditorAssetLibrary.save_loaded_asset(texture)
 
     for source_alias, asset_name in TREE_MESHES:
         asset = _load_asset(TREE_DEST + "/" + asset_name, unreal.StaticMesh)
@@ -281,6 +288,7 @@ def _create_horse_material(base_color, normal, specular):
     if normal:
         _set(normal, "compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
         _set(normal, "srgb", False)
+        unreal.EditorAssetLibrary.save_loaded_asset(normal)
         normal_sample = unreal.MaterialEditingLibrary.create_material_expression(
             material, unreal.MaterialExpressionTextureSample, -460, 180
         )
@@ -291,6 +299,7 @@ def _create_horse_material(base_color, normal, specular):
 
     if specular:
         _set(specular, "srgb", False)
+        unreal.EditorAssetLibrary.save_loaded_asset(specular)
         spec_sample = unreal.MaterialEditingLibrary.create_material_expression(
             material, unreal.MaterialExpressionTextureSample, -460, 360
         )
