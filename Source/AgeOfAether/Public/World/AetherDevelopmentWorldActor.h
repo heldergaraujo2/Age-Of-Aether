@@ -12,6 +12,7 @@ class UStaticMesh;
 class UStaticMeshComponent;
 class UPaperSpriteComponent;
 class UPaperSprite;
+class UTexture2D;
 
 UCLASS()
 class AGEOFAETHER_API AAetherDevelopmentWorldActor : public AActor
@@ -63,6 +64,12 @@ private:
 
     UPROPERTY(Transient)
     TArray<TObjectPtr<UPaperSpriteComponent>> RuntimeSpriteComponents;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UPaperSprite>> RuntimeSprites;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UTexture2D>> RuntimeSpriteTextures;
 
     bool bDioramaBuilt = false;
 };
