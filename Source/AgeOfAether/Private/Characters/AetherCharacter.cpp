@@ -364,7 +364,7 @@ void AAetherCharacter::InitializeRuntimeVisual()
         ? Visual2DComponent->GetProfile()
         : nullptr;
     const bool bUsePrimaryTwoDPresentation = TwoDProfile && TwoDProfile->bUseAsPrimaryPresentation;
-    const bool bHasSkeletalPresentation = RuntimeSkeletalVisual && RuntimeSkeletalVisual->GetSkeletalMesh();
+    const bool bHasSkeletalPresentation = RuntimeSkeletalVisual && RuntimeSkeletalVisual->GetSkeletalMeshAsset() != nullptr;
 
     UStaticMeshComponent* ProxyParts[] = {
         RuntimeBodyVisual.Get(),
@@ -415,13 +415,13 @@ void AAetherCharacter::InitializeSkeletalVisual()
         return;
     }
 
-    USkeletalMesh* Mesh = MageSkeletalMeshAsset.LoadSynchronous();
-    if (!Mesh)
+    USkeletalMesh* LoadedSkeletalMesh = MageSkeletalMeshAsset.LoadSynchronous();
+    if (!LoadedSkeletalMesh)
     {
         return;
     }
 
-    RuntimeSkeletalVisual->SetSkeletalMesh(Mesh);
+    RuntimeSkeletalVisual->SetSkeletalMesh(LoadedSkeletalMesh);
     RuntimeSkeletalVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     RuntimeSkeletalVisual->SetCastShadow(true);
     RuntimeSkeletalVisual->SetAnimationMode(EAnimationMode::AnimationSingleNode);
@@ -442,7 +442,7 @@ void AAetherCharacter::InitializeSkeletalVisual()
 
 void AAetherCharacter::UpdateSkeletalVisualAnimation()
 {
-    if (GetNetMode() == NM_DedicatedServer || !RuntimeSkeletalVisual || !RuntimeSkeletalVisual->GetSkeletalMesh())
+    if (GetNetMode() == NM_DedicatedServer || !RuntimeSkeletalVisual || !RuntimeSkeletalVisual->GetSkeletalMeshAsset())
     {
         return;
     }

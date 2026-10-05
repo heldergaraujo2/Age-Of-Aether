@@ -38,7 +38,7 @@ This is a substantial procedural blockout pass, **not finished production art or
 
 ## Validation still required
 
-The latest owner-confirmed UE 5.8 build passed for commit `05fe52a`; this visual-fidelity change has not been run through UHT/UBT, imported by an Unreal Editor, or seen in PIE. This sandbox has no Unreal Engine installation. After importing and compiling locally, review the complete region at the gameplay camera’s default and zoomed distances. Confirm that:
+The owner-confirmed UE 5.8 build passed for commit `05fe52a`. The first UBT attempt after `5cd928f` exposed three source issues in this pass: UE 5.8 uses `GetSkeletalMeshAsset()` rather than `GetSkeletalMesh()`, the added tree-foliage function lacked its final closing brace (which caused the later local-function/generated-header diagnostics), and MSVC flagged a local `Mesh` name shadowing `ACharacter::Mesh`. All three are corrected in the follow-up source change. These fixes are in the follow-up source change but still require a fresh UE 5.8 UBT run. No Editor import or PIE review has been completed. This sandbox has no Unreal Engine installation. After importing and compiling locally, review the complete region at the gameplay camera’s default and zoomed distances. Confirm that:
 
 - grass stays off paths, water, crops, the village paving and castle walkable surfaces;
 - tree branches are visible without badly intersecting their foliage, and tile pieces sit on rather than float above the roof slopes;

@@ -708,6 +708,7 @@ void AAetherDevelopmentWorldActor::BuildTree(
                 static_cast<float>((LeafIndex * 13) % 24 - 12),
                 static_cast<float>(LeafIndex * 41),
                 static_cast<float>((LeafIndex * 17) % 28 - 14)));
+    }
 }
 
 void AAetherDevelopmentWorldActor::BuildRockCluster(
