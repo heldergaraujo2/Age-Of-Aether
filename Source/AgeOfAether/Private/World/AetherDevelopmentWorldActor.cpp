@@ -137,7 +137,7 @@ UPaperSpriteComponent* AAetherDevelopmentWorldActor::AddSpriteArt(
     Component->SetupAttachment(Root);
     Component->SetSprite(Sprite);
     Component->SetRelativeLocation(Location);
-    Component->SetRelativeRotation(FRotator(0.0f, Yaw, 0.0f));
+    Component->SetRelativeRotation(FRotator(90.0f, Yaw, 0.0f));
     Component->SetRelativeScale3D(FVector(Scale));
     Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     Component->SetCastShadow(false);
@@ -214,7 +214,7 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
             FAetherRuntime2DArt::CreateHouseSprite(this, Index),
             FName(*FString::Printf(TEXT("HouseArt_%d"), Index)),
             Location + FVector(0, 0, 178),
-            1.0f,
+            1.15f,
             45.0f);
     }
 
@@ -231,7 +231,7 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
             FAetherRuntime2DArt::CreateTreeSprite(this, Index % 2),
             FName(*FString::Printf(TEXT("TreeArt_%d"), Index)),
             Location + FVector(0, 0, 128),
-            1.55f,
+            1.65f,
             45.0f);
     }
 
@@ -246,7 +246,7 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
             FAetherRuntime2DArt::CreateRockSprite(this, Index % 2),
             FName(*FString::Printf(TEXT("RockArt_%d"), Index)),
             RockLocations[Index] + FVector(0, 0, 48),
-            1.15f,
+            1.25f,
             45.0f);
     }
 
