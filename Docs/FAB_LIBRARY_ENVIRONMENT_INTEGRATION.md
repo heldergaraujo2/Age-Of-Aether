@@ -11,6 +11,8 @@ This change connects selected sources in `FabLibrary/` to the first-region runti
 
 ### Expected runtime paths
 
+- Grass source: `ArtSource/Environment/T_GrassGround_Source.png`
+- Ground material: `/Game/Aether/Environment/Ground/Materials/M_GrassGround`
 - Trees/bushes: `/Game/Aether/Environment/Fab/TreesBush/SM_Fab_*`
 - Masked foliage materials: `/Game/Aether/Environment/Fab/TreesBush/Materials/M_Fab_*_Masked`
 - Unicorn horse: `/Game/Aether/Characters/FabHorse/SK_Fab_UnicornHorse`
@@ -19,6 +21,7 @@ This change connects selected sources in `FabLibrary/` to the first-region runti
 
 ## What the runtime pass adds
 
+- Imports the tileable stylized grass source, creates a repeating rough ground material, and applies it to the diorama floor instead of the solid-color material. Viewport **Lit** is the correct mode for checking material colors; **Shader Complexity** deliberately displays diagnostic false colors.
 - Replaces the diorama's procedural tree silhouettes with authored low-poly FBX trees when available. The importer creates two-sided masked foliage materials and connects each source texture's alpha to Opacity Mask, so transparent cards no longer render as dark opaque rectangles. The runtime adds a denser outer belt, an inward woodland ring, and clustered city/forest shrubs. Instanced components keep foliage relatively inexpensive; existing grass tufts remain in place.
 - Adds ten Mage walker placeholders using the existing skeletal mesh and `A_Walk_Anim` (or `A_Walk`) plus the matching Idle animation when available. Each walker chooses varied destinations across the town, farm, orchard and castle paths, pauses, then chooses again instead of following a shared back-and-forth loop. These remain visual components with no collision, interaction, replication, or gameplay AI. The user confirmed this placeholder composition.
 - Provides an optional farmyard placement for the Fab unicorn and plays its Idle sequence. It remains off for the selected ten-human composition; the source pack has no walking animation, so the horse is not sent walking.

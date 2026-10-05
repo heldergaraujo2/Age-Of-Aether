@@ -2,9 +2,9 @@
 
 Run from Unreal Editor's Python console after enabling Editor scripting. The
 script stages FBX media into Saved/ (never edits FabLibrary sources), imports
-the low-poly trees/bushes and free unicorn horse + its one Idle clip. The mansion
-GLB is opt-in because its Fab metadata is AI-generated/AI-forbidden. Stable /Game
-paths are printed at the end for runtime use.
+a generated grass ground texture/material, the low-poly trees/bushes, and the free
+unicorn horse + its one Idle clip. The mansion GLB is opt-in because its Fab metadata
+is AI-generated/AI-forbidden. Stable /Game paths are printed for runtime use.
 """
 
 import json
@@ -17,6 +17,11 @@ import unreal
 PROJECT_DIR = unreal.Paths.project_dir()
 FAB_DIR = os.path.join(PROJECT_DIR, "FabLibrary")
 SAVED_STAGE_DIR = os.path.join(PROJECT_DIR, "Saved", "FabImportStaging")
+GRASS_SOURCE = os.path.join(PROJECT_DIR, "ArtSource", "Environment", "T_GrassGround_Source.png")
+GRASS_TEXTURE_DEST = "/Game/Aether/Environment/Ground/Textures"
+GRASS_MATERIAL_DEST = "/Game/Aether/Environment/Ground/Materials"
+GRASS_TEXTURE_PATH = GRASS_TEXTURE_DEST + "/T_GrassGround"
+GRASS_MATERIAL_PATH = GRASS_MATERIAL_DEST + "/M_GrassGround"
 
 TREE_SOURCE = os.path.join(
     FAB_DIR,
@@ -232,6 +237,80 @@ def _create_masked_foliage_material(asset_name, texture):
     unreal.MaterialEditingLibrary.recompile_material(material)
     unreal.EditorAssetLibrary.save_loaded_asset(material)
     return material
+
+
+def _create_grass_ground_material(texture):
+    material = unreal.EditorAssetLibrary.load_asset(GRASS_MATERIAL_PATH)
+    if material:
+        try:
+            for expression in list(material.get_editor_property("expressions")):
+                unreal.MaterialEditingLibrary.delete_material_expression(material, expression)
+        except Exception:
+            unreal.EditorAssetLibrary.delete_asset(GRASS_MATERIAL_PATH)
+            material = None
+
+    if not material:
+        unreal.EditorAssetLibrary.make_directory(GRASS_MATERIAL_DEST)
+        material = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+            "M_GrassGround",
+            GRASS_MATERIAL_DEST,
+            unreal.Material,
+            unreal.MaterialFactoryNew(),
+        )
+    if not material:
+        raise RuntimeError("Could not create grass ground material {}.".format(GRASS_MATERIAL_PATH))
+
+    _set(material, "blend_mode", unreal.BlendMode.BLEND_OPAQUE)
+    _set(material, "two_sided", False)
+
+    coordinates = unreal.MaterialEditingLibrary.create_material_expression(
+        material, unreal.MaterialExpressionTextureCoordinate, -700, 0
+    )
+    _set(coordinates, "u_tiling", 32.0)
+    _set(coordinates, "v_tiling", 24.0)
+
+    grass_sample = unreal.MaterialEditingLibrary.create_material_expression(
+        material, unreal.MaterialExpressionTextureSample, -420, 0
+    )
+    _set(grass_sample, "texture", texture)
+    unreal.MaterialEditingLibrary.connect_material_expressions(
+        coordinates, "", grass_sample, "Coordinates"
+    )
+    unreal.MaterialEditingLibrary.connect_material_property(
+        grass_sample, "RGB", unreal.MaterialProperty.MP_BASE_COLOR
+    )
+
+    roughness = unreal.MaterialEditingLibrary.create_material_expression(
+        material, unreal.MaterialExpressionConstant, -150, 220
+    )
+    _set(roughness, "r", 0.94)
+    unreal.MaterialEditingLibrary.connect_material_property(
+        roughness, "", unreal.MaterialProperty.MP_ROUGHNESS
+    )
+
+    unreal.MaterialEditingLibrary.recompile_material(material)
+    unreal.EditorAssetLibrary.save_loaded_asset(material)
+    return material
+
+
+def _import_grass_ground():
+    unreal.EditorAssetLibrary.make_directory(GRASS_TEXTURE_DEST)
+    unreal.EditorAssetLibrary.make_directory(GRASS_MATERIAL_DEST)
+    task = _make_task(GRASS_SOURCE, GRASS_TEXTURE_DEST, "T_GrassGround")
+    texture = next(iter(_load_assets(_run_import(task), unreal.Texture2D)), None)
+    if not texture:
+        texture = _load_asset(GRASS_TEXTURE_PATH, unreal.Texture2D)
+    if not texture:
+        raise RuntimeError("The generated grass ground texture could not be imported.")
+
+    texture = _ensure_path(texture, GRASS_TEXTURE_DEST, "T_GrassGround", unreal.Texture2D)
+    _set(texture, "srgb", True)
+    _set(texture, "compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT, required=False)
+    unreal.EditorAssetLibrary.save_loaded_asset(texture)
+    material = _create_grass_ground_material(texture)
+    unreal.log("Textured grass ground ready: texture={} material={}".format(
+        texture.get_path_name(), material.get_path_name()
+    ))
 
 
 def _assign_static_material(mesh, material):
@@ -527,6 +606,8 @@ def _import_mansion():
 
 def run():
     for directory in (
+        GRASS_TEXTURE_DEST,
+        GRASS_MATERIAL_DEST,
         TREE_DEST,
         TREE_DEST + "/Textures",
         HORSE_DEST,
@@ -537,11 +618,13 @@ def run():
     ):
         unreal.EditorAssetLibrary.make_directory(directory)
 
+    _import_grass_ground()
     _import_tree_bush_pack()
     _import_horse()
     _import_mansion()
     unreal.log_warning(
-        "Fab asset import finished. The TreesBush FBX provides low-poly trees/bushes; "
+        "Fab asset import finished. The generated grass ground texture/material and "
+        "TreesBush FBX are ready; the TreesBush pack provides low-poly trees/bushes; "
         "the free horse version provides one Idle clip. The mansion is skipped by default "
         "because its listing metadata is AI-generated/AI-forbidden. The small controllable_Rain "
         "GLB remains source-only because it does not contain a Niagara system."

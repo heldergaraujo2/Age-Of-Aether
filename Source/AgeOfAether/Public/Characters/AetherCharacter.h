@@ -227,6 +227,8 @@ private:
     void CameraOrbitToggle(const struct FInputActionValue& Value);
     void CameraOrbitDragStarted(const struct FInputActionValue& Value);
     void CameraOrbitDragStopped(const struct FInputActionValue& Value);
+    void CameraOrbitPitchUp(const struct FInputActionValue& Value);
+    void CameraOrbitPitchDown(const struct FInputActionValue& Value);
     void CameraViewReset(const struct FInputActionValue& Value);
     void BasicAttackPressed(const struct FInputActionValue& Value);
     void ExecuteBasicAttack();
@@ -254,6 +256,8 @@ private:
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraZoomAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitToggleAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitDragAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitPitchUpAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitPitchDownAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraViewResetAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> BasicAttackAction;
     FVector ClickMoveTarget = FVector::ZeroVector;

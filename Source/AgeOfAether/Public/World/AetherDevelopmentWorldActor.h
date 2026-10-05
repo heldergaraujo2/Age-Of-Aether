@@ -146,6 +146,9 @@ private:
     TObjectPtr<UMaterialInterface> RuntimeBaseMaterial;
 
     UPROPERTY(Transient)
+    TObjectPtr<UMaterialInterface> RuntimeGrassGroundMaterial;
+
+    UPROPERTY(Transient)
     TObjectPtr<UStaticMesh> RuntimeCubeMesh;
 
     UPROPERTY(Transient)

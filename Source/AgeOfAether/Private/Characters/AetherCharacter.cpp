@@ -595,6 +595,8 @@ void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInput->BindAction(CameraOrbitDragAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraOrbitDragStarted);
         EnhancedInput->BindAction(CameraOrbitDragAction, ETriggerEvent::Completed, this, &AAetherCharacter::CameraOrbitDragStopped);
         EnhancedInput->BindAction(CameraOrbitDragAction, ETriggerEvent::Canceled, this, &AAetherCharacter::CameraOrbitDragStopped);
+        EnhancedInput->BindAction(CameraOrbitPitchUpAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraOrbitPitchUp);
+        EnhancedInput->BindAction(CameraOrbitPitchDownAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraOrbitPitchDown);
         EnhancedInput->BindAction(CameraViewResetAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraViewReset);
         EnhancedInput->BindAction(BasicAttackAction, ETriggerEvent::Started, this, &AAetherCharacter::BasicAttackPressed);
     }
@@ -622,6 +624,8 @@ void AAetherCharacter::InitializeFoundationInput()
     CameraZoomAction = NewObject<UInputAction>(this, TEXT("CameraZoom"));
     CameraOrbitToggleAction = NewObject<UInputAction>(this, TEXT("CameraOrbitToggle"));
     CameraOrbitDragAction = NewObject<UInputAction>(this, TEXT("CameraOrbitDrag"));
+    CameraOrbitPitchUpAction = NewObject<UInputAction>(this, TEXT("CameraOrbitPitchUp"));
+    CameraOrbitPitchDownAction = NewObject<UInputAction>(this, TEXT("CameraOrbitPitchDown"));
     CameraViewResetAction = NewObject<UInputAction>(this, TEXT("CameraViewReset"));
     BasicAttackAction = NewObject<UInputAction>(this, TEXT("BasicAttack"));
 
@@ -633,6 +637,8 @@ void AAetherCharacter::InitializeFoundationInput()
     CameraZoomAction->ValueType = EInputActionValueType::Axis1D;
     CameraOrbitToggleAction->ValueType = EInputActionValueType::Boolean;
     CameraOrbitDragAction->ValueType = EInputActionValueType::Boolean;
+    CameraOrbitPitchUpAction->ValueType = EInputActionValueType::Boolean;
+    CameraOrbitPitchDownAction->ValueType = EInputActionValueType::Boolean;
     CameraViewResetAction->ValueType = EInputActionValueType::Boolean;
     BasicAttackAction->ValueType = EInputActionValueType::Boolean;
 
@@ -642,8 +648,10 @@ void AAetherCharacter::InitializeFoundationInput()
     RuntimeInputContext->MapKey(JumpAction, EKeys::SpaceBar);
     RuntimeInputContext->MapKey(SprintAction, EKeys::LeftShift);
     RuntimeInputContext->MapKey(CameraZoomAction, EKeys::MouseWheelAxis);
-    RuntimeInputContext->MapKey(CameraOrbitToggleAction, EKeys::F5);
+    RuntimeInputContext->MapKey(CameraOrbitToggleAction, EKeys::F7);
     RuntimeInputContext->MapKey(CameraOrbitDragAction, EKeys::MiddleMouseButton);
+    RuntimeInputContext->MapKey(CameraOrbitPitchUpAction, EKeys::PageUp);
+    RuntimeInputContext->MapKey(CameraOrbitPitchDownAction, EKeys::PageDown);
     RuntimeInputContext->MapKey(CameraViewResetAction, EKeys::F6);
     RuntimeInputContext->MapKey(BasicAttackAction, EKeys::RightMouseButton);
 
@@ -847,6 +855,24 @@ void AAetherCharacter::CameraOrbitDragStarted(const FInputActionValue& Value)
 void AAetherCharacter::CameraOrbitDragStopped(const FInputActionValue& /*Value*/)
 {
     bCameraOrbitDragging = false;
+}
+
+void AAetherCharacter::CameraOrbitPitchUp(const FInputActionValue& Value)
+{
+    if (Value.Get<bool>() && IsLocallyControlled()
+        && IsometricCameraComponent && IsometricCameraComponent->IsFreeOrbitModeEnabled())
+    {
+        IsometricCameraComponent->AdjustOrbitPitch(-5.0f);
+    }
+}
+
+void AAetherCharacter::CameraOrbitPitchDown(const FInputActionValue& Value)
+{
+    if (Value.Get<bool>() && IsLocallyControlled()
+        && IsometricCameraComponent && IsometricCameraComponent->IsFreeOrbitModeEnabled())
+    {
+        IsometricCameraComponent->AdjustOrbitPitch(5.0f);
+    }
 }
 
 void AAetherCharacter::CameraViewReset(const FInputActionValue& Value)

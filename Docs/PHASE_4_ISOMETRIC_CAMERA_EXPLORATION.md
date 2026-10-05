@@ -31,8 +31,8 @@ The repository already contains the Phase 40 source-level movement/camera founda
 - pitch limits;
 - left-click-to-move;
 - right-click basic attack;
-- F5 toggles local 3D orbit-camera control while preserving the last user view;
-- middle-mouse drag orbits horizontally through 360 degrees while orbit control is enabled;
+- F7 toggles local 3D orbit-camera control while preserving the last user view;
+- middle-mouse drag rotates/tilts the view; Page Up/Down provide a fine pitch adjustment toward overhead/front view;
 - F6 resets to the original camera view;
 - mouse-wheel zoom, including close character inspection in orbit mode;
 - jump;

@@ -137,6 +137,8 @@ void AAetherDevelopmentWorldActor::ConfigureGround()
 
 void AAetherDevelopmentWorldActor::LoadFabEnvironmentAssets()
 {
+    RuntimeGrassGroundMaterial = LoadObject<UMaterialInterface>(
+        nullptr, TEXT("/Game/Aether/Environment/Ground/Materials/M_GrassGround.M_GrassGround"));
     RuntimeFabTreeBroadleafMesh = LoadObject<UStaticMesh>(
         nullptr, TEXT("/Game/Aether/Environment/Fab/TreesBush/SM_Fab_Tree2.SM_Fab_Tree2"));
     RuntimeFabTreeSmallMesh = LoadObject<UStaticMesh>(
@@ -1085,9 +1087,14 @@ void AAetherDevelopmentWorldActor::BuildTerrain()
 {
     if (Ground)
     {
-        if (UMaterialInstanceDynamic* Material = CreateColorMaterial(GrassColor))
+        if (RuntimeGrassGroundMaterial)
         {
-            Ground->SetMaterial(0, Material);
+            Ground->SetMaterial(0, RuntimeGrassGroundMaterial);
+        }
+        else if (UMaterialInstanceDynamic* FallbackMaterial = CreateColorMaterial(GrassColor))
+        {
+            Ground->SetMaterial(0, FallbackMaterial);
+            UE_LOG(LogTemp, Warning, TEXT("Grass ground material is not imported; using the solid-color fallback. Run Scripts/import_fab_library_assets.py to import the textured ground."));
         }
     }
 

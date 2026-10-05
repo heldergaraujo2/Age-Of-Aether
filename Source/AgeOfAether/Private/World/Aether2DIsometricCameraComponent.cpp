@@ -110,7 +110,7 @@ void UAether2DIsometricCameraComponent::ToggleFreeOrbitMode()
     {
         const FRotator CurrentRotation = Boom->GetRelativeRotation();
         OrbitYaw = FRotator::NormalizeAxis(CurrentRotation.Yaw);
-        OrbitPitch = FMath::Clamp(CurrentRotation.Pitch, -85.0f, -5.0f);
+        OrbitPitch = FMath::Clamp(CurrentRotation.Pitch, OrbitMinimumPitch, OrbitMaximumPitch);
         OrbitDistance = FMath::Clamp(Boom->TargetArmLength, OrbitMinimumDistance, OrbitMaximumDistance);
         bHasSavedOrbitView = true;
     }
@@ -120,11 +120,11 @@ void UAether2DIsometricCameraComponent::ToggleFreeOrbitMode()
     {
         bHoldLastOrbitView = false;
         ApplyUserOrbitView(Boom);
-        UE_LOG(LogTemp, Log, TEXT("Free 3D camera enabled. Hold middle mouse and drag to orbit; F6 resets the view."));
+        UE_LOG(LogTemp, Log, TEXT("Free 3D camera enabled. Hold middle mouse and drag to orbit/tilt; Page Up/Down adjusts pitch; F6 resets the view."));
     }
     else
     {
-        // Keep the final orbit and zoom pose. The next F5 resumes from here.
+        // Keep the final orbit and zoom pose. The next toggle resumes from here.
         bHoldLastOrbitView = true;
         UE_LOG(LogTemp, Log, TEXT("Free camera controls disabled; keeping the current camera view."));
     }
@@ -174,12 +174,26 @@ void UAether2DIsometricCameraComponent::AddOrbitInput(float YawDelta, float Pitc
         return;
     }
 
-    OrbitYaw = FRotator::NormalizeAxis(OrbitYaw + YawDelta * OrbitRotationSensitivity);
+    OrbitYaw = FRotator::NormalizeAxis(OrbitYaw + YawDelta * OrbitYawSensitivity);
     OrbitPitch = FMath::Clamp(
-        OrbitPitch - PitchDelta * OrbitRotationSensitivity,
-        -85.0f,
-        -5.0f);
+        OrbitPitch - PitchDelta * OrbitPitchSensitivity,
+        OrbitMinimumPitch,
+        OrbitMaximumPitch);
 
+    if (USpringArmComponent* Boom = ResolveCameraBoom())
+    {
+        ApplyUserOrbitView(Boom);
+    }
+}
+
+void UAether2DIsometricCameraComponent::AdjustOrbitPitch(float DeltaDegrees)
+{
+    if (!bFreeOrbitModeEnabled || !FMath::IsFinite(DeltaDegrees))
+    {
+        return;
+    }
+
+    OrbitPitch = FMath::Clamp(OrbitPitch + DeltaDegrees, OrbitMinimumPitch, OrbitMaximumPitch);
     if (USpringArmComponent* Boom = ResolveCameraBoom())
     {
         ApplyUserOrbitView(Boom);

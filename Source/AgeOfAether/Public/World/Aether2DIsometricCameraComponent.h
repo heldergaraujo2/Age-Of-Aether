@@ -36,6 +36,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|2D Camera")
     void AddOrbitInput(float YawDelta, float PitchDelta);
 
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|2D Camera")
+    void AdjustOrbitPitch(float DeltaDegrees);
+
     UFUNCTION(BlueprintPure, Category = "Age of Aether|2D Camera")
     bool IsFreeOrbitModeEnabled() const { return bFreeOrbitModeEnabled; }
 
@@ -71,7 +74,10 @@ private:
     float OrbitDistance = 2100.0f;
     float OrbitYaw = 45.0f;
     float OrbitPitch = -55.0f;
-    float OrbitRotationSensitivity = 0.8f;
+    float OrbitYawSensitivity = 0.8f;
+    float OrbitPitchSensitivity = 0.35f;
+    float OrbitMinimumPitch = -82.0f;
+    float OrbitMaximumPitch = 10.0f;
     float CloseInspectionMinimumDistance = 250.0f;
     float OrbitMinimumDistance = 120.0f;
     float OrbitMaximumDistance = 3600.0f;

@@ -10,8 +10,8 @@
 - Extended the runtime Enhanced Input fallback with:
   - left-click-to-move using the cursor hit point (with a ground-plane fallback);
   - right-click basic attack;
-  - F5 toggles 3D orbit-camera control without discarding the last orbit/zoom view;
-  - while orbit control is active, hold the middle mouse button and drag to rotate the camera through 360 degrees;
+  - F7 toggles 3D orbit-camera control without discarding the last orbit/zoom view;
+  - while orbit control is active, middle-mouse dragging rotates/tilts the camera; Page Up/Down adjusts tilt in 5-degree steps;
   - F6 resets pitch, yaw and zoom to the original camera view;
   - Mouse Wheel zoom, including close inspection in orbit mode;
   - Space jump;
@@ -39,8 +39,9 @@ No per-class or per-character input C++ is required.
 ## DEFAULT CONTROLS
 - Left mouse click = move to the clicked ground position
 - Right mouse click = basic attack
-- F5 = toggle 3D orbit-camera control on/off; the last view is retained
-- Hold middle mouse button and drag = orbit 360 degrees while F5 orbit control is active
+- F7 = toggle 3D orbit-camera control on/off; the last view is retained
+- Hold middle mouse button and drag = orbit/tilt the camera while orbit control is active
+- Page Up / Page Down = fine tilt adjustment toward overhead/front view
 - F6 = reset camera to its original pitch, yaw and zoom
 - Mouse wheel = zoom, down to a close inspection distance during orbit mode
 - Space = jump
@@ -62,8 +63,8 @@ Local Unreal verification must confirm:
 - character spawns;
 - left click moves to a ground destination;
 - right click triggers the basic attack;
-- F5 enables/disables orbit control without resetting the view;
-- middle-button drag rotates the camera smoothly through a full yaw revolution;
+- F7 enables/disables orbit control without resetting the view;
+- middle-button drag rotates/tilts the camera; Page Up/Down provide a fine pitch adjustment;
 - F6 resets the original camera view;
 - orbit zoom can inspect the character closely and remains stable when orbit control is toggled off;
 - pitch clamp works;
