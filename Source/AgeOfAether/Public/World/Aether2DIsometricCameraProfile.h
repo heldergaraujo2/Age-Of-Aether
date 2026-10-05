@@ -33,7 +33,7 @@ public:
     float CameraDistance = 2100.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
-    float MinCameraDistance = 1050.0f;
+    float MinCameraDistance = 250.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
     float MaxCameraDistance = 3600.0f;

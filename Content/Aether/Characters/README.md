@@ -16,7 +16,7 @@ Runtime fallback remains available when no profile is assigned:
 - walk 420;
 - sprint 630;
 - jump uses Unreal CharacterMovement default;
-- isometric overview camera starts around 2,100 units and zooms from 1,050 to 3,600 units;
+- isometric overview camera starts around 2,100 units and zooms to 250 units for close inspection (3,600-unit overview maximum); orbit mode reaches 120 units;
 - mouse wheel zoom;
 - pitch clamp -75 to +35 degrees.
 
@@ -24,10 +24,12 @@ Runtime fallback remains available when no profile is assigned:
 The first playable slice creates Enhanced Input actions at runtime, avoiding unnecessary manual Input Action/Mapping Context assets. Current controls:
 - Left mouse click: move to the clicked ground position
 - Right mouse click: basic attack
-- Mouse: camera look when free look is enabled by the camera profile
+- F5: enable/disable 3D orbit-camera controls; the last view is retained
+- Hold middle mouse button and drag: orbit the camera through 360 degrees
+- F6: reset camera pitch, yaw and zoom to the original view
+- Mouse wheel: zoom, including close inspection in 3D orbit mode
 - Space: jump
 - Left Shift: sprint
-- Mouse wheel: zoom
 
 These can later be promoted to authored Input Action/Mapping Context assets for rebinding/localization without changing gameplay authority.
 

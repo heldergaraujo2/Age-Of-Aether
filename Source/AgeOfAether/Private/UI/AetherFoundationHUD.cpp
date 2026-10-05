@@ -25,9 +25,11 @@ void AAetherFoundationHUD::DrawHUD()
     DrawText(Status, FLinearColor::White, 24.0f, 24.0f, GEngine ? GEngine->GetMediumFont() : nullptr, 1.0f, false);
     DrawText(TEXT("Left Click Move  |  Right Click Attack  |  Wheel Zoom  |  Space Jump"),
         FLinearColor::White, 24.0f, 48.0f, GEngine ? GEngine->GetSmallFont() : nullptr, 1.0f, false);
+    DrawText(TEXT("F5: Toggle 3D Orbit  |  Hold Middle Mouse + Drag: Rotate  |  F6: Reset View"),
+        FLinearColor::White, 24.0f, 70.0f, GEngine ? GEngine->GetSmallFont() : nullptr, 1.0f, false);
     DrawText(PlayerOwner->HasAuthority()
         ? TEXT("Authority: SERVER")
         : TEXT("Authority: CLIENT / presentation only"),
         PlayerOwner->HasAuthority() ? FLinearColor::Yellow : FLinearColor::Green,
-        24.0f, 70.0f, GEngine ? GEngine->GetSmallFont() : nullptr, 1.0f, false);
+        24.0f, 92.0f, GEngine ? GEngine->GetSmallFont() : nullptr, 1.0f, false);
 }

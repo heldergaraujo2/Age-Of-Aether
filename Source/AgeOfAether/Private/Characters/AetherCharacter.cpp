@@ -553,6 +553,11 @@ void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInput->BindAction(SprintAction, ETriggerEvent::Completed, this, &AAetherCharacter::SprintStopped);
         EnhancedInput->BindAction(SprintAction, ETriggerEvent::Canceled, this, &AAetherCharacter::SprintStopped);
         EnhancedInput->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &AAetherCharacter::CameraZoom);
+        EnhancedInput->BindAction(CameraOrbitToggleAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraOrbitToggle);
+        EnhancedInput->BindAction(CameraOrbitDragAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraOrbitDragStarted);
+        EnhancedInput->BindAction(CameraOrbitDragAction, ETriggerEvent::Completed, this, &AAetherCharacter::CameraOrbitDragStopped);
+        EnhancedInput->BindAction(CameraOrbitDragAction, ETriggerEvent::Canceled, this, &AAetherCharacter::CameraOrbitDragStopped);
+        EnhancedInput->BindAction(CameraViewResetAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraViewReset);
         EnhancedInput->BindAction(BasicAttackAction, ETriggerEvent::Started, this, &AAetherCharacter::BasicAttackPressed);
     }
 }
@@ -577,6 +582,9 @@ void AAetherCharacter::InitializeFoundationInput()
     JumpAction = NewObject<UInputAction>(this, TEXT("Jump"));
     SprintAction = NewObject<UInputAction>(this, TEXT("Sprint"));
     CameraZoomAction = NewObject<UInputAction>(this, TEXT("CameraZoom"));
+    CameraOrbitToggleAction = NewObject<UInputAction>(this, TEXT("CameraOrbitToggle"));
+    CameraOrbitDragAction = NewObject<UInputAction>(this, TEXT("CameraOrbitDrag"));
+    CameraViewResetAction = NewObject<UInputAction>(this, TEXT("CameraViewReset"));
     BasicAttackAction = NewObject<UInputAction>(this, TEXT("BasicAttack"));
 
     ClickMoveAction->ValueType = EInputActionValueType::Boolean;
@@ -585,6 +593,9 @@ void AAetherCharacter::InitializeFoundationInput()
     JumpAction->ValueType = EInputActionValueType::Boolean;
     SprintAction->ValueType = EInputActionValueType::Boolean;
     CameraZoomAction->ValueType = EInputActionValueType::Axis1D;
+    CameraOrbitToggleAction->ValueType = EInputActionValueType::Boolean;
+    CameraOrbitDragAction->ValueType = EInputActionValueType::Boolean;
+    CameraViewResetAction->ValueType = EInputActionValueType::Boolean;
     BasicAttackAction->ValueType = EInputActionValueType::Boolean;
 
     RuntimeInputContext->MapKey(ClickMoveAction, EKeys::LeftMouseButton);
@@ -593,6 +604,9 @@ void AAetherCharacter::InitializeFoundationInput()
     RuntimeInputContext->MapKey(JumpAction, EKeys::SpaceBar);
     RuntimeInputContext->MapKey(SprintAction, EKeys::LeftShift);
     RuntimeInputContext->MapKey(CameraZoomAction, EKeys::MouseWheelAxis);
+    RuntimeInputContext->MapKey(CameraOrbitToggleAction, EKeys::F5);
+    RuntimeInputContext->MapKey(CameraOrbitDragAction, EKeys::MiddleMouseButton);
+    RuntimeInputContext->MapKey(CameraViewResetAction, EKeys::F6);
     RuntimeInputContext->MapKey(BasicAttackAction, EKeys::RightMouseButton);
 
     PC->bShowMouseCursor = true;
@@ -681,6 +695,14 @@ void AAetherCharacter::UpdateClickToMove(float /*DeltaSeconds*/)
 
 void AAetherCharacter::LookYaw(const FInputActionValue& Value)
 {
+    if (IsometricCameraComponent && IsometricCameraComponent->HasUserOrbitView())
+    {
+        if (bCameraOrbitDragging && IsometricCameraComponent->IsFreeOrbitModeEnabled())
+        {
+            IsometricCameraComponent->AddOrbitInput(Value.Get<float>(), 0.0f);
+        }
+        return;
+    }
     if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook())
     {
         return;
@@ -690,6 +712,14 @@ void AAetherCharacter::LookYaw(const FInputActionValue& Value)
 
 void AAetherCharacter::LookPitch(const FInputActionValue& Value)
 {
+    if (IsometricCameraComponent && IsometricCameraComponent->HasUserOrbitView())
+    {
+        if (bCameraOrbitDragging && IsometricCameraComponent->IsFreeOrbitModeEnabled())
+        {
+            IsometricCameraComponent->AddOrbitInput(0.0f, Value.Get<float>());
+        }
+        return;
+    }
     if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook())
     {
         return;
@@ -753,6 +783,40 @@ void AAetherCharacter::CameraZoom(const FInputActionValue& Value)
     const float MinDistance = MovementCameraProfile ? MovementCameraProfile->MinCameraDistance : 250.0f;
     const float MaxDistance = MovementCameraProfile ? MovementCameraProfile->MaxCameraDistance : 650.0f;
     CameraBoom->TargetArmLength = FMath::Clamp(CameraBoom->TargetArmLength - Value.Get<float>() * Step, MinDistance, MaxDistance);
+}
+
+void AAetherCharacter::CameraOrbitToggle(const FInputActionValue& Value)
+{
+    if (!Value.Get<bool>() || !IsLocallyControlled() || !IsometricCameraComponent)
+    {
+        return;
+    }
+
+    IsometricCameraComponent->ToggleFreeOrbitMode();
+    if (!IsometricCameraComponent->IsFreeOrbitModeEnabled())
+    {
+        bCameraOrbitDragging = false;
+    }
+}
+
+void AAetherCharacter::CameraOrbitDragStarted(const FInputActionValue& Value)
+{
+    bCameraOrbitDragging = Value.Get<bool>()
+        && IsometricCameraComponent
+        && IsometricCameraComponent->IsFreeOrbitModeEnabled();
+}
+
+void AAetherCharacter::CameraOrbitDragStopped(const FInputActionValue& /*Value*/)
+{
+    bCameraOrbitDragging = false;
+}
+
+void AAetherCharacter::CameraViewReset(const FInputActionValue& Value)
+{
+    if (Value.Get<bool>() && IsLocallyControlled() && IsometricCameraComponent)
+    {
+        IsometricCameraComponent->ResetCameraView();
+    }
 }
 
 void AAetherCharacter::ServerSetSprinting_Implementation(bool bNewSprinting)

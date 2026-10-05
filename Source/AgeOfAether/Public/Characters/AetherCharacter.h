@@ -218,6 +218,10 @@ private:
     void SprintStarted(const struct FInputActionValue& Value);
     void SprintStopped(const struct FInputActionValue& Value);
     void CameraZoom(const struct FInputActionValue& Value);
+    void CameraOrbitToggle(const struct FInputActionValue& Value);
+    void CameraOrbitDragStarted(const struct FInputActionValue& Value);
+    void CameraOrbitDragStopped(const struct FInputActionValue& Value);
+    void CameraViewReset(const struct FInputActionValue& Value);
     void BasicAttackPressed(const struct FInputActionValue& Value);
     void ExecuteBasicAttack();
     UFUNCTION(Server, Reliable)
@@ -242,8 +246,12 @@ private:
     TObjectPtr<UInputAction> JumpAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> SprintAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraZoomAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitToggleAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitDragAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraViewResetAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> BasicAttackAction;
     FVector ClickMoveTarget = FVector::ZeroVector;
+    bool bCameraOrbitDragging = false;
     bool bHasClickMoveTarget = false;
     bool bSprinting = false;
     uint32 LocalAttackSequence = 0;

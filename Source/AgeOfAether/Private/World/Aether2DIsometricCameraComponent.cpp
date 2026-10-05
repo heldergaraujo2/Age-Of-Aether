@@ -20,13 +20,19 @@ void UAether2DIsometricCameraComponent::BeginPlay()
     {
         ApplyRuntimeFallback();
     }
+
+    if (!bHasInitialCameraView)
+    {
+        CaptureInitialCameraView(ResolveCameraBoom(), false);
+    }
 }
 
 void UAether2DIsometricCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-    if ((Profile || bRuntimeFallbackActive) && GetNetMode() != NM_DedicatedServer)
+    if ((Profile || bRuntimeFallbackActive || bFreeOrbitModeEnabled || bHoldLastOrbitView)
+        && GetNetMode() != NM_DedicatedServer)
     {
         ApplyCameraPolicy();
     }
@@ -61,15 +67,122 @@ void UAether2DIsometricCameraComponent::AddZoomInput(float AxisValue)
         return;
     }
 
-    const float MinDistance = Profile ? Profile->MinCameraDistance : 1050.0f;
-    const float MaxDistance = Profile ? Profile->MaxCameraDistance : 3600.0f;
+    const bool bUsingOrbitRange = bFreeOrbitModeEnabled || bHoldLastOrbitView;
+    const float MinDistance = bUsingOrbitRange
+        ? OrbitMinimumDistance
+        : FMath::Min(
+            Profile ? Profile->MinCameraDistance : CloseInspectionMinimumDistance,
+            CloseInspectionMinimumDistance);
+    const float MaxDistance = bUsingOrbitRange
+        ? OrbitMaximumDistance
+        : (Profile ? Profile->MaxCameraDistance : 3600.0f);
     const float ZoomStep = Profile ? Profile->ZoomStep : 180.0f;
 
     CurrentDistance = FMath::Clamp(CurrentDistance - AxisValue * ZoomStep, MinDistance, MaxDistance);
+    if (bUsingOrbitRange)
+    {
+        OrbitDistance = CurrentDistance;
+    }
 
     if (USpringArmComponent* Boom = ResolveCameraBoom())
     {
         Boom->TargetArmLength = CurrentDistance;
+    }
+}
+
+void UAether2DIsometricCameraComponent::ToggleFreeOrbitMode()
+{
+    if (GetNetMode() == NM_DedicatedServer)
+    {
+        return;
+    }
+
+    USpringArmComponent* Boom = ResolveCameraBoom();
+    if (!Boom)
+    {
+        return;
+    }
+    if (!bHasInitialCameraView)
+    {
+        CaptureInitialCameraView(Boom, false);
+    }
+    if (!bHasSavedOrbitView)
+    {
+        const FRotator CurrentRotation = Boom->GetRelativeRotation();
+        OrbitYaw = FRotator::NormalizeAxis(CurrentRotation.Yaw);
+        OrbitPitch = FMath::Clamp(CurrentRotation.Pitch, -85.0f, -5.0f);
+        OrbitDistance = FMath::Clamp(Boom->TargetArmLength, OrbitMinimumDistance, OrbitMaximumDistance);
+        bHasSavedOrbitView = true;
+    }
+
+    bFreeOrbitModeEnabled = !bFreeOrbitModeEnabled;
+    if (bFreeOrbitModeEnabled)
+    {
+        bHoldLastOrbitView = false;
+        ApplyUserOrbitView(Boom);
+        UE_LOG(LogTemp, Log, TEXT("Free 3D camera enabled. Hold middle mouse and drag to orbit; F6 resets the view."));
+    }
+    else
+    {
+        // Keep the final orbit and zoom pose. The next F5 resumes from here.
+        bHoldLastOrbitView = true;
+        UE_LOG(LogTemp, Log, TEXT("Free camera controls disabled; keeping the current camera view."));
+    }
+}
+
+void UAether2DIsometricCameraComponent::ResetCameraView()
+{
+    USpringArmComponent* Boom = ResolveCameraBoom();
+    if (!Boom)
+    {
+        return;
+    }
+    if (!bHasInitialCameraView)
+    {
+        CaptureInitialCameraView(Boom, false);
+    }
+
+    OrbitYaw = FRotator::NormalizeAxis(InitialCameraRotation.Yaw);
+    OrbitPitch = InitialCameraRotation.Pitch;
+    OrbitDistance = InitialCameraDistance;
+    CurrentDistance = InitialCameraDistance;
+    bHasSavedOrbitView = true;
+    bHoldLastOrbitView = false;
+
+    if (bFreeOrbitModeEnabled)
+    {
+        ApplyUserOrbitView(Boom);
+    }
+    else
+    {
+        Boom->bUsePawnControlRotation = bInitialUsesPawnControlRotation;
+        Boom->SetUsingAbsoluteRotation(bInitialUsesAbsoluteRotation);
+        Boom->bDoCollisionTest = bInitialCollisionTest;
+        Boom->bEnableCameraLag = bInitialCameraLag;
+        Boom->CameraLagSpeed = InitialCameraLagSpeed;
+        Boom->SetRelativeRotation(InitialCameraRotation);
+        Boom->TargetArmLength = InitialCameraDistance;
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("Camera view reset to its original pitch, yaw and distance."));
+}
+
+void UAether2DIsometricCameraComponent::AddOrbitInput(float YawDelta, float PitchDelta)
+{
+    if (!bFreeOrbitModeEnabled || !FMath::IsFinite(YawDelta) || !FMath::IsFinite(PitchDelta))
+    {
+        return;
+    }
+
+    OrbitYaw = FRotator::NormalizeAxis(OrbitYaw + YawDelta * OrbitRotationSensitivity);
+    OrbitPitch = FMath::Clamp(
+        OrbitPitch - PitchDelta * OrbitRotationSensitivity,
+        -85.0f,
+        -5.0f);
+
+    if (USpringArmComponent* Boom = ResolveCameraBoom())
+    {
+        ApplyUserOrbitView(Boom);
     }
 }
 
@@ -92,6 +205,7 @@ bool UAether2DIsometricCameraComponent::ApplyRuntimeFallback()
         Boom->bEnableCameraLag = true;
         Boom->CameraLagSpeed = 12.0f;
         Boom->SetRelativeRotation(FRotator(-55.0f, 45.0f, 0.0f));
+        CaptureInitialCameraView(Boom, true);
     }
 
     return true;
@@ -117,6 +231,9 @@ bool UAether2DIsometricCameraComponent::ApplyLoadedProfile(UAether2DIsometricCam
         Boom->bEnableCameraLag = InProfile->bEnableCameraLag;
         Boom->CameraLagSpeed = InProfile->PositionLagSpeed;
         Boom->SetRelativeRotation(FRotator(InProfile->Pitch, InProfile->Yaw, 0.0f));
+        CaptureInitialCameraView(
+            Boom,
+            InProfile->CameraMode == EAether2DIsometricCameraMode::FixedIsometric);
     }
 
     return true;
@@ -134,6 +251,15 @@ bool UAether2DIsometricCameraComponent::AllowsFreeLook() const
 
 void UAether2DIsometricCameraComponent::ApplyCameraPolicy()
 {
+    if (bFreeOrbitModeEnabled || bHoldLastOrbitView)
+    {
+        if (USpringArmComponent* Boom = ResolveCameraBoom())
+        {
+            ApplyUserOrbitView(Boom);
+        }
+        return;
+    }
+
     if (Profile && Profile->CameraMode == EAether2DIsometricCameraMode::FixedIsometric)
     {
         if (USpringArmComponent* Boom = ResolveCameraBoom())
@@ -142,7 +268,7 @@ void UAether2DIsometricCameraComponent::ApplyCameraPolicy()
             Boom->SetRelativeRotation(Desired);
             Boom->TargetArmLength = FMath::Clamp(
                 Boom->TargetArmLength,
-                Profile->MinCameraDistance,
+                FMath::Min(Profile->MinCameraDistance, CloseInspectionMinimumDistance),
                 Profile->MaxCameraDistance);
         }
         return;
@@ -153,9 +279,56 @@ void UAether2DIsometricCameraComponent::ApplyCameraPolicy()
         if (USpringArmComponent* Boom = ResolveCameraBoom())
         {
             Boom->SetRelativeRotation(FRotator(-55.0f, 45.0f, 0.0f));
-            Boom->TargetArmLength = FMath::Clamp(Boom->TargetArmLength, 1050.0f, 3600.0f);
+            Boom->TargetArmLength = FMath::Clamp(
+                Boom->TargetArmLength,
+                CloseInspectionMinimumDistance,
+                3600.0f);
         }
     }
+}
+
+void UAether2DIsometricCameraComponent::CaptureInitialCameraView(
+    USpringArmComponent* Boom,
+    bool bUsesAbsoluteRotation)
+{
+    if (!Boom)
+    {
+        return;
+    }
+
+    InitialCameraRotation = Boom->GetRelativeRotation();
+    InitialCameraDistance = FMath::Max(Boom->TargetArmLength, 1.0f);
+    InitialCameraLagSpeed = Boom->CameraLagSpeed;
+    bInitialUsesAbsoluteRotation = bUsesAbsoluteRotation;
+    bInitialUsesPawnControlRotation = Boom->bUsePawnControlRotation;
+    bInitialCollisionTest = Boom->bDoCollisionTest;
+    bInitialCameraLag = Boom->bEnableCameraLag;
+    bHasInitialCameraView = true;
+
+    CurrentDistance = InitialCameraDistance;
+    OrbitDistance = InitialCameraDistance;
+    OrbitYaw = FRotator::NormalizeAxis(InitialCameraRotation.Yaw);
+    OrbitPitch = InitialCameraRotation.Pitch;
+    bHasSavedOrbitView = false;
+    bFreeOrbitModeEnabled = false;
+    bHoldLastOrbitView = false;
+}
+
+void UAether2DIsometricCameraComponent::ApplyUserOrbitView(USpringArmComponent* Boom)
+{
+    if (!Boom)
+    {
+        return;
+    }
+
+    Boom->bUsePawnControlRotation = false;
+    Boom->SetUsingAbsoluteRotation(true);
+    Boom->bDoCollisionTest = true;
+    Boom->bEnableCameraLag = false;
+    Boom->SetRelativeRotation(FRotator(OrbitPitch, OrbitYaw, 0.0f));
+    Boom->TargetArmLength = FMath::Clamp(OrbitDistance, OrbitMinimumDistance, OrbitMaximumDistance);
+    CurrentDistance = Boom->TargetArmLength;
+    OrbitDistance = CurrentDistance;
 }
 
 USpringArmComponent* UAether2DIsometricCameraComponent::ResolveCameraBoom() const

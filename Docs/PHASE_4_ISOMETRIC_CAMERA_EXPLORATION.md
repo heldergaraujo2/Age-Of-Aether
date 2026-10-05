@@ -31,10 +31,12 @@ The repository already contains the Phase 40 source-level movement/camera founda
 - pitch limits;
 - left-click-to-move;
 - right-click basic attack;
-- mouse look only when the selected camera profile permits orbit/free-look;
+- F5 toggles local 3D orbit-camera control while preserving the last user view;
+- middle-mouse drag orbits horizontally through 360 degrees while orbit control is enabled;
+- F6 resets to the original camera view;
+- mouse-wheel zoom, including close character inspection in orbit mode;
 - jump;
 - sprint;
-- mouse-wheel zoom;
 - server-authoritative sprint transition;
 - camera pitch clamping;
 - automation coverage.
@@ -120,14 +122,13 @@ Buildings and props should not permanently hide the character or important inter
 
 ## 6. MOVEMENT RELATIVE TO CAMERA
 
-Exploration controls should be intuitive:
+Exploration controls should be intuitive and preserve the mouse click-to-move first-playable contract:
 
-- W = forward relative to camera;
-- S = backward relative to camera;
-- A/D = lateral movement relative to camera;
-- movement direction maps consistently to world direction;
-- character orientation follows intended movement/combat rules;
-- camera motion does not unexpectedly invert controls.
+- left-click selects a ground destination and the character moves there;
+- movement direction is derived from the destination, not from camera-relative WASD axes;
+- character orientation follows the intended movement/combat rules;
+- camera rotation does not unexpectedly change the selected world destination;
+- keyboard movement bindings remain absent in the current first-playable input setup.
 
 The implementation must remain server-authoritative.
 

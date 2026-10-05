@@ -598,7 +598,7 @@ O proprietário anexou duas referências: o objetivo é uma composição 3D isom
 - `AAetherDevelopmentWorldActor` deixou de montar apenas poucos sprites/placas. Agora constrói em runtime um protótipo espacial com terreno, manchas de gramado, rio sinuoso e margens, rede de caminhos, ponte de pedra, praça/fonte, casas/mercado/lanternas, canteiros agrícolas cercados, castelo fortificado com torres/telhados azuis, floresta em variações, moinho, ruínas e rochas.
 - A cena usa meshes BasicShapes e materiais de cor do Unreal. É um **blockout de composição**, não a arte final da referência; ainda precisa de meshes/materials autorados e validação artística.
 - O fallback visual de `AAetherCharacter` agora usa partes 3D separadas (tronco, cabeça, braços/mãos, pernas/botas, manto curto, chapéu, cajado e orbe), em vez do ícone triangular Paper2D. Perfis Paper2D primários continuam opcionais.
-- A câmera isométrica fallback começa em 2100 unidades, com zoom de 1050–3600, para enquadrar os marcos da região.
+- A câmera isométrica fallback começa em 2100 unidades; o zoom chega a 250 unidades no modo padrão e a 120 unidades no modo de órbita 3D (máximo de 3600), para permitir tanto inspeção próxima quanto enquadramento amplo.
 - Instâncias reutilizadas de terreno, água/estradas, árvores, plantações, cercas, ponte e crenelação são agrupadas por mesh/material/comportamento de colisão para limitar o custo de componentes.
 - A horta verde foi deslocada para noroeste para não bloquear a estrada agrícola que liga a vila à casa da fazenda.
 - Documentação da região e continuidade atualizadas para registrar a nova referência.

@@ -10,10 +10,12 @@
 - Extended the runtime Enhanced Input fallback with:
   - left-click-to-move using the cursor hit point (with a ground-plane fallback);
   - right-click basic attack;
-  - mouse camera input when free look is enabled by the isometric-camera profile;
+  - F5 toggles 3D orbit-camera control without discarding the last orbit/zoom view;
+  - while orbit control is active, hold the middle mouse button and drag to rotate the camera through 360 degrees;
+  - F6 resets pitch, yaw and zoom to the original camera view;
+  - Mouse Wheel zoom, including close inspection in orbit mode;
   - Space jump;
-  - Left Shift sprint;
-  - Mouse Wheel zoom.
+  - Left Shift sprint.
 - Removed W/A/S/D movement bindings. CharacterMovement still performs and replicates movement; the client does not send a trusted speed or raw position.
 - Shows the mouse cursor and uses a Game-and-UI input mode so the player can select destinations during play.
 - Added server-authoritative sprint transition through a Server RPC. The server chooses the configured speed; the client never supplies a speed value.
@@ -37,10 +39,12 @@ No per-class or per-character input C++ is required.
 ## DEFAULT CONTROLS
 - Left mouse click = move to the clicked ground position
 - Right mouse click = basic attack
-- Mouse = camera look only when free look is enabled by the profile
+- F5 = toggle 3D orbit-camera control on/off; the last view is retained
+- Hold middle mouse button and drag = orbit 360 degrees while F5 orbit control is active
+- F6 = reset camera to its original pitch, yaw and zoom
+- Mouse wheel = zoom, down to a close inspection distance during orbit mode
 - Space = jump
 - Left Shift = sprint
-- Mouse wheel = zoom
 
 ## SECURITY
 - Position remains governed by Unreal CharacterMovement/server replication.
@@ -58,7 +62,10 @@ Local Unreal verification must confirm:
 - character spawns;
 - left click moves to a ground destination;
 - right click triggers the basic attack;
-- mouse look respects the isometric/free-look setting;
+- F5 enables/disables orbit control without resetting the view;
+- middle-button drag rotates the camera smoothly through a full yaw revolution;
+- F6 resets the original camera view;
+- orbit zoom can inspect the character closely and remains stable when orbit control is toggled off;
 - pitch clamp works;
 - Space jumps;
 - Shift sprint reaches configured server-authoritative speed;
