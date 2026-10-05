@@ -123,6 +123,12 @@ namespace
             return nullptr;
         }
 
+        Texture->Source.Init(
+            Canvas.Width,
+            Canvas.Height,
+            1,
+            0,
+            ETextureSourceFormat::TSF_BGRA8);
         Texture->SRGB = true;
         Texture->NeverStream = true;
         Texture->CompressionSettings = TC_Default;
