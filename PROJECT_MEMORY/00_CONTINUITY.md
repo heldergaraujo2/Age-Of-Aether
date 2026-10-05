@@ -520,10 +520,18 @@ Foi criado `Content/Aether/Art/2D_ASSET_MANIFEST.json` com AssetIDs canônicos p
 
 ## F42 — CORREÇÃO DE COMPILAÇÃO REAL NO PC
 
-Após sincronizar cf1fb78, o primeiro UBT real da F42 foi executado no PC e falhou com UBT_EXIT=6. O erro estava localizado em AetherDevelopmentWorldActor.cpp: AddSpriteArt() era implementada e chamada, mas não havia sido declarada em AetherDevelopmentWorldActor.h, causando também os erros derivados de this e Root fora de um método reconhecido.
+Após sincronizar a correção da declaração de `AddSpriteArt(...)`, o segundo UBT real da F42 foi executado no PC oficial.
 
-**Correção aplicada primeiro no GitHub:** AetherDevelopmentWorldActor.h agora declara UPaperSpriteComponent, UPaperSprite e o helper privado AddSpriteArt(...).
+**PC:** `D:\Nova pasta (4)\Projeto Age of Aether\Age-Of-Aether-github-main`
 
-**Commit da correção:** 2d288b30425392033fde4faf9449407cb1d1fe78.
+**Commit testado:** `5cee6e4` (F42: record first PC compile failure and correction).
 
-**Estado:** 🟨 F42 continua aguardando nova compilação real no PC. Nenhum runtime PASS foi declarado.
+**Comando:** UnrealBuildTool `AgeOfAetherEditor Win64 Development`, projeto oficial, `-NoHotReloadFromIDE`.
+
+**Evidência real:** UBT executou 6 ações: 3 compilações de módulos, link da biblioteca, link da DLL e WriteMetadata. Resultado: **Succeeded**. Tempo total: **19.02 s**. `UBT_EXIT` foi encerrado após o resultado de sucesso.
+
+**Estado F42:** 🟩 **COMPILAÇÃO REAL PASSOU.** 🟨 **VALIDAÇÃO RUNTIME NO UNREAL AINDA PENDENTE.**
+
+Próximo gate obrigatório: abrir a primeira região no Unreal, executar PIE e verificar os sprites Paper2D runtime de personagem, árvores, rochas e casas, incluindo escala, orientação isométrica, transparência, sorting, legibilidade e caminhada/exploração física. Nenhum PASS visual/runtime deve ser declarado antes dessa evidência.
+
+**Preservação:** os arquivos locais modificados/não rastreados do usuário não foram alterados, limpos ou resetados.
