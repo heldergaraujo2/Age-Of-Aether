@@ -1,6 +1,7 @@
 #include "World/AetherRuntime2DArt.h"
 
 #include "Engine/Texture2D.h"
+#include "Materials/MaterialInterface.h"
 #include "PaperSprite.h"
 #include "SpriteEditorOnlyTypes.h"
 
@@ -137,6 +138,10 @@ namespace
 
         FSpriteAssetInitParameters Params;
         Params.SetTextureAndFill(Texture);
+        if (UMaterialInterface* SpriteMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Paper2D/DefaultSpriteMaterial.DefaultSpriteMaterial")))
+        {
+            Params.DefaultMaterialOverride = SpriteMaterial;
+        }
         Params.bOverridePixelsPerUnrealUnit = true;
         Params.PixelsPerUnrealUnit = PixelsPerUnit;
         Sprite->InitializeSprite(Params, true);
