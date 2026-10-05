@@ -553,3 +553,11 @@ Preserve all existing local modified and untracked files.
 - F44 hardens the runtime bridge by using unique transient texture creation, disabling mip generation/filtering for crisp pixel data, calling UpdateResource(), retaining generated UPaperSprite and source UTexture2D objects in transient UPROPERTY ownership on the world actor/character, and forcing sprite component visibility/render-state refresh.
 - This remains a procedural runtime bridge, not final premium art.
 - Real PC validation required: pull latest main, compile with UE 5.8 UBT, open the first-region map, PIE, verify sprites are actually visible and persistent, then physically walk/explore. No runtime PASS until observed evidence.
+
+
+## F44 — real PC compile correction
+- Real PC compilation after pull of F44 failed with `UBT_EXIT=6` because `AetherCharacter.cpp` invoked `UPaperSprite::GetSourceTexture()` while only a forward declaration existed in the public header.
+- Exact compiler error: `AetherCharacter.cpp(223,35): error C2027: uso de tipo indefinido 'UPaperSprite'`.
+- GitHub-first correction: added the concrete `PaperSprite.h` include to `AetherCharacter.cpp`.
+- Correction commit: `3caf882d479d325b349ef347c31dd1366fd062f3`.
+- Runtime validation remains blocked until this compile succeeds and the F44 PIE result is observed.
