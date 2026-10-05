@@ -22,6 +22,7 @@ GRASS_TEXTURE_DEST = "/Game/Aether/Environment/Ground/Textures"
 GRASS_MATERIAL_DEST = "/Game/Aether/Environment/Ground/Materials"
 GRASS_TEXTURE_PATH = GRASS_TEXTURE_DEST + "/T_GrassGround"
 GRASS_MATERIAL_PATH = GRASS_MATERIAL_DEST + "/M_GrassGround"
+LANDSCAPE_GRASS_MATERIAL_PATH = GRASS_MATERIAL_DEST + "/M_GrassGround_Landscape"
 
 TREE_SOURCE = os.path.join(
     FAB_DIR,
@@ -239,46 +240,69 @@ def _create_masked_foliage_material(asset_name, texture):
     return material
 
 
-def _create_grass_ground_material(texture):
-    material = unreal.EditorAssetLibrary.load_asset(GRASS_MATERIAL_PATH)
+def _create_grass_ground_material(texture, for_landscape=False):
+    material_name = "M_GrassGround_Landscape" if for_landscape else "M_GrassGround"
+    material_path = LANDSCAPE_GRASS_MATERIAL_PATH if for_landscape else GRASS_MATERIAL_PATH
+    material = unreal.EditorAssetLibrary.load_asset(material_path)
     if material:
         try:
             for expression in list(material.get_editor_property("expressions")):
                 unreal.MaterialEditingLibrary.delete_material_expression(material, expression)
         except Exception:
-            unreal.EditorAssetLibrary.delete_asset(GRASS_MATERIAL_PATH)
+            unreal.EditorAssetLibrary.delete_asset(material_path)
             material = None
 
     if not material:
         unreal.EditorAssetLibrary.make_directory(GRASS_MATERIAL_DEST)
         material = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
-            "M_GrassGround",
+            material_name,
             GRASS_MATERIAL_DEST,
             unreal.Material,
             unreal.MaterialFactoryNew(),
         )
     if not material:
-        raise RuntimeError("Could not create grass ground material {}.".format(GRASS_MATERIAL_PATH))
+        raise RuntimeError("Could not create grass material {}.".format(material_path))
 
     _set(material, "blend_mode", unreal.BlendMode.BLEND_OPAQUE)
     _set(material, "two_sided", False)
 
-    coordinates = unreal.MaterialEditingLibrary.create_material_expression(
-        material, unreal.MaterialExpressionTextureCoordinate, -700, 0
-    )
-    _set(coordinates, "u_tiling", 32.0)
-    _set(coordinates, "v_tiling", 24.0)
+    if for_landscape:
+        coordinates = unreal.MaterialEditingLibrary.create_material_expression(
+            material, unreal.MaterialExpressionLandscapeLayerCoords, -700, 0
+        )
+        _set(coordinates, "mapping_scale", 200.0)
+    else:
+        coordinates = unreal.MaterialEditingLibrary.create_material_expression(
+            material, unreal.MaterialExpressionTextureCoordinate, -700, 0
+        )
+        _set(coordinates, "u_tiling", 32.0)
+        _set(coordinates, "v_tiling", 24.0)
 
     grass_sample = unreal.MaterialEditingLibrary.create_material_expression(
         material, unreal.MaterialExpressionTextureSample, -420, 0
     )
     _set(grass_sample, "texture", texture)
-    unreal.MaterialEditingLibrary.connect_material_expressions(
+    uv_connected = unreal.MaterialEditingLibrary.connect_material_expressions(
         coordinates, "", grass_sample, "Coordinates"
     )
-    unreal.MaterialEditingLibrary.connect_material_property(
+    if not uv_connected:
+        # Some Editor builds expose the same input using its visible pin label.
+        uv_connected = unreal.MaterialEditingLibrary.connect_material_expressions(
+            coordinates, "", grass_sample, "UVs"
+        )
+    if not uv_connected:
+        unreal.log_warning(
+            "Could not connect the grass UV node to the Texture Sample; default UVs will be used for {}.".format(
+                material_path
+            )
+        )
+    else:
+        unreal.log("Grass UV tiling connected for {}.".format(material_path))
+
+    if not unreal.MaterialEditingLibrary.connect_material_property(
         grass_sample, "RGB", unreal.MaterialProperty.MP_BASE_COLOR
-    )
+    ):
+        raise RuntimeError("Could not connect grass texture to Base Color for {}.".format(material_path))
 
     roughness = unreal.MaterialEditingLibrary.create_material_expression(
         material, unreal.MaterialExpressionConstant, -150, 220
@@ -307,10 +331,46 @@ def _import_grass_ground():
     _set(texture, "srgb", True)
     _set(texture, "compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT, required=False)
     unreal.EditorAssetLibrary.save_loaded_asset(texture)
-    material = _create_grass_ground_material(texture)
-    unreal.log("Textured grass ground ready: texture={} material={}".format(
-        texture.get_path_name(), material.get_path_name()
+    ground_material = _create_grass_ground_material(texture)
+    landscape_material = _create_grass_ground_material(texture, for_landscape=True)
+    unreal.log("Textured grass ground ready: texture={} ground_material={} landscape_material={}".format(
+        texture.get_path_name(), ground_material.get_path_name(), landscape_material.get_path_name()
     ))
+    return ground_material, landscape_material
+
+
+def _apply_grass_material_to_open_landscapes(material):
+    actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    landscapes = [
+        actor for actor in actor_subsystem.get_all_level_actors()
+        if isinstance(actor, unreal.Landscape)
+    ]
+    if not landscapes:
+        unreal.log_warning(
+            "No Landscape actor found in the open level; the imported grass material remains available at {}.".format(
+                material.get_path_name()
+            )
+        )
+        return
+
+    changed = []
+    for landscape in landscapes:
+        if landscape.get_editor_property("landscape_material") != material:
+            landscape.set_editor_property("landscape_material", material)
+            changed.append(landscape.get_actor_label())
+            unreal.log("Assigned grass landscape material {} to Landscape '{}'".format(
+                material.get_path_name(), landscape.get_actor_label()
+            ))
+
+    if changed:
+        if unreal.EditorLoadingAndSavingUtils.save_current_level():
+            unreal.log("Saved the open level after assigning grass to {} Landscape actor(s).".format(len(changed)))
+        else:
+            unreal.log_warning(
+                "Grass was assigned to the Landscape, but Unreal could not save the open level. Save it with Ctrl+S."
+            )
+    else:
+        unreal.log("The Landscape actor(s) already use the imported grass material.")
 
 
 def _assign_static_material(mesh, material):
@@ -618,7 +678,8 @@ def run():
     ):
         unreal.EditorAssetLibrary.make_directory(directory)
 
-    _import_grass_ground()
+    _, landscape_grass_material = _import_grass_ground()
+    _apply_grass_material_to_open_landscapes(landscape_grass_material)
     _import_tree_bush_pack()
     _import_horse()
     _import_mansion()

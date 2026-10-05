@@ -4,15 +4,16 @@ This change connects selected sources in `FabLibrary/` to the first-region runti
 
 ## Import into Unreal Editor
 
-1. Pull the branch, open `AgeOfAether.uproject`, and allow Unreal to enable/rebuild the `PythonScriptPlugin` and `EditorScriptingUtilities` plugins (restart the Editor if prompted).
+1. Pull the branch, open `AgeOfAether.uproject`, and open the target map containing the Landscape (for example, `AetherWorld_FirstRegion`). Allow Unreal to enable/rebuild the `PythonScriptPlugin` and `EditorScriptingUtilities` plugins (restart the Editor if prompted).
 2. In Unreal Editor, use **Tools → Execute Python Script** and select `Scripts/import_fab_library_assets.py` from the project directory. Alternatively, run it from the Output Log Python console with the full path to the script.
-3. Wait for the import/save operations to finish. The Output Log prints the normalized asset paths and any importer errors. The FBX texture files are staged under `Saved/FabImportStaging/`; the original `FabLibrary/` sources are not rewritten.
-4. Compile the project and run the development map in PIE. `AAetherDevelopmentWorldActor` loads the imported assets at runtime and keeps its existing built-in meshes as fallbacks if an import is missing.
+3. Wait for the import/save operations to finish. The script creates the ground materials, assigns a Landscape-specific material to Landscape actors in the open map, and saves that map. The Output Log prints normalized asset paths and any importer errors. The FBX texture files are staged under `Saved/FabImportStaging/`; the original `FabLibrary/` sources are not rewritten.
+4. Compile the project and run the development map in PIE. `AAetherDevelopmentWorldActor` loads its ground material and imported foliage at runtime, keeping built-in meshes as fallbacks if an import is missing.
 
 ### Expected runtime paths
 
 - Grass source: `ArtSource/Environment/T_GrassGround_Source.png`
-- Ground material: `/Game/Aether/Environment/Ground/Materials/M_GrassGround`
+- Runtime ground material: `/Game/Aether/Environment/Ground/Materials/M_GrassGround`
+- Landscape ground material: `/Game/Aether/Environment/Ground/Materials/M_GrassGround_Landscape`
 - Trees/bushes: `/Game/Aether/Environment/Fab/TreesBush/SM_Fab_*`
 - Masked foliage materials: `/Game/Aether/Environment/Fab/TreesBush/Materials/M_Fab_*_Masked`
 - Unicorn horse: `/Game/Aether/Characters/FabHorse/SK_Fab_UnicornHorse`
@@ -21,7 +22,7 @@ This change connects selected sources in `FabLibrary/` to the first-region runti
 
 ## What the runtime pass adds
 
-- Imports the tileable stylized grass source, creates a repeating rough ground material, and applies it to the diorama floor instead of the solid-color material. Viewport **Lit** is the correct mode for checking material colors; **Shader Complexity** deliberately displays diagnostic false colors.
+- Imports the tileable stylized grass source, creates separate repeating materials for the runtime ground cube and the Landscape, and applies the Landscape material to every Landscape actor in the currently open map before saving it. Viewport **Lit** is the correct mode for checking material colors; **Shader Complexity** deliberately displays diagnostic false colors.
 - Replaces the diorama's procedural tree silhouettes with authored low-poly FBX trees when available. The importer creates two-sided masked foliage materials and connects each source texture's alpha to Opacity Mask, so transparent cards no longer render as dark opaque rectangles. The runtime adds a denser outer belt, an inward woodland ring, and clustered city/forest shrubs. Instanced components keep foliage relatively inexpensive; existing grass tufts remain in place.
 - Adds ten Mage walker placeholders using the existing skeletal mesh and `A_Walk_Anim` (or `A_Walk`) plus the matching Idle animation when available. Each walker chooses varied destinations across the town, farm, orchard and castle paths, pauses, then chooses again instead of following a shared back-and-forth loop. These remain visual components with no collision, interaction, replication, or gameplay AI. The user confirmed this placeholder composition.
 - Provides an optional farmyard placement for the Fab unicorn and plays its Idle sequence. It remains off for the selected ten-human composition; the source pack has no walking animation, so the horse is not sent walking.
