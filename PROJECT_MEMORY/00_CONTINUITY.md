@@ -569,3 +569,12 @@ Preserve all existing local modified and untracked files.
 - F45 GitHub-first correction: AetherRuntime2DArt now explicitly loads /Paper2D/DefaultSpriteMaterial.DefaultSpriteMaterial and assigns it through Params.DefaultMaterialOverride before InitializeSprite().
 - This targets the confirmed Paper2D rendering pipeline: sprite assets require a sprite material for visible rendering; UE 5.8 documents DefaultSpriteMaterial as the unlit Paper2D sprite material.
 - Runtime remains unvalidated until the user pulls, recompiles, opens Unreal, enters PIE, and physically explores the first region.
+
+
+## F46 — Paper2D runtime texture-source initialization correction
+- Real PC F45 compilation passed, but user runtime validation reported no intended 2D character/tree/rock/house art; only the small ground/support geometry and residual geometric forms were visible.
+- Root cause identified in the runtime sprite bridge: UTexture2D::CreateTransient does not provide the source-image metadata expected by the Paper2D sprite initialization path. Without explicit source dimensions/format, generated sprites can have invalid source/UV data and fail to render even though the texture object and sprite object exist.
+- GitHub-first correction: AetherRuntime2DArt now initializes Texture->Source with the generated canvas width/height and BGRA8 source format before updating the texture resource and constructing the UPaperSprite.
+- Correction commit: 332021b6d482987ed47a56cca400d0d52ec20f85.
+- This is still a procedural runtime bridge, not final premium art.
+- Required next evidence: pull main, compile with UE 5.8 UBT, open AetherWorld_FirstRegion, run PIE, verify character/tree/rock/house sprites are visible, correctly oriented/scaled, persistent, and physically explorable. No runtime PASS until observed.
