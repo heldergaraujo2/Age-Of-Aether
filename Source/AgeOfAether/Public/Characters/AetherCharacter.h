@@ -190,6 +190,12 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
     float FoundationWalkSpeed = 420.0f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Animation", meta = (ClampMin = "0.5", ClampMax = "3.0"))
+    float WalkAnimationRateMultiplier = 1.25f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Animation", meta = (ClampMin = "0.5", ClampMax = "3.0"))
+    float RunAnimationRateMultiplier = 1.25f;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
     TObjectPtr<UAetherMovementCameraProfile> MovementCameraProfile;
 
@@ -209,7 +215,7 @@ private:
     void InitializeFoundationInput();
     void InitializeRuntimeVisual();
     void InitializeSkeletalVisual();
-    void UpdateSkeletalVisualAnimation();
+    void UpdateSkeletalVisualAnimation(float DeltaSeconds);
     void ClickMovePressed(const struct FInputActionValue& Value);
     void UpdateClickToMove(float DeltaSeconds);
     void LookYaw(const struct FInputActionValue& Value);
@@ -251,6 +257,7 @@ private:
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraViewResetAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> BasicAttackAction;
     FVector ClickMoveTarget = FVector::ZeroVector;
+    float CurrentSkeletalAnimationPlayRate = 1.0f;
     bool bCameraOrbitDragging = false;
     bool bHasClickMoveTarget = false;
     bool bSprinting = false;

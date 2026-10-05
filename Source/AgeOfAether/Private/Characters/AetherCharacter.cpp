@@ -14,6 +14,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Animation/AnimSequence.h"
+#include "Animation/AnimSingleNodeInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -354,7 +355,7 @@ void AAetherCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
     UpdateClickToMove(DeltaSeconds);
-    UpdateSkeletalVisualAnimation();
+    UpdateSkeletalVisualAnimation(DeltaSeconds);
 }
 
 void AAetherCharacter::InitializeRuntimeVisual()
@@ -399,7 +400,7 @@ void AAetherCharacter::InitializeRuntimeVisual()
         RuntimeSkeletalVisual->SetVisibility(bHasSkeletalPresentation && !bUsePrimaryTwoDPresentation, true);
     }
 
-    UpdateSkeletalVisualAnimation();
+    UpdateSkeletalVisualAnimation(0.0f);
 
     // Keep the old Paper2D component as a compatibility hook for authored profiles,
     // but never use the crude triangular runtime icon as the default character.
@@ -490,30 +491,33 @@ void AAetherCharacter::InitializeSkeletalVisual()
             *GetNameSafe(RuntimeJumpAnimation));
     }
 
-    UpdateSkeletalVisualAnimation();
+    UpdateSkeletalVisualAnimation(0.0f);
 }
 
-void AAetherCharacter::UpdateSkeletalVisualAnimation()
+void AAetherCharacter::UpdateSkeletalVisualAnimation(float DeltaSeconds)
 {
     if (GetNetMode() == NM_DedicatedServer || !RuntimeSkeletalVisual || !RuntimeSkeletalVisual->GetSkeletalMeshAsset())
     {
         return;
     }
 
-    const FVector Velocity = GetVelocity();
-    const float PlanarSpeedSquared = Velocity.SizeSquared2D();
-    const bool bIsMoving = PlanarSpeedSquared > FMath::Square(24.0f);
+    const float PlanarSpeed = GetVelocity().Size2D();
+    const bool bIsMoving = PlanarSpeed > 24.0f;
     const UCharacterMovementComponent* Movement = GetCharacterMovement();
+    const float WalkSpeed = MovementCameraProfile ? MovementCameraProfile->WalkSpeed : FoundationWalkSpeed;
+    const float RunSpeed = MovementCameraProfile
+        ? MovementCameraProfile->SprintSpeed
+        : FoundationWalkSpeed * 1.5f;
 
     UAnimSequence* DesiredAnimation = nullptr;
+    bool bShouldRun = false;
     if (Movement && Movement->IsFalling() && RuntimeJumpAnimation)
     {
         DesiredAnimation = RuntimeJumpAnimation;
     }
     else if (bIsMoving)
     {
-        const float WalkSpeed = MovementCameraProfile ? MovementCameraProfile->WalkSpeed : FoundationWalkSpeed;
-        const bool bShouldRun = bSprinting || FMath::Sqrt(PlanarSpeedSquared) > WalkSpeed * 1.15f;
+        bShouldRun = bSprinting || PlanarSpeed > WalkSpeed * 1.15f;
         DesiredAnimation = bShouldRun && RuntimeRunAnimation
             ? RuntimeRunAnimation.Get()
             : RuntimeWalkAnimation.Get();
@@ -527,14 +531,48 @@ void AAetherCharacter::UpdateSkeletalVisualAnimation()
     {
         DesiredAnimation = RuntimeIdleAnimation;
     }
-    if (!DesiredAnimation || DesiredAnimation == ActiveSkeletalAnimation)
+    if (!DesiredAnimation)
     {
         return;
     }
 
-    RuntimeSkeletalVisual->PlayAnimation(DesiredAnimation, true);
-    ActiveSkeletalAnimation = DesiredAnimation;
-    UE_LOG(LogTemp, Log, TEXT("AetherCharacter %s playing animation %s"), *GetName(), *DesiredAnimation->GetName());
+    if (DesiredAnimation != ActiveSkeletalAnimation)
+    {
+        RuntimeSkeletalVisual->PlayAnimation(DesiredAnimation, true);
+        ActiveSkeletalAnimation = DesiredAnimation;
+        UE_LOG(LogTemp, Log, TEXT("AetherCharacter %s playing animation %s"), *GetName(), *DesiredAnimation->GetName());
+    }
+
+    float TargetPlayRate = 1.0f;
+    const bool bPlayingLocomotionAnimation = DesiredAnimation == RuntimeWalkAnimation
+        || DesiredAnimation == RuntimeRunAnimation;
+    if (bIsMoving && bPlayingLocomotionAnimation)
+    {
+        const float SpeedRatio = FMath::Clamp(PlanarSpeed / FMath::Max(WalkSpeed, 1.0f), 0.65f, 1.5f);
+        const float StateRateMultiplier = bShouldRun
+            ? RunAnimationRateMultiplier
+            : WalkAnimationRateMultiplier;
+        TargetPlayRate = StateRateMultiplier * SpeedRatio;
+    }
+    TargetPlayRate = FMath::Clamp(TargetPlayRate, 0.65f, 2.25f);
+
+    if (DeltaSeconds <= KINDA_SMALL_NUMBER)
+    {
+        CurrentSkeletalAnimationPlayRate = TargetPlayRate;
+    }
+    else
+    {
+        CurrentSkeletalAnimationPlayRate = FMath::FInterpTo(
+            CurrentSkeletalAnimationPlayRate,
+            TargetPlayRate,
+            DeltaSeconds,
+            8.0f);
+    }
+
+    if (UAnimSingleNodeInstance* SingleNodeInstance = RuntimeSkeletalVisual->GetSingleNodeInstance())
+    {
+        SingleNodeInstance->SetPlayRate(CurrentSkeletalAnimationPlayRate);
+    }
 }
 
 void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

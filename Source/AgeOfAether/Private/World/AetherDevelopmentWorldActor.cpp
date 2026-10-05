@@ -1,6 +1,7 @@
 #include "World/AetherDevelopmentWorldActor.h"
 
 #include "Animation/AnimSequence.h"
+#include "Animation/AnimSingleNodeInstance.h"
 #include "CollisionQueryParams.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -28,6 +29,30 @@ namespace
     {
         const float YawRadians = FMath::DegreesToRadians(YawDegrees);
         return Origin + FVector(FMath::Cos(YawRadians) * Distance, FMath::Sin(YawRadians) * Distance, 0.0f);
+    }
+
+    float GetAmbientNPCWalkPlayRate(float WalkSpeed)
+    {
+        constexpr float ReferenceWalkSpeed = 100.0f;
+        constexpr float BasePlayRate = 1.25f;
+        return FMath::Clamp((WalkSpeed / ReferenceWalkSpeed) * BasePlayRate, 0.75f, 1.55f);
+    }
+
+    void PlayLoopingSkeletalAnimation(
+        USkeletalMeshComponent* SkeletalMesh,
+        UAnimSequence* Animation,
+        float PlayRate = 1.0f)
+    {
+        if (!SkeletalMesh || !Animation)
+        {
+            return;
+        }
+
+        SkeletalMesh->PlayAnimation(Animation, true);
+        if (UAnimSingleNodeInstance* SingleNodeInstance = SkeletalMesh->GetSingleNodeInstance())
+        {
+            SingleNodeInstance->SetPlayRate(PlayRate);
+        }
     }
 }
 
@@ -2150,13 +2175,17 @@ void AAetherDevelopmentWorldActor::BuildAmbientVillageNPCs()
         Walker->SetAnimationMode(EAnimationMode::AnimationSingleNode);
         AddInstanceComponent(Walker);
         Walker->RegisterComponent();
-        Walker->PlayAnimation(RuntimeAmbientNPCWalkAnimation, true);
 
+        const float WalkerWalkSpeed = RuntimeAmbientRandomStream.FRandRange(82.0f, 124.0f);
         RuntimeAmbientNPCComponents.Add(Walker);
         RuntimeAmbientNPCGroundOffsets.Add(4.0f);
-        RuntimeAmbientNPCWalkSpeeds.Add(RuntimeAmbientRandomStream.FRandRange(82.0f, 124.0f));
+        RuntimeAmbientNPCWalkSpeeds.Add(WalkerWalkSpeed);
         RuntimeAmbientNPCPauseTimers.Add(RuntimeAmbientRandomStream.FRandRange(0.0f, 1.8f));
         RuntimeAmbientNPCTargets.Add(ChooseAmbientNPCDestination(StartLocation));
+        PlayLoopingSkeletalAnimation(
+            Walker,
+            RuntimeAmbientNPCWalkAnimation,
+            GetAmbientNPCWalkPlayRate(WalkerWalkSpeed));
     }
 
     if (RuntimeAmbientNPCComponents.Num() > 0)
@@ -2258,7 +2287,10 @@ void AAetherDevelopmentWorldActor::UpdateAmbientVillageNPCs(float DeltaSeconds)
                 RuntimeAmbientNPCTargets[WalkerIndex] = ChooseAmbientNPCDestination(Walker->GetRelativeLocation());
                 if (RuntimeAmbientNPCWalkAnimation)
                 {
-                    Walker->PlayAnimation(RuntimeAmbientNPCWalkAnimation, true);
+                    PlayLoopingSkeletalAnimation(
+                        Walker,
+                        RuntimeAmbientNPCWalkAnimation,
+                        GetAmbientNPCWalkPlayRate(RuntimeAmbientNPCWalkSpeeds[WalkerIndex]));
                 }
             }
             continue;
@@ -2272,7 +2304,7 @@ void AAetherDevelopmentWorldActor::UpdateAmbientVillageNPCs(float DeltaSeconds)
             PauseTimer = RuntimeAmbientRandomStream.FRandRange(0.8f, 3.6f);
             if (RuntimeAmbientNPCIdleAnimation)
             {
-                Walker->PlayAnimation(RuntimeAmbientNPCIdleAnimation, true);
+                PlayLoopingSkeletalAnimation(Walker, RuntimeAmbientNPCIdleAnimation);
             }
             continue;
         }

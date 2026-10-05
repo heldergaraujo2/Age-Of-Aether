@@ -33,5 +33,10 @@ The first playable slice creates Enhanced Input actions at runtime, avoiding unn
 
 These can later be promoted to authored Input Action/Mapping Context assets for rebinding/localization without changing gameplay authority.
 
+## Locomotion animation
+The runtime Mage Walk/Run playback rate now follows planar movement speed (base multipliers are tunable on `AAetherCharacter`), and each ambient walker scales its Walk rate to its own movement speed. This keeps gait cadence closer to world travel speed without restarting the sequence every tick.
+
+A visible snap exactly at the end of each cycle is an animation-source loop seam, not a per-frame restart. After importing the Mage clips, open `A_Walk_Anim` and `A_Run_Anim` in the Unreal Animation Sequence editor and use **Asset → Add Looping Interpolation**, then save. For a durable reimport workflow, make the first/last poses cyclic in the source FBX before rerunning `Scripts/import_mage_assets.py`.
+
 ## Safety
 Movement remains server-authoritative through Unreal CharacterMovement/replication. Sprint transitions use a server RPC; the server selects the configured speed and never trusts a client-provided speed value. Input does not write authoritative position, class, inventory or progression.
