@@ -2286,7 +2286,8 @@ void AAetherDevelopmentWorldActor::UpdateAmbientVillageNPCs(float DeltaSeconds)
             ? RuntimeAmbientNPCGroundOffsets[WalkerIndex]
             : 4.0f;
         Walker->SetRelativeLocation(NewLocation);
-        Walker->SetRelativeRotation(FRotator(0.0f, Direction.Rotation().Yaw, 0.0f));
+        // Keep the Mage's imported local forward axis aligned with the travel vector.
+        Walker->SetRelativeRotation(FRotator(0.0f, Direction.Rotation().Yaw - 90.0f, 0.0f));
     }
 }
 

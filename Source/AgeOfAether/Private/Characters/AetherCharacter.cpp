@@ -435,7 +435,8 @@ void AAetherCharacter::InitializeSkeletalVisual()
         0.0f,
         0.0f,
         -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
-    RuntimeSkeletalVisual->SetRelativeRotation(FRotator::ZeroRotator);
+    // The imported Mage FBX is a quarter-turn off Unreal's +X movement-forward axis.
+    RuntimeSkeletalVisual->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
     RuntimeSkeletalVisual->SetRelativeScale3D(FVector::OneVector);
 
     // The owner's verified Editor assets retain the FBX suffix (for example,
