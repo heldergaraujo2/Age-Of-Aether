@@ -140,7 +140,9 @@ UPaperSpriteComponent* AAetherDevelopmentWorldActor::AddSpriteArt(
     Component->SetRelativeScale3D(FVector(Scale));
     Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     Component->SetCastShadow(false);
+    AddInstanceComponent(Component);
     Component->RegisterComponent();
+    RuntimeSpriteComponents.Add(Component);
     return Component;
 }
 
