@@ -437,10 +437,30 @@ void AAetherCharacter::InitializeSkeletalVisual()
     RuntimeSkeletalVisual->SetRelativeRotation(FRotator::ZeroRotator);
     RuntimeSkeletalVisual->SetRelativeScale3D(FVector::OneVector);
 
-    RuntimeIdleAnimation = MageIdleAnimationAsset.LoadSynchronous();
-    RuntimeWalkAnimation = MageWalkAnimationAsset.LoadSynchronous();
-    RuntimeRunAnimation = MageRunAnimationAsset.LoadSynchronous();
-    RuntimeJumpAnimation = MageJumpAnimationAsset.LoadSynchronous();
+    // Existing Editor imports may retain the FBX convention suffix (for example,
+    // A_Walk_Anim) while the canonical import script uses A_Walk. Try the
+    // configured canonical path first, then resolve the known suffix variant.
+    const auto LoadMageAnimation = [](const TSoftObjectPtr<UAnimSequence>& ConfiguredAsset, const TCHAR* SuffixFallbackPath)
+    {
+        if (UAnimSequence* Animation = ConfiguredAsset.LoadSynchronous())
+        {
+            return Animation;
+        }
+        return LoadObject<UAnimSequence>(nullptr, SuffixFallbackPath);
+    };
+
+    RuntimeIdleAnimation = LoadMageAnimation(
+        MageIdleAnimationAsset,
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Idle_Anim.A_Idle_Anim"));
+    RuntimeWalkAnimation = LoadMageAnimation(
+        MageWalkAnimationAsset,
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Walk_Anim.A_Walk_Anim"));
+    RuntimeRunAnimation = LoadMageAnimation(
+        MageRunAnimationAsset,
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Run_Anim.A_Run_Anim"));
+    RuntimeJumpAnimation = LoadMageAnimation(
+        MageJumpAnimationAsset,
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Jump_Anim.A_Jump_Anim"));
     ActiveSkeletalAnimation = nullptr;
 
     if (!RuntimeIdleAnimation || !RuntimeWalkAnimation || !RuntimeRunAnimation || !RuntimeJumpAnimation)
