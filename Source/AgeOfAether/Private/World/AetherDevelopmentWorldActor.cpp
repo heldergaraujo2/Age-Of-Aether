@@ -4,6 +4,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "UObject/ConstructorHelpers.h"
 #include "PaperSpriteComponent.h"
+#include "PaperSprite.h"
 #include "World/AetherRuntime2DArt.h"
 
 AAetherDevelopmentWorldActor::AAetherDevelopmentWorldActor()
