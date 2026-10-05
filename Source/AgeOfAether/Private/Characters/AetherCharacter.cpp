@@ -17,6 +17,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/EngineTypes.h"
 #include "Engine/SkeletalMesh.h"
 #include "PaperSpriteComponent.h"
 #include "EnhancedInputComponent.h"
@@ -623,7 +624,8 @@ void AAetherCharacter::ClickMovePressed(const FInputActionValue& Value)
 
     FHitResult CursorHit;
     FVector Destination;
-    if (PC->GetHitResultUnderCursorByChannel(ECC_Visibility, true, CursorHit))
+    if (PC->GetHitResultUnderCursorByChannel(
+            UEngineTypes::ConvertToTraceType(ECC_Visibility), true, CursorHit))
     {
         Destination = CursorHit.ImpactPoint;
     }
