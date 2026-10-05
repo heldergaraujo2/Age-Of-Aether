@@ -617,3 +617,15 @@ O proprietário sincronizou o commit `621d3e1` e iniciou `AgeOfAetherEditor Win6
 - Unity build C2084: `RequiredID` e `ValidFiniteNonNegative` anônimos conflitavam entre `AetherRecipeTypes.cpp` e `AetherQuestDialogueEventTypes.cpp`. Correção: renomear os helpers de recipe com prefixos próprios para permanecerem únicos quando o UBT agrupa translation units.
 
 As duas correções foram aplicadas no branch de trabalho. Ainda é obrigatório fazer novo pull e rodar o UBT; não afirmar build PASS nem iniciar aceitação PIE até compilar com sucesso. O mapa `.umap`, FBX, textura e configurações locais do proprietário permanecem fora do commit e não devem ser removidos/resetados.
+
+## VISUAL FIDELITY PASS — ATUALIZAÇÃO ATIVA (2026-10-05)
+
+O proprietário solicitou maior fidelidade concreta à primeira referência 3D: árvores com galhos/folhagem orgânicos, cobertura de grama, telhas separadas e personagem menos geométrico. A segunda imagem anterior continua sendo apenas o estado ruim de antes; não é a direção visual.
+
+- Branch do trabalho: `arena/01a1097a-age-of-aether`, base `05fe52a`. O proprietário confirmou build UE 5.8 bem-sucedido até esse commit.
+- O source desta etapa adiciona ramos e clusters de folhagem em árvores broadleaf/pinheiros, cobertura de grama/pequenas flores em instâncias sem colisão/sombra, telhas individuais nas casas e cursos de telhas nos cones das torres; aumenta o footprint do chão e controla roughness/specular do material básico quando suportados.
+- `AetherCharacter` agora tem uma via soft-reference para o skeletal mesh e animações fornecidos, esconde o proxy geométrico quando o mesh real está carregado e troca Idle/Walk/Run/Jump conforme movimento. O script importa a JPG e a aplica em um material simples da malha.
+- `Scripts/import_mage_assets.py` importa os nove FBXs e a JPG em `.uasset` no Unreal Editor para `/Game/Aether/Characters/Mage/`; mesh/skeleton/material e nomes de animação são documentados em `Docs/FIRST_REGION_VISUAL_FIDELITY_PASS.md`. `.uasset` gerados localmente não foram fabricados/adicionados ao Git.
+- Esta etapa ainda não foi compilada com UE, importada em Editor nem vista em PIE. Até `05fe52a` o proprietário obteve UBT Succeeded; essas novas alterações precisam de UHT/UBT e validação visual/escala/material/colisão/frame time antes de qualquer PASS.
+- Após o push, atualizar o PC com `git pull --ff-only origin arena/01a1097a-age-of-aether`; preservar mapa, configs e assets locais, sem `reset --hard` nem `git clean`. Ativar Python Editor Script Plugin/Editor Scripting Utilities só para importar as fontes através do script.
+- Esta saída continua sendo um blockout procedural aprimorado e uma integração de fontes do usuário, não arte final/photoreal.

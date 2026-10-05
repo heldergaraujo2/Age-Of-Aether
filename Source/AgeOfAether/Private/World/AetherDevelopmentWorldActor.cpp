@@ -116,6 +116,9 @@ UMaterialInstanceDynamic* AAetherDevelopmentWorldActor::CreateColorMaterial(cons
     }
 
     Material->SetVectorParameterValue(TEXT("Color"), Color);
+    Material->SetScalarParameterValue(TEXT("Roughness"), 0.82f);
+    Material->SetScalarParameterValue(TEXT("Specular"), 0.18f);
+    Material->SetScalarParameterValue(TEXT("Metallic"), 0.0f);
     RuntimeMaterials.Add(ColorKey, Material);
     return Material;
 }
@@ -173,7 +176,8 @@ void AAetherDevelopmentWorldActor::AddInstancedPrimitive(
     const FVector& Scale,
     const FLinearColor& Color,
     bool bBlockMovement,
-    const FRotator& Rotation)
+    const FRotator& Rotation,
+    bool bCastShadow)
 {
     if (!Mesh || !Root)
     {
@@ -182,8 +186,8 @@ void AAetherDevelopmentWorldActor::AddInstancedPrimitive(
 
     const uint32 ColorKey = Color.ToFColor(true).DWColor();
     const uint32 ComponentKey = HashCombine(
-        HashCombine(GetTypeHash(Mesh), ColorKey),
-        bBlockMovement ? 1u : 0u);
+        HashCombine(HashCombine(GetTypeHash(Mesh), ColorKey), bBlockMovement ? 1u : 0u),
+        bCastShadow ? 1u : 0u);
 
     UInstancedStaticMeshComponent* Component = nullptr;
     if (TObjectPtr<UInstancedStaticMeshComponent>* Existing = RuntimeInstancedComponents.Find(ComponentKey))
@@ -209,7 +213,7 @@ void AAetherDevelopmentWorldActor::AddInstancedPrimitive(
             bBlockMovement ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
         Component->SetCollisionProfileName(bBlockMovement ? TEXT("BlockAll") : TEXT("NoCollision"));
         Component->SetCanEverAffectNavigation(false);
-        Component->SetCastShadow(true);
+        Component->SetCastShadow(bCastShadow);
 
         if (UMaterialInstanceDynamic* Material = CreateColorMaterial(Color))
         {
@@ -336,6 +340,49 @@ void AAetherDevelopmentWorldActor::BuildHouse(
         false,
         FRotator(0.0f, Yaw, -31.0f));
 
+    const float RoofPitchRadians = FMath::DegreesToRadians(31.0f);
+    for (int32 Side = -1; Side <= 1; Side += 2)
+    {
+        const float RoofRoll = -31.0f * static_cast<float>(Side);
+        const float RoofCenterY = 78.0f * static_cast<float>(Side);
+        const FRotator RoofRotation(0.0f, Yaw, RoofRoll);
+        for (int32 Row = 0; Row < 5; ++Row)
+        {
+            const float TileY = static_cast<float>(Side) * (28.0f + 38.0f * Row);
+            const float TileZ = 315.0f + FMath::Sin(-static_cast<float>(Side) * RoofPitchRadians) * (TileY - RoofCenterY) + 13.0f;
+            for (int32 Column = 0; Column < 7; ++Column)
+            {
+                const float TileX = -180.0f + 60.0f * Column + (Row % 2 == 0 ? 0.0f : 30.0f);
+                const FLinearColor TileColor = (Row + Column) % 3 == 0
+                    ? RoofColor * FLinearColor(0.78f, 0.82f, 0.90f, 1.0f)
+                    : ((Row + Column) % 3 == 1
+                        ? RoofColor * FLinearColor(0.90f, 0.92f, 0.98f, 1.0f)
+                        : RoofColor * FLinearColor(0.84f, 0.87f, 0.94f, 1.0f));
+                AddInstancedPrimitive(
+                    RuntimeCubeMesh,
+                    FName(*FString::Printf(TEXT("%s_RoofTile_%d_%d_%d"), *Prefix, Side, Row, Column)),
+                    Local(FVector(TileX, TileY, TileZ)),
+                    FVector(0.58f * Scale, 0.37f * Scale, 0.08f * Scale),
+                    TileColor,
+                    false,
+                    RoofRotation);
+            }
+        }
+    }
+
+    for (int32 Column = 0; Column < 7; ++Column)
+    {
+        const float TileX = -180.0f + 60.0f * Column;
+        AddInstancedPrimitive(
+            RuntimeCubeMesh,
+            FName(*FString::Printf(TEXT("%s_RidgeCap_%d"), *Prefix, Column)),
+            Local(FVector(TileX, 0.0f, 368.0f)),
+            FVector(0.62f * Scale, 0.30f * Scale, 0.12f * Scale),
+            RoofColor * FLinearColor(0.72f, 0.76f, 0.84f, 1.0f),
+            false,
+            HouseRotation);
+    }
+
     AddPrimitive(
         RuntimeCubeMesh,
         FName(*FString::Printf(TEXT("%s_Ridge"), *Prefix)),
@@ -457,6 +504,39 @@ void AAetherDevelopmentWorldActor::BuildTower(
         FVector(DiameterScale * 1.55f, DiameterScale * 1.55f, RoofHeight / 100.0f),
         RoofColor);
 
+    const float RoofBaseRadius = Radius * 1.55f;
+    const float RoofBaseZ = Height + RoofHeight * 0.48f - RoofHeight * 0.5f;
+    for (int32 Row = 0; Row < 4; ++Row)
+    {
+        const float RoofFraction = 0.10f + 0.22f * Row;
+        const float RingRadius = RoofBaseRadius * (1.0f - RoofFraction);
+        const int32 TileCount = FMath::Max(3, FMath::CeilToInt(2.0f * PI * RingRadius / 52.0f));
+        for (int32 TileIndex = 0; TileIndex < TileCount; ++TileIndex)
+        {
+            const float Angle = 2.0f * PI * (static_cast<float>(TileIndex) + (Row % 2 == 0 ? 0.0f : 0.5f))
+                / static_cast<float>(TileCount);
+            const FVector Radial(FMath::Cos(Angle), FMath::Sin(Angle), 0.0f);
+            const FVector SurfaceNormal = FVector(Radial.X, Radial.Y, RoofBaseRadius / RoofHeight).GetSafeNormal();
+            const FVector TileLocation = Location
+                + Radial * RingRadius
+                + FVector(0.0f, 0.0f, RoofBaseZ + RoofHeight * RoofFraction)
+                + SurfaceNormal * 4.0f;
+            const FLinearColor TileColor = (TileIndex + Row) % 3 == 0
+                ? RoofColor * FLinearColor(0.79f, 0.84f, 0.94f, 1.0f)
+                : ((TileIndex + Row) % 3 == 1
+                    ? RoofColor * FLinearColor(0.95f, 0.96f, 1.0f, 1.0f)
+                    : RoofColor * FLinearColor(0.86f, 0.90f, 0.97f, 1.0f));
+            AddInstancedPrimitive(
+                RuntimeCubeMesh,
+                FName(*FString::Printf(TEXT("%s_RoofTile_%d_%d"), *Prefix, Row, TileIndex)),
+                TileLocation,
+                FVector(0.42f, 0.48f, 0.06f),
+                TileColor,
+                false,
+                FRotationMatrix::MakeFromZ(SurfaceNormal).Rotator());
+        }
+    }
+
     AddInstancedPrimitive(
         RuntimeSphereMesh,
         FName(*FString::Printf(TEXT("%s_Finial"), *Prefix)),
@@ -498,6 +578,31 @@ void AAetherDevelopmentWorldActor::BuildTree(
 
     if (bPine)
     {
+        const FVector PineBranchStart = Location + FVector(0.0f, 0.0f, Height * 0.38f);
+        for (int32 BranchIndex = 0; BranchIndex < 4; ++BranchIndex)
+        {
+            const float BranchAngle = FMath::DegreesToRadians(45.0f + 90.0f * BranchIndex);
+            const FVector BranchEnd = Location + FVector(
+                FMath::Cos(BranchAngle) * 148.0f * Scale,
+                FMath::Sin(BranchAngle) * 148.0f * Scale,
+                Height * (0.62f + 0.04f * BranchIndex));
+            const FVector BranchDelta = BranchEnd - PineBranchStart;
+            AddInstancedPrimitive(
+                RuntimeCylinderMesh,
+                FName(*FString::Printf(TEXT("%s_PineBranch_%d"), *Prefix, BranchIndex)),
+                (PineBranchStart + BranchEnd) * 0.5f,
+                FVector(0.12f * Scale, 0.12f * Scale, BranchDelta.Size() / 100.0f),
+                Bark,
+                false,
+                FRotationMatrix::MakeFromZ(BranchDelta.GetSafeNormal()).Rotator());
+            AddInstancedPrimitive(
+                RuntimeSphereMesh,
+                FName(*FString::Printf(TEXT("%s_PineBranchNeedles_%d"), *Prefix, BranchIndex)),
+                BranchEnd + FVector(0.0f, 0.0f, 7.0f * Scale),
+                FVector(0.42f * Scale, 0.34f * Scale, 0.30f * Scale),
+                BranchIndex % 2 == 0 ? LeafMid : LeafLight);
+        }
+
         for (int32 Layer = 0; Layer < 3; ++Layer)
         {
             const float LayerHeight = Height * (0.52f + 0.17f * Layer);
@@ -518,31 +623,91 @@ void AAetherDevelopmentWorldActor::BuildTree(
     const FLinearColor CanopyAccent = bBlossom
         ? FLinearColor(0.83f, 0.43f, 0.66f, 1.0f)
         : LeafLight;
+    const FLinearColor CanopyShadow = bBlossom
+        ? FLinearColor(0.34f, 0.16f, 0.32f, 1.0f)
+        : LeafDark;
 
-    AddInstancedPrimitive(
-        RuntimeSphereMesh,
-        FName(*FString::Printf(TEXT("%s_CanopyShadow"), *Prefix)),
-        Location + FVector(0.0f, 0.0f, Height * 0.70f),
-        FVector(2.75f * Scale, 2.55f * Scale, 2.40f * Scale),
-        LeafDark);
-    AddInstancedPrimitive(
-        RuntimeSphereMesh,
-        FName(*FString::Printf(TEXT("%s_CanopyLeft"), *Prefix)),
-        Location + FVector(-78.0f * Scale, -7.0f * Scale, Height * 0.73f),
-        FVector(1.95f * Scale, 1.78f * Scale, 1.88f * Scale),
-        CanopyMain);
-    AddInstancedPrimitive(
-        RuntimeSphereMesh,
-        FName(*FString::Printf(TEXT("%s_CanopyRight"), *Prefix)),
-        Location + FVector(82.0f * Scale, 16.0f * Scale, Height * 0.73f),
-        FVector(1.92f * Scale, 1.82f * Scale, 1.86f * Scale),
-        CanopyMain * FLinearColor(0.90f, 0.98f, 0.88f, 1.0f));
-    AddInstancedPrimitive(
-        RuntimeSphereMesh,
-        FName(*FString::Printf(TEXT("%s_CanopyTop"), *Prefix)),
-        Location + FVector(-8.0f * Scale, 18.0f * Scale, Height * 0.94f),
-        FVector(1.88f * Scale, 1.75f * Scale, 1.78f * Scale),
-        CanopyAccent);
+    struct FCanopyBranch
+    {
+        FVector EndOffset;
+        float BranchRadius;
+    };
+    const FCanopyBranch Branches[] = {
+        { FVector(-245.0f, -18.0f, Height * 0.77f), 0.15f },
+        { FVector(238.0f, 24.0f, Height * 0.76f), 0.15f },
+        { FVector(-24.0f, 238.0f, Height * 0.80f), 0.13f },
+        { FVector(18.0f, -232.0f, Height * 0.79f), 0.13f }
+    };
+    const FVector BranchStart = Location + FVector(0.0f, 0.0f, Height * 0.43f);
+    for (int32 BranchIndex = 0; BranchIndex < UE_ARRAY_COUNT(Branches); ++BranchIndex)
+    {
+        const FVector BranchEnd = Location + Branches[BranchIndex].EndOffset * Scale;
+        const FVector BranchDelta = BranchEnd - BranchStart;
+        const float BranchLength = BranchDelta.Size();
+        const FRotator BranchRotation = FRotationMatrix::MakeFromZ(BranchDelta.GetSafeNormal()).Rotator();
+        AddInstancedPrimitive(
+            RuntimeCylinderMesh,
+            FName(*FString::Printf(TEXT("%s_Branch_%d"), *Prefix, BranchIndex)),
+            (BranchStart + BranchEnd) * 0.5f,
+            FVector(Branches[BranchIndex].BranchRadius * Scale, Branches[BranchIndex].BranchRadius * Scale, BranchLength / 100.0f),
+            Bark,
+            false,
+            BranchRotation);
+    }
+
+    const FVector CanopyOffsets[] = {
+        FVector(-112.0f, -16.0f, Height * 0.70f),
+        FVector(108.0f, 18.0f, Height * 0.71f),
+        FVector(-12.0f, -112.0f, Height * 0.75f),
+        FVector(20.0f, 108.0f, Height * 0.76f),
+        FVector(-62.0f, 50.0f, Height * 0.91f),
+        FVector(68.0f, -48.0f, Height * 0.92f),
+        FVector(-4.0f, 8.0f, Height * 1.08f),
+        FVector(8.0f, -26.0f, Height * 0.59f)
+    };
+    const FVector CanopyScales[] = {
+        FVector(1.70f, 1.52f, 1.60f), FVector(1.68f, 1.55f, 1.62f),
+        FVector(1.62f, 1.50f, 1.58f), FVector(1.66f, 1.56f, 1.60f),
+        FVector(1.50f, 1.40f, 1.48f), FVector(1.48f, 1.38f, 1.50f),
+        FVector(1.40f, 1.34f, 1.42f), FVector(1.46f, 1.38f, 1.34f)
+    };
+    const FLinearColor CanopyColors[] = {
+        CanopyShadow, CanopyMain, CanopyAccent, CanopyMain,
+        CanopyAccent, CanopyMain * FLinearColor(0.91f, 1.0f, 0.88f, 1.0f),
+        CanopyAccent, CanopyShadow
+    };
+    for (int32 ClusterIndex = 0; ClusterIndex < UE_ARRAY_COUNT(CanopyOffsets); ++ClusterIndex)
+    {
+        AddInstancedPrimitive(
+            RuntimeSphereMesh,
+            FName(*FString::Printf(TEXT("%s_LeafCluster_%d"), *Prefix, ClusterIndex)),
+            Location + CanopyOffsets[ClusterIndex] * Scale,
+            CanopyScales[ClusterIndex] * Scale,
+            CanopyColors[ClusterIndex]);
+    }
+
+    const FVector LeafOffsets[] = {
+        FVector(-224.0f, -35.0f, Height * 0.76f), FVector(220.0f, 29.0f, Height * 0.78f),
+        FVector(-22.0f, -220.0f, Height * 0.81f), FVector(18.0f, 216.0f, Height * 0.82f),
+        FVector(-112.0f, 106.0f, Height * 1.02f), FVector(119.0f, -108.0f, Height * 1.01f),
+        FVector(-135.0f, -104.0f, Height * 0.96f), FVector(133.0f, 102.0f, Height * 0.95f)
+    };
+    for (int32 LeafIndex = 0; LeafIndex < UE_ARRAY_COUNT(LeafOffsets); ++LeafIndex)
+    {
+        const FLinearColor LeafColor = LeafIndex % 3 == 0
+            ? CanopyAccent
+            : (LeafIndex % 3 == 1 ? CanopyMain : CanopyMain * FLinearColor(0.92f, 1.0f, 0.90f, 1.0f));
+        AddInstancedPrimitive(
+            RuntimeSphereMesh,
+            FName(*FString::Printf(TEXT("%s_Foliage_%d"), *Prefix, LeafIndex)),
+            Location + LeafOffsets[LeafIndex] * Scale,
+            FVector(0.56f * Scale, 0.40f * Scale, 0.38f * Scale),
+            LeafColor,
+            false,
+            FRotator(
+                static_cast<float>((LeafIndex * 13) % 24 - 12),
+                static_cast<float>(LeafIndex * 41),
+                static_cast<float>((LeafIndex * 17) % 28 - 14)));
 }
 
 void AAetherDevelopmentWorldActor::BuildRockCluster(
@@ -798,6 +963,165 @@ void AAetherDevelopmentWorldActor::BuildTerrain()
     BuildRockCluster(FVector(-2310.0f, 1500.0f, 0.0f), 1.25f, TEXT("NorthWestRocks"));
     BuildRockCluster(FVector(2350.0f, 1240.0f, 0.0f), 1.1f, TEXT("NorthEastRocks"));
     BuildRockCluster(FVector(-2250.0f, -1450.0f, 0.0f), 1.0f, TEXT("SouthWestRocks"));
+}
+
+void AAetherDevelopmentWorldActor::BuildGroundCover()
+{
+    const FLinearColor BladeColors[] = {
+        FLinearColor(0.24f, 0.42f, 0.14f, 1.0f),
+        FLinearColor(0.31f, 0.50f, 0.17f, 1.0f),
+        FLinearColor(0.39f, 0.58f, 0.22f, 1.0f),
+        FLinearColor(0.29f, 0.46f, 0.16f, 1.0f)
+    };
+    const FLinearColor FlowerColors[] = {
+        FLinearColor(0.96f, 0.78f, 0.24f, 1.0f),
+        FLinearColor(0.95f, 0.92f, 0.78f, 1.0f),
+        FLinearColor(0.78f, 0.48f, 0.76f, 1.0f)
+    };
+    const FName BladeInstanceNames[] = {
+        TEXT("MeadowGrassBlade_Dark"), TEXT("MeadowGrassBlade_Mid"),
+        TEXT("MeadowGrassBlade_Light"), TEXT("MeadowGrassBlade_Green")
+    };
+    const FName FlowerInstanceNames[] = {
+        TEXT("MeadowWildflower_Gold"), TEXT("MeadowWildflower_Cream"), TEXT("MeadowWildflower_Lilac")
+    };
+
+    const TArray<FVector> RiverPath = {
+        FVector(-2660.0f, 1720.0f, 0.0f), FVector(-2180.0f, 1410.0f, 0.0f),
+        FVector(-1640.0f, 1130.0f, 0.0f), FVector(-1030.0f, 870.0f, 0.0f),
+        FVector(-470.0f, 660.0f, 0.0f), FVector(120.0f, 490.0f, 0.0f),
+        FVector(700.0f, 230.0f, 0.0f), FVector(1330.0f, -90.0f, 0.0f),
+        FVector(1950.0f, -400.0f, 0.0f), FVector(2660.0f, -750.0f, 0.0f)
+    };
+    const TArray<FVector> MainRoad = {
+        FVector(0.0f, -1740.0f, 0.0f), FVector(-40.0f, -1190.0f, 0.0f),
+        FVector(-130.0f, -700.0f, 0.0f), FVector(-80.0f, -280.0f, 0.0f),
+        FVector(0.0f, 0.0f, 0.0f), FVector(-60.0f, 280.0f, 0.0f),
+        FVector(120.0f, 490.0f, 0.0f), FVector(350.0f, 720.0f, 0.0f),
+        FVector(420.0f, 540.0f, 0.0f), FVector(700.0f, 520.0f, 0.0f),
+        FVector(970.0f, 580.0f, 0.0f), FVector(1050.0f, 695.0f, 0.0f),
+        FVector(1050.0f, 1080.0f, 0.0f)
+    };
+    const TArray<FVector> FarmRoad = {
+        FVector(-120.0f, -270.0f, 0.0f), FVector(-430.0f, -365.0f, 0.0f),
+        FVector(-780.0f, -425.0f, 0.0f), FVector(-1160.0f, -500.0f, 0.0f),
+        FVector(-1560.0f, -565.0f, 0.0f), FVector(-1930.0f, -780.0f, 0.0f)
+    };
+    const TArray<FVector> OrchardPath = {
+        FVector(-450.0f, 100.0f, 0.0f), FVector(-760.0f, 380.0f, 0.0f),
+        FVector(-1160.0f, 640.0f, 0.0f), FVector(-1530.0f, 810.0f, 0.0f)
+    };
+    const TArray<TArray<FVector>> Paths = { RiverPath, MainRoad, FarmRoad, OrchardPath };
+
+    const auto IsNearPath = [](const FVector2D& Point, const TArray<FVector>& Path, float Radius)
+    {
+        const float RadiusSquared = Radius * Radius;
+        for (int32 SegmentIndex = 0; SegmentIndex < Path.Num() - 1; ++SegmentIndex)
+        {
+            const FVector& Start = Path[SegmentIndex];
+            const FVector& End = Path[SegmentIndex + 1];
+            const float DeltaX = End.X - Start.X;
+            const float DeltaY = End.Y - Start.Y;
+            const float LengthSquared = DeltaX * DeltaX + DeltaY * DeltaY;
+            const float Alpha = LengthSquared > SMALL_NUMBER
+                ? FMath::Clamp(((Point.X - Start.X) * DeltaX + (Point.Y - Start.Y) * DeltaY) / LengthSquared, 0.0f, 1.0f)
+                : 0.0f;
+            const float OffsetX = Point.X - (Start.X + DeltaX * Alpha);
+            const float OffsetY = Point.Y - (Start.Y + DeltaY * Alpha);
+            if (OffsetX * OffsetX + OffsetY * OffsetY <= RadiusSquared)
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    FRandomStream RandomStream(5812403);
+    const float HalfWidth = GroundScale.X * 100.0f;
+    const float HalfDepth = GroundScale.Y * 100.0f;
+    constexpr float CellSpacing = 185.0f;
+    constexpr float GroundSurfaceZ = 3.0f;
+
+    for (float GridX = -HalfWidth + 140.0f; GridX < HalfWidth - 140.0f; GridX += CellSpacing)
+    {
+        for (float GridY = -HalfDepth + 140.0f; GridY < HalfDepth - 140.0f; GridY += CellSpacing)
+        {
+            const float X = GridX + RandomStream.FRandRange(-52.0f, 52.0f);
+            const float Y = GridY + RandomStream.FRandRange(-52.0f, 52.0f);
+            const FVector2D GroundPoint(X, Y);
+
+            if (IsNearPath(GroundPoint, Paths[0], 410.0f)
+                || IsNearPath(GroundPoint, Paths[1], 255.0f)
+                || IsNearPath(GroundPoint, Paths[2], 205.0f)
+                || IsNearPath(GroundPoint, Paths[3], 150.0f))
+            {
+                continue;
+            }
+
+            const bool bInVillage = FMath::Abs(X) < 960.0f && FMath::Abs(Y) < 890.0f;
+            const bool bInCastle = FMath::Abs(X - 1050.0f) < 760.0f && FMath::Abs(Y - 1150.0f) < 640.0f;
+            const bool bInGreenField = FMath::Abs(X + 1980.0f) < 600.0f && FMath::Abs(Y) < 430.0f;
+            const bool bInWheatField = FMath::Abs(X + 1690.0f) < 610.0f && FMath::Abs(Y + 1260.0f) < 390.0f;
+            const bool bInOrchard = FMath::Abs(X + 760.0f) < 480.0f && FMath::Abs(Y + 1430.0f) < 370.0f;
+            const bool bOnLowHill =
+                (FMath::Abs(X + 2180.0f) < 460.0f && FMath::Abs(Y - 1420.0f) < 390.0f)
+                || (FMath::Abs(X - 2180.0f) < 460.0f && FMath::Abs(Y - 1450.0f) < 410.0f)
+                || (FMath::Abs(X + 2200.0f) < 420.0f && FMath::Abs(Y + 1470.0f) < 360.0f)
+                || (FMath::Abs(X - 2250.0f) < 440.0f && FMath::Abs(Y + 1510.0f) < 390.0f);
+            const bool bNearLandmark =
+                (FMath::Abs(X + 2050.0f) < 260.0f && FMath::Abs(Y - 720.0f) < 250.0f)
+                || (FMath::Abs(X - 1980.0f) < 360.0f && FMath::Abs(Y - 780.0f) < 330.0f)
+                || (FMath::Abs(X + 2040.0f) < 230.0f && FMath::Abs(Y - 1260.0f) < 210.0f);
+
+            if (bInVillage || bInCastle || bInGreenField || bInWheatField || bInOrchard || bOnLowHill || bNearLandmark)
+            {
+                continue;
+            }
+
+            const int32 BladeCount = 4 + RandomStream.RandRange(0, 2);
+            for (int32 BladeIndex = 0; BladeIndex < BladeCount; ++BladeIndex)
+            {
+                const float AngleDegrees = RandomStream.FRandRange(0.0f, 360.0f);
+                const float AngleRadians = FMath::DegreesToRadians(AngleDegrees);
+                const float TuftRadius = RandomStream.FRandRange(8.0f, 47.0f);
+                const float Height = RandomStream.FRandRange(32.0f, 58.0f);
+                const float Lean = RandomStream.FRandRange(8.0f, 24.0f);
+                const FVector BladeLocation(
+                    X + FMath::Cos(AngleRadians) * TuftRadius,
+                    Y + FMath::Sin(AngleRadians) * TuftRadius,
+                    GroundSurfaceZ + Height * 0.5f);
+                const FRotator BladeRotation(
+                    RandomStream.FRandRange(-Lean, Lean),
+                    AngleDegrees,
+                    RandomStream.FRandRange(-Lean, Lean));
+                const int32 ColorIndex = RandomStream.RandRange(0, 3);
+
+                AddInstancedPrimitive(
+                    RuntimeConeMesh,
+                    BladeInstanceNames[ColorIndex],
+                    BladeLocation,
+                    FVector(0.018f, 0.018f, Height / 100.0f),
+                    BladeColors[ColorIndex],
+                    false,
+                    BladeRotation,
+                    false);
+            }
+
+            if (RandomStream.FRand() < 0.055f)
+            {
+                const int32 FlowerColorIndex = RandomStream.RandRange(0, 2);
+                AddInstancedPrimitive(
+                    RuntimeSphereMesh,
+                    FlowerInstanceNames[FlowerColorIndex],
+                    FVector(X, Y, RandomStream.FRandRange(19.0f, 31.0f)),
+                    FVector(0.045f, 0.045f, 0.055f),
+                    FlowerColors[FlowerColorIndex],
+                    false,
+                    FRotator::ZeroRotator,
+                    false);
+            }
+        }
+    }
 }
 
 void AAetherDevelopmentWorldActor::BuildRiverAndRoads()
@@ -1209,6 +1533,7 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
     bDioramaBuilt = true;
 
     BuildTerrain();
+    BuildGroundCover();
     BuildRiverAndRoads();
     BuildFarms();
     BuildVillage();

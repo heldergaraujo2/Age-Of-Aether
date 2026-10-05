@@ -13,8 +13,11 @@
 #include "GameFramework/PlayerController.h"
 
 #include "Camera/CameraComponent.h"
+#include "Animation/AnimSequence.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
 #include "PaperSpriteComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -31,8 +34,20 @@
 
 AAetherCharacter::AAetherCharacter()
 {
+    PrimaryActorTick.bCanEverTick = true;
     bReplicates = true;
     SetReplicateMovement(true);
+
+    MageSkeletalMeshAsset = TSoftObjectPtr<USkeletalMesh>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/SK_Mago_AgeOfAether.SK_Mago_AgeOfAether")));
+    MageIdleAnimationAsset = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Idle.A_Idle")));
+    MageWalkAnimationAsset = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Walk.A_Walk")));
+    MageRunAnimationAsset = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Run.A_Run")));
+    MageJumpAnimationAsset = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Jump.A_Jump")));
 
     bUseControllerRotationPitch = false;
     bUseControllerRotationYaw = false;
@@ -63,6 +78,11 @@ AAetherCharacter::AAetherCharacter()
     SkillVisualComponent = CreateDefaultSubobject<UAetherSkillVisualComponent>(TEXT("SkillVisualComponent"));
     Visual2DComponent = CreateDefaultSubobject<UAether2DCharacterVisualComponent>(TEXT("Visual2DComponent"));
     IsometricCameraComponent = CreateDefaultSubobject<UAether2DIsometricCameraComponent>(TEXT("IsometricCameraComponent"));
+
+    RuntimeSkeletalVisual = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RuntimeSkeletalVisual"));
+    RuntimeSkeletalVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeSkeletalVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    RuntimeSkeletalVisual->SetCastShadow(true);
 
     RuntimeBodyVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeBodyVisual"));
     RuntimeBodyVisual->SetupAttachment(GetCapsuleComponent());
@@ -175,6 +195,9 @@ AAetherCharacter::AAetherCharacter()
             if (UMaterialInstanceDynamic* Material = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
             {
                 Material->SetVectorParameterValue(TEXT("Color"), Color);
+                Material->SetScalarParameterValue(TEXT("Roughness"), 0.76f);
+                Material->SetScalarParameterValue(TEXT("Specular"), 0.20f);
+                Material->SetScalarParameterValue(TEXT("Metallic"), 0.0f);
                 Component->SetMaterial(0, Material);
             }
         }
@@ -316,18 +339,32 @@ void AAetherCharacter::BeginPlay()
 
     InitializeRuntimeVisual();
 
+    if (GetNetMode() == NM_DedicatedServer)
+    {
+        SetActorTickEnabled(false);
+    }
+
     if (IsLocallyControlled())
     {
         InitializeFoundationInput();
     }
 }
 
+void AAetherCharacter::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    UpdateSkeletalVisualAnimation();
+}
+
 void AAetherCharacter::InitializeRuntimeVisual()
 {
+    InitializeSkeletalVisual();
+
     const UAether2DCharacterVisualProfile* TwoDProfile = Visual2DComponent
         ? Visual2DComponent->GetProfile()
         : nullptr;
     const bool bUsePrimaryTwoDPresentation = TwoDProfile && TwoDProfile->bUseAsPrimaryPresentation;
+    const bool bHasSkeletalPresentation = RuntimeSkeletalVisual && RuntimeSkeletalVisual->GetSkeletalMesh();
 
     UStaticMeshComponent* ProxyParts[] = {
         RuntimeBodyVisual.Get(),
@@ -352,9 +389,16 @@ void AAetherCharacter::InitializeRuntimeVisual()
     {
         if (Part)
         {
-            Part->SetVisibility(!bUsePrimaryTwoDPresentation, true);
+            Part->SetVisibility(!bUsePrimaryTwoDPresentation && !bHasSkeletalPresentation, true);
         }
     }
+
+    if (RuntimeSkeletalVisual)
+    {
+        RuntimeSkeletalVisual->SetVisibility(bHasSkeletalPresentation && !bUsePrimaryTwoDPresentation, true);
+    }
+
+    UpdateSkeletalVisualAnimation();
 
     // Keep the old Paper2D component as a compatibility hook for authored profiles,
     // but never use the crude triangular runtime icon as the default character.
@@ -362,6 +406,81 @@ void AAetherCharacter::InitializeRuntimeVisual()
     {
         Runtime2DArtVisual->SetVisibility(false, true);
     }
+}
+
+void AAetherCharacter::InitializeSkeletalVisual()
+{
+    if (GetNetMode() == NM_DedicatedServer || !RuntimeSkeletalVisual)
+    {
+        return;
+    }
+
+    USkeletalMesh* Mesh = MageSkeletalMeshAsset.LoadSynchronous();
+    if (!Mesh)
+    {
+        return;
+    }
+
+    RuntimeSkeletalVisual->SetSkeletalMesh(Mesh);
+    RuntimeSkeletalVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    RuntimeSkeletalVisual->SetCastShadow(true);
+    RuntimeSkeletalVisual->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+    RuntimeSkeletalVisual->SetRelativeLocation(FVector(
+        0.0f,
+        0.0f,
+        -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
+    RuntimeSkeletalVisual->SetRelativeRotation(FRotator::ZeroRotator);
+    RuntimeSkeletalVisual->SetRelativeScale3D(FVector::OneVector);
+
+    RuntimeIdleAnimation = MageIdleAnimationAsset.LoadSynchronous();
+    RuntimeWalkAnimation = MageWalkAnimationAsset.LoadSynchronous();
+    RuntimeRunAnimation = MageRunAnimationAsset.LoadSynchronous();
+    RuntimeJumpAnimation = MageJumpAnimationAsset.LoadSynchronous();
+    ActiveSkeletalAnimation = nullptr;
+    UpdateSkeletalVisualAnimation();
+}
+
+void AAetherCharacter::UpdateSkeletalVisualAnimation()
+{
+    if (GetNetMode() == NM_DedicatedServer || !RuntimeSkeletalVisual || !RuntimeSkeletalVisual->GetSkeletalMesh())
+    {
+        return;
+    }
+
+    const FVector Velocity = GetVelocity();
+    const float PlanarSpeedSquared = Velocity.SizeSquared2D();
+    const bool bIsMoving = PlanarSpeedSquared > FMath::Square(24.0f);
+    const UCharacterMovementComponent* Movement = GetCharacterMovement();
+
+    UAnimSequence* DesiredAnimation = nullptr;
+    if (Movement && Movement->IsFalling() && RuntimeJumpAnimation)
+    {
+        DesiredAnimation = RuntimeJumpAnimation;
+    }
+    else if (bIsMoving)
+    {
+        const float WalkSpeed = MovementCameraProfile ? MovementCameraProfile->WalkSpeed : FoundationWalkSpeed;
+        const bool bShouldRun = bSprinting || FMath::Sqrt(PlanarSpeedSquared) > WalkSpeed * 1.15f;
+        DesiredAnimation = bShouldRun && RuntimeRunAnimation
+            ? RuntimeRunAnimation.Get()
+            : RuntimeWalkAnimation.Get();
+    }
+    else
+    {
+        DesiredAnimation = RuntimeIdleAnimation;
+    }
+
+    if (!DesiredAnimation && RuntimeIdleAnimation)
+    {
+        DesiredAnimation = RuntimeIdleAnimation;
+    }
+    if (!DesiredAnimation || DesiredAnimation == ActiveSkeletalAnimation)
+    {
+        return;
+    }
+
+    RuntimeSkeletalVisual->PlayAnimation(DesiredAnimation, true);
+    ActiveSkeletalAnimation = DesiredAnimation;
 }
 
 void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

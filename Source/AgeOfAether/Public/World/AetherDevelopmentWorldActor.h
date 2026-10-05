@@ -37,7 +37,7 @@ protected:
     TObjectPtr<UStaticMeshComponent> Ground;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Foundation")
-    FVector GroundScale = FVector(27.0f, 21.0f, 0.20f);
+    FVector GroundScale = FVector(42.0f, 32.0f, 0.20f);
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Foundation")
     float GroundZ = -10.0f;
@@ -46,6 +46,7 @@ private:
     void ConfigureGround();
     void BuildFirstRegionDiorama();
     void BuildTerrain();
+    void BuildGroundCover();
     void BuildRiverAndRoads();
     void BuildBridge();
     void BuildVillage();
@@ -69,7 +70,8 @@ private:
         const FVector& Scale,
         const FLinearColor& Color,
         bool bBlockMovement = false,
-        const FRotator& Rotation = FRotator::ZeroRotator);
+        const FRotator& Rotation = FRotator::ZeroRotator,
+        bool bCastShadow = true);
 
     UMaterialInstanceDynamic* CreateColorMaterial(const FLinearColor& Color);
     void AddRibbon(

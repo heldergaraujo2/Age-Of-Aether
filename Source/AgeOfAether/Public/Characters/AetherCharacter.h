@@ -11,6 +11,9 @@ class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
 class UStaticMeshComponent;
+class USkeletalMesh;
+class USkeletalMeshComponent;
+class UAnimSequence;
 class UPaperSpriteComponent;
 class UPaperSprite;
 class UTexture2D;
@@ -34,6 +37,7 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void UnPossessed() override;
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
     virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Character")
@@ -94,6 +98,24 @@ protected:
     TObjectPtr<UAetherSkillVisualComponent> SkillVisualComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<USkeletalMeshComponent> RuntimeSkeletalVisual;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<USkeletalMesh> MageSkeletalMeshAsset;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<UAnimSequence> MageIdleAnimationAsset;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<UAnimSequence> MageWalkAnimationAsset;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<UAnimSequence> MageRunAnimationAsset;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<UAnimSequence> MageJumpAnimationAsset;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
     TObjectPtr<UStaticMeshComponent> RuntimeBodyVisual;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
@@ -150,6 +172,21 @@ protected:
     UPROPERTY(Transient)
     TObjectPtr<UTexture2D> Runtime2DArtTexture;
 
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeIdleAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeWalkAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeRunAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeJumpAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> ActiveSkeletalAnimation;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
     float FoundationWalkSpeed = 420.0f;
 
@@ -171,6 +208,8 @@ protected:
 private:
     void InitializeFoundationInput();
     void InitializeRuntimeVisual();
+    void InitializeSkeletalVisual();
+    void UpdateSkeletalVisualAnimation();
     void MoveForward(const struct FInputActionValue& Value);
     void MoveRight(const struct FInputActionValue& Value);
     void LookYaw(const struct FInputActionValue& Value);
