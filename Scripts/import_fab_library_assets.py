@@ -313,26 +313,47 @@ def _create_grass_ground_material(texture, for_landscape=False):
     )
 
     unreal.MaterialEditingLibrary.recompile_material(material)
-    unreal.EditorAssetLibrary.save_loaded_asset(material)
+    if not unreal.EditorAssetLibrary.save_loaded_asset(material):
+        raise RuntimeError("Unreal could not save generated grass material {}.".format(material_path))
     return material
 
 
 def _import_grass_ground():
     unreal.EditorAssetLibrary.make_directory(GRASS_TEXTURE_DEST)
     unreal.EditorAssetLibrary.make_directory(GRASS_MATERIAL_DEST)
-    task = _make_task(GRASS_SOURCE, GRASS_TEXTURE_DEST, "T_GrassGround")
-    texture = next(iter(_load_assets(_run_import(task), unreal.Texture2D)), None)
-    if not texture:
-        texture = _load_asset(GRASS_TEXTURE_PATH, unreal.Texture2D)
-    if not texture:
-        raise RuntimeError("The generated grass ground texture could not be imported.")
 
-    texture = _ensure_path(texture, GRASS_TEXTURE_DEST, "T_GrassGround", unreal.Texture2D)
-    _set(texture, "srgb", True)
-    _set(texture, "compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT, required=False)
-    unreal.EditorAssetLibrary.save_loaded_asset(texture)
-    ground_material = _create_grass_ground_material(texture)
-    landscape_material = _create_grass_ground_material(texture, for_landscape=True)
+    # Reuse the already imported/saved assets on reruns. In particular, do not
+    # rebuild M_GrassGround while its Material Editor tab is open; the landscape
+    # assignment below is independent and should not fail because that asset is in use.
+    texture = _load_asset(GRASS_TEXTURE_PATH, unreal.Texture2D)
+    if not texture:
+        task = _make_task(GRASS_SOURCE, GRASS_TEXTURE_DEST, "T_GrassGround")
+        texture = next(iter(_load_assets(_run_import(task), unreal.Texture2D)), None)
+        if not texture:
+            texture = _load_asset(GRASS_TEXTURE_PATH, unreal.Texture2D)
+        if not texture:
+            raise RuntimeError("The generated grass ground texture could not be imported.")
+
+        texture = _ensure_path(texture, GRASS_TEXTURE_DEST, "T_GrassGround", unreal.Texture2D)
+        _set(texture, "srgb", True)
+        _set(texture, "compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT, required=False)
+        if not unreal.EditorAssetLibrary.save_loaded_asset(texture):
+            raise RuntimeError("Unreal could not save the imported grass texture {}.".format(texture.get_path_name()))
+    else:
+        unreal.log("Reusing existing grass texture {}.".format(texture.get_path_name()))
+
+    ground_material = _load_asset(GRASS_MATERIAL_PATH, unreal.Material)
+    if not ground_material:
+        ground_material = _create_grass_ground_material(texture)
+    else:
+        unreal.log("Reusing existing runtime grass material {}.".format(ground_material.get_path_name()))
+
+    landscape_material = _load_asset(LANDSCAPE_GRASS_MATERIAL_PATH, unreal.Material)
+    if not landscape_material:
+        landscape_material = _create_grass_ground_material(texture, for_landscape=True)
+    else:
+        unreal.log("Reusing existing Landscape grass material {}.".format(landscape_material.get_path_name()))
+
     unreal.log("Textured grass ground ready: texture={} ground_material={} landscape_material={}".format(
         texture.get_path_name(), ground_material.get_path_name(), landscape_material.get_path_name()
     ))
