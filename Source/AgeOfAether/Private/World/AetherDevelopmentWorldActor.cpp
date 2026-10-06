@@ -135,7 +135,7 @@ void AAetherDevelopmentWorldActor::ConfigureGround()
     Ground->SetRelativeLocation(FVector(0.0f, 0.0f, GroundZ));
 }
 
-void AAetherDevelopmentWorldActor::LoadFabEnvironmentAssets()
+void AAetherDevelopmentWorldActor::LoadEnvironmentAssets()
 {
     RuntimeGrassGroundMaterial = LoadObject<UMaterialInterface>(
         nullptr, TEXT("/Game/Aether/Environment/Ground/Materials/M_GrassGround.M_GrassGround"));
@@ -158,6 +158,84 @@ void AAetherDevelopmentWorldActor::LoadFabEnvironmentAssets()
     RuntimeFabHorseIdleAnimation = LoadObject<UAnimSequence>(
         nullptr, TEXT("/Game/Aether/Characters/FabHorse/Animations/A_Fab_UnicornHorse_Idle.A_Fab_UnicornHorse_Idle"));
 
+    RuntimeCC0BroadleafTreeMeshes.Reset();
+    RuntimeCC0PineTreeMeshes.Reset();
+    RuntimeCC0BushMeshes.Reset();
+    RuntimeCC0GroundCoverMeshes.Reset();
+    RuntimeCC0WildflowerMeshes.Reset();
+
+    const auto LoadCC0Meshes = [](TArray<TObjectPtr<UStaticMesh>>& Destination, const TCHAR* const* ObjectPaths, int32 PathCount)
+    {
+        for (int32 Index = 0; Index < PathCount; ++Index)
+        {
+            if (UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, ObjectPaths[Index]))
+            {
+                Destination.Add(Mesh);
+            }
+        }
+    };
+
+    const TCHAR* CC0BroadleafTreePaths[] = {
+        TEXT("/Game/Aether/Environment/CC0Forest/KayKit/SM_CC0_KayKit_Tree_1_A_Color1.SM_CC0_KayKit_Tree_1_A_Color1"),
+        TEXT("/Game/Aether/Environment/CC0Forest/KayKit/SM_CC0_KayKit_Tree_1_C_Color1.SM_CC0_KayKit_Tree_1_C_Color1"),
+        TEXT("/Game/Aether/Environment/CC0Forest/KayKit/SM_CC0_KayKit_Tree_3_A_Color1.SM_CC0_KayKit_Tree_3_A_Color1"),
+        TEXT("/Game/Aether/Environment/CC0Forest/KayKit/SM_CC0_KayKit_Tree_3_C_Color1.SM_CC0_KayKit_Tree_3_C_Color1"),
+        TEXT("/Game/Aether/Environment/CC0Forest/KayKit/SM_CC0_KayKit_Tree_4_A_Color1.SM_CC0_KayKit_Tree_4_A_Color1"),
+        TEXT("/Game/Aether/Environment/CC0Forest/KayKit/SM_CC0_KayKit_Tree_4_C_Color1.SM_CC0_KayKit_Tree_4_C_Color1"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_detailed_jungle.SM_CC0_Kenney_tree_detailed_jungle"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_fat_jungle.SM_CC0_Kenney_tree_fat_jungle"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_oak_jungle.SM_CC0_Kenney_tree_oak_jungle"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_plateau_jungle.SM_CC0_Kenney_tree_plateau_jungle"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_blocks_jungle.SM_CC0_Kenney_tree_blocks_jungle"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_tall_jungle.SM_CC0_Kenney_tree_tall_jungle")
+    };
+    const TCHAR* CC0PineTreePaths[] = {
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_pineSmallA.SM_CC0_Kenney_tree_pineSmallA"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_pineSmallB.SM_CC0_Kenney_tree_pineSmallB"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_pineTallA.SM_CC0_Kenney_tree_pineTallA"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_pineTallB.SM_CC0_Kenney_tree_pineTallB"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_pineRoundA.SM_CC0_Kenney_tree_pineRoundA"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_pineRoundC.SM_CC0_Kenney_tree_pineRoundC"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_tree_pineDefaultA.SM_CC0_Kenney_tree_pineDefaultA")
+    };
+    const TCHAR* CC0BushPaths[] = {
+        TEXT("/Game/Aether/Environment/CC0Forest/KayKit/SM_CC0_KayKit_Bush_1_E_Color1.SM_CC0_KayKit_Bush_1_E_Color1"),
+        TEXT("/Game/Aether/Environment/CC0Forest/KayKit/SM_CC0_KayKit_Bush_3_B_Color1.SM_CC0_KayKit_Bush_3_B_Color1"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_plant_bush.SM_CC0_Kenney_plant_bush"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_plant_bushLarge.SM_CC0_Kenney_plant_bushLarge"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_plant_bushDetailed.SM_CC0_Kenney_plant_bushDetailed")
+    };
+    const TCHAR* CC0GroundCoverPaths[] = {
+        TEXT("/Game/Aether/Environment/CC0Forest/KayKit/SM_CC0_KayKit_Grass_2_D_Color1.SM_CC0_KayKit_Grass_2_D_Color1"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_grass_leafsLarge.SM_CC0_Kenney_grass_leafsLarge"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_grass_leafs.SM_CC0_Kenney_grass_leafs"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_grass_large.SM_CC0_Kenney_grass_large")
+    };
+    const TCHAR* CC0WildflowerPaths[] = {
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_flower_purpleA.SM_CC0_Kenney_flower_purpleA"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_flower_redA.SM_CC0_Kenney_flower_redA"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_flower_yellowA.SM_CC0_Kenney_flower_yellowA"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_flower_purpleC.SM_CC0_Kenney_flower_purpleC"),
+        TEXT("/Game/Aether/Environment/CC0Forest/Kenney/SM_CC0_Kenney_flower_yellowC.SM_CC0_Kenney_flower_yellowC")
+    };
+    LoadCC0Meshes(RuntimeCC0BroadleafTreeMeshes, CC0BroadleafTreePaths, UE_ARRAY_COUNT(CC0BroadleafTreePaths));
+    LoadCC0Meshes(RuntimeCC0PineTreeMeshes, CC0PineTreePaths, UE_ARRAY_COUNT(CC0PineTreePaths));
+    LoadCC0Meshes(RuntimeCC0BushMeshes, CC0BushPaths, UE_ARRAY_COUNT(CC0BushPaths));
+    LoadCC0Meshes(RuntimeCC0GroundCoverMeshes, CC0GroundCoverPaths, UE_ARRAY_COUNT(CC0GroundCoverPaths));
+    LoadCC0Meshes(RuntimeCC0WildflowerMeshes, CC0WildflowerPaths, UE_ARRAY_COUNT(CC0WildflowerPaths));
+
+    if (RuntimeCC0BroadleafTreeMeshes.Num() > 0 || RuntimeCC0PineTreeMeshes.Num() > 0
+        || RuntimeCC0BushMeshes.Num() > 0 || RuntimeCC0GroundCoverMeshes.Num() > 0)
+    {
+        UE_LOG(LogTemp, Log, TEXT("CC0 environment meshes loaded: broadleaf=%d pines=%d shrubs=%d grass=%d flowers=%d."),
+            RuntimeCC0BroadleafTreeMeshes.Num(), RuntimeCC0PineTreeMeshes.Num(), RuntimeCC0BushMeshes.Num(),
+            RuntimeCC0GroundCoverMeshes.Num(), RuntimeCC0WildflowerMeshes.Num());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Display, TEXT("CC0 forest source assets are not imported yet; run Scripts/import_cc0_forest_assets.py in Unreal Editor."));
+    }
+
     const bool bHasAnyFabTrees = RuntimeFabTreeBroadleafMesh || RuntimeFabTreeSmallMesh || RuntimeFabPineMesh;
     const bool bHasAnyFabBushes = RuntimeFabBushLargeMesh || RuntimeFabBushMediumMesh || RuntimeFabBushFlowerMesh;
     if (bHasAnyFabTrees || bHasAnyFabBushes || RuntimeFabMansionMesh || RuntimeFabHorseMesh)
@@ -170,7 +248,7 @@ void AAetherDevelopmentWorldActor::LoadFabEnvironmentAssets()
     }
     else
     {
-        UE_LOG(LogTemp, Display, TEXT("Fab assets are not imported yet; the diorama will use its built-in fallback meshes."));
+        UE_LOG(LogTemp, Display, TEXT("Optional Fab assets are not imported; CC0 or built-in vegetation fallbacks remain available."));
     }
 }
 
@@ -310,7 +388,7 @@ void AAetherDevelopmentWorldActor::AddInstancedPrimitive(
     }
 }
 
-void AAetherDevelopmentWorldActor::AddFabFoliageInstance(
+void AAetherDevelopmentWorldActor::AddFoliageInstance(
     UStaticMesh* Mesh,
     const FName& BatchName,
     const FVector& GroundLocation,
@@ -331,12 +409,12 @@ void AAetherDevelopmentWorldActor::AddFabFoliageInstance(
     }
 
     UInstancedStaticMeshComponent* Component = nullptr;
-    if (TObjectPtr<UInstancedStaticMeshComponent>* Existing = RuntimeFabInstancedComponents.Find(BatchName))
+    if (TObjectPtr<UInstancedStaticMeshComponent>* Existing = RuntimeFoliageInstancedComponents.Find(BatchName))
     {
         Component = Existing->Get();
         if (Component && Component->GetStaticMesh() != Mesh)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Fab foliage batch '%s' was reused with a different mesh; skipping instance."),
+            UE_LOG(LogTemp, Warning, TEXT("Foliage batch '%s' was reused with a different mesh; skipping instance."),
                 *BatchName.ToString());
             return;
         }
@@ -361,7 +439,7 @@ void AAetherDevelopmentWorldActor::AddFabFoliageInstance(
         Component->SetCastShadow(true);
         AddInstanceComponent(Component);
         Component->RegisterComponent();
-        RuntimeFabInstancedComponents.Add(BatchName, Component);
+        RuntimeFoliageInstancedComponents.Add(BatchName, Component);
         RuntimeVisualComponents.Add(Component);
     }
 
@@ -701,6 +779,39 @@ void AAetherDevelopmentWorldActor::BuildTree(
     int32 Variant,
     const FName& NamePrefix)
 {
+    if (RuntimeCC0BroadleafTreeMeshes.Num() > 0 || RuntimeCC0PineTreeMeshes.Num() > 0)
+    {
+        const bool bPine = Variant % 3 == 1;
+        const bool bSmall = !bPine && Variant % 2 == 0;
+        const uint32 SelectionSeed = GetTypeHash(NamePrefix);
+        const auto SelectMesh = [SelectionSeed](const TArray<TObjectPtr<UStaticMesh>>& Meshes) -> UStaticMesh*
+        {
+            if (Meshes.Num() <= 0)
+            {
+                return nullptr;
+            }
+            const int32 MeshIndex = static_cast<int32>(SelectionSeed % static_cast<uint32>(Meshes.Num()));
+            return Meshes[MeshIndex].Get();
+        };
+
+        UStaticMesh* CC0Tree = bPine
+            ? SelectMesh(RuntimeCC0PineTreeMeshes)
+            : SelectMesh(RuntimeCC0BroadleafTreeMeshes);
+        if (!CC0Tree)
+        {
+            CC0Tree = SelectMesh(bPine ? RuntimeCC0BroadleafTreeMeshes : RuntimeCC0PineTreeMeshes);
+        }
+        if (CC0Tree)
+        {
+            const FName BatchName(*FString::Printf(TEXT("CC0_Tree_%s"), *CC0Tree->GetName()));
+            const float TargetHeight = (bPine ? 700.0f : (bSmall ? 420.0f : 560.0f)) * Scale;
+            const float WidthScale = 0.90f + static_cast<float>(SelectionSeed % 24u) / 100.0f;
+            const float Yaw = static_cast<float>(SelectionSeed % 360u);
+            AddFoliageInstance(CC0Tree, BatchName, Location, TargetHeight, WidthScale, FRotator(0.0f, Yaw, 0.0f));
+            return;
+        }
+    }
+
     if (RuntimeFabTreeBroadleafMesh || RuntimeFabTreeSmallMesh || RuntimeFabPineMesh)
     {
         const bool bPine = Variant % 3 == 1;
@@ -720,7 +831,7 @@ void AAetherDevelopmentWorldActor::BuildTree(
             const float TargetHeight = (bPine ? 700.0f : (bUseSmall ? 420.0f : 560.0f)) * Scale;
             const float WidthScale = 0.88f + static_cast<float>(GetTypeHash(NamePrefix) % 25u) / 100.0f;
             const float Yaw = static_cast<float>(GetTypeHash(NamePrefix) % 360u);
-            AddFabFoliageInstance(FabTree, BatchName, Location, TargetHeight, WidthScale, FRotator(0.0f, Yaw, 0.0f));
+            AddFoliageInstance(FabTree, BatchName, Location, TargetHeight, WidthScale, FRotator(0.0f, Yaw, 0.0f));
             return;
         }
     }
@@ -1258,6 +1369,47 @@ void AAetherDevelopmentWorldActor::BuildGroundCover()
                 continue;
             }
 
+            if (RuntimeCC0GroundCoverMeshes.Num() > 0)
+            {
+                const int32 ClumpCount = 2 + RandomStream.RandRange(0, 1);
+                for (int32 ClumpIndex = 0; ClumpIndex < ClumpCount; ++ClumpIndex)
+                {
+                    const int32 MeshIndex = RandomStream.RandRange(0, RuntimeCC0GroundCoverMeshes.Num() - 1);
+                    UStaticMesh* GrassMesh = RuntimeCC0GroundCoverMeshes[MeshIndex].Get();
+                    if (!GrassMesh)
+                    {
+                        continue;
+                    }
+
+                    const FName BatchName(*FString::Printf(TEXT("CC0_GroundCover_%s"), *GrassMesh->GetName()));
+                    AddFoliageInstance(
+                        GrassMesh,
+                        BatchName,
+                        FVector(X + RandomStream.FRandRange(-45.0f, 45.0f),
+                            Y + RandomStream.FRandRange(-45.0f, 45.0f), GroundSurfaceZ),
+                        RandomStream.FRandRange(30.0f, 46.0f),
+                        RandomStream.FRandRange(0.95f, 1.45f),
+                        FRotator(0.0f, RandomStream.FRandRange(0.0f, 360.0f), 0.0f));
+                }
+
+                if (RuntimeCC0WildflowerMeshes.Num() > 0 && RandomStream.FRand() < 0.055f)
+                {
+                    const int32 FlowerIndex = RandomStream.RandRange(0, RuntimeCC0WildflowerMeshes.Num() - 1);
+                    if (UStaticMesh* FlowerMesh = RuntimeCC0WildflowerMeshes[FlowerIndex].Get())
+                    {
+                        const FName BatchName(*FString::Printf(TEXT("CC0_Wildflower_%s"), *FlowerMesh->GetName()));
+                        AddFoliageInstance(
+                            FlowerMesh,
+                            BatchName,
+                            FVector(X, Y, GroundSurfaceZ),
+                            RandomStream.FRandRange(34.0f, 48.0f),
+                            RandomStream.FRandRange(0.95f, 1.20f),
+                            FRotator(0.0f, RandomStream.FRandRange(0.0f, 360.0f), 0.0f));
+                    }
+                }
+                continue;
+            }
+
             const int32 BladeCount = 4 + RandomStream.RandRange(0, 2);
             for (int32 BladeIndex = 0; BladeIndex < BladeCount; ++BladeIndex)
             {
@@ -1652,9 +1804,13 @@ void AAetherDevelopmentWorldActor::BuildForest()
 
 void AAetherDevelopmentWorldActor::BuildImportedVegetation()
 {
+    const bool bHasCC0Trees = RuntimeCC0BroadleafTreeMeshes.Num() > 0 || RuntimeCC0PineTreeMeshes.Num() > 0;
+    const bool bHasCC0Bushes = RuntimeCC0BushMeshes.Num() > 0;
     const bool bHasFabTrees = RuntimeFabTreeBroadleafMesh || RuntimeFabTreeSmallMesh || RuntimeFabPineMesh;
     const bool bHasFabBushes = RuntimeFabBushLargeMesh || RuntimeFabBushMediumMesh || RuntimeFabBushFlowerMesh;
-    if (!bHasFabTrees && !bHasFabBushes)
+    const bool bHasTrees = bHasCC0Trees || bHasFabTrees;
+    const bool bHasBushes = bHasCC0Bushes || bHasFabBushes;
+    if (!bHasTrees && !bHasBushes)
     {
         return;
     }
@@ -1708,7 +1864,7 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
 
     FRandomStream Random(390217);
 
-    if (bHasFabTrees)
+    if (bHasTrees)
     {
         for (int32 Index = 0; Index < 260; ++Index)
         {
@@ -1741,32 +1897,64 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
                 continue;
             }
 
+            const bool bWantsPine = Random.FRand() < 0.23f;
+            const bool bWantsSmall = !bWantsPine && Random.FRand() < 0.38f;
             UStaticMesh* TreeMesh = nullptr;
-            if (Random.FRand() < 0.23f && RuntimeFabPineMesh)
+            bool bSelectedCC0 = false;
+
+            if (bHasCC0Trees)
             {
-                TreeMesh = RuntimeFabPineMesh.Get();
+                const TArray<TObjectPtr<UStaticMesh>>& PreferredPool = bWantsPine && RuntimeCC0PineTreeMeshes.Num() > 0
+                    ? RuntimeCC0PineTreeMeshes
+                    : RuntimeCC0BroadleafTreeMeshes;
+                if (PreferredPool.Num() > 0)
+                {
+                    const int32 MeshIndex = Random.RandRange(0, PreferredPool.Num() - 1);
+                    TreeMesh = PreferredPool[MeshIndex].Get();
+                }
+                if (!TreeMesh && RuntimeCC0BroadleafTreeMeshes.Num() > 0)
+                {
+                    TreeMesh = RuntimeCC0BroadleafTreeMeshes[Random.RandRange(0, RuntimeCC0BroadleafTreeMeshes.Num() - 1)].Get();
+                }
+                if (!TreeMesh && RuntimeCC0PineTreeMeshes.Num() > 0)
+                {
+                    TreeMesh = RuntimeCC0PineTreeMeshes[Random.RandRange(0, RuntimeCC0PineTreeMeshes.Num() - 1)].Get();
+                }
+                bSelectedCC0 = TreeMesh != nullptr;
             }
-            else if (Random.FRand() < 0.38f && RuntimeFabTreeSmallMesh)
+
+            if (!TreeMesh)
             {
-                TreeMesh = RuntimeFabTreeSmallMesh.Get();
-            }
-            else
-            {
-                TreeMesh = RuntimeFabTreeBroadleafMesh
-                    ? RuntimeFabTreeBroadleafMesh.Get()
-                    : (RuntimeFabTreeSmallMesh ? RuntimeFabTreeSmallMesh.Get() : RuntimeFabPineMesh.Get());
+                if (bWantsPine && RuntimeFabPineMesh)
+                {
+                    TreeMesh = RuntimeFabPineMesh.Get();
+                }
+                else if (bWantsSmall && RuntimeFabTreeSmallMesh)
+                {
+                    TreeMesh = RuntimeFabTreeSmallMesh.Get();
+                }
+                else
+                {
+                    TreeMesh = RuntimeFabTreeBroadleafMesh
+                        ? RuntimeFabTreeBroadleafMesh.Get()
+                        : (RuntimeFabTreeSmallMesh ? RuntimeFabTreeSmallMesh.Get() : RuntimeFabPineMesh.Get());
+                }
             }
             if (!TreeMesh)
             {
                 continue;
             }
 
-            const FName BatchName = TreeMesh == RuntimeFabPineMesh.Get() ? TEXT("FabPineInstances")
-                : (TreeMesh == RuntimeFabTreeSmallMesh.Get() ? TEXT("FabSmallTreeInstances") : TEXT("FabBroadleafInstances"));
-            const float Height = TreeMesh == RuntimeFabTreeSmallMesh.Get()
-                ? Random.FRandRange(390.0f, 520.0f)
-                : Random.FRandRange(520.0f, 790.0f);
-            AddFabFoliageInstance(
+            const FName BatchName = bSelectedCC0
+                ? FName(*FString::Printf(TEXT("CC0_Tree_%s"), *TreeMesh->GetName()))
+                : FName(TreeMesh == RuntimeFabPineMesh.Get() ? TEXT("FabPineInstances")
+                    : (TreeMesh == RuntimeFabTreeSmallMesh.Get() ? TEXT("FabSmallTreeInstances") : TEXT("FabBroadleafInstances")));
+            const float Height = bSelectedCC0
+                ? (bWantsPine ? Random.FRandRange(580.0f, 800.0f) : Random.FRandRange(450.0f, 720.0f))
+                : (TreeMesh == RuntimeFabTreeSmallMesh.Get()
+                    ? Random.FRandRange(390.0f, 520.0f)
+                    : Random.FRandRange(520.0f, 790.0f));
+            AddFoliageInstance(
                 TreeMesh,
                 BatchName,
                 Location,
@@ -1807,71 +1995,115 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
                     continue;
                 }
 
-                UStaticMesh* TreeMesh = RuntimeFabTreeBroadleafMesh.Get();
-                if (Random.FRand() < 0.22f && RuntimeFabPineMesh)
+                const bool bWantsPine = Random.FRand() < 0.22f;
+                const bool bWantsSmall = !bWantsPine && Random.FRand() < 0.34f;
+                UStaticMesh* TreeMesh = nullptr;
+                bool bSelectedCC0 = false;
+
+                if (bHasCC0Trees)
                 {
-                    TreeMesh = RuntimeFabPineMesh.Get();
+                    const TArray<TObjectPtr<UStaticMesh>>& PreferredPool = bWantsPine && RuntimeCC0PineTreeMeshes.Num() > 0
+                        ? RuntimeCC0PineTreeMeshes
+                        : RuntimeCC0BroadleafTreeMeshes;
+                    if (PreferredPool.Num() > 0)
+                    {
+                        TreeMesh = PreferredPool[Random.RandRange(0, PreferredPool.Num() - 1)].Get();
+                    }
+                    if (!TreeMesh && RuntimeCC0BroadleafTreeMeshes.Num() > 0)
+                    {
+                        TreeMesh = RuntimeCC0BroadleafTreeMeshes[Random.RandRange(0, RuntimeCC0BroadleafTreeMeshes.Num() - 1)].Get();
+                    }
+                    if (!TreeMesh && RuntimeCC0PineTreeMeshes.Num() > 0)
+                    {
+                        TreeMesh = RuntimeCC0PineTreeMeshes[Random.RandRange(0, RuntimeCC0PineTreeMeshes.Num() - 1)].Get();
+                    }
+                    bSelectedCC0 = TreeMesh != nullptr;
                 }
-                else if (Random.FRand() < 0.34f && RuntimeFabTreeSmallMesh)
-                {
-                    TreeMesh = RuntimeFabTreeSmallMesh.Get();
-                }
+
                 if (!TreeMesh)
                 {
-                    TreeMesh = RuntimeFabTreeSmallMesh
-                        ? RuntimeFabTreeSmallMesh.Get()
-                        : RuntimeFabPineMesh.Get();
+                    TreeMesh = RuntimeFabTreeBroadleafMesh.Get();
+                    if (bWantsPine && RuntimeFabPineMesh)
+                    {
+                        TreeMesh = RuntimeFabPineMesh.Get();
+                    }
+                    else if (bWantsSmall && RuntimeFabTreeSmallMesh)
+                    {
+                        TreeMesh = RuntimeFabTreeSmallMesh.Get();
+                    }
+                    if (!TreeMesh)
+                    {
+                        TreeMesh = RuntimeFabTreeSmallMesh
+                            ? RuntimeFabTreeSmallMesh.Get()
+                            : RuntimeFabPineMesh.Get();
+                    }
                 }
                 if (!TreeMesh)
                 {
                     continue;
                 }
 
-                const FName BatchName = TreeMesh == RuntimeFabPineMesh.Get() ? TEXT("FabPineInstances")
-                    : (TreeMesh == RuntimeFabTreeSmallMesh.Get() ? TEXT("FabSmallTreeInstances") : TEXT("FabBroadleafInstances"));
-                AddFabFoliageInstance(
+                const FName BatchName = bSelectedCC0
+                    ? FName(*FString::Printf(TEXT("CC0_Tree_%s"), *TreeMesh->GetName()))
+                    : FName(TreeMesh == RuntimeFabPineMesh.Get() ? TEXT("FabPineInstances")
+                        : (TreeMesh == RuntimeFabTreeSmallMesh.Get() ? TEXT("FabSmallTreeInstances") : TEXT("FabBroadleafInstances")));
+                AddFoliageInstance(
                     TreeMesh,
                     BatchName,
                     Location,
-                    TreeMesh == RuntimeFabTreeSmallMesh.Get()
-                        ? Random.FRandRange(310.0f, 445.0f)
-                        : Random.FRandRange(405.0f, 590.0f),
+                    bSelectedCC0
+                        ? (bWantsPine ? Random.FRandRange(430.0f, 620.0f) : Random.FRandRange(330.0f, 530.0f))
+                        : (TreeMesh == RuntimeFabTreeSmallMesh.Get()
+                            ? Random.FRandRange(310.0f, 445.0f)
+                            : Random.FRandRange(405.0f, 590.0f)),
                     Random.FRandRange(0.82f, 1.16f),
                     FRotator(0.0f, Random.FRandRange(0.0f, 360.0f), 0.0f));
             }
         }
     }
 
-    const auto AddBush = [this, &Random](const FVector& Location, float MinHeight, float MaxHeight, bool bFlowerBias)
+    const auto AddBush = [this, &Random, bHasCC0Bushes](const FVector& Location, float MinHeight, float MaxHeight, bool bFlowerBias)
     {
         UStaticMesh* BushMesh = nullptr;
-        const float Choice = Random.FRand();
-        if (RuntimeFabBushFlowerMesh && (Choice < (bFlowerBias ? 0.36f : 0.14f)))
+        bool bSelectedCC0 = false;
+        if (bHasCC0Bushes)
         {
-            BushMesh = RuntimeFabBushFlowerMesh.Get();
-        }
-        else if (RuntimeFabBushLargeMesh && Choice < 0.58f)
-        {
-            BushMesh = RuntimeFabBushLargeMesh.Get();
-        }
-        else if (RuntimeFabBushMediumMesh)
-        {
-            BushMesh = RuntimeFabBushMediumMesh.Get();
+            const int32 MeshIndex = Random.RandRange(0, RuntimeCC0BushMeshes.Num() - 1);
+            BushMesh = RuntimeCC0BushMeshes[MeshIndex].Get();
+            bSelectedCC0 = BushMesh != nullptr;
         }
         else
         {
-            BushMesh = RuntimeFabBushLargeMesh
-                ? RuntimeFabBushLargeMesh.Get()
-                : RuntimeFabBushFlowerMesh.Get();
+            const float Choice = Random.FRand();
+            if (RuntimeFabBushFlowerMesh && (Choice < (bFlowerBias ? 0.36f : 0.14f)))
+            {
+                BushMesh = RuntimeFabBushFlowerMesh.Get();
+            }
+            else if (RuntimeFabBushLargeMesh && Choice < 0.58f)
+            {
+                BushMesh = RuntimeFabBushLargeMesh.Get();
+            }
+            else if (RuntimeFabBushMediumMesh)
+            {
+                BushMesh = RuntimeFabBushMediumMesh.Get();
+            }
+            else
+            {
+                BushMesh = RuntimeFabBushLargeMesh
+                    ? RuntimeFabBushLargeMesh.Get()
+                    : RuntimeFabBushFlowerMesh.Get();
+            }
         }
         if (!BushMesh)
         {
             return;
         }
 
-        const FName BatchName = BushMesh == RuntimeFabBushFlowerMesh.Get() ? TEXT("FabFlowerBushInstances")
-            : (BushMesh == RuntimeFabBushLargeMesh.Get() ? TEXT("FabLargeBushInstances") : TEXT("FabMediumBushInstances"));
-        AddFabFoliageInstance(
+        const FName BatchName = bSelectedCC0
+            ? FName(*FString::Printf(TEXT("CC0_Bush_%s"), *BushMesh->GetName()))
+            : FName(BushMesh == RuntimeFabBushFlowerMesh.Get() ? TEXT("FabFlowerBushInstances")
+                : (BushMesh == RuntimeFabBushLargeMesh.Get() ? TEXT("FabLargeBushInstances") : TEXT("FabMediumBushInstances")));
+        AddFoliageInstance(
             BushMesh,
             BatchName,
             Location,
@@ -1880,7 +2112,7 @@ void AAetherDevelopmentWorldActor::BuildImportedVegetation()
             FRotator(0.0f, Random.FRandRange(0.0f, 360.0f), 0.0f));
     };
 
-    if (bHasFabBushes)
+    if (bHasBushes)
     {
         const FVector CitySites[] = {
             FVector(-680.0f, -635.0f, 0.0f), FVector(-970.0f, 75.0f, 0.0f),
@@ -2343,7 +2575,7 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
         return;
     }
 
-    LoadFabEnvironmentAssets();
+    LoadEnvironmentAssets();
     bDioramaBuilt = true;
 
     BuildTerrain();

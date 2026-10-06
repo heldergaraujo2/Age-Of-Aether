@@ -17,9 +17,9 @@ class UStaticMeshComponent;
 /**
  * Runtime-only, art-directed first-region diorama used by the development map.
  *
- * Built-in primitives keep a clean checkout playable; optional Fab imports add
- * denser authored vegetation, a forest-edge mansion, and ambient town walkers
- * after Scripts/import_fab_library_assets.py has run in the Unreal Editor.
+ * Built-in primitives keep a clean checkout playable. Bundled CC0 GLBs add
+ * authored trees, shrubs, flowers, and grass after the CC0 import script runs;
+ * optional Fab imports can add the mansion and other locally sourced assets.
  */
 UCLASS()
 class AGEOFAETHER_API AAetherDevelopmentWorldActor : public AActor
@@ -64,7 +64,7 @@ private:
     void BuildFarms();
     void BuildForest();
     void BuildLandmarks();
-    void LoadFabEnvironmentAssets();
+    void LoadEnvironmentAssets();
     void BuildImportedVegetation();
     void BuildFabMansionLandmark();
     void BuildFabHorseAtStable();
@@ -72,7 +72,7 @@ private:
     void UpdateAmbientVillageNPCs(float DeltaSeconds);
     FVector ChooseAmbientNPCDestination(const FVector& FromLocal);
     bool IsAmbientNPCPathClear(const FVector& StartLocal, const FVector& EndLocal) const;
-    void AddFabFoliageInstance(
+    void AddFoliageInstance(
         UStaticMesh* Mesh,
         const FName& BatchName,
         const FVector& GroundLocation,
@@ -179,6 +179,21 @@ private:
     TObjectPtr<UStaticMesh> RuntimeFabPineMesh;
 
     UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0BroadleafTreeMeshes;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0PineTreeMeshes;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0BushMeshes;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0GroundCoverMeshes;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0WildflowerMeshes;
+
+    UPROPERTY(Transient)
     TObjectPtr<UStaticMesh> RuntimeFabBushLargeMesh;
 
     UPROPERTY(Transient)
@@ -191,7 +206,7 @@ private:
     TObjectPtr<UStaticMesh> RuntimeFabMansionMesh;
 
     UPROPERTY(Transient)
-    TMap<FName, TObjectPtr<UInstancedStaticMeshComponent>> RuntimeFabInstancedComponents;
+    TMap<FName, TObjectPtr<UInstancedStaticMeshComponent>> RuntimeFoliageInstancedComponents;
 
     UPROPERTY(Transient)
     TObjectPtr<UStaticMeshComponent> RuntimeFabMansionComponent;
