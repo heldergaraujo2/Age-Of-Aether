@@ -15,11 +15,11 @@ class UStaticMesh;
 class UStaticMeshComponent;
 
 /**
- * Runtime-only, art-directed first-region diorama used by the development map.
+ * Runtime-only character sandbox used by the development map.
  *
- * Built-in primitives keep a clean checkout playable. Bundled CC0 GLBs add
- * authored trees, shrubs, flowers, and grass after the CC0 import script runs;
- * optional Fab imports can add the mansion and other locally sourced assets.
+ * The environment visuals are intentionally disabled so the development map
+ * shows only the player and ambient Mage walkers. An invisible collision plane
+ * keeps them grounded while the map's art direction is rebuilt.
  */
 UCLASS()
 class AGEOFAETHER_API AAetherDevelopmentWorldActor : public AActor

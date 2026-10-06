@@ -9,6 +9,8 @@
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
+#include "GameFramework/PlayerStart.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Math/RotationMatrix.h"
 #include "UObject/ConstructorHelpers.h"
@@ -70,6 +72,8 @@ AAetherDevelopmentWorldActor::AAetherDevelopmentWorldActor()
     Ground->SetCollisionProfileName(TEXT("BlockAll"));
     Ground->SetMobility(EComponentMobility::Movable);
     Ground->SetCastShadow(false);
+    Ground->SetVisibility(false);
+    Ground->SetHiddenInGame(true);
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
@@ -2362,21 +2366,22 @@ void AAetherDevelopmentWorldActor::BuildAmbientVillageNPCs()
         UE_LOG(LogTemp, Warning, TEXT("Ambient Mage Idle sequence is missing; walkers will pause with the Walk sequence held."));
     }
 
-    // Give each walker many reachable destinations along the town, farm, orchard,
-    // and castle paths instead of sending the whole group around one closed loop.
+    FVector WalkerCenterLocal = FVector::ZeroVector;
+    for (TActorIterator<APlayerStart> PlayerStartIt(GetWorld()); PlayerStartIt; ++PlayerStartIt)
+    {
+        WalkerCenterLocal = GetActorTransform().InverseTransformPosition(PlayerStartIt->GetActorLocation());
+        WalkerCenterLocal.Z = 0.0f;
+        break;
+    }
+
+    // Keep walkers close to the player in the characters-only sandbox.
     RuntimeAmbientWalkWaypoints = {
-        FVector(0.0f, -1740.0f, 0.0f), FVector(-40.0f, -1190.0f, 0.0f),
-        FVector(-130.0f, -700.0f, 0.0f), FVector(-80.0f, -280.0f, 0.0f),
-        FVector(0.0f, 0.0f, 0.0f), FVector(-60.0f, 280.0f, 0.0f),
-        FVector(120.0f, 490.0f, 0.0f), FVector(350.0f, 720.0f, 0.0f),
-        FVector(420.0f, 540.0f, 0.0f), FVector(700.0f, 520.0f, 0.0f),
-        FVector(970.0f, 580.0f, 0.0f), FVector(1050.0f, 695.0f, 0.0f),
-        FVector(1050.0f, 1080.0f, 0.0f),
-        FVector(-120.0f, -270.0f, 0.0f), FVector(-430.0f, -365.0f, 0.0f),
-        FVector(-780.0f, -425.0f, 0.0f), FVector(-1160.0f, -500.0f, 0.0f),
-        FVector(-1560.0f, -565.0f, 0.0f), FVector(-1930.0f, -780.0f, 0.0f),
-        FVector(-450.0f, 100.0f, 0.0f), FVector(-760.0f, 380.0f, 0.0f),
-        FVector(-1160.0f, 640.0f, 0.0f), FVector(-1530.0f, 810.0f, 0.0f)
+        WalkerCenterLocal + FVector(-450.0f, -300.0f, 0.0f), WalkerCenterLocal + FVector(-150.0f, -300.0f, 0.0f),
+        WalkerCenterLocal + FVector(150.0f, -300.0f, 0.0f), WalkerCenterLocal + FVector(450.0f, -300.0f, 0.0f),
+        WalkerCenterLocal + FVector(-450.0f, 0.0f, 0.0f), WalkerCenterLocal + FVector(-150.0f, 0.0f, 0.0f),
+        WalkerCenterLocal + FVector(150.0f, 0.0f, 0.0f), WalkerCenterLocal + FVector(450.0f, 0.0f, 0.0f),
+        WalkerCenterLocal + FVector(-450.0f, 300.0f, 0.0f), WalkerCenterLocal + FVector(-150.0f, 300.0f, 0.0f),
+        WalkerCenterLocal + FVector(150.0f, 300.0f, 0.0f), WalkerCenterLocal + FVector(450.0f, 300.0f, 0.0f)
     };
     RuntimeAmbientRandomStream.Initialize(FMath::Rand());
     RuntimeAmbientNPCComponents.Reset();
@@ -2569,34 +2574,53 @@ void AAetherDevelopmentWorldActor::BuildFirstRegionDiorama()
         return;
     }
 
-    if (!RuntimeCubeMesh || !RuntimeCylinderMesh || !RuntimeSphereMesh || !RuntimeConeMesh)
-    {
-        UE_LOG(LogTemp, Error, TEXT("Age of Aether first-region diorama could not load Unreal BasicShapes."));
-        return;
-    }
-
-    LoadEnvironmentAssets();
     bDioramaBuilt = true;
 
-    BuildTerrain();
-    BuildGroundCover();
-    BuildRiverAndRoads();
-    BuildFarms();
-    BuildVillage();
-    BuildBridge();
-    BuildCastle();
-    BuildForest();
-    BuildImportedVegetation();
-    BuildLandmarks();
-    BuildFabMansionLandmark();
-    if (bPlaceIdleFabHorseAtStable)
+    // The owner is rebuilding the level from a character-only starting point.
+    // Hide map-authored landscape/foliage at runtime without deleting or
+    // modifying the owner's local World Partition map and external actors.
+    int32 HiddenEnvironmentActorCount = 0;
+    for (TActorIterator<AActor> ActorIt(GetWorld()); ActorIt; ++ActorIt)
     {
-        BuildFabHorseAtStable();
+        AActor* MapActor = *ActorIt;
+        if (!MapActor || MapActor == this)
+        {
+            continue;
+        }
+
+        const FString ActorClassName = MapActor->GetClass()->GetName();
+        if (ActorClassName.Contains(TEXT("Landscape")) || ActorClassName.Contains(TEXT("Foliage")))
+        {
+            MapActor->SetActorHiddenInGame(true);
+            MapActor->SetActorEnableCollision(false);
+            ++HiddenEnvironmentActorCount;
+        }
     }
+
+    // Keep an invisible collision surface centered under the PlayerStart so
+    // the player can move without rendering a floor or landscape.
+    FVector GroundCenterLocal = FVector::ZeroVector;
+    for (TActorIterator<APlayerStart> PlayerStartIt(GetWorld()); PlayerStartIt; ++PlayerStartIt)
+    {
+        GroundCenterLocal = GetActorTransform().InverseTransformPosition(PlayerStartIt->GetActorLocation());
+        GroundCenterLocal.Z = 0.0f;
+        break;
+    }
+
+    if (Ground)
+    {
+        Ground->SetRelativeLocation(FVector(GroundCenterLocal.X, GroundCenterLocal.Y, GroundZ));
+        Ground->SetVisibility(false, true);
+        Ground->SetHiddenInGame(true, true);
+        Ground->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    }
+
     if (bEnableMageWalkerPlaceholder)
     {
         BuildAmbientVillageNPCs();
     }
 
-    UE_LOG(LogTemp, Log, TEXT("Age of Aether first-region diorama built: river, bridge, farms, village, castle, authored forest vegetation and landmarks."));
+    UE_LOG(LogTemp, Log,
+        TEXT("Characters-only sandbox initialized: hid %d map landscape/foliage actors, kept the collision plane invisible, and spawned %d ambient NPCs."),
+        HiddenEnvironmentActorCount, RuntimeAmbientNPCComponents.Num());
 }

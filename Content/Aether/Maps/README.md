@@ -19,6 +19,10 @@ settlement -> plaza/services -> outskirts -> gate -> road -> countryside -> fore
 
 The region is a permanent piece of the future single continuous world and is not a disposable test map.
 
+## Current development sandbox mode
+
+At the owner's request, the current runtime is temporarily **characters-only** while the environment is rebuilt: procedural terrain/buildings/vegetation are skipped, map Landscape/Foliage actors are hidden during PIE, and only the controlled character plus ambient Mage walkers remain visible. An invisible collision plane keeps characters grounded. The local `.umap` and its external actor packages are preserved; this runtime mode does not delete or rewrite them.
+
 ## Source/content boundary
 
 Existing `FAetherMapDefinition`, zone, streaming-cell, point, connection, actor-placement and interaction contracts define the repository-side content structure.
