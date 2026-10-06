@@ -1,5 +1,7 @@
 # Runtime Isometric Visual Foundation — F40
 
+> **Historical snapshot:** F40 recorded the previous minimal runtime presentation. The owner-supplied current first-region target is now a colorful 3D isometric diorama, with a larger source-generated blockout documented in `Docs/FIRST_REGION_ISOMETRIC_DIORAMA_RUNTIME_PROTOTYPE.md`. The old F40 implementation notes below describe the earlier stage, not the current scene or final visual acceptance.
+
 ## Objetivo
 
 Materializar no runtime a primeira apresentação visual jogável da primeira região sem fabricar assets binários do Unreal e sem reconstruir os sistemas centrais do jogo.

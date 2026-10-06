@@ -295,5 +295,29 @@ jobs:
           assert not list(Path("Content").rglob("*.umap"))
 
           print("Phase 38 repository asset-pipeline contract passed.")
+      - name: Validate owner-supplied first-region diorama target
+        shell: python
+        run: |
+          from pathlib import Path
+
+          actor = Path("Source/AgeOfAether/Private/World/AetherDevelopmentWorldActor.cpp").read_text(encoding="utf-8")
+          character = Path("Source/AgeOfAether/Private/Characters/AetherCharacter.cpp").read_text(encoding="utf-8")
+          camera = Path("Source/AgeOfAether/Private/World/Aether2DIsometricCameraComponent.cpp").read_text(encoding="utf-8")
+          map_readme = Path("Content/Aether/Maps/README.md").read_text(encoding="utf-8")
+          prototype_doc = Path("Docs/FIRST_REGION_ISOMETRIC_DIORAMA_RUNTIME_PROTOTYPE.md").read_text(encoding="utf-8")
+
+          for required in ("BuildTerrain()", "BuildRiverAndRoads()", "BuildBridge()", "BuildVillage()", "BuildCastle()", "BuildFarms()", "BuildForest()", "BuildLandmarks()"):
+              assert required in actor, f"first-region scene is missing {required}"
+          assert "FAetherRuntime2DArt" not in actor
+          assert "FAetherRuntime2DArt" not in character
+          assert "RuntimeLeftArmVisual" in character and "RuntimeStaffVisual" in character
+          assert "CurrentDistance = 2100.0f" in camera
+          assert "1050.0f" in camera and "3600.0f" in camera
+          assert "stylized 3D isometric diorama" in map_readme
+          assert "blockout/prototype" in prototype_doc
+          assert not list(Path("Content").rglob("*.uasset"))
+          assert not list(Path("Content").rglob("*.umap"))
+
+          print("First-region diorama source contract passed; Unreal UBT/PIE acceptance remains local.")
       - name: Report
         run: echo "Repository static validation completed successfully."

@@ -11,6 +11,9 @@ class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
 class UStaticMeshComponent;
+class USkeletalMesh;
+class USkeletalMeshComponent;
+class UAnimSequence;
 class UPaperSpriteComponent;
 class UPaperSprite;
 class UTexture2D;
@@ -34,6 +37,7 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void UnPossessed() override;
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
     virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
     UFUNCTION(BlueprintPure, Category = "Age of Aether|Character")
@@ -94,6 +98,24 @@ protected:
     TObjectPtr<UAetherSkillVisualComponent> SkillVisualComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<USkeletalMeshComponent> RuntimeSkeletalVisual;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<USkeletalMesh> MageSkeletalMeshAsset;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<UAnimSequence> MageIdleAnimationAsset;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<UAnimSequence> MageWalkAnimationAsset;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<UAnimSequence> MageRunAnimationAsset;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Age of Aether|Skeletal Presentation")
+    TSoftObjectPtr<UAnimSequence> MageJumpAnimationAsset;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
     TObjectPtr<UStaticMeshComponent> RuntimeBodyVisual;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
@@ -101,6 +123,45 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
     TObjectPtr<UStaticMeshComponent> RuntimeMantleVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeLeftArmVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeRightArmVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeLeftHandVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeRightHandVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeLeftLegVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeRightLegVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeLeftBootVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeRightBootVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeHairVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeHatVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeBeltVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeStaffVisual;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime Visual")
+    TObjectPtr<UStaticMeshComponent> RuntimeOrbVisual;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Runtime 2D Art")
     TObjectPtr<UPaperSpriteComponent> Runtime2DArtVisual;
@@ -111,14 +172,35 @@ protected:
     UPROPERTY(Transient)
     TObjectPtr<UTexture2D> Runtime2DArtTexture;
 
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeIdleAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeWalkAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeRunAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeJumpAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> ActiveSkeletalAnimation;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
     float FoundationWalkSpeed = 420.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Animation", meta = (ClampMin = "0.5", ClampMax = "3.0"))
+    float WalkAnimationRateMultiplier = 1.25f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Animation", meta = (ClampMin = "0.5", ClampMax = "3.0"))
+    float RunAnimationRateMultiplier = 1.25f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Movement")
     TObjectPtr<UAetherMovementCameraProfile> MovementCameraProfile;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Camera")
-    float CameraDistance = 450.0f;
+    float CameraDistance = 2100.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Camera")
     float CameraHeight = 120.0f;
@@ -132,14 +214,22 @@ protected:
 private:
     void InitializeFoundationInput();
     void InitializeRuntimeVisual();
-    void MoveForward(const struct FInputActionValue& Value);
-    void MoveRight(const struct FInputActionValue& Value);
+    void InitializeSkeletalVisual();
+    void UpdateSkeletalVisualAnimation(float DeltaSeconds);
+    void ClickMovePressed(const struct FInputActionValue& Value);
+    void UpdateClickToMove(float DeltaSeconds);
     void LookYaw(const struct FInputActionValue& Value);
     void LookPitch(const struct FInputActionValue& Value);
     void JumpPressed(const struct FInputActionValue& Value);
     void SprintStarted(const struct FInputActionValue& Value);
     void SprintStopped(const struct FInputActionValue& Value);
     void CameraZoom(const struct FInputActionValue& Value);
+    void CameraOrbitToggle(const struct FInputActionValue& Value);
+    void CameraOrbitDragStarted(const struct FInputActionValue& Value);
+    void CameraOrbitDragStopped(const struct FInputActionValue& Value);
+    void CameraOrbitPitchUp(const struct FInputActionValue& Value);
+    void CameraOrbitPitchDown(const struct FInputActionValue& Value);
+    void CameraViewReset(const struct FInputActionValue& Value);
     void BasicAttackPressed(const struct FInputActionValue& Value);
     void ExecuteBasicAttack();
     UFUNCTION(Server, Reliable)
@@ -152,10 +242,7 @@ private:
     TObjectPtr<UInputMappingContext> RuntimeInputContext;
 
     UPROPERTY(Transient)
-    TObjectPtr<UInputAction> MoveForwardAction;
-
-    UPROPERTY(Transient)
-    TObjectPtr<UInputAction> MoveRightAction;
+    TObjectPtr<UInputAction> ClickMoveAction;
 
     UPROPERTY(Transient)
     TObjectPtr<UInputAction> LookYawAction;
@@ -167,7 +254,16 @@ private:
     TObjectPtr<UInputAction> JumpAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> SprintAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> CameraZoomAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitToggleAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitDragAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitPitchUpAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraOrbitPitchDownAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraViewResetAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> BasicAttackAction;
+    FVector ClickMoveTarget = FVector::ZeroVector;
+    float CurrentSkeletalAnimationPlayRate = 1.0f;
+    bool bCameraOrbitDragging = false;
+    bool bHasClickMoveTarget = false;
     bool bSprinting = false;
     uint32 LocalAttackSequence = 0;
 };

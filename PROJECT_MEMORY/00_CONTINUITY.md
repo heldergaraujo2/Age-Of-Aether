@@ -19,13 +19,15 @@ Regra: preservar → adaptar → integrar → testar → validar → expandir.
 
 ## Diretriz permanente de qualidade visual
 
-**REQUISITO TRANSVERSAL A TODAS AS FASES VISUAIS:** produzir imagens/arte na melhor qualidade possível e buscar animações 2D extremamente fluidas, naturais e responsivas. Essa exigência vale para personagens, criaturas, NPCs, VFX, ambientes, mapas, iluminação, sombras, UI e qualquer conteúdo visual. Qualidade e fluidez são requisitos de projeto, não apenas polish final.
+**REQUISITO TRANSVERSAL A TODAS AS FASES VISUAIS:** produzir conteúdo visual de alta qualidade e animações naturais/responsivas em 2D ou 3D, conforme a apresentação escolhida para cada família. Personagens, criaturas, NPCs, VFX, ambientes, mapas, iluminação, sombras e UI devem ser tratados como conteúdo de produção, não como polish opcional.
 
 **Regra:** não sacrificar qualidade visual ou fluidez por conveniência de produção sem registrar e justificar tecnicamente a decisão.
 
-## Direção visual oficial
+## Direção visual vigente — atualização do proprietário em 2026-10-04
 
-RPG isométrico 2D premium, inspirado na experiência de RPGs isométricos clássicos, com identidade própria. O jogo não precisa ser 3D. Pode usar imagens, sprites, sprite sheets, Flipbooks, camadas, paralaxe, luz, sombras, VFX e partículas. 3D é opcional.
+A referência enviada pelo proprietário agora define a primeira região como um **diorama 3D isométrico estilizado, colorido e legível**: castelo azul, rio/ponte, vila, fazendas, colinas e floresta em composição de miniatura de conto. A imagem é uma referência de estilo, não deve ser copiada como mapa/arte.
+
+A pipeline Paper2D e os perfis 2D permanecem no projeto como caminhos opcionais para personagens, efeitos e conteúdo futuro; deixam de ser a apresentação principal do ambiente desta região. Ver `Docs/FIRST_REGION_ISOMETRIC_DIORAMA_RUNTIME_PROTOTYPE.md`.
 
 ## Fases
 
@@ -586,3 +588,45 @@ Preserve all existing local modified and untracked files.
 - GitHub-first F47 correction: AAetherDevelopmentWorldActor::AddSpriteArt now applies FRotator(90.0f, Yaw, 0.0f) so environment sprites stand vertically while preserving the isometric yaw. House/tree/rock runtime scales were modestly increased. AAetherCharacter::InitializeRuntimeVisual receives the same 90-degree pitch and a modest character scale increase.
 - This correction does not replace or recreate gameplay systems; it only corrects the 2D presentation bridge.
 - Required next evidence: pull main, compile with UE 5.8 UBT, restart Unreal with the latest binary, run PIE on AetherWorld_FirstRegion, verify the sprites now face the isometric camera, remain readable and persistent, and physically walk/explore the region. Runtime PASS remains blocked until that evidence is observed.
+
+
+## VISUAL TARGET UPDATE — STYLIZED 3D ISOMETRIC DIORAMA (2026-10-04)
+
+O proprietário anexou duas referências: o objetivo é uma composição 3D isométrica colorida, com castelo de telhados azuis, rio/ponte, vila, fazendas, colinas e floresta; o estado atual era um plano verde quase vazio, props Paper2D vistos de lado e personagem pequeno com silhueta de folha. Esta referência atualiza a apresentação principal da primeira região. A pipeline Paper2D permanece suportada como opção, não como representação principal do ambiente.
+
+### Alterações no source deste branch
+- `AAetherDevelopmentWorldActor` deixou de montar apenas poucos sprites/placas. Agora constrói em runtime um protótipo espacial com terreno, manchas de gramado, rio sinuoso e margens, rede de caminhos, ponte de pedra, praça/fonte, casas/mercado/lanternas, canteiros agrícolas cercados, castelo fortificado com torres/telhados azuis, floresta em variações, moinho, ruínas e rochas.
+- A cena usa meshes BasicShapes e materiais de cor do Unreal. É um **blockout de composição**, não a arte final da referência; ainda precisa de meshes/materials autorados e validação artística.
+- O fallback visual de `AAetherCharacter` agora usa partes 3D separadas (tronco, cabeça, braços/mãos, pernas/botas, manto curto, chapéu, cajado e orbe), em vez do ícone triangular Paper2D. Perfis Paper2D primários continuam opcionais.
+- A câmera isométrica fallback começa em 2100 unidades; o zoom chega a 250 unidades no modo padrão e a 120 unidades no modo de órbita 3D (máximo de 3600), para permitir tanto inspeção próxima quanto enquadramento amplo.
+- Instâncias reutilizadas de terreno, água/estradas, árvores, plantações, cercas, ponte e crenelação são agrupadas por mesh/material/comportamento de colisão para limitar o custo de componentes.
+- A horta verde foi deslocada para noroeste para não bloquear a estrada agrícola que liga a vila à casa da fazenda.
+- Documentação da região e continuidade atualizadas para registrar a nova referência.
+
+### Validação e próximo passo obrigatório
+
+**Source/documentação:** implementados nesta sessão. **UHT/UBT, PIE, collision/navigation, composição/câmera e desempenho:** não executados aqui; runtime permanece pendente porque este sandbox não possui Unreal Engine.
+
+No PC UE 5.8: fechar o Editor, compilar `AgeOfAetherEditor Win64 Development`, abrir a primeira região, executar PIE, conferir a leitura da vila/castelo/ponte/campos, caminhar nas rotas, checar o spawn/colisões/zoom e revisar Output Log/frame time. Enviar screenshot de PIE para a próxima calibração visual. Não marcar o alvo premium como concluído só porque o protótipo source existe.
+
+### Tentativa de UBT pelo proprietário e correções (2026-10-04)
+
+O proprietário sincronizou o commit `621d3e1` e iniciou `AgeOfAetherEditor Win64 Development` em UE 5.8. O UBT iniciou corretamente, mas a compilação falhou antes do PIE com:
+
+- MSVC C3495 em `AetherCharacter.cpp`: captura por referência de `BaseMaterial`, que é um `static FObjectFinder`. Correção: remover a captura de variável estática do lambda; manter `this`.
+- Unity build C2084: `RequiredID` e `ValidFiniteNonNegative` anônimos conflitavam entre `AetherRecipeTypes.cpp` e `AetherQuestDialogueEventTypes.cpp`. Correção: renomear os helpers de recipe com prefixos próprios para permanecerem únicos quando o UBT agrupa translation units.
+
+As duas correções foram aplicadas no branch de trabalho. Ainda é obrigatório fazer novo pull e rodar o UBT; não afirmar build PASS nem iniciar aceitação PIE até compilar com sucesso. O mapa `.umap`, FBX, textura e configurações locais do proprietário permanecem fora do commit e não devem ser removidos/resetados.
+
+## VISUAL FIDELITY PASS — ATUALIZAÇÃO ATIVA (2026-10-05)
+
+O proprietário solicitou maior fidelidade concreta à primeira referência 3D: árvores com galhos/folhagem orgânicos, cobertura de grama, telhas separadas e personagem menos geométrico. A segunda imagem anterior continua sendo apenas o estado ruim de antes; não é a direção visual.
+
+- Branch do trabalho: `arena/01a1097a-age-of-aether`. A correção do build visual está em `997d407`; o proprietário confirmou UBT UE 5.8 `Result: Succeeded` nesse commit.
+- O source desta etapa adiciona ramos e clusters de folhagem em árvores broadleaf/pinheiros, cobertura de grama/pequenas flores em instâncias sem colisão/sombra, telhas individuais nas casas e cursos de telhas nos cones das torres; aumenta o footprint do chão e controla roughness/specular do material básico quando suportados.
+- `AetherCharacter` usa soft references para o skeletal mesh e animações fornecidos, esconde o proxy geométrico quando o mesh real carrega e troca Idle/Walk/Run/Jump conforme movimento. Os logs reportam clips ausentes e a sequência selecionada.
+- O proprietário informou que os clips existentes no Editor se chamam `A_Idle_Anim`, `A_Walk_Anim`, `A_Run_Anim`, `A_Jump_Anim`, entre outros; o C++ anterior procurava nomes sem `_Anim`, provável causa da A-pose. A alteração ativa prioriza os paths `_Anim` que o proprietário já tem e recorre aos paths canônicos como fallback.
+- `Scripts/import_mage_assets.py` importa os nove FBXs e a JPG em `.uasset` no Unreal Editor para `/Game/Aether/Characters/Mage/`, impondo paths canônicos e validando que todos os clips usam o skeleton do mage. O Editor confirma assets com sufixo `_Anim`; o carregamento pelo personagem e a execução PIE ainda precisam de teste. `.uasset` gerados localmente não foram fabricados/adicionados ao Git.
+- O primeiro UBT após `5cd928f` encontrou `GetSkeletalMesh()` incompatível com UE 5.8, fechamento ausente em `BuildTree` e o nome local `Mesh` sombreando `ACharacter::Mesh`; essas correções foram enviadas em `997d407` e compiladas com sucesso pelo proprietário. As mudanças novas após `997d407` ainda não foram compiladas.
+- Após o push ativo, puxar com `git pull --ff-only origin arena/01a1097a-age-of-aether`, compilar o target `AgeOfAetherEditor Win64 Development` e testar PIE; não é necessário reimportar se os assets `_Anim` existentes estiverem válidos. Preservar mapa, configs e assets locais, sem `reset --hard` nem `git clean`.
+- Esta saída continua sendo um blockout procedural aprimorado e uma integração de fontes do usuário, não arte final/photoreal.

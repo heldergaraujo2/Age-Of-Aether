@@ -11,13 +11,17 @@ The canonical source/repository specification is:
 - `Docs/FIRST_PLAYABLE_ISOMETRIC_DIORAMA_LAYOUT.md`
 - `Docs/FIRST_PLAYABLE_ISOMETRIC_DIORAMA_ASSET_KIT.md`
 
-The current official visual interpretation is **premium 2D isometric**. The historical first-region documents remain useful for permanent-world composition, spatial hierarchy and asset-family planning, while Phase 9 reconciles their older 3D/2.5D assumptions with the current 2D direction.
+The current first-region visual target is a **bright, stylized 3D isometric diorama** based on the project owner's supplied reference: a readable castle landmark, river and bridge, clustered village, farms, paths, rolling green terrain and layered forest. Paper2D remains supported for character/effect content, but is not the primary environment representation. The earlier 2D direction document is retained as historical pipeline guidance.
 
 Canonical experience:
 
 settlement -> plaza/services -> outskirts -> gate -> road -> countryside -> forest edge -> exploration -> combat frontier -> ruins/landmark -> dungeon approach -> dungeon entrance
 
 The region is a permanent piece of the future single continuous world and is not a disposable test map.
+
+## Current development sandbox mode
+
+At the owner's request, the current runtime is temporarily **characters-only** while the environment is rebuilt: procedural terrain/buildings/vegetation are skipped, map Landscape/Foliage actors are hidden during PIE, and only the controlled character plus ambient Mage walkers remain visible. An invisible collision plane keeps characters grounded. The local `.umap` and its external actor packages are preserved; this runtime mode does not delete or rewrite them.
 
 ## Source/content boundary
 

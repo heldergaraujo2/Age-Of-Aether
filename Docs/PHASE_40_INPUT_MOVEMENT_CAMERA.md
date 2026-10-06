@@ -1,23 +1,28 @@
 # PHASE 40 — INPUT, MOVEMENT & CAMERA
 
 ## STATUS
-**COMPLETE at repository/source level.** Unreal 5.8.1 runtime acceptance remains a local gate.
+**Implemented at repository/source level.** Unreal 5.8.1 compile and PIE acceptance remain a local gate.
 
 ## IMPLEMENTED
 - Added optional `UAetherMovementCameraProfile` Data Asset for movement/camera tuning.
 - Added validation for finite, safe movement and camera ranges.
 - Added configurable walk/sprint speed, jump velocity, rotation rate, camera distance range, zoom step and pitch limits.
-- Extended the existing Enhanced Input foundation with:
-  - WASD movement;
-  - mouse camera;
+- Extended the runtime Enhanced Input fallback with:
+  - left-click-to-move using the cursor hit point (with a ground-plane fallback);
+  - right-click basic attack;
+  - F7 toggles 3D orbit-camera control without discarding the last orbit/zoom view;
+  - while orbit control is active, middle-mouse dragging rotates/tilts the camera; Page Up/Down adjusts tilt in 5-degree steps;
+  - F6 resets pitch, yaw and zoom to the original camera view;
+  - Mouse Wheel zoom, including close inspection in orbit mode;
   - Space jump;
-  - Left Shift sprint;
-  - Mouse Wheel zoom.
+  - Left Shift sprint.
+- Removed W/A/S/D movement bindings. CharacterMovement still performs and replicates movement; the client does not send a trusted speed or raw position.
+- Shows the mouse cursor and uses a Game-and-UI input mode so the player can select destinations during play.
 - Added server-authoritative sprint transition through a Server RPC. The server chooses the configured speed; the client never supplies a speed value.
 - Added camera pitch clamping.
 - Preserved Unreal CharacterMovement replication/authority.
 - Kept the first-playable workflow asset-light: no mandatory hand-authored Input Action or Mapping Context assets.
-- Updated the character README with the minimal visual/input workflow.
+- Updated the in-game debug HUD control hint.
 - Added Automation coverage for movement/camera profile validation.
 - Updated continuity and roadmap documentation.
 
@@ -32,11 +37,15 @@ For the first playable slice:
 No per-class or per-character input C++ is required.
 
 ## DEFAULT CONTROLS
-- W/A/S/D = move
-- Mouse = camera
+- Left mouse click = move to the clicked ground position
+- Right mouse click = basic attack
+- F7 = toggle 3D orbit-camera control on/off; the last view is retained
+- Hold middle mouse button and drag = orbit/tilt the camera while orbit control is active
+- Page Up / Page Down = fine tilt adjustment toward overhead/front view
+- F6 = reset camera to its original pitch, yaw and zoom
+- Mouse wheel = zoom, down to a close inspection distance during orbit mode
 - Space = jump
 - Left Shift = sprint
-- Mouse wheel = zoom
 
 ## SECURITY
 - Position remains governed by Unreal CharacterMovement/server replication.
@@ -52,8 +61,12 @@ Local Unreal verification must confirm:
 - project opens without critical errors;
 - profile Data Asset can be created;
 - character spawns;
-- W/A/S/D works;
-- mouse look works;
+- left click moves to a ground destination;
+- right click triggers the basic attack;
+- F7 enables/disables orbit control without resetting the view;
+- middle-button drag rotates/tilts the camera; Page Up/Down provide a fine pitch adjustment;
+- F6 resets the original camera view;
+- orbit zoom can inspect the character closely and remains stable when orbit control is toggled off;
 - pitch clamp works;
 - Space jumps;
 - Shift sprint reaches configured server-authoritative speed;

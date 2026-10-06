@@ -41,28 +41,21 @@ Increasing isolation, danger, geological/ecological change and environmental tra
 
 ## 3. Premium visual target
 
-Official direction:
+Current direction (updated after the owner supplied the target reference):
 
-Stylized Painterly Isometric / 2.5D Hand-Painted Diorama / 2.5D Isometric Cutaway.
-
-Real 3D in Unreal. Premium quality is mandatory; the target is not low-poly/mobile-game presentation.
+**Stylized 3D Isometric Storybook Diorama** — vivid, carefully composed 3D forms in Unreal, with a castle landmark, winding water and bridges, a lived-in village, cultivated fields, low hills, and layered forest. The screenshot is a visual target, not a source to copy.
 
 Required qualities:
-- strong silhouette and value grouping;
-- sophisticated painterly materials;
-- believable material separation;
-- hand-authored-looking surface variation;
-- high-quality contact shadows;
-- controlled ambient occlusion and exposure;
-- coherent key/sky lighting;
-- atmospheric depth;
+- readable, coherent silhouettes at gameplay zoom;
+- rich color grouping and deliberate regional composition;
+- clear material separation for stone, timber, roofs, soil, crops and foliage;
+- soft contact shadows and consistent key lighting;
+- visibly shaped terrain and natural river/road transitions;
 - dense but disciplined environmental storytelling;
-- high-quality vegetation;
-- readable characters and creatures;
-- strong landmarks;
-- cinematic composition without sacrificing gameplay readability.
+- characters and routes remain readable against scenery;
+- a crafted miniature/storybook feeling without blocking traversal.
 
-Painterly must not mean blurry. Stone, wood, metal, fabric, soil and foliage need distinct material identity and controlled micro-detail.
+The current runtime mesh blockout is a composition/scale prototype only. Production quality still requires authored meshes/materials, lighting review and UE runtime acceptance; flat colors and engine primitives are not the final visual target.
 
 ## 4. Isometric composition
 

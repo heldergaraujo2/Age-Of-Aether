@@ -30,16 +30,16 @@ public:
     float Pitch = -55.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
-    float CameraDistance = 600.0f;
+    float CameraDistance = 2100.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
-    float MinCameraDistance = 300.0f;
+    float MinCameraDistance = 250.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
-    float MaxCameraDistance = 900.0f;
+    float MaxCameraDistance = 3600.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
-    float ZoomStep = 60.0f;
+    float ZoomStep = 180.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|2D Camera")
     float PositionLagSpeed = 12.0f;

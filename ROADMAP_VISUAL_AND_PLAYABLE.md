@@ -1007,7 +1007,7 @@ Implemented:
 - safe validation for movement/camera ranges;
 - configurable walk/sprint/jump/rotation values;
 - configurable camera zoom range/step and pitch limits;
-- W/A/S/D movement, mouse look, Space jump, Left Shift sprint, Mouse Wheel zoom;
+- left-click-to-move, right-click basic attack, optional mouse look, Space jump, Left Shift sprint, Mouse Wheel zoom;
 - server-authoritative sprint transition through a boolean-only RPC;
 - server chooses sprint speed from trusted profile/fallback;
 - camera pitch clamping;

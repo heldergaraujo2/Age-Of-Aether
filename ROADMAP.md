@@ -1439,7 +1439,7 @@ Safety/authority:
 Validation truth:
 - repository/static validation is the only validation executed in the current environment;
 - Unreal 5.8.1 UHT/UBT/Editor/PIE/Automation/Dedicated Server runtime is still NOT VERIFIED;
-- the final Phase 37 runtime gate requires creating one empty development map in Unreal, setting it as Game Default Map, then testing character spawn, WASD, mouse camera, jump, HUD, 2-client PIE and Dedicated Server.
+- the final Phase 37 runtime gate requires creating one empty development map in Unreal, setting it as Game Default Map, then testing character spawn, left-click movement, right-click attack, jump, HUD, 2-client PIE and Dedicated Server.
 
 Detailed report:
 **Docs/PHASE_37_UNREAL_VISUAL_FOUNDATION.md**

@@ -1,19 +1,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PaperSprite.h"
 #include "GameFramework/Actor.h"
 
 #include "AetherDevelopmentWorldActor.generated.h"
 
 class UMaterialInstanceDynamic;
+class UInstancedStaticMeshComponent;
 class UMaterialInterface;
+class UAnimSequence;
+class USkeletalMesh;
+class USkeletalMeshComponent;
 class UStaticMesh;
 class UStaticMeshComponent;
-class UPaperSpriteComponent;
-class UPaperSprite;
-class UTexture2D;
 
+/**
+ * Runtime-only character sandbox used by the development map.
+ *
+ * The environment visuals are intentionally disabled so the development map
+ * shows only the player and ambient Mage walkers. An invisible collision plane
+ * keeps them grounded while the map's art direction is rebuilt.
+ */
 UCLASS()
 class AGEOFAETHER_API AAetherDevelopmentWorldActor : public AActor
 {
@@ -24,6 +31,7 @@ public:
 
     virtual void OnConstruction(const FTransform& Transform) override;
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Age of Aether|Foundation")
@@ -33,43 +41,200 @@ protected:
     TObjectPtr<UStaticMeshComponent> Ground;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Foundation")
-    FVector GroundScale = FVector(24.0, 18.0, 0.20);
+    FVector GroundScale = FVector(42.0f, 32.0f, 0.20f);
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Age of Aether|Foundation")
     float GroundZ = -10.0f;
 
+    UPROPERTY(EditAnywhere, Category = "Age of Aether|Ambient Characters")
+    bool bEnableMageWalkerPlaceholder = true;
+
+    UPROPERTY(EditAnywhere, Category = "Age of Aether|Ambient Characters")
+    bool bPlaceIdleFabHorseAtStable = false;
+
 private:
     void ConfigureGround();
     void BuildFirstRegionDiorama();
-    UPaperSpriteComponent* AddSpriteArt(
-        UPaperSprite* Sprite,
-        const FName& Name,
-        const FVector& Location,
-        float Scale,
-        float Yaw);
+    void BuildTerrain();
+    void BuildGroundCover();
+    void BuildRiverAndRoads();
+    void BuildBridge();
+    void BuildVillage();
+    void BuildCastle();
+    void BuildFarms();
+    void BuildForest();
+    void BuildLandmarks();
+    void LoadEnvironmentAssets();
+    void BuildImportedVegetation();
+    void BuildFabMansionLandmark();
+    void BuildFabHorseAtStable();
+    void BuildAmbientVillageNPCs();
+    void UpdateAmbientVillageNPCs(float DeltaSeconds);
+    FVector ChooseAmbientNPCDestination(const FVector& FromLocal);
+    bool IsAmbientNPCPathClear(const FVector& StartLocal, const FVector& EndLocal) const;
+    void AddFoliageInstance(
+        UStaticMesh* Mesh,
+        const FName& BatchName,
+        const FVector& GroundLocation,
+        float TargetHeight,
+        float WidthScale,
+        const FRotator& Rotation = FRotator::ZeroRotator);
+
     UStaticMeshComponent* AddPrimitive(
         UStaticMesh* Mesh,
         const FName& Name,
         const FVector& Location,
         const FVector& Scale,
         const FLinearColor& Color,
-        bool bBlockMovement = false);
-    UMaterialInstanceDynamic* CreateColorMaterial(const FLinearColor& Color) const;
+        bool bBlockMovement = false,
+        const FRotator& Rotation = FRotator::ZeroRotator);
+    void AddInstancedPrimitive(
+        UStaticMesh* Mesh,
+        const FName& Name,
+        const FVector& Location,
+        const FVector& Scale,
+        const FLinearColor& Color,
+        bool bBlockMovement = false,
+        const FRotator& Rotation = FRotator::ZeroRotator,
+        bool bCastShadow = true);
+
+    UMaterialInstanceDynamic* CreateColorMaterial(const FLinearColor& Color);
+    void AddRibbon(
+        const TArray<FVector>& Points,
+        float Width,
+        float Z,
+        float Thickness,
+        const FLinearColor& Color,
+        const FName& NamePrefix,
+        bool bRoundJoints = true);
+    void BuildHouse(
+        const FVector& Location,
+        float Scale,
+        const FLinearColor& RoofColor,
+        const FName& NamePrefix,
+        float Yaw = 0.0f,
+        const FLinearColor& WallColor = FLinearColor(0.86f, 0.78f, 0.60f, 1.0f));
+    void BuildTower(
+        const FVector& Location,
+        float Height,
+        float Radius,
+        const FLinearColor& RoofColor,
+        const FName& NamePrefix);
+    void BuildTree(const FVector& Location, float Scale, int32 Variant, const FName& NamePrefix);
+    void BuildRockCluster(const FVector& Location, float Scale, const FName& NamePrefix);
+    void BuildFarmPlot(
+        const FVector& Center,
+        float Width,
+        float Depth,
+        float Yaw,
+        const FLinearColor& SoilColor,
+        const FLinearColor& CropColor,
+        const FName& NamePrefix);
+    void BuildFence(
+        const FVector& Start,
+        const FVector& End,
+        float Height,
+        const FName& NamePrefix,
+        const FLinearColor& Color);
+    void BuildMarketStall(
+        const FVector& Location,
+        const FLinearColor& CanopyColor,
+        const FName& NamePrefix);
+    void BuildLantern(const FVector& Location, const FName& NamePrefix);
 
     UPROPERTY(Transient)
     TObjectPtr<UMaterialInterface> RuntimeBaseMaterial;
 
     UPROPERTY(Transient)
+    TObjectPtr<UMaterialInterface> RuntimeGrassGroundMaterial;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeCubeMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeCylinderMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeSphereMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeConeMesh;
+
+    UPROPERTY(Transient)
     TArray<TObjectPtr<UStaticMeshComponent>> RuntimeVisualComponents;
 
     UPROPERTY(Transient)
-    TArray<TObjectPtr<UPaperSpriteComponent>> RuntimeSpriteComponents;
+    TMap<uint32, TObjectPtr<UMaterialInstanceDynamic>> RuntimeMaterials;
 
     UPROPERTY(Transient)
-    TArray<TObjectPtr<UPaperSprite>> RuntimeSprites;
+    TMap<uint32, TObjectPtr<UInstancedStaticMeshComponent>> RuntimeInstancedComponents;
 
     UPROPERTY(Transient)
-    TArray<TObjectPtr<UTexture2D>> RuntimeSpriteTextures;
+    TObjectPtr<UStaticMesh> RuntimeFabTreeBroadleafMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabTreeSmallMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabPineMesh;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0BroadleafTreeMeshes;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0PineTreeMeshes;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0BushMeshes;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0GroundCoverMeshes;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<UStaticMesh>> RuntimeCC0WildflowerMeshes;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabBushLargeMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabBushMediumMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabBushFlowerMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> RuntimeFabMansionMesh;
+
+    UPROPERTY(Transient)
+    TMap<FName, TObjectPtr<UInstancedStaticMeshComponent>> RuntimeFoliageInstancedComponents;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMeshComponent> RuntimeFabMansionComponent;
+
+    UPROPERTY(Transient)
+    TObjectPtr<USkeletalMesh> RuntimeFabHorseMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeFabHorseIdleAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<USkeletalMeshComponent> RuntimeFabHorseComponent;
+
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<USkeletalMeshComponent>> RuntimeAmbientNPCComponents;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeAmbientNPCIdleAnimation;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UAnimSequence> RuntimeAmbientNPCWalkAnimation;
+
+    TArray<float> RuntimeAmbientNPCWalkSpeeds;
+    TArray<float> RuntimeAmbientNPCGroundOffsets;
+    TArray<float> RuntimeAmbientNPCPauseTimers;
+    TArray<FVector> RuntimeAmbientNPCTargets;
+    TArray<FVector> RuntimeAmbientWalkWaypoints;
+    FRandomStream RuntimeAmbientRandomStream;
 
     bool bDioramaBuilt = false;
 };

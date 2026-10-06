@@ -25,3 +25,8 @@ desktop.ini
 *.p12
 *.log
 Logs/
+
+# Regenerated locally from the committed mage FBX/JPG sources by the UE Editor import script.
+Content/Aether/Characters/Mage/**/*.uasset
+Content/Aether/Characters/Mage/**/*.uexp
+Content/Aether/Characters/Mage/**/*.ubulk

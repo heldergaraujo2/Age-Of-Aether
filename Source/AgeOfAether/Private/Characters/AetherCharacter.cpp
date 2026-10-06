@@ -2,7 +2,6 @@
 #include "Characters/AetherPlayableCharacterVisualComponent.h"
 #include "Characters/Aether2DCharacterVisualComponent.h"
 #include "World/Aether2DIsometricCameraComponent.h"
-#include "World/AetherRuntime2DArt.h"
 #include "Characters/AetherEquipmentVisualComponent.h"
 #include "Characters/AetherClassEvolutionPresentationComponent.h"
 #include "Characters/AetherSkillVisualComponent.h"
@@ -14,10 +13,14 @@
 #include "GameFramework/PlayerController.h"
 
 #include "Camera/CameraComponent.h"
+#include "Animation/AnimSequence.h"
+#include "Animation/AnimSingleNodeInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/EngineTypes.h"
+#include "Engine/SkeletalMesh.h"
 #include "PaperSpriteComponent.h"
-#include "PaperSprite.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -25,7 +28,6 @@
 #include "InputAction.h"
 #include "InputCoreTypes.h"
 #include "InputActionValue.h"
-#include "InputModifiers.h"
 #include "InputMappingContext.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Net/UnrealNetwork.h"
@@ -33,8 +35,20 @@
 
 AAetherCharacter::AAetherCharacter()
 {
+    PrimaryActorTick.bCanEverTick = true;
     bReplicates = true;
     SetReplicateMovement(true);
+
+    MageSkeletalMeshAsset = TSoftObjectPtr<USkeletalMesh>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/SK_Mago_AgeOfAether.SK_Mago_AgeOfAether")));
+    MageIdleAnimationAsset = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Idle.A_Idle")));
+    MageWalkAnimationAsset = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Walk.A_Walk")));
+    MageRunAnimationAsset = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Run.A_Run")));
+    MageJumpAnimationAsset = TSoftObjectPtr<UAnimSequence>(FSoftObjectPath(
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Jump.A_Jump")));
 
     bUseControllerRotationPitch = false;
     bUseControllerRotationYaw = false;
@@ -66,6 +80,11 @@ AAetherCharacter::AAetherCharacter()
     Visual2DComponent = CreateDefaultSubobject<UAether2DCharacterVisualComponent>(TEXT("Visual2DComponent"));
     IsometricCameraComponent = CreateDefaultSubobject<UAether2DIsometricCameraComponent>(TEXT("IsometricCameraComponent"));
 
+    RuntimeSkeletalVisual = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RuntimeSkeletalVisual"));
+    RuntimeSkeletalVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeSkeletalVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    RuntimeSkeletalVisual->SetCastShadow(true);
+
     RuntimeBodyVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeBodyVisual"));
     RuntimeBodyVisual->SetupAttachment(GetCapsuleComponent());
     RuntimeBodyVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -78,11 +97,64 @@ AAetherCharacter::AAetherCharacter()
     RuntimeMantleVisual->SetupAttachment(GetCapsuleComponent());
     RuntimeMantleVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+    RuntimeLeftArmVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeLeftArmVisual"));
+    RuntimeLeftArmVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeLeftArmVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeRightArmVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeRightArmVisual"));
+    RuntimeRightArmVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeRightArmVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeLeftHandVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeLeftHandVisual"));
+    RuntimeLeftHandVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeLeftHandVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeRightHandVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeRightHandVisual"));
+    RuntimeRightHandVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeRightHandVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeLeftLegVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeLeftLegVisual"));
+    RuntimeLeftLegVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeLeftLegVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeRightLegVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeRightLegVisual"));
+    RuntimeRightLegVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeRightLegVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeLeftBootVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeLeftBootVisual"));
+    RuntimeLeftBootVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeLeftBootVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeRightBootVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeRightBootVisual"));
+    RuntimeRightBootVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeRightBootVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeHairVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeHairVisual"));
+    RuntimeHairVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeHairVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeHatVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeHatVisual"));
+    RuntimeHatVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeHatVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeBeltVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeBeltVisual"));
+    RuntimeBeltVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeBeltVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeStaffVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeStaffVisual"));
+    RuntimeStaffVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeStaffVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    RuntimeOrbVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RuntimeOrbVisual"));
+    RuntimeOrbVisual->SetupAttachment(GetCapsuleComponent());
+    RuntimeOrbVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
     Runtime2DArtVisual = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Runtime2DArtVisual"));
     Runtime2DArtVisual->SetupAttachment(GetCapsuleComponent());
     Runtime2DArtVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     Runtime2DArtVisual->SetCastShadow(false);
 
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> ConeMesh(TEXT("/Engine/BasicShapes/Cone.Cone"));
@@ -91,43 +163,116 @@ AAetherCharacter::AAetherCharacter()
     if (CylinderMesh.Succeeded())
     {
         RuntimeBodyVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeMantleVisual->SetStaticMesh(ConeMesh.Succeeded() ? ConeMesh.Object : CylinderMesh.Object);
+        RuntimeLeftArmVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeRightArmVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeLeftLegVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeRightLegVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeBeltVisual->SetStaticMesh(CylinderMesh.Object);
+        RuntimeStaffVisual->SetStaticMesh(CylinderMesh.Object);
     }
     if (SphereMesh.Succeeded())
     {
         RuntimeHeadVisual->SetStaticMesh(SphereMesh.Object);
+        RuntimeLeftHandVisual->SetStaticMesh(SphereMesh.Object);
+        RuntimeRightHandVisual->SetStaticMesh(SphereMesh.Object);
+        RuntimeHairVisual->SetStaticMesh(SphereMesh.Object);
+        RuntimeOrbVisual->SetStaticMesh(SphereMesh.Object);
     }
     if (ConeMesh.Succeeded())
     {
-        RuntimeMantleVisual->SetStaticMesh(ConeMesh.Object);
+        RuntimeHatVisual->SetStaticMesh(ConeMesh.Object);
     }
-
-    if (BaseMaterial.Succeeded())
+    if (CubeMesh.Succeeded())
     {
-        if (UMaterialInstanceDynamic* BodyMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
-        {
-            BodyMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.08f, 0.16f, 0.28f, 1.0f));
-            RuntimeBodyVisual->SetMaterial(0, BodyMaterial);
-        }
-        if (UMaterialInstanceDynamic* HeadMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
-        {
-            HeadMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.72f, 0.45f, 0.28f, 1.0f));
-            RuntimeHeadVisual->SetMaterial(0, HeadMaterial);
-        }
-        if (UMaterialInstanceDynamic* MantleMaterial = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
-        {
-            MantleMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.42f, 0.08f, 0.07f, 1.0f));
-            RuntimeMantleVisual->SetMaterial(0, MantleMaterial);
-        }
+        RuntimeLeftBootVisual->SetStaticMesh(CubeMesh.Object);
+        RuntimeRightBootVisual->SetStaticMesh(CubeMesh.Object);
     }
 
-    RuntimeBodyVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 20.0f));
-    RuntimeBodyVisual->SetRelativeScale3D(FVector(0.48f, 0.48f, 1.35f));
+    const auto ApplyColor = [this](UStaticMeshComponent* Component, const FLinearColor& Color)
+    {
+        if (BaseMaterial.Succeeded() && Component)
+        {
+            if (UMaterialInstanceDynamic* Material = UMaterialInstanceDynamic::Create(BaseMaterial.Object, this))
+            {
+                Material->SetVectorParameterValue(TEXT("Color"), Color);
+                Material->SetScalarParameterValue(TEXT("Roughness"), 0.76f);
+                Material->SetScalarParameterValue(TEXT("Specular"), 0.20f);
+                Material->SetScalarParameterValue(TEXT("Metallic"), 0.0f);
+                Component->SetMaterial(0, Material);
+            }
+        }
+    };
 
-    RuntimeHeadVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 155.0f));
-    RuntimeHeadVisual->SetRelativeScale3D(FVector(0.62f, 0.62f, 0.62f));
+    ApplyColor(RuntimeBodyVisual, FLinearColor(0.19f, 0.27f, 0.54f, 1.0f));
+    ApplyColor(RuntimeHeadVisual, FLinearColor(0.82f, 0.58f, 0.42f, 1.0f));
+    ApplyColor(RuntimeMantleVisual, FLinearColor(0.31f, 0.18f, 0.46f, 1.0f));
+    ApplyColor(RuntimeLeftArmVisual, FLinearColor(0.31f, 0.18f, 0.46f, 1.0f));
+    ApplyColor(RuntimeRightArmVisual, FLinearColor(0.31f, 0.18f, 0.46f, 1.0f));
+    ApplyColor(RuntimeLeftHandVisual, FLinearColor(0.82f, 0.58f, 0.42f, 1.0f));
+    ApplyColor(RuntimeRightHandVisual, FLinearColor(0.82f, 0.58f, 0.42f, 1.0f));
+    ApplyColor(RuntimeLeftLegVisual, FLinearColor(0.16f, 0.22f, 0.38f, 1.0f));
+    ApplyColor(RuntimeRightLegVisual, FLinearColor(0.16f, 0.22f, 0.38f, 1.0f));
+    ApplyColor(RuntimeLeftBootVisual, FLinearColor(0.20f, 0.12f, 0.07f, 1.0f));
+    ApplyColor(RuntimeRightBootVisual, FLinearColor(0.20f, 0.12f, 0.07f, 1.0f));
+    ApplyColor(RuntimeHairVisual, FLinearColor(0.18f, 0.12f, 0.20f, 1.0f));
+    ApplyColor(RuntimeHatVisual, FLinearColor(0.14f, 0.22f, 0.53f, 1.0f));
+    ApplyColor(RuntimeBeltVisual, FLinearColor(0.80f, 0.56f, 0.15f, 1.0f));
+    ApplyColor(RuntimeStaffVisual, FLinearColor(0.40f, 0.24f, 0.12f, 1.0f));
+    ApplyColor(RuntimeOrbVisual, FLinearColor(0.32f, 0.82f, 0.98f, 1.0f));
 
-    RuntimeMantleVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 75.0f));
-    RuntimeMantleVisual->SetRelativeScale3D(FVector(0.85f, 0.85f, 0.70f));
+    RuntimeBodyVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 12.0f));
+    RuntimeBodyVisual->SetRelativeScale3D(FVector(0.42f, 0.39f, 0.82f));
+    RuntimeHeadVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 66.0f));
+    RuntimeHeadVisual->SetRelativeScale3D(FVector(0.34f, 0.32f, 0.37f));
+    RuntimeMantleVisual->SetRelativeLocation(FVector(0.0f, 9.0f, -23.0f));
+    RuntimeMantleVisual->SetRelativeScale3D(FVector(0.62f, 0.59f, 0.73f));
+
+    RuntimeLeftArmVisual->SetRelativeLocation(FVector(-31.0f, 0.0f, 13.0f));
+    RuntimeLeftArmVisual->SetRelativeRotation(FRotator(-23.0f, 0.0f, 0.0f));
+    RuntimeLeftArmVisual->SetRelativeScale3D(FVector(0.16f, 0.16f, 0.55f));
+    RuntimeRightArmVisual->SetRelativeLocation(FVector(31.0f, 0.0f, 13.0f));
+    RuntimeRightArmVisual->SetRelativeRotation(FRotator(23.0f, 0.0f, 0.0f));
+    RuntimeRightArmVisual->SetRelativeScale3D(FVector(0.16f, 0.16f, 0.55f));
+
+    RuntimeLeftHandVisual->SetRelativeLocation(FVector(-49.0f, -3.0f, -12.0f));
+    RuntimeLeftHandVisual->SetRelativeScale3D(FVector(0.15f, 0.15f, 0.15f));
+    RuntimeRightHandVisual->SetRelativeLocation(FVector(49.0f, -3.0f, -12.0f));
+    RuntimeRightHandVisual->SetRelativeScale3D(FVector(0.15f, 0.15f, 0.15f));
+
+    RuntimeLeftLegVisual->SetRelativeLocation(FVector(-15.0f, 0.0f, -61.0f));
+    RuntimeLeftLegVisual->SetRelativeScale3D(FVector(0.16f, 0.16f, 0.53f));
+    RuntimeRightLegVisual->SetRelativeLocation(FVector(15.0f, 0.0f, -61.0f));
+    RuntimeRightLegVisual->SetRelativeScale3D(FVector(0.16f, 0.16f, 0.53f));
+    RuntimeLeftBootVisual->SetRelativeLocation(FVector(-15.0f, -6.0f, -91.0f));
+    RuntimeLeftBootVisual->SetRelativeScale3D(FVector(0.31f, 0.39f, 0.15f));
+    RuntimeRightBootVisual->SetRelativeLocation(FVector(15.0f, -6.0f, -91.0f));
+    RuntimeRightBootVisual->SetRelativeScale3D(FVector(0.31f, 0.39f, 0.15f));
+
+    RuntimeHairVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
+    RuntimeHairVisual->SetRelativeScale3D(FVector(0.36f, 0.34f, 0.17f));
+    RuntimeHatVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 105.0f));
+    RuntimeHatVisual->SetRelativeScale3D(FVector(0.38f, 0.38f, 0.46f));
+    RuntimeBeltVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -22.0f));
+    RuntimeBeltVisual->SetRelativeScale3D(FVector(0.44f, 0.42f, 0.10f));
+    RuntimeStaffVisual->SetRelativeLocation(FVector(67.0f, -11.0f, 18.0f));
+    RuntimeStaffVisual->SetRelativeScale3D(FVector(0.07f, 0.07f, 1.18f));
+    RuntimeOrbVisual->SetRelativeLocation(FVector(67.0f, -11.0f, 82.0f));
+    RuntimeOrbVisual->SetRelativeScale3D(FVector(0.22f, 0.22f, 0.22f));
+
+    for (UStaticMeshComponent* Part : {
+        RuntimeBodyVisual.Get(), RuntimeHeadVisual.Get(), RuntimeMantleVisual.Get(),
+        RuntimeLeftArmVisual.Get(), RuntimeRightArmVisual.Get(), RuntimeLeftHandVisual.Get(),
+        RuntimeRightHandVisual.Get(), RuntimeLeftLegVisual.Get(), RuntimeRightLegVisual.Get(),
+        RuntimeLeftBootVisual.Get(), RuntimeRightBootVisual.Get(), RuntimeHairVisual.Get(),
+        RuntimeHatVisual.Get(), RuntimeBeltVisual.Get(), RuntimeStaffVisual.Get(), RuntimeOrbVisual.Get()})
+    {
+        if (Part)
+        {
+            Part->SetCastShadow(true);
+            Part->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        }
+    }
 }
 
 void AAetherCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -195,40 +340,238 @@ void AAetherCharacter::BeginPlay()
 
     InitializeRuntimeVisual();
 
+    if (GetNetMode() == NM_DedicatedServer)
+    {
+        SetActorTickEnabled(false);
+    }
+
     if (IsLocallyControlled())
     {
         InitializeFoundationInput();
     }
 }
 
+void AAetherCharacter::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    UpdateClickToMove(DeltaSeconds);
+    UpdateSkeletalVisualAnimation(DeltaSeconds);
+}
+
 void AAetherCharacter::InitializeRuntimeVisual()
 {
-    if (RuntimeBodyVisual)
+    InitializeSkeletalVisual();
+
+    const UAether2DCharacterVisualProfile* TwoDProfile = Visual2DComponent
+        ? Visual2DComponent->GetProfile()
+        : nullptr;
+    const bool bUsePrimaryTwoDPresentation = TwoDProfile && TwoDProfile->bUseAsPrimaryPresentation;
+    const bool bHasSkeletalPresentation = RuntimeSkeletalVisual && RuntimeSkeletalVisual->GetSkeletalMeshAsset() != nullptr;
+
+    UStaticMeshComponent* ProxyParts[] = {
+        RuntimeBodyVisual.Get(),
+        RuntimeHeadVisual.Get(),
+        RuntimeMantleVisual.Get(),
+        RuntimeLeftArmVisual.Get(),
+        RuntimeRightArmVisual.Get(),
+        RuntimeLeftHandVisual.Get(),
+        RuntimeRightHandVisual.Get(),
+        RuntimeLeftLegVisual.Get(),
+        RuntimeRightLegVisual.Get(),
+        RuntimeLeftBootVisual.Get(),
+        RuntimeRightBootVisual.Get(),
+        RuntimeHairVisual.Get(),
+        RuntimeHatVisual.Get(),
+        RuntimeBeltVisual.Get(),
+        RuntimeStaffVisual.Get(),
+        RuntimeOrbVisual.Get()
+    };
+
+    for (UStaticMeshComponent* Part : ProxyParts)
     {
-        RuntimeBodyVisual->SetVisibility(false, true);
-    }
-    if (RuntimeHeadVisual)
-    {
-        RuntimeHeadVisual->SetVisibility(false, true);
-    }
-    if (RuntimeMantleVisual)
-    {
-        RuntimeMantleVisual->SetVisibility(false, true);
+        if (Part)
+        {
+            Part->SetVisibility(!bUsePrimaryTwoDPresentation && !bHasSkeletalPresentation, true);
+        }
     }
 
+    if (RuntimeSkeletalVisual)
+    {
+        RuntimeSkeletalVisual->SetVisibility(bHasSkeletalPresentation && !bUsePrimaryTwoDPresentation, true);
+    }
+
+    UpdateSkeletalVisualAnimation(0.0f);
+
+    // Keep the old Paper2D component as a compatibility hook for authored profiles,
+    // but never use the crude triangular runtime icon as the default character.
     if (Runtime2DArtVisual)
     {
-        if (UPaperSprite* Sprite = FAetherRuntime2DArt::CreateCharacterSprite(this))
+        Runtime2DArtVisual->SetVisibility(false, true);
+    }
+}
+
+void AAetherCharacter::InitializeSkeletalVisual()
+{
+    if (GetNetMode() == NM_DedicatedServer || !RuntimeSkeletalVisual)
+    {
+        return;
+    }
+
+    USkeletalMesh* LoadedSkeletalMesh = MageSkeletalMeshAsset.LoadSynchronous();
+    if (!LoadedSkeletalMesh)
+    {
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("AetherCharacter could not load skeletal mesh '%s'; keep the primitive fallback visible."),
+            *MageSkeletalMeshAsset.ToSoftObjectPath().ToString());
+        return;
+    }
+
+    RuntimeSkeletalVisual->SetSkeletalMesh(LoadedSkeletalMesh);
+    RuntimeSkeletalVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    RuntimeSkeletalVisual->SetCastShadow(true);
+    RuntimeSkeletalVisual->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+    RuntimeSkeletalVisual->SetRelativeLocation(FVector(
+        0.0f,
+        0.0f,
+        -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
+    // The imported Mage FBX is a quarter-turn off Unreal's +X movement-forward axis.
+    RuntimeSkeletalVisual->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+    RuntimeSkeletalVisual->SetRelativeScale3D(FVector::OneVector);
+
+    // The owner's verified Editor assets retain the FBX suffix (for example,
+    // A_Walk_Anim), while the canonical import script uses A_Walk. Prefer the
+    // verified suffix variant, then fall back to the configured canonical path.
+    const auto LoadMageAnimation = [](const TSoftObjectPtr<UAnimSequence>& ConfiguredAsset, const TCHAR* SuffixAssetPath)
+    {
+        if (UAnimSequence* Animation = LoadObject<UAnimSequence>(nullptr, SuffixAssetPath))
         {
-            Runtime2DArtSprite = Sprite;
-            Runtime2DArtTexture = Sprite->GetSourceTexture();
-            Runtime2DArtVisual->SetSprite(Sprite);
-            Runtime2DArtVisual->SetSpriteColor(FLinearColor::White);
-            Runtime2DArtVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 132.0f));
-            Runtime2DArtVisual->SetRelativeRotation(FRotator(90.0f, 45.0f, 0.0f));
-            Runtime2DArtVisual->SetRelativeScale3D(FVector(1.15f));
-            Runtime2DArtVisual->SetVisibility(true, true);
+            return Animation;
         }
+        return ConfiguredAsset.LoadSynchronous();
+    };
+
+    RuntimeIdleAnimation = LoadMageAnimation(
+        MageIdleAnimationAsset,
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Idle_Anim.A_Idle_Anim"));
+    RuntimeWalkAnimation = LoadMageAnimation(
+        MageWalkAnimationAsset,
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Walk_Anim.A_Walk_Anim"));
+    RuntimeRunAnimation = LoadMageAnimation(
+        MageRunAnimationAsset,
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Run_Anim.A_Run_Anim"));
+    RuntimeJumpAnimation = LoadMageAnimation(
+        MageJumpAnimationAsset,
+        TEXT("/Game/Aether/Characters/Mage/Animations/A_Jump_Anim.A_Jump_Anim"));
+    ActiveSkeletalAnimation = nullptr;
+
+    if (!RuntimeIdleAnimation || !RuntimeWalkAnimation || !RuntimeRunAnimation || !RuntimeJumpAnimation)
+    {
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("AetherCharacter loaded mage mesh '%s' with incomplete animation assets (idle=%s walk=%s run=%s jump=%s). Rerun Scripts/import_mage_assets.py in Unreal Editor."),
+            *GetNameSafe(LoadedSkeletalMesh),
+            *GetNameSafe(RuntimeIdleAnimation),
+            *GetNameSafe(RuntimeWalkAnimation),
+            *GetNameSafe(RuntimeRunAnimation),
+            *GetNameSafe(RuntimeJumpAnimation));
+    }
+    else
+    {
+        UE_LOG(
+            LogTemp,
+            Log,
+            TEXT("AetherCharacter loaded mage presentation: mesh=%s idle=%s walk=%s run=%s jump=%s"),
+            *GetNameSafe(LoadedSkeletalMesh),
+            *GetNameSafe(RuntimeIdleAnimation),
+            *GetNameSafe(RuntimeWalkAnimation),
+            *GetNameSafe(RuntimeRunAnimation),
+            *GetNameSafe(RuntimeJumpAnimation));
+    }
+
+    UpdateSkeletalVisualAnimation(0.0f);
+}
+
+void AAetherCharacter::UpdateSkeletalVisualAnimation(float DeltaSeconds)
+{
+    if (GetNetMode() == NM_DedicatedServer || !RuntimeSkeletalVisual || !RuntimeSkeletalVisual->GetSkeletalMeshAsset())
+    {
+        return;
+    }
+
+    const float PlanarSpeed = GetVelocity().Size2D();
+    const bool bIsMoving = PlanarSpeed > 24.0f;
+    const UCharacterMovementComponent* Movement = GetCharacterMovement();
+    const float WalkSpeed = MovementCameraProfile ? MovementCameraProfile->WalkSpeed : FoundationWalkSpeed;
+    const float RunSpeed = MovementCameraProfile
+        ? MovementCameraProfile->SprintSpeed
+        : FoundationWalkSpeed * 1.5f;
+
+    UAnimSequence* DesiredAnimation = nullptr;
+    bool bShouldRun = false;
+    if (Movement && Movement->IsFalling() && RuntimeJumpAnimation)
+    {
+        DesiredAnimation = RuntimeJumpAnimation;
+    }
+    else if (bIsMoving)
+    {
+        bShouldRun = bSprinting || PlanarSpeed > WalkSpeed * 1.15f;
+        DesiredAnimation = bShouldRun && RuntimeRunAnimation
+            ? RuntimeRunAnimation.Get()
+            : RuntimeWalkAnimation.Get();
+    }
+    else
+    {
+        DesiredAnimation = RuntimeIdleAnimation;
+    }
+
+    if (!DesiredAnimation && RuntimeIdleAnimation)
+    {
+        DesiredAnimation = RuntimeIdleAnimation;
+    }
+    if (!DesiredAnimation)
+    {
+        return;
+    }
+
+    if (DesiredAnimation != ActiveSkeletalAnimation)
+    {
+        RuntimeSkeletalVisual->PlayAnimation(DesiredAnimation, true);
+        ActiveSkeletalAnimation = DesiredAnimation;
+        UE_LOG(LogTemp, Log, TEXT("AetherCharacter %s playing animation %s"), *GetName(), *DesiredAnimation->GetName());
+    }
+
+    float TargetPlayRate = 1.0f;
+    const bool bPlayingLocomotionAnimation = DesiredAnimation == RuntimeWalkAnimation
+        || DesiredAnimation == RuntimeRunAnimation;
+    if (bIsMoving && bPlayingLocomotionAnimation)
+    {
+        const float SpeedRatio = FMath::Clamp(PlanarSpeed / FMath::Max(WalkSpeed, 1.0f), 0.65f, 1.5f);
+        const float StateRateMultiplier = bShouldRun
+            ? RunAnimationRateMultiplier
+            : WalkAnimationRateMultiplier;
+        TargetPlayRate = StateRateMultiplier * SpeedRatio;
+    }
+    TargetPlayRate = FMath::Clamp(TargetPlayRate, 0.65f, 2.25f);
+
+    if (DeltaSeconds <= KINDA_SMALL_NUMBER)
+    {
+        CurrentSkeletalAnimationPlayRate = TargetPlayRate;
+    }
+    else
+    {
+        CurrentSkeletalAnimationPlayRate = FMath::FInterpTo(
+            CurrentSkeletalAnimationPlayRate,
+            TargetPlayRate,
+            DeltaSeconds,
+            8.0f);
+    }
+
+    if (UAnimSingleNodeInstance* SingleNodeInstance = RuntimeSkeletalVisual->GetSingleNodeInstance())
+    {
+        SingleNodeInstance->SetPlayRate(CurrentSkeletalAnimationPlayRate);
     }
 }
 
@@ -240,8 +583,7 @@ void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
     if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent))
     {
-        EnhancedInput->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &AAetherCharacter::MoveForward);
-        EnhancedInput->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &AAetherCharacter::MoveRight);
+        EnhancedInput->BindAction(ClickMoveAction, ETriggerEvent::Started, this, &AAetherCharacter::ClickMovePressed);
         EnhancedInput->BindAction(LookYawAction, ETriggerEvent::Triggered, this, &AAetherCharacter::LookYaw);
         EnhancedInput->BindAction(LookPitchAction, ETriggerEvent::Triggered, this, &AAetherCharacter::LookPitch);
         EnhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &AAetherCharacter::JumpPressed);
@@ -249,6 +591,13 @@ void AAetherCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInput->BindAction(SprintAction, ETriggerEvent::Completed, this, &AAetherCharacter::SprintStopped);
         EnhancedInput->BindAction(SprintAction, ETriggerEvent::Canceled, this, &AAetherCharacter::SprintStopped);
         EnhancedInput->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &AAetherCharacter::CameraZoom);
+        EnhancedInput->BindAction(CameraOrbitToggleAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraOrbitToggle);
+        EnhancedInput->BindAction(CameraOrbitDragAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraOrbitDragStarted);
+        EnhancedInput->BindAction(CameraOrbitDragAction, ETriggerEvent::Completed, this, &AAetherCharacter::CameraOrbitDragStopped);
+        EnhancedInput->BindAction(CameraOrbitDragAction, ETriggerEvent::Canceled, this, &AAetherCharacter::CameraOrbitDragStopped);
+        EnhancedInput->BindAction(CameraOrbitPitchUpAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraOrbitPitchUp);
+        EnhancedInput->BindAction(CameraOrbitPitchDownAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraOrbitPitchDown);
+        EnhancedInput->BindAction(CameraViewResetAction, ETriggerEvent::Started, this, &AAetherCharacter::CameraViewReset);
         EnhancedInput->BindAction(BasicAttackAction, ETriggerEvent::Started, this, &AAetherCharacter::BasicAttackPressed);
     }
 }
@@ -267,40 +616,52 @@ void AAetherCharacter::InitializeFoundationInput()
     }
 
     RuntimeInputContext = NewObject<UInputMappingContext>(this, TEXT("AetherFoundationInput"));
-    MoveForwardAction = NewObject<UInputAction>(this, TEXT("MoveForward"));
-    MoveRightAction = NewObject<UInputAction>(this, TEXT("MoveRight"));
+    ClickMoveAction = NewObject<UInputAction>(this, TEXT("ClickMove"));
     LookYawAction = NewObject<UInputAction>(this, TEXT("LookYaw"));
     LookPitchAction = NewObject<UInputAction>(this, TEXT("LookPitch"));
     JumpAction = NewObject<UInputAction>(this, TEXT("Jump"));
     SprintAction = NewObject<UInputAction>(this, TEXT("Sprint"));
     CameraZoomAction = NewObject<UInputAction>(this, TEXT("CameraZoom"));
+    CameraOrbitToggleAction = NewObject<UInputAction>(this, TEXT("CameraOrbitToggle"));
+    CameraOrbitDragAction = NewObject<UInputAction>(this, TEXT("CameraOrbitDrag"));
+    CameraOrbitPitchUpAction = NewObject<UInputAction>(this, TEXT("CameraOrbitPitchUp"));
+    CameraOrbitPitchDownAction = NewObject<UInputAction>(this, TEXT("CameraOrbitPitchDown"));
+    CameraViewResetAction = NewObject<UInputAction>(this, TEXT("CameraViewReset"));
     BasicAttackAction = NewObject<UInputAction>(this, TEXT("BasicAttack"));
 
-    MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
-    MoveRightAction->ValueType = EInputActionValueType::Axis1D;
+    ClickMoveAction->ValueType = EInputActionValueType::Boolean;
     LookYawAction->ValueType = EInputActionValueType::Axis1D;
     LookPitchAction->ValueType = EInputActionValueType::Axis1D;
     JumpAction->ValueType = EInputActionValueType::Boolean;
     SprintAction->ValueType = EInputActionValueType::Boolean;
     CameraZoomAction->ValueType = EInputActionValueType::Axis1D;
+    CameraOrbitToggleAction->ValueType = EInputActionValueType::Boolean;
+    CameraOrbitDragAction->ValueType = EInputActionValueType::Boolean;
+    CameraOrbitPitchUpAction->ValueType = EInputActionValueType::Boolean;
+    CameraOrbitPitchDownAction->ValueType = EInputActionValueType::Boolean;
+    CameraViewResetAction->ValueType = EInputActionValueType::Boolean;
     BasicAttackAction->ValueType = EInputActionValueType::Boolean;
 
-    RuntimeInputContext->MapKey(MoveForwardAction, EKeys::W);
-    {
-        FEnhancedActionKeyMapping& Mapping = RuntimeInputContext->MapKey(MoveForwardAction, EKeys::S);
-        Mapping.Modifiers.Add(NewObject<UInputModifierNegate>(RuntimeInputContext));
-    }
-    RuntimeInputContext->MapKey(MoveRightAction, EKeys::D);
-    {
-        FEnhancedActionKeyMapping& Mapping = RuntimeInputContext->MapKey(MoveRightAction, EKeys::A);
-        Mapping.Modifiers.Add(NewObject<UInputModifierNegate>(RuntimeInputContext));
-    }
+    RuntimeInputContext->MapKey(ClickMoveAction, EKeys::LeftMouseButton);
     RuntimeInputContext->MapKey(LookYawAction, EKeys::MouseX);
     RuntimeInputContext->MapKey(LookPitchAction, EKeys::MouseY);
     RuntimeInputContext->MapKey(JumpAction, EKeys::SpaceBar);
     RuntimeInputContext->MapKey(SprintAction, EKeys::LeftShift);
     RuntimeInputContext->MapKey(CameraZoomAction, EKeys::MouseWheelAxis);
-    RuntimeInputContext->MapKey(BasicAttackAction, EKeys::LeftMouseButton);
+    RuntimeInputContext->MapKey(CameraOrbitToggleAction, EKeys::F7);
+    RuntimeInputContext->MapKey(CameraOrbitDragAction, EKeys::MiddleMouseButton);
+    RuntimeInputContext->MapKey(CameraOrbitPitchUpAction, EKeys::PageUp);
+    RuntimeInputContext->MapKey(CameraOrbitPitchDownAction, EKeys::PageDown);
+    RuntimeInputContext->MapKey(CameraViewResetAction, EKeys::F6);
+    RuntimeInputContext->MapKey(BasicAttackAction, EKeys::RightMouseButton);
+
+    PC->bShowMouseCursor = true;
+    PC->bEnableClickEvents = true;
+    PC->bEnableMouseOverEvents = false;
+    FInputModeGameAndUI InputMode;
+    InputMode.SetHideCursorDuringCapture(false);
+    InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+    PC->SetInputMode(InputMode);
 
     if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem =
         PC->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -309,32 +670,85 @@ void AAetherCharacter::InitializeFoundationInput()
     }
 }
 
-void AAetherCharacter::MoveForward(const FInputActionValue& Value)
+void AAetherCharacter::ClickMovePressed(const FInputActionValue& Value)
 {
-    if (!Controller)
+    if (!Value.Get<bool>() || !IsLocallyControlled())
     {
         return;
     }
 
-    const float Axis = Value.Get<float>();
-    const FRotator ControlRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
-    AddMovementInput(FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X), Axis);
+    APlayerController* PC = Cast<APlayerController>(GetController());
+    if (!PC)
+    {
+        return;
+    }
+
+    FHitResult CursorHit;
+    FVector Destination;
+    if (PC->GetHitResultUnderCursorByChannel(
+            UEngineTypes::ConvertToTraceType(ECC_Visibility), true, CursorHit))
+    {
+        Destination = CursorHit.ImpactPoint;
+    }
+    else
+    {
+        FVector RayOrigin;
+        FVector RayDirection;
+        if (!PC->DeprojectMousePositionToWorld(RayOrigin, RayDirection) || FMath::IsNearlyZero(RayDirection.Z))
+        {
+            return;
+        }
+
+        const float DistanceToGround = -RayOrigin.Z / RayDirection.Z;
+        if (DistanceToGround < 0.0f)
+        {
+            return;
+        }
+        Destination = RayOrigin + RayDirection * DistanceToGround;
+    }
+
+    // The cursor can hit a house, tree, or the ground. Only the XY destination
+    // matters; keep the character on its current floor and inside the arena.
+    Destination.X = FMath::Clamp(Destination.X, -4050.0f, 4050.0f);
+    Destination.Y = FMath::Clamp(Destination.Y, -3050.0f, 3050.0f);
+    Destination.Z = GetActorLocation().Z;
+    ClickMoveTarget = Destination;
+    bHasClickMoveTarget = true;
 }
 
-void AAetherCharacter::MoveRight(const FInputActionValue& Value)
+void AAetherCharacter::UpdateClickToMove(float /*DeltaSeconds*/)
 {
-    if (!Controller)
+    if (!bHasClickMoveTarget || !IsLocallyControlled())
     {
         return;
     }
 
-    const float Axis = Value.Get<float>();
-    const FRotator ControlRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
-    AddMovementInput(FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::Y), Axis);
+    FVector ToTarget = ClickMoveTarget - GetActorLocation();
+    ToTarget.Z = 0.0f;
+    if (ToTarget.SizeSquared2D() <= FMath::Square(55.0f))
+    {
+        bHasClickMoveTarget = false;
+        UCharacterMovementComponent* Movement = GetCharacterMovement();
+        if (Movement && !Movement->IsFalling())
+        {
+            Movement->StopMovementImmediately();
+        }
+        return;
+    }
+
+    AddMovementInput(ToTarget.GetSafeNormal2D());
 }
 
 void AAetherCharacter::LookYaw(const FInputActionValue& Value)
 {
+    if (IsometricCameraComponent && IsometricCameraComponent->HasUserOrbitView())
+    {
+        if (bCameraOrbitDragging && IsometricCameraComponent->IsFreeOrbitModeEnabled())
+        {
+            IsometricCameraComponent->AddOrbitInput(Value.Get<float>(), 0.0f);
+        }
+        return;
+    }
     if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook())
     {
         return;
@@ -344,6 +758,14 @@ void AAetherCharacter::LookYaw(const FInputActionValue& Value)
 
 void AAetherCharacter::LookPitch(const FInputActionValue& Value)
 {
+    if (IsometricCameraComponent && IsometricCameraComponent->HasUserOrbitView())
+    {
+        if (bCameraOrbitDragging && IsometricCameraComponent->IsFreeOrbitModeEnabled())
+        {
+            IsometricCameraComponent->AddOrbitInput(0.0f, Value.Get<float>());
+        }
+        return;
+    }
     if (IsometricCameraComponent && !IsometricCameraComponent->AllowsFreeLook())
     {
         return;
@@ -407,6 +829,58 @@ void AAetherCharacter::CameraZoom(const FInputActionValue& Value)
     const float MinDistance = MovementCameraProfile ? MovementCameraProfile->MinCameraDistance : 250.0f;
     const float MaxDistance = MovementCameraProfile ? MovementCameraProfile->MaxCameraDistance : 650.0f;
     CameraBoom->TargetArmLength = FMath::Clamp(CameraBoom->TargetArmLength - Value.Get<float>() * Step, MinDistance, MaxDistance);
+}
+
+void AAetherCharacter::CameraOrbitToggle(const FInputActionValue& Value)
+{
+    if (!Value.Get<bool>() || !IsLocallyControlled() || !IsometricCameraComponent)
+    {
+        return;
+    }
+
+    IsometricCameraComponent->ToggleFreeOrbitMode();
+    if (!IsometricCameraComponent->IsFreeOrbitModeEnabled())
+    {
+        bCameraOrbitDragging = false;
+    }
+}
+
+void AAetherCharacter::CameraOrbitDragStarted(const FInputActionValue& Value)
+{
+    bCameraOrbitDragging = Value.Get<bool>()
+        && IsometricCameraComponent
+        && IsometricCameraComponent->IsFreeOrbitModeEnabled();
+}
+
+void AAetherCharacter::CameraOrbitDragStopped(const FInputActionValue& /*Value*/)
+{
+    bCameraOrbitDragging = false;
+}
+
+void AAetherCharacter::CameraOrbitPitchUp(const FInputActionValue& Value)
+{
+    if (Value.Get<bool>() && IsLocallyControlled()
+        && IsometricCameraComponent && IsometricCameraComponent->IsFreeOrbitModeEnabled())
+    {
+        IsometricCameraComponent->AdjustOrbitPitch(-5.0f);
+    }
+}
+
+void AAetherCharacter::CameraOrbitPitchDown(const FInputActionValue& Value)
+{
+    if (Value.Get<bool>() && IsLocallyControlled()
+        && IsometricCameraComponent && IsometricCameraComponent->IsFreeOrbitModeEnabled())
+    {
+        IsometricCameraComponent->AdjustOrbitPitch(5.0f);
+    }
+}
+
+void AAetherCharacter::CameraViewReset(const FInputActionValue& Value)
+{
+    if (Value.Get<bool>() && IsLocallyControlled() && IsometricCameraComponent)
+    {
+        IsometricCameraComponent->ResetCameraView();
+    }
 }
 
 void AAetherCharacter::ServerSetSprinting_Implementation(bool bNewSprinting)

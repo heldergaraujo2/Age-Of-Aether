@@ -1,6 +1,8 @@
-# AGE OF AETHER — 2D ISOMETRIC VISUAL TRANSFORMATION
+# AGE OF AETHER — HISTORICAL 2D ISOMETRIC VISUAL DIRECTION
 
-## Objetivo
+> **Visual target updated (2026-10-04):** the project owner supplied a reference for a bright, richly composed **stylized 3D isometric diorama** (castle, river/bridge, village, farms and forest). That reference now governs the first-region world presentation. This document preserves the earlier Paper2D pipeline as an optional presentation path for characters, effects and future content; it is no longer the primary environment target. See `Docs/FIRST_REGION_ISOMETRIC_DIORAMA_RUNTIME_PROTOTYPE.md`.
+
+## Objetivo original
 
 Transformar a apresentação do AGE OF AETHER em um RPG de exploração isométrica inspirado na experiência de RPGs isométricos clássicos, utilizando conteúdo visual predominantemente 2D sobre a arquitetura sistêmica já existente do projeto.
 

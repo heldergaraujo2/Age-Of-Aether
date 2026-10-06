@@ -15,7 +15,7 @@ It reuses the existing Phase 40 movement/camera source foundation rather than cr
 
 Provide a comfortable, readable and multiplayer-consistent exploration model:
 
-**Camera → input → movement relative to camera → character orientation → selection/targeting → interaction → authoritative gameplay → presentation**
+**Camera → cursor-to-world destination → click-to-move → character orientation → selection/targeting → interaction → authoritative gameplay → presentation**
 
 The camera must make the world readable while preserving real 3D traversal and the scale of the continuous world.
 
@@ -29,11 +29,14 @@ The repository already contains the Phase 40 source-level movement/camera founda
 - walk/sprint/jump/rotation values;
 - camera zoom range/step;
 - pitch limits;
-- W/A/S/D movement;
-- mouse look;
+- left-click-to-move;
+- right-click basic attack;
+- F7 toggles local 3D orbit-camera control while preserving the last user view;
+- middle-mouse drag rotates/tilts the view; Page Up/Down provide a fine pitch adjustment toward overhead/front view;
+- F6 resets to the original camera view;
+- mouse-wheel zoom, including close character inspection in orbit mode;
 - jump;
 - sprint;
-- mouse-wheel zoom;
 - server-authoritative sprint transition;
 - camera pitch clamping;
 - automation coverage.
@@ -119,14 +122,13 @@ Buildings and props should not permanently hide the character or important inter
 
 ## 6. MOVEMENT RELATIVE TO CAMERA
 
-Exploration controls should be intuitive:
+Exploration controls should be intuitive and preserve the mouse click-to-move first-playable contract:
 
-- W = forward relative to camera;
-- S = backward relative to camera;
-- A/D = lateral movement relative to camera;
-- movement direction maps consistently to world direction;
-- character orientation follows intended movement/combat rules;
-- camera motion does not unexpectedly invert controls.
+- left-click selects a ground destination and the character moves there;
+- movement direction is derived from the destination, not from camera-relative WASD axes;
+- character orientation follows the intended movement/combat rules;
+- camera rotation does not unexpectedly change the selected world destination;
+- keyboard movement bindings remain absent in the current first-playable input setup.
 
 The implementation must remain server-authoritative.
 

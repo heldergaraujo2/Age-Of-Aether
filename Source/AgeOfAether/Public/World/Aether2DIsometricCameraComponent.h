@@ -27,6 +27,24 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Age of Aether|2D Camera")
     void AddZoomInput(float AxisValue);
 
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|2D Camera")
+    void ToggleFreeOrbitMode();
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|2D Camera")
+    void ResetCameraView();
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|2D Camera")
+    void AddOrbitInput(float YawDelta, float PitchDelta);
+
+    UFUNCTION(BlueprintCallable, Category = "Age of Aether|2D Camera")
+    void AdjustOrbitPitch(float DeltaDegrees);
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|2D Camera")
+    bool IsFreeOrbitModeEnabled() const { return bFreeOrbitModeEnabled; }
+
+    UFUNCTION(BlueprintPure, Category = "Age of Aether|2D Camera")
+    bool HasUserOrbitView() const { return bFreeOrbitModeEnabled || bHoldLastOrbitView; }
+
     UFUNCTION(BlueprintPure, Category = "Age of Aether|2D Camera")
     bool AllowsFreeLook() const;
 
@@ -48,6 +66,30 @@ private:
     bool ApplyRuntimeFallback();
     USpringArmComponent* ResolveCameraBoom() const;
     void ApplyCameraPolicy();
+    void CaptureInitialCameraView(USpringArmComponent* Boom, bool bUsesAbsoluteRotation);
+    void ApplyUserOrbitView(USpringArmComponent* Boom);
+
     float CurrentDistance = 0.0f;
+    float InitialCameraDistance = 2100.0f;
+    float OrbitDistance = 2100.0f;
+    float OrbitYaw = 45.0f;
+    float OrbitPitch = -55.0f;
+    float OrbitYawSensitivity = 0.8f;
+    float OrbitPitchSensitivity = 0.35f;
+    float OrbitMinimumPitch = -82.0f;
+    float OrbitMaximumPitch = 10.0f;
+    float CloseInspectionMinimumDistance = 250.0f;
+    float OrbitMinimumDistance = 120.0f;
+    float OrbitMaximumDistance = 3600.0f;
+    float InitialCameraLagSpeed = 12.0f;
+    FRotator InitialCameraRotation = FRotator(-55.0f, 45.0f, 0.0f);
+    bool bInitialUsesAbsoluteRotation = true;
+    bool bInitialUsesPawnControlRotation = false;
+    bool bInitialCollisionTest = false;
+    bool bInitialCameraLag = true;
+    bool bHasInitialCameraView = false;
+    bool bHasSavedOrbitView = false;
+    bool bFreeOrbitModeEnabled = false;
+    bool bHoldLastOrbitView = false;
     bool bRuntimeFallbackActive = false;
 };

@@ -16,19 +16,31 @@ Runtime fallback remains available when no profile is assigned:
 - walk 420;
 - sprint 630;
 - jump uses Unreal CharacterMovement default;
-- camera distance 250–650;
+- isometric overview camera starts around 2,100 units and zooms to 250 units for close inspection (3,600-unit overview maximum); orbit mode reaches 120 units;
 - mouse wheel zoom;
-- pitch clamp -75 to +35 degrees.
+- overview pitch clamp -75 to +35 degrees; 3D orbit pitch now spans -82 to +10 degrees.
 
 ## Input
 The first playable slice creates Enhanced Input actions at runtime, avoiding unnecessary manual Input Action/Mapping Context assets. Current controls:
-- W/A/S/D: movement
-- Mouse: camera
+- Left mouse click: move to the clicked ground position
+- Right mouse click: basic attack
+- F7: enable/disable 3D orbit-camera controls; the last view is retained
+- Hold middle mouse button and drag horizontally/vertically: orbit and tilt the camera
+- Page Up / Page Down: fine camera tilt adjustment while orbit mode is active
+- F6: reset camera pitch, yaw and zoom to the original view
+- Mouse wheel: zoom, including close inspection in 3D orbit mode
 - Space: jump
 - Left Shift: sprint
-- Mouse wheel: zoom
 
 These can later be promoted to authored Input Action/Mapping Context assets for rebinding/localization without changing gameplay authority.
+
+## Textured grass ground
+`ArtSource/Environment/T_GrassGround_Source.png` is the tileable stylized grass source. Open the target map in Unreal Editor and run `Scripts/import_fab_library_assets.py`; it imports the texture, builds `/Game/Aether/Environment/Ground/Materials/M_GrassGround` for the runtime diorama floor, and builds `M_GrassGround_Landscape` for Landscape UV mapping. The script applies the Landscape material to Landscape actors in the open level and saves that level. The same run reimports the Fab foliage textures and assigns two-sided masked materials to the tree cards. If the runtime grass material is unavailable, the development-world actor falls back to its plain green material. Verify foliage color in viewport **Lit** mode; **Shader Complexity** and other diagnostic views intentionally show false colors.
+
+## Locomotion animation
+The runtime Mage Walk/Run playback rate now follows planar movement speed (base multipliers are tunable on `AAetherCharacter`), and each ambient walker scales its Walk rate to its own movement speed. This keeps gait cadence closer to world travel speed without restarting the sequence every tick.
+
+A visible snap exactly at the end of each cycle is an animation-source loop seam, not a per-frame restart. After importing the Mage clips, open `A_Walk_Anim` and `A_Run_Anim` in the Unreal Animation Sequence editor and use **Asset → Add Looping Interpolation**, then save. For a durable reimport workflow, make the first/last poses cyclic in the source FBX before rerunning `Scripts/import_mage_assets.py`.
 
 ## Safety
 Movement remains server-authoritative through Unreal CharacterMovement/replication. Sprint transitions use a server RPC; the server selects the configured speed and never trusts a client-provided speed value. Input does not write authoritative position, class, inventory or progression.
