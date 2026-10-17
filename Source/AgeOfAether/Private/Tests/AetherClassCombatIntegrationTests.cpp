@@ -62,7 +62,9 @@ bool FAetherClassCombatPvPSwitchTest::RunTest(const FString&)
     FAetherClassCombatIntegration I; FAetherCombatBalanceContext PvE,PvP;
     TestTrue(TEXT("PvE"),I.ResolveAuthoritativeContext(A,T,EAetherCombatMode::PvE,Classes,Balance,PvE,E));
     TestTrue(TEXT("PvP"),I.ResolveAuthoritativeContext(A,T,EAetherCombatMode::PvP,Classes,Balance,PvP,E));
-    TestEqual(TEXT("PvE damage preserved"),PvE.AttackerModifiers.Damage,1.5); TestEqual(TEXT("PvP damage preserved"),PvP.AttackerModifiers.Damage,1.25); TestTrue(TEXT("PvE and PvP remain separated"),!FMath::IsNearlyEqual(PvE.AttackerModifiers.Damage,PvP.AttackerModifiers.Damage));
+    TestEqual(TEXT("PvE class (2.0) and evolution (1.5) compose"),PvE.AttackerModifiers.Damage,3.0);
+    TestEqual(TEXT("PvP class (2.0) and evolution (1.25) compose"),PvP.AttackerModifiers.Damage,2.5);
+    TestTrue(TEXT("PvE and PvP remain separated"),!FMath::IsNearlyEqual(PvE.AttackerModifiers.Damage,PvP.AttackerModifiers.Damage));
     return true;
 }
 

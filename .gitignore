@@ -25,3 +25,8 @@ desktop.ini
 *.p12
 *.log
 Logs/
+
+# Local Python tooling/test artifacts
+.venv/
+__pycache__/
+*.py[cod]

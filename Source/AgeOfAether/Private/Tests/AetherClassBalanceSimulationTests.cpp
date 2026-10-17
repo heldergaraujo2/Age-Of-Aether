@@ -45,7 +45,8 @@ bool FAetherBalanceSimulationNeutralTest::RunTest(const FString&)
 {
     auto R=BuildNeutralRegistry(); TArray<FAetherBalanceSimulationResult> Results; FAetherBalanceSimulationReport Report;
     TestTrue(TEXT("neutral simulation passes"),FAetherClassBalanceSimulation::Simulate(R,Cases(),false,Results,Report));
-    TestEqual(TEXT("five cases"),Report.CasesExecuted,5); TestEqual(TEXT("neutral damage"),Results[0].EffectiveDamage,26.6666666667,1e-6);
+    TestEqual(TEXT("five cases"),Report.CasesExecuted,5);
+    TestEqual(TEXT("100 defense with 20% resistance reduces 100 damage to 40"),Results[0].EffectiveDamage,40.0,1e-6);
     TestTrue(TEXT("finite"),Report.bFinite); TestTrue(TEXT("safe"),Report.bSafetyBoundsPassed); return true;
 }
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAetherBalanceSimulationBothContextsTest,"AgeOfAether.BalanceSimulation.BothContexts",EAutomationTestFlags::EditorContext|EAutomationTestFlags::EngineFilter)

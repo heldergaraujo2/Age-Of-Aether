@@ -1,8 +1,420 @@
-{"schema":"age-of-aether.2d-visual-manifest.v1","status":"SOURCE_READY_RUNTIME_MATERIALIZATION_PENDING","quality_target":"premium_2d_isometric","provenance_policy":"Every source must be original, generated, commissioned, or licensed and traceable.","unreal_binary_policy":"Never fabricate Unreal binary assets outside Unreal.","assets":[
-{"asset_id":"AOA.Character.Player.Mage.Idle","family_id":"AOA.Character.Player.Mage","category":"Character","visual_role":"Primary playable character","representation":"Paper2D Flipbook","states":["Idle"],"source_status":"PROCEDURAL_RUNTIME_BRIDGE","target_path":"Content/Aether/Art/Characters/Player/Mage/","fallback":"F40_RUNTIME_PRIMITIVE_CHARACTER"},
-{"asset_id":"AOA.Character.Player.Mage.Walk","family_id":"AOA.Character.Player.Mage","category":"Character","visual_role":"Primary playable character movement","representation":"Paper2D Flipbook","states":["Walk"],"source_status":"PROCEDURAL_RUNTIME_BRIDGE","target_path":"Content/Aether/Art/Characters/Player/Mage/","fallback":"AOA.Character.Player.Mage.Idle"},
-{"asset_id":"AOA.Character.Player.Mage.Attack","family_id":"AOA.Character.Player.Mage","category":"Character","visual_role":"Primary playable character combat","representation":"Paper2D Flipbook","states":["Attack"],"source_status":"PROCEDURAL_RUNTIME_BRIDGE","target_path":"Content/Aether/Art/Characters/Player/Mage/","fallback":"AOA.Character.Player.Mage.Idle"},
-{"asset_id":"AOA.Environment.FirstRegion.Tree.Deciduous01","family_id":"AOA.Environment.FirstRegion.Vegetation","category":"Vegetation","visual_role":"World vegetation","representation":"Paper2D Sprite","source_status":"PROCEDURAL_RUNTIME_BRIDGE","target_path":"Content/Aether/Art/Environment/Vegetation/","fallback":"F40_RUNTIME_PRIMITIVE_TREE"},
-{"asset_id":"AOA.Environment.FirstRegion.Rock.Rock01","family_id":"AOA.Environment.FirstRegion.NaturalProps","category":"Rock","visual_role":"World natural prop","representation":"Paper2D Sprite","source_status":"PROCEDURAL_RUNTIME_BRIDGE","target_path":"Content/Aether/Art/Environment/NaturalProps/","fallback":"F40_RUNTIME_PRIMITIVE_ROCK"},
-{"asset_id":"AOA.Environment.FirstRegion.House.Exterior01","family_id":"AOA.Environment.FirstRegion.Architecture","category":"Architecture","visual_role":"Settlement building","representation":"Paper2D Sprite","source_status":"PROCEDURAL_RUNTIME_BRIDGE","target_path":"Content/Aether/Art/Environment/Architecture/","fallback":"F40_RUNTIME_PRIMITIVE_HOUSE"}
-],"note":"The first bridge is generated as transient Paper2D runtime art; premium imported source art remains a later replacement stage."}
+{
+  "schema": "age-of-aether.2d-visual-manifest.v1",
+  "status": "SOURCE_READY_RUNTIME_MATERIALIZATION_PENDING",
+  "quality_target": "premium_2d_isometric",
+  "provenance_policy": "Every source must be original, generated, commissioned, or licensed and traceable.",
+  "unreal_binary_policy": "Never fabricate Unreal binary assets outside Unreal.",
+  "assets": [
+    {
+      "asset_id": "AOA.Character.Player.Mage.Idle",
+      "family_id": "AOA.Character.Player.Mage",
+      "category": "Character",
+      "visual_role": "Primary playable character",
+      "representation": "Sprite-sheet Idle row plus a standalone fallback PNG; Unreal Flipbook materialization pending",
+      "states": [
+        "Idle"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Art/Characters/Player/Mage/",
+      "fallback": "F40_RUNTIME_PRIMITIVE_CHARACTER",
+      "source_path": "ArtSource/Generated/Characters/Mage/PlayerMage_Idle.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Characters/Mage/PlayerMage_Idle.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Character.Player.Mage.SpriteSheet",
+      "animation_name": "idle"
+    },
+    {
+      "asset_id": "AOA.Character.Player.Mage.Walk",
+      "family_id": "AOA.Character.Player.Mage",
+      "category": "Character",
+      "visual_role": "Primary playable character movement",
+      "representation": "Sprite-sheet Walk row (4 frames at 9 FPS); Unreal Flipbook materialization pending",
+      "states": [
+        "Walk"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Art/Characters/Player/Mage/",
+      "fallback": "AOA.Character.Player.Mage.Idle",
+      "source_path": "ArtSource/Generated/Animations/PlayerMage_WalkPose.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/PlayerMage_Walk.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Character.Player.Mage.SpriteSheet",
+      "animation_name": "walk",
+      "animation_row": 1,
+      "animation_fps": 9
+    },
+    {
+      "asset_id": "AOA.Character.Player.Mage.Attack",
+      "family_id": "AOA.Character.Player.Mage",
+      "category": "Character",
+      "visual_role": "Primary playable character combat",
+      "representation": "Sprite-sheet Cast row used by the attack actions (4 frames at 12 FPS); Unreal Flipbook materialization pending",
+      "states": [
+        "Cast"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Art/Characters/Player/Mage/",
+      "fallback": "AOA.Character.Player.Mage.Idle",
+      "source_path": "ArtSource/Generated/Animations/PlayerMage_CastPose.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/PlayerMage_Cast.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Character.Player.Mage.SpriteSheet",
+      "animation_name": "cast",
+      "animation_row": 2,
+      "animation_fps": 12
+    },
+    {
+      "asset_id": "AOA.Environment.FirstRegion.Tree.Deciduous01",
+      "family_id": "AOA.Environment.FirstRegion.Vegetation",
+      "category": "Vegetation",
+      "visual_role": "World vegetation",
+      "representation": "Paper2D Sprite",
+      "source_status": "PROCEDURAL_RUNTIME_BRIDGE",
+      "target_path": "Content/Aether/Art/Environment/Vegetation/",
+      "fallback": "F40_RUNTIME_PRIMITIVE_TREE"
+    },
+    {
+      "asset_id": "AOA.Environment.FirstRegion.Rock.Rock01",
+      "family_id": "AOA.Environment.FirstRegion.NaturalProps",
+      "category": "Rock",
+      "visual_role": "World natural prop",
+      "representation": "Paper2D Sprite",
+      "source_status": "PROCEDURAL_RUNTIME_BRIDGE",
+      "target_path": "Content/Aether/Art/Environment/NaturalProps/",
+      "fallback": "F40_RUNTIME_PRIMITIVE_ROCK"
+    },
+    {
+      "asset_id": "AOA.Environment.FirstRegion.House.Exterior01",
+      "family_id": "AOA.Environment.FirstRegion.Architecture",
+      "category": "Architecture",
+      "visual_role": "Settlement building",
+      "representation": "Paper2D Sprite",
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Art/Environment/Architecture/",
+      "fallback": "F40_RUNTIME_PRIMITIVE_HOUSE",
+      "source_path": "ArtSource/Generated/Environment/FirstRegion/SettlementHouse_01.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Environment/FirstRegion/SettlementHouse_01.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL"
+    },
+    {
+      "asset_id": "AOA.Creature.FirstRegion.WildHound.Idle",
+      "family_id": "AOA.Creature.FirstRegion.WildHound",
+      "category": "Creature",
+      "visual_role": "First permanent-region enemy; static Idle presentation frame",
+      "representation": "Sprite-sheet Idle row plus a standalone fallback PNG; Unreal Flipbook materialization pending",
+      "states": [
+        "Idle"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "source_path": "ArtSource/Generated/Creatures/WildHound/WildHound_Idle.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Creatures/WildHound/WildHound_Idle.png",
+      "target_path": "Content/Aether/Creatures/FirstRegion/WildHound/",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Creature.FirstRegion.WildHound.SpriteSheet",
+      "animation_name": "idle"
+    },
+    {
+      "asset_id": "AOA.Character.NPC.Elara.Idle",
+      "family_id": "AOA.Character.NPC.Elara",
+      "category": "Character",
+      "visual_role": "Frontier watchkeeper idle pose",
+      "representation": "Sprite-sheet idle row frame source (3.5 FPS); Unreal Flipbook materialization pending",
+      "states": [
+        "Idle"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Characters/NPC/Elara/",
+      "fallback": "F40_RUNTIME_PRIMITIVE_NPC",
+      "source_path": "ArtSource/Generated/Animations/Elara_Idle.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/Elara_Idle.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Character.NPC.Elara.SpriteSheet",
+      "animation_name": "idle",
+      "animation_row": 0,
+      "animation_fps": 3.5
+    },
+    {
+      "asset_id": "AOA.Character.NPC.Elara.Talk",
+      "family_id": "AOA.Character.NPC.Elara",
+      "category": "Character",
+      "visual_role": "Frontier watchkeeper quest-giving gesture",
+      "representation": "Sprite-sheet talk row frame source (5 FPS); Unreal Flipbook materialization pending",
+      "states": [
+        "Talk"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Characters/NPC/Elara/",
+      "fallback": "AOA.Character.NPC.Elara.Idle",
+      "source_path": "ArtSource/Generated/Animations/Elara_TalkPose.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/Elara_Talk.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Character.NPC.Elara.SpriteSheet",
+      "animation_name": "talk",
+      "animation_row": 1,
+      "animation_fps": 5
+    },
+    {
+      "asset_id": "AOA.Creature.FirstRegion.WildHound.Run",
+      "family_id": "AOA.Creature.FirstRegion.WildHound",
+      "category": "Creature",
+      "visual_role": "Wild Hound locomotion pose",
+      "representation": "Sprite-sheet run row frame source (10 FPS); Unreal Flipbook materialization pending",
+      "states": [
+        "Run"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Creatures/FirstRegion/WildHound/",
+      "fallback": "AOA.Creature.FirstRegion.WildHound.Idle",
+      "source_path": "ArtSource/Generated/Animations/WildHound_RunPose.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/WildHound_Run.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Creature.FirstRegion.WildHound.SpriteSheet",
+      "animation_name": "run",
+      "animation_row": 1,
+      "animation_fps": 10
+    },
+    {
+      "asset_id": "AOA.Creature.FirstRegion.WildHound.Attack",
+      "family_id": "AOA.Creature.FirstRegion.WildHound",
+      "category": "Creature",
+      "visual_role": "Wild Hound snapping/pounce pose",
+      "representation": "Sprite-sheet attack row frame source (12 FPS); Unreal Flipbook materialization pending",
+      "states": [
+        "Attack"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Creatures/FirstRegion/WildHound/",
+      "fallback": "AOA.Creature.FirstRegion.WildHound.Idle",
+      "source_path": "ArtSource/Generated/Animations/WildHound_AttackPose.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/WildHound_Attack.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Creature.FirstRegion.WildHound.SpriteSheet",
+      "animation_name": "attack",
+      "animation_row": 2,
+      "animation_fps": 12
+    },
+    {
+      "asset_id": "AOA.Character.Player.Mage.SpriteSheet",
+      "family_id": "AOA.Character.Player.Mage",
+      "category": "Character",
+      "visual_role": "Playable Mage multi-state animation atlas",
+      "representation": "Transparent PNG sprite sheet; browser animated, Unreal Paper2D Flipbooks pending",
+      "states": [
+        "Idle",
+        "Walk",
+        "Cast"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Characters/Player/Mage/",
+      "fallback": "AOA.Character.Player.Mage.Idle",
+      "source_path": "ArtSource/Generated/Animations/SpriteSheets/PlayerMage_SpriteSheet.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/SpriteSheets/PlayerMage_SpriteSheet.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/build_sprite_sheets.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "animation_metadata_path": "Content/Aether/Art/ImportReady/Animations/SpriteSheets/manifest.json",
+      "preview_asset_path": "Preview/assets/spritesheets/player-mage.png",
+      "sheet_layout": {
+        "cell": {
+          "width": 256,
+          "height": 320
+        },
+        "rows": {
+          "idle": 0,
+          "walk": 1,
+          "cast": 2
+        }
+      }
+    },
+    {
+      "asset_id": "AOA.Character.NPC.Elara.SpriteSheet",
+      "family_id": "AOA.Character.NPC.Elara",
+      "category": "Character",
+      "visual_role": "Quest giver Idle and Talk animation atlas",
+      "representation": "Transparent PNG sprite sheet; browser animated, Unreal Paper2D Flipbooks pending",
+      "states": [
+        "Idle",
+        "Talk"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Characters/NPC/Elara/",
+      "fallback": "AOA.Character.NPC.Elara.Idle",
+      "source_path": "ArtSource/Generated/Animations/SpriteSheets/Elara_SpriteSheet.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/SpriteSheets/Elara_SpriteSheet.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/build_sprite_sheets.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "animation_metadata_path": "Content/Aether/Art/ImportReady/Animations/SpriteSheets/manifest.json",
+      "preview_asset_path": "Preview/assets/spritesheets/elara.png",
+      "sheet_layout": {
+        "cell": {
+          "width": 256,
+          "height": 320
+        },
+        "rows": {
+          "idle": 0,
+          "talk": 1
+        }
+      }
+    },
+    {
+      "asset_id": "AOA.Creature.FirstRegion.WildHound.SpriteSheet",
+      "family_id": "AOA.Creature.FirstRegion.WildHound",
+      "category": "Creature",
+      "visual_role": "First-region enemy Idle, Run and Attack animation atlas",
+      "representation": "Transparent PNG sprite sheet; browser animated, Unreal Paper2D Flipbooks pending",
+      "states": [
+        "Idle",
+        "Run",
+        "Attack"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Creatures/FirstRegion/WildHound/",
+      "fallback": "AOA.Creature.FirstRegion.WildHound.Idle",
+      "source_path": "ArtSource/Generated/Animations/SpriteSheets/WildHound_SpriteSheet.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/SpriteSheets/WildHound_SpriteSheet.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/build_sprite_sheets.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "animation_metadata_path": "Content/Aether/Art/ImportReady/Animations/SpriteSheets/manifest.json",
+      "preview_asset_path": "Preview/assets/spritesheets/wild-hound.png",
+      "sheet_layout": {
+        "cell": {
+          "width": 384,
+          "height": 320
+        },
+        "rows": {
+          "idle": 0,
+          "run": 1,
+          "attack": 2
+        }
+      }
+    },
+    {
+      "asset_id": "AOA.Creature.FirstRegion.AetherWisp.Idle",
+      "family_id": "AOA.Creature.FirstRegion.AetherWisp",
+      "category": "Creature",
+      "visual_role": "Aether Wisp calm floating pose for the Oca da Vigília encounter",
+      "representation": "Sprite-sheet idle row key pose (4 FPS); Unreal Flipbook materialization pending",
+      "states": [
+        "Idle"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Creatures/FirstRegion/AetherWisp/",
+      "fallback": "AOA.Creature.FirstRegion.WildHound.Idle",
+      "source_path": "ArtSource/Generated/Animations/AetherWisp_Idle.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/AetherWisp_Idle.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Creature.FirstRegion.AetherWisp.SpriteSheet",
+      "animation_name": "idle",
+      "animation_row": 0,
+      "animation_fps": 4
+    },
+    {
+      "asset_id": "AOA.Creature.FirstRegion.AetherWisp.Glide",
+      "family_id": "AOA.Creature.FirstRegion.AetherWisp",
+      "category": "Creature",
+      "visual_role": "Aether Wisp gliding locomotion pose for the Oca da Vigília encounter",
+      "representation": "Sprite-sheet glide row key pose (9 FPS); Unreal Flipbook materialization pending",
+      "states": [
+        "Glide"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Creatures/FirstRegion/AetherWisp/",
+      "fallback": "AOA.Creature.FirstRegion.AetherWisp.Idle",
+      "source_path": "ArtSource/Generated/Animations/AetherWisp_MovePose.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/AetherWisp_Glide.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Creature.FirstRegion.AetherWisp.SpriteSheet",
+      "animation_name": "glide",
+      "animation_row": 1,
+      "animation_fps": 9
+    },
+    {
+      "asset_id": "AOA.Creature.FirstRegion.AetherWisp.Pulse",
+      "family_id": "AOA.Creature.FirstRegion.AetherWisp",
+      "category": "Creature",
+      "visual_role": "Aether Wisp aether projectile attack pose for the Oca da Vigília encounter",
+      "representation": "Sprite-sheet pulse row key pose (12 FPS); Unreal Flipbook materialization pending",
+      "states": [
+        "Pulse"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Creatures/FirstRegion/AetherWisp/",
+      "fallback": "AOA.Creature.FirstRegion.AetherWisp.Idle",
+      "source_path": "ArtSource/Generated/Animations/AetherWisp_AttackPose.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/AetherWisp_Pulse.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/prepare_generated_sprite.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "sprite_sheet_asset_id": "AOA.Creature.FirstRegion.AetherWisp.SpriteSheet",
+      "animation_name": "pulse",
+      "animation_row": 2,
+      "animation_fps": 12
+    },
+    {
+      "asset_id": "AOA.Creature.FirstRegion.AetherWisp.SpriteSheet",
+      "family_id": "AOA.Creature.FirstRegion.AetherWisp",
+      "category": "Creature",
+      "visual_role": "First-region Aether Wisp Idle, Glide and Pulse animation atlas",
+      "representation": "Transparent PNG sprite sheet; browser animated, Unreal Paper2D Flipbooks pending",
+      "states": [
+        "Idle",
+        "Glide",
+        "Pulse"
+      ],
+      "source_status": "GENERATED_SOURCE_READY_RUNTIME_IMPORT_PENDING",
+      "target_path": "Content/Aether/Creatures/FirstRegion/AetherWisp/",
+      "fallback": "AOA.Creature.FirstRegion.AetherWisp.Idle",
+      "source_path": "ArtSource/Generated/Animations/SpriteSheets/AetherWisp_SpriteSheet.png",
+      "prepared_import_path": "Content/Aether/Art/ImportReady/Animations/SpriteSheets/AetherWisp_SpriteSheet.png",
+      "provenance_record": "Content/Aether/Art/GENERATED_ART_PROVENANCE.md",
+      "preparation_tool": "Tools/Art/build_sprite_sheets.py",
+      "runtime_status": "NOT_IMPORTED_OR_VALIDATED_IN_UNREAL",
+      "animation_metadata_path": "Content/Aether/Art/ImportReady/Animations/SpriteSheets/manifest.json",
+      "preview_asset_path": "Preview/assets/spritesheets/aether-wisp.png",
+      "sheet_layout": {
+        "cell": {
+          "width": 384,
+          "height": 320
+        },
+        "rows": {
+          "idle": 0,
+          "glide": 1,
+          "pulse": 2
+        }
+      }
+    }
+  ],
+  "note": "Generated stills and row-based sprite-sheet PNGs are prepared for the browser slice and future Paper2D import. They are not Unreal Sprite/Flipbook assets: editor import, Flipbook creation, PIE inspection and runtime acceptance remain pending.",
+  "import_constraints": {
+    "engine": "Unreal Engine 5.8",
+    "runtime_representation": "Paper2D Sprite/Flipbook created through Unreal Editor import workflow",
+    "import_texture_alpha": true,
+    "filtering": "Nearest for pixel-art only; these painterly sources should use a project-approved smooth filter",
+    "runtime_acceptance": "Requires a real Unreal import, PaperSprite/Flipbook creation, profile assignment, PIE inspection, and saved evidence",
+    "unreal_asset_status": "No .uasset or .umap is created by the source-art preparation script"
+  }
+}

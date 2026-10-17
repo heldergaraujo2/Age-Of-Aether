@@ -409,6 +409,12 @@ Implementar:
 Regra:
 primeiro gameplay blockout, depois decoração e polimento.
 
+## Incremento da prévia web — cartografia de Aetherfall (2026-10-17)
+
+`Preview/` agora apresenta uma cartografia SVG jogável/interativa baseada nos nove IDs canônicos da região e nas 12 células lógicas. O escopo do navegador inclui terreno, assentamento, campo, mata/fronteira, ruínas, rotas, POIs, objetivo compartilhado com `drawQuestMarkers`, waypoint no mapa/minimapa e marcação visual no mundo Canvas. É uma fatia de apresentação local, não uma substituição do mapa Unreal.
+
+A abordagem/entrada da masmorra, serviços, área elite, arena de boss, ponto PvP/evento e trilha de expansão são POIs marcados apenas como planejados; não são áreas ou gameplay implementados. A prévia **não implementa** ainda o mapa de teste Unreal nem streaming real. Nenhum `.umap` foi criado; bounds/streaming/colisão/NavMesh/Data Layers/PIE e multiplayer seguem pendentes. Para detalhes e verificações, consulte `Docs/PHASE_47_AETHERFALL_CARTOGRAPHY_WEB_SLICE_2026-10-17.md`.
+
 ---
 
 # PHASE 48 — INTERAÇÃO, NPC, QUEST E EVENTOS
@@ -1199,3 +1205,10 @@ Next target: **PHASE 55 — INITIAL COMPLETE CONTENT PACKAGE**
 - Existing reusable visual/animation systems remain the only presentation path.
 - No fake runtime or Unreal binary results.
 - Unreal 5.8.1 runtime acceptance remains the final local gate.
+
+
+## ARENA BROWSER FOLLOW-UP — 100 KM OVERWORLD / FARMING WEB SLICE (2026-10-17)
+
+The browser preview now carries a 100 km × 100 km world-cartography layer, teleportable city/hunting destinations, eight ten-mob farming camps with three-second individual respawns, farm-only XP, optional coin/item quest rewards, an item-backed inventory/equipment loop, a pet, wings, spell/level-up VFX and expanded city dressing. See `Docs/PHASE_60_OVERWORLD_FARM_EQUIPMENT_WEB_SLICE_2026-10-17.md`.
+
+This is only a browser slice. It does not change the Unreal gates at the top of this roadmap: UE 5.8.1 build/editor/PIE, real map assets, World Partition/Data Layers/streaming, Unreal gameplay authority, multiplayer and runtime acceptance remain pending. Browser kilometer coordinates are not Unreal transforms, and no `.umap`/`.uasset` was created.

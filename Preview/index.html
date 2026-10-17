@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b111b">
+  <meta name="description" content="Prévia jogável de Age of Aether: mundo 100 × 100 km, teleporte, áreas de farm com dez mobs, inventário/equipamentos e animações.">
+  <title>Age of Aether — Mundo de Aetherfall</title>
+  <link rel="stylesheet" href="styles.css?v=0.5.0">
+  <script src="world-map-data.js?v=0.5.0" defer></script>
+  <script src="game.js?v=0.5.0" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Age of Aether">
+        <span class="brand-mark" aria-hidden="true"><span></span><i></i></span>
+        <span class="brand-copy"><strong>AGE <em>OF</em> AETHER</strong><small>CHRONICLES OF THE AETHER</small></span>
+      </a>
+      <div class="topbar-center"><span class="preview-pill"><i></i> PRÉVIA JOGÁVEL</span><span class="topbar-divider"></span><span class="build-label">MUNDO ABERTO <b>·</b> AETHERFALL</span></div>
+      <div class="topbar-right"><span class="build-version">WEB SLICE <b>0.5</b></span><button id="world-map-button" class="map-open-button" type="button" title="Abrir o mundo 100 × 100 km e teleportar (M)" aria-keyshortcuts="M"><span>⌖ MAPA</span><kbd>M</kbd></button><button id="sound-toggle" class="icon-button" type="button" title="Alternar sons" aria-label="Alternar sons">♫</button></div>
+    </header>
+
+    <main class="game-layout">
+      <aside class="left-rail">
+        <section class="panel quest-panel">
+          <div class="panel-kicker"><span>DIÁRIO DE AVENTURA</span><span class="kicker-line"></span></div>
+          <div class="quest-heading"><div class="quest-emblem">✦</div><div><p class="eyebrow">JORNADA OPCIONAL</p><h1 id="quest-title">Uma promessa na fronteira</h1></div></div>
+          <p id="quest-description" class="quest-description">A Vigia Elara procura alguém capaz de afastar a ameaça que ronda a estrada do norte.</p>
+          <div class="quest-divider"></div>
+          <div class="objective-heading"><span>OBJETIVOS</span><span id="quest-step" class="step-number">01 / 04</span></div>
+          <ul id="objective-list" class="objective-list">
+            <li class="objective active"><span class="objective-ring"></span><span>Fale com a Vigia Elara</span></li>
+            <li class="objective"><span class="objective-ring"></span><span>Derrote o Cão Selvagem</span></li>
+            <li class="objective"><span class="objective-ring"></span><span>Recolha o fragmento de éter</span></li>
+            <li class="objective"><span class="objective-ring"></span><span>Volte à Vigia Elara</span></li>
+          </ul>
+          <div class="quest-reward"><span class="reward-icon">✧</span><div><small>RECOMPENSA</small><strong id="quest-reward-copy">35 ouro <b>·</b> Anel da Lua</strong></div></div>
+          <button id="quest-action" class="text-button" type="button">ACOMPANHAR JORNADA <span>↗</span></button>
+        </section>
+
+        <section class="panel map-panel">
+          <div class="panel-heading"><div><p class="eyebrow">OVERWORLD · 100 × 100 KM</p><h2>Aetherfall</h2></div><span class="map-coords">I · 04</span></div>
+          <div class="mini-map" aria-label="Minimapa de Aetherfall. Pressione M para abrir a cartografia completa.">
+            <div class="mini-river"></div><div class="mini-road"></div><div class="mini-woods"></div>
+            <svg class="mini-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line id="minimap-route-line" x1="0" y1="0" x2="0" y2="0"></line></svg>
+            <span class="map-pin town-pin" title="Aetherfall">✦</span><span id="minimap-hound" class="map-pin hound-pin" title="Cão selvagem">◆</span><span id="minimap-wisp" class="map-pin wisp-pin" title="Wisp de Éter">✧</span><span id="minimap-watch" class="map-pin watch-pin" title="Oca da Vigília">⌑</span><span id="minimap-waypoint" class="map-pin waypoint-pin hidden" title="Rota marcada">⌖</span><span id="minimap-player" class="map-pin player-pin" title="Você">●</span>
+            <span class="map-label town-label">PRAÇA</span><span class="map-label wild-label">FRONTEIRA</span>
+          </div>
+          <div class="map-legend"><span><i class="legend-player"></i> Você</span><span><i class="legend-quest"></i> Objetivo</span><span><i class="legend-watch"></i> Oca</span><span><i class="legend-wisp"></i> Wisp</span></div>
+          <button id="map-panel-open" class="map-panel-open" type="button"><span>MAPA-MÚNDI · TELEPORTE</span><kbd>M</kbd><b>↗</b></button>
+        </section>
+
+        <section class="panel guide-panel">
+          <div class="guide-icon">⌘</div><div><p class="eyebrow">LEMBRETE</p><p>O caminho de pedra leva da praça até a fronteira. Explore os arredores para encontrar a caçada.</p></div>
+        </section>
+      </aside>
+
+      <section class="play-column" aria-label="Área jogável">
+        <div class="world-frame">
+          <div class="world-topline">
+            <div class="zone-name"><span class="zone-sigil">⌖</span><div><p class="eyebrow">TERRAS DE ELDORIA</p><strong id="zone-title">Praça de Aetherfall</strong></div></div>
+            <div class="world-weather"><span class="sun-symbol">☼</span><span>MANHÃ <b>·</b> CÉU ABERTO</span><span class="weather-divider"></span><span class="safe-zone"><i></i><span id="zone-state">ZONA SEGURA</span></span></div>
+          </div>
+          <div id="scene-wrap" class="scene-wrap">
+            <canvas id="world" tabindex="0" aria-label="Mundo isométrico jogável. Use WASD ou clique no chão para se mover."></canvas>
+            <div class="scene-vignette" aria-hidden="true"></div>
+            <div class="scene-coords"><span id="coordinate-label">10.0 km · 12.0 km</span><span class="coords-dot"></span><span>AO VIVO</span></div>
+            <div id="spot-status" class="spot-status" aria-live="polite"></div>
+            <div id="level-up-banner" class="level-up-banner" role="status" aria-live="polite"></div>
+            <div id="scene-toast" class="scene-toast" role="status" aria-live="polite"></div>
+            <div id="interaction-hint" class="interaction-hint"><kbd>E</kbd><span id="interaction-text">Interagir</span></div>
+            <div class="scene-bottom-label"><span class="compass">N</span><span>FRONTEIRA DO NORTE</span><span class="bottom-label-line"></span><span id="distance-label">AETHERFALL</span></div>
+            <div id="intro-card" class="intro-card">
+              <div class="intro-overline"><span>MUNDO 100 × 100 KM</span><i></i><span>10 MOBs · RESPAWN 3s</span></div>
+              <div class="intro-title-mark">✧</div>
+              <p class="eyebrow">AETHERFALL · REGIÃO INICIAL</p>
+              <h2>Uma promessa<br><em>na fronteira.</em></h2>
+              <p class="intro-copy">Explore oito áreas de caça, equipe itens e teleporte entre cidades. O XP vem do farm; as missões são opcionais.</p>
+              <button id="start-button" class="primary-button" type="button"><span>INICIAR A JORNADA</span><b>→</b></button>
+              <div class="intro-controls"><span>WASD <small>mover</small></span><i></i><span>E <small>interagir</small></span><i></i><span>1 / 2 <small>combate</small></span></div>
+            </div>
+            <div id="defeat-card" class="defeat-card hidden">
+              <span class="defeat-mark">✧</span><strong>A luz ainda o guia.</strong><span>Você desperta na praça. Sua jornada continua.</span>
+              <button id="revive-button" class="text-button" type="button">RETORNAR À PRAÇA <b>↗</b></button>
+            </div>
+          </div>
+          <div class="world-footer">
+            <div class="world-tip"><span class="tip-spark">✦</span><span id="world-tip-text">Missões opcionais dão ouro e itens. Cace nos pontos de farm para ganhar XP e subir de nível.</span></div>
+            <div class="world-footer-right"><span class="ping-dot"></span><span>SIMULAÇÃO LOCAL</span><span class="world-footer-separator"></span><span id="fps-label">60 FPS</span></div>
+          </div>
+        </div>
+
+        <div class="combat-bar">
+          <div class="character-mini"><div class="mini-portrait"><img src="assets/player-mage.png" alt=""></div><div><strong>Aelwyn</strong><small>MAGA <b>·</b> NÍVEL <span id="level-small">1</span></small></div></div>
+          <div class="hotbar" role="toolbar" aria-label="Habilidades">
+            <button class="skill-slot selected" data-skill="attack" type="button" aria-label="Ataque básico, tecla 1"><span class="slot-key">1</span><span class="skill-glyph basic-glyph">✦</span><span class="skill-name">Raio arcano</span><span class="slot-cooldown" id="basic-cooldown"></span></button>
+            <button class="skill-slot" data-skill="bolt" type="button" aria-label="Explosão de éter, tecla 2"><span class="slot-key">2</span><span class="skill-glyph bolt-glyph">ϟ</span><span class="skill-name">Explosão de éter</span><span class="skill-cost">15 MP</span><span class="slot-cooldown" id="bolt-cooldown"></span></button>
+            <button class="skill-slot" data-skill="heal" type="button" aria-label="Sopro vital, tecla 3"><span class="slot-key">3</span><span class="skill-glyph heal-glyph">✚</span><span class="skill-name">Sopro vital</span><span class="skill-cost">20 MP</span><span class="slot-cooldown" id="heal-cooldown"></span></button>
+            <span class="hotbar-divider"></span>
+            <button id="potion-button" class="utility-slot" type="button" aria-label="Poção de vida, tecla H"><span class="slot-key">H</span><span>⚗</span><small>Poção <b>1</b></small></button>
+          </div>
+          <div class="combat-status"><span class="target-dot"></span><span id="combat-status-text">SEM ALVO</span></div>
+        </div>
+      </section>
+
+      <aside class="right-rail">
+        <section class="panel player-panel">
+          <div class="player-heading"><div class="player-avatar"><img src="assets/player-mage.png" alt="Retrato de Aelwyn"></div><div><p class="eyebrow">AVENTUREIRA</p><h2>Aelwyn</h2><span class="class-label"><i></i> MAGO <b>·</b> NÍVEL <span id="level-label">1</span></span></div><button id="character-menu" class="more-button" type="button" title="Ficha do personagem">···</button></div>
+          <div class="stat-bar health"><div class="bar-label"><span><i>♥</i> VIDA</span><strong id="hp-text">118 <small>/ 118</small></strong></div><div class="bar-track"><div id="hp-fill" class="bar-fill" style="width:100%"></div></div></div>
+          <div class="stat-bar mana"><div class="bar-label"><span><i>✧</i> ÉTER</span><strong id="mana-text">60 <small>/ 60</small></strong></div><div class="bar-track"><div id="mana-fill" class="bar-fill" style="width:100%"></div></div></div>
+          <div class="xp-row"><span>EXPERIÊNCIA</span><div class="xp-track"><div id="xp-fill" style="width:12%"></div></div><strong id="xp-text">12%</strong></div>
+          <div class="player-divider"></div>
+          <div class="currency-row"><span><i class="gold-coin">●</i> Ouro</span><strong id="gold-count">25</strong><span class="currency-divider"></span><span><i class="shard-coin">◆</i> Fragmentos</span><strong id="shard-count">0</strong></div>
+          <button id="inventory-button" class="inventory-button" type="button"><span>▤</span> INVENTÁRIO <small id="inventory-count">6 / 24</small><b>→</b></button>
+        </section>
+
+        <section id="target-panel" class="panel target-panel hidden">
+          <div class="target-heading"><div><p class="eyebrow">ALVO SELECIONADO</p><h2 id="target-name">Cão Selvagem</h2></div><span id="target-level" class="target-level">NV. 2</span></div>
+          <div class="target-subtitle"><span class="enemy-class-dot"></span> <span id="target-kind">CRIATURA</span> <b>·</b> <span id="target-hostility">HOSTIL</span></div>
+          <div class="enemy-hp-track"><div id="enemy-hp-fill" style="width:100%"></div></div>
+          <div class="target-health-label"><span>VIDA</span><strong id="enemy-hp-text">72 / 72</strong></div>
+          <p id="target-hint" class="target-hint">Clique no inimigo ou aproxime-se para atacar.</p>
+        </section>
+
+        <section class="panel journal-panel">
+          <div class="panel-heading"><div><p class="eyebrow">REGISTROS RECENTES</p><h2>Jornada</h2></div><span class="journal-icon">⌁</span></div>
+          <div id="journal-list" class="journal-list"><div class="journal-entry"><span class="journal-symbol">✦</span><div><strong>Aetherfall desperta</strong><small>Você chega à praça ao amanhecer.</small></div><time>AGORA</time></div><div class="journal-entry muted-entry"><span class="journal-symbol">⌖</span><div><strong>Uma voz na praça</strong><small>Elara observa a estrada do norte.</small></div><time>—</time></div></div>
+        </section>
+
+        <section class="panel milestone-panel"><span class="milestone-icon">♢</span><div><p class="eyebrow">PRÓXIMO MARCO</p><strong id="milestone-title">Oca da Vigília</strong><small id="milestone-copy">Uma antiga torre guarda o caminho além da mata.</small></div><span class="lock-mark">⌑</span></section>
+      </aside>
+    </main>
+
+    <footer class="bottom-bar">
+      <div class="control-hints"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> <small>Mover</small></span><span><kbd>CLIQUE</kbd> <small>Mover / selecionar</small></span><span><kbd>E</kbd> <small>Interagir / coletar</small></span><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> <small>Habilidades</small></span><span><kbd>H</kbd> <small>Poção</small></span><span><kbd>M</kbd> <small>Mapa</small></span><span><kbd>P</kbd> <small>Pausar</small></span></div>
+      <div class="prototype-note"><span>✦</span> WEB SLICE 0.5 · OVERWORLD 100 × 100 KM · FARM 10 MOBs · NÃO É BUILD UNREAL</div>
+    </footer>
+  </div>
+  <div id="modal-root"></div>
+</body>
+</html>

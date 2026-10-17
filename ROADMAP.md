@@ -21,7 +21,19 @@ This section records the current execution truth and takes precedence over stale
 - Remaining non-ClassBalance failures: BalanceSimulation.Neutral; ClassCombat.PvPSwitch; Data.QuestDialogueEvent.CrossReferences; Multiplayer.HeartbeatCannotRefillRequests; Multiplayer.RateLimit; Quests.Security; Security.Replay.
 - ClassBalance fixture repair was build-verified, but the latest automation report still contains the ClassBalance failures.
 - GitHub checkpoint: `a4a9d0738b4dbacb55ace3be93c3dfeb17d9fc40` is confirmed on `main`.
-- Next objective: repair ClassBalance without weakening contracts/tests, rebuild, rerun automation, and record actual evidence before advancing.
+- Next objective recorded at that checkpoint: repair ClassBalance without weakening contracts/tests, rebuild, rerun automation, and record actual evidence before advancing.
+
+## ARENA SESSION UPDATE — 2026-10-17
+
+- The current Arena Linux workspace has no `UnrealEditor`, `UnrealEditor-Cmd`, or UnrealBuildTool installation. No new UHT/UBT/PIE/Automation result can be claimed from this session.
+- The last real Unreal automation evidence remains the historical 280 total / 266 PASS / 14 FAIL report recorded above; it has not been refreshed here.
+- The first three original generated art sources (Mage Idle, Wild Hound Idle, settlement house) were added with provenance, prepared transparent PNG derivatives, a manifest validator, and preparation tests. They remain **source-ready only**; none is an imported/validated Unreal asset.
+- Auditing the repository workflow exposed two stale assertions and a Markdown delimiter false positive; those checks were corrected, and all four embedded Python CI validation blocks pass locally.
+- The project direction remains premium 2D/isometric. Downloading random 3D models is not a prerequisite and would introduce provenance/license and visual-consistency risks.
+- Static triage corrected two stale automation expectations: `BalanceSimulation.Neutral` now expects 40 from its 100-damage / 100-defense / 20%-resistance inputs and default mitigation scale 100; `ClassCombat.PvPSwitch` now expects the documented multiplicative totals 3.0 PvE and 2.5 PvP. No production formulas or safety contracts were changed.
+- These corrections are source-level only. No Unreal build or Automation run was available, the historical 280 / 266 / 14 result is unchanged, and the primary ClassBalance blocker remains open. See `Docs/PHASE_59_CLASS_BALANCE_STATIC_TRIAGE_2026-10-17.md`.
+- Added the WEB SLICE 0.4 Aetherfall cartography to `Preview/`: nine canonical zones, 12 logical cells, linked scenery/roads, POIs plus planned dungeon/elite/boss/PvP-event/expansion markers, a responsive map modal, and waypoints reflected on the minimap/Canvas. The map objective now shares the exact target resolver used by `drawQuestMarkers`; the map contract and a temporary JSDOM gameplay smoke pass.
+- This is presentation-only. Dungeon/elite/boss/PvP-event/expansion materialization and actual Unreal maps/streaming/PIE acceptance remain pending; no `.umap`/`.uasset` was fabricated. Details: `Docs/PHASE_47_AETHERFALL_CARTOGRAPHY_WEB_SLICE_2026-10-17.md`.
 
 ---
 
@@ -1815,4 +1827,29 @@ Validation truth:
 - Alpha/Beta/RC/Release checks must be executed in the real Unreal project before being marked passed.
 
 **ROADMAP COMPLETE through Phase 56 at source level.**
-Next action is the local Unreal runtime acceptance gate.
+The next required acceptance gate is local Unreal runtime execution; subsequent Arena browser slices do not substitute for it.
+
+
+## Arena follow-up — Phase 57: Sprite-sheet animation slice
+
+**Browser slice complete; Unreal materialization pending.** Added transparent row-based sprite sheets and Canvas animation states for the Mage (Idle/Walk/Cast), Vigia Elara (Idle/Talk), and Wild Hound (Idle/Run/Attack). Sources, frame metadata, packer, tests, and acceptance boundary are documented in `Docs/PHASE_57_SPRITE_SHEET_ANIMATION_SLICE.md` and `Content/Aether/Art/GENERATED_ART_PROVENANCE.md`.
+
+The Workspace preview uses local atlas PNGs. Some cells are holds/subtle idle variations rather than fully unique hand-drawn frames. Paper2D import, real Flipbook creation, presentation-profile mapping, and UE 5.8 PIE validation remain unverified and must not be reported as complete.
+
+
+## Arena follow-up — Phase 58: Oca da Vigília browser quest slice
+
+**WEB SLICE 0.3 is implemented in the local browser preview; Unreal runtime acceptance remains pending.** The first-region journey now chains the original Elara/Wild Hound mission into a second Oca investigation. A generated Aether Wisp has local Idle/Glide/Pulse sprite-sheet rows, spacing AI and a traveling projectile attack that can be dodged. The player collects its Núcleo de Vigília and consumes it to activate the watch seal.
+
+The browser HUD, target panel, minimap, journal, rewards and inventory reflect the second mission. Source poses, RGBA preparations, four-sheet metadata, tests and runtime acceptance boundaries are recorded in `Docs/PHASE_58_WATCH_HOLLOW_QUEST_SLICE.md` and `Content/Aether/Art/GENERATED_ART_PROVENANCE.md`.
+
+Repository validation passed: 18 art IDs, 16 generated RGBA source assets, six Python tests, JavaScript syntax, diff checks and a DOM/Canvas-stub smoke through both quest paths. The stub is not a graphical browser. Paper2D import, Flipbook/profile binding, Unreal 5.8 PIE and full local runtime acceptance remain NOT VERIFIED. The Phase 56 Unreal acceptance gate is still the next required gate.
+
+
+## Arena follow-up — Phase 60: 100 km overworld, farming and equipment browser slice
+
+**WEB SLICE 0.5 is implemented in `Preview/`; Unreal acceptance remains pending.** The preview now presents a kilometer-based 100 × 100 world map with two cities, eight teleportable hunting spots, destination travel, ten mobs per camp and individual three-second respawns. Hunting is the only XP source; the optional Elara/Oca arcs reward coins and items only. The item catalog now backs inventory/equipment, gear stats, collectible mob loot, a following/attacking pet, equipable wings, visible spell/level-up VFX, and busier city scenes.
+
+Validation: `node --check` for `Preview/game.js` and `Preview/world-map-data.js`, `node Tools/Map/test_first_region_map.js`, `git diff --check`, plus a temporary JSDOM/Canvas-stub gameplay smoke covering world teleport, mob count/respawn, farm-only XP, quest rewards, gear stats and VFX. The smoke does not prove graphical-browser appearance. The port-4174 preview uses cache-busted `0.5.0` resources.
+
+This is a browser prototype, not an Unreal map/runtime. Its global kilometer coordinates currently teleport into destination-specific spawns on the existing local Canvas scene; actual Unreal transforms, full-world terrain/streaming, Data Layers/World Partition, server-authoritative progression/loot/travel, UMG, assets, multiplayer and runtime acceptance remain unverified. No `.umap` or `.uasset` was fabricated. Details: `Docs/PHASE_60_OVERWORLD_FARM_EQUIPMENT_WEB_SLICE_2026-10-17.md`.

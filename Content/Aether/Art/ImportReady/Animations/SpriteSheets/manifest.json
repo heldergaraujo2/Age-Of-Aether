@@ -1,0 +1,135 @@
+{
+  "player-mage": {
+    "schema": "age-of-aether.sprite-sheet.v1",
+    "layout": "row-major; animation rows are zero-based; frames advance left-to-right",
+    "cell": {
+      "width": 256,
+      "height": 320
+    },
+    "columns": 4,
+    "rows": 3,
+    "animations": {
+      "idle": {
+        "row": 0,
+        "frames": 4,
+        "fps": 4,
+        "loop": true
+      },
+      "walk": {
+        "row": 1,
+        "frames": 4,
+        "fps": 9,
+        "loop": true
+      },
+      "cast": {
+        "row": 2,
+        "frames": 4,
+        "fps": 12,
+        "loop": false
+      }
+    },
+    "source_frames": [
+      "Content/Aether/Art/ImportReady/Characters/Mage/PlayerMage_Idle.png",
+      "Content/Aether/Art/ImportReady/Animations/PlayerMage_Walk.png",
+      "Content/Aether/Art/ImportReady/Animations/PlayerMage_Cast.png"
+    ]
+  },
+  "elara": {
+    "schema": "age-of-aether.sprite-sheet.v1",
+    "layout": "row-major; animation rows are zero-based; frames advance left-to-right",
+    "cell": {
+      "width": 256,
+      "height": 320
+    },
+    "columns": 4,
+    "rows": 2,
+    "animations": {
+      "idle": {
+        "row": 0,
+        "frames": 4,
+        "fps": 3.5,
+        "loop": true
+      },
+      "talk": {
+        "row": 1,
+        "frames": 4,
+        "fps": 5,
+        "loop": false
+      }
+    },
+    "source_frames": [
+      "Content/Aether/Art/ImportReady/Animations/Elara_Idle.png",
+      "Content/Aether/Art/ImportReady/Animations/Elara_Talk.png"
+    ]
+  },
+  "wild-hound": {
+    "schema": "age-of-aether.sprite-sheet.v1",
+    "layout": "row-major; animation rows are zero-based; frames advance left-to-right",
+    "cell": {
+      "width": 384,
+      "height": 320
+    },
+    "columns": 4,
+    "rows": 3,
+    "animations": {
+      "idle": {
+        "row": 0,
+        "frames": 4,
+        "fps": 4,
+        "loop": true
+      },
+      "run": {
+        "row": 1,
+        "frames": 4,
+        "fps": 10,
+        "loop": true
+      },
+      "attack": {
+        "row": 2,
+        "frames": 4,
+        "fps": 12,
+        "loop": false
+      }
+    },
+    "source_frames": [
+      "Content/Aether/Art/ImportReady/Creatures/WildHound/WildHound_Idle.png",
+      "Content/Aether/Art/ImportReady/Animations/WildHound_Run.png",
+      "Content/Aether/Art/ImportReady/Animations/WildHound_Attack.png"
+    ]
+  },
+  "aether-wisp": {
+    "schema": "age-of-aether.sprite-sheet.v1",
+    "layout": "row-major; animation rows are zero-based; frames advance left-to-right",
+    "cell": {
+      "width": 384,
+      "height": 320
+    },
+    "columns": 4,
+    "rows": 3,
+    "animations": {
+      "idle": {
+        "row": 0,
+        "frames": 4,
+        "fps": 4,
+        "loop": true
+      },
+      "glide": {
+        "row": 1,
+        "frames": 4,
+        "fps": 9,
+        "loop": true
+      },
+      "pulse": {
+        "row": 2,
+        "frames": 4,
+        "fps": 12,
+        "loop": false
+      }
+    },
+    "source_frames": [
+      "Content/Aether/Art/ImportReady/Animations/AetherWisp_Idle.png",
+      "Content/Aether/Art/ImportReady/Animations/AetherWisp_Glide.png",
+      "Content/Aether/Art/ImportReady/Animations/AetherWisp_Pulse.png"
+    ]
+  }
+}

@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: true
       - name: Validate required project structure
         shell: bash
         run: |
@@ -49,13 +51,17 @@ jobs:
           from pathlib import Path
           roots=[Path("Source"),Path("Docs"),Path("PROJECT_MEMORY"),Path("Config")]
           files=[p for root in roots if root.exists() for p in root.rglob("*") if p.is_file() and p.suffix.lower() in {".h",".hpp",".cpp",".md",".cs"}]
+          code_files=[p for p in files if p.suffix.lower() in {".h",".hpp",".cpp",".cs"}]
           if not files: raise SystemExit("No source/documentation files were found.")
           failures=[]
           pairs={"}":"{",")":"(","]":"["}
           opens=set(pairs.values())
           for path in files:
+              if "\\\\n" in path.read_text(encoding="utf-8"):
+                  failures.append(f"{path}: contains literal escaped newline sequence")
+          # Delimiter balance applies to code, not prose/list examples in Markdown.
+          for path in code_files:
               text=path.read_text(encoding="utf-8")
-              if "\\\\n" in text: failures.append(f"{path}: contains literal escaped newline sequence")
               stack=[]
               for index,char in enumerate(text):
                   if char in opens: stack.append(char)
@@ -173,13 +179,12 @@ jobs:
           assert "Phase 33" in text("ROADMAP.md")
           assert "Phase 34" in text("ROADMAP.md")
           assert "Phase 35" in text("ROADMAP.md")
-          assert "Phase 35" in text("PROJECT_MEMORY/00_CONTINUITY.md")
-          assert "Phase 36" in text("PROJECT_MEMORY/00_CONTINUITY.md")
+          assert "F47" in text("PROJECT_MEMORY/00_CONTINUITY.md")
+          assert "ARENA EXECUTION ADDENDUM" in text("PROJECT_MEMORY/00_CONTINUITY.md")
           assert "STATUS" in text("Docs/PHASE_36_CLASS_PRESENTATION_ASSETS_RUNTIME_ACCEPTANCE.md")
           assert "IMPLEMENTADO" in text("Docs/PHASE_36_CLASS_PRESENTATION_ASSETS_RUNTIME_ACCEPTANCE.md")
           assert "STATUS" in text("Docs/PHASE_35_PVE_PVP_BALANCE_SIMULATION.md")
           assert "IMPLEMENTADO" in text("Docs/PHASE_35_PVE_PVP_BALANCE_SIMULATION.md")
-          assert "Phase 34" in text("PROJECT_MEMORY/00_CONTINUITY.md")
           print("Phase 22-34 repository contract and balance-config audit passed.")
       - name: Validate Phase 37 Unreal visual foundation
         shell: python
@@ -295,5 +300,11 @@ jobs:
           assert not list(Path("Content").rglob("*.umap"))
 
           print("Phase 38 repository asset-pipeline contract passed.")
+      - name: Validate generated 2D art and animation sheets
+        run: |
+          python -m pip install --quiet -r Tools/Art/requirements.txt
+          python Tools/Art/build_sprite_sheets.py
+          python Tools/Art/validate_manifest.py
+          python -m unittest Tools.Art.test_prepare_generated_sprite Tools.Art.test_build_sprite_sheets
       - name: Report
         run: echo "Repository static validation completed successfully."

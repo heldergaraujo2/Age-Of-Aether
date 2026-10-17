@@ -49,4 +49,16 @@ Até lá, o estado correto é SOURCE READY / RUNTIME MATERIALIZATION PENDING.
 ## Próxima produção
 Prioridade: 1) Player Mage; 2) árvore; 3) rocha; 4) casa; 5) expansão das famílias de vegetação, arquitetura, criaturas, NPCs, dungeon e VFX.
 
+## Progress update — 2026-10-17
+
+The first generated source-art pass now contains Player Mage Idle, Wild Hound Idle, and a First Region settlement house. Source/provenance lives in `ArtSource/Generated/` and `Content/Aether/Art/GENERATED_ART_PROVENANCE.md`; transparent import-ready PNG derivatives and their manifest entries are under `Content/Aether/Art/ImportReady/` and `Content/Aether/Art/2D_ASSET_MANIFEST.json`.
+
+A deterministic matte-preparation tool and source-art validator/tests were added in `Tools/Art/`. The initial three-source pass validated real RGBA alpha and three preparation tests.
+
+## Follow-up — sprite-sheet animation slice
+
+Phase 57 adds generated Mage Walk/Cast, Elara Idle/Talk, and Wild Hound Run/Attack key poses, plus three row-based atlases. The browser preview plays these rows; see `Docs/PHASE_57_SPRITE_SHEET_ANIMATION_SLICE.md` and the updated provenance/manifest.
+
+**Current status remains SOURCE READY / UNREAL IMPORT PENDING.** Browser animation is implemented, but UE Paper2D Sprite/Flipbook asset creation, visual-profile mapping, PIE review and Unreal runtime acceptance are still outstanding. Complete eight-direction movement, Hit/Death and the remaining tree/rock/building/NPC/mob families are also still future work. No Unreal runtime acceptance is claimed.
+
 A prioridade é provar uma família visual completa e reutilizável antes de multiplicar dezenas de assets inconsistentes.

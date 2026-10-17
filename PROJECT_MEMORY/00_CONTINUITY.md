@@ -586,3 +586,77 @@ Preserve all existing local modified and untracked files.
 - GitHub-first F47 correction: AAetherDevelopmentWorldActor::AddSpriteArt now applies FRotator(90.0f, Yaw, 0.0f) so environment sprites stand vertically while preserving the isometric yaw. House/tree/rock runtime scales were modestly increased. AAetherCharacter::InitializeRuntimeVisual receives the same 90-degree pitch and a modest character scale increase.
 - This correction does not replace or recreate gameplay systems; it only corrects the 2D presentation bridge.
 - Required next evidence: pull main, compile with UE 5.8 UBT, restart Unreal with the latest binary, run PIE on AetherWorld_FirstRegion, verify the sprites now face the isometric camera, remain readable and persistent, and physically walk/explore the region. Runtime PASS remains blocked until that evidence is observed.
+
+
+## ARENA EXECUTION ADDENDUM — 2026-10-17
+
+This addendum records work performed in the current Arena Linux sandbox; it does not replace the last real PC/Unreal evidence above.
+
+### Environment and execution truth
+- Current workspace: branch `arena/1399af2e-age-of-aether`.
+- Unreal Editor/UnrealEditor-Cmd/UnrealBuildTool are not installed in this sandbox.
+- No new Unreal build, Automation, PIE, dedicated-server, map, or performance result was executed. The previous 280 / 266 / 14 automation counts remain historical, not a current run.
+- No `.uasset` or `.umap` was fabricated.
+
+### First generated 2D source-art kit
+- Added original generated source illustrations for Player Mage Idle, First Region Wild Hound Idle, and a settlement house.
+- Raw generated images are retained outside `Content/` in `ArtSource/Generated/` so Unreal does not scan/import the raw generation outputs.
+- Prepared RGBA PNG derivatives are staged under `Content/Aether/Art/ImportReady/` and referenced by `Content/Aether/Art/2D_ASSET_MANIFEST.json`.
+- Added exact prompts and source provenance in `Content/Aether/Art/GENERATED_ART_PROVENANCE.md`.
+- Added deterministic checker-matte preparation, manifest/alpha validation, and three unit tests in `Tools/Art/`.
+- Added the art validator and unit tests to repository CI.
+
+### Validation actually performed in this session
+- `Tools/Art/validate_manifest.py`: PASS — 7 unique art IDs; 3 generated RGBA sources validated.
+- `python -m unittest Tools.Art.test_prepare_generated_sprite -v`: PASS — 3 tests.
+- Python syntax compilation and JSON syntax validation: PASS.
+- All four embedded Python static-validation blocks in `.github/workflows/repository-validation.yml`: PASS. This also exposed and fixed stale path assertions plus a delimiter check that incorrectly treated Markdown list punctuation as source-code syntax.
+- Unreal import, Paper2D Sprite/Flipbook creation, visual profile assignment, PIE and animation validation: PENDING on Unreal 5.8.
+
+### Next steps
+1. Continue diagnosis of the recorded ClassBalance automation block on the real Unreal PC; do not weaken tests or infer a runtime result from source inspection.
+2. Import the three prepared PNGs in UE 5.8, create actual Paper2D assets/profiles, and inspect scale, alpha, sorting, anchors, and quality in PIE.
+3. Finish the remaining character/creature/environment animation and world art families, then wire the vertical slice end to end and rerun the full test/multiplayer/persistence/release gates.
+
+
+## ARENA FOLLOW-UP — SPRITE SHEET ANIMATION SLICE (2026-10-17 UTC)
+
+- Generated key poses and packed three local transparent sprite atlases for the playable Mage (Idle/Walk/Cast), Vigia Elara (Idle/Talk), and Wild Hound (Idle/Run/Attack).
+- Browser preview now selects atlas rows from movement, cast/attack, NPC interaction, and hound AI state. The preview continues to be a Canvas 2D browser prototype, not an Unreal build/runtime.
+- Assets: `Preview/assets/spritesheets/`; prepared frames/atlases: `Content/Aether/Art/ImportReady/Animations/`; raw prompts/sources: `ArtSource/Generated/Animations/`.
+- Rebuild/validation: `Tools/Art/build_sprite_sheets.py`, `Tools/Art/validate_manifest.py`, `Tools/Art/test_build_sprite_sheets.py`; CI now rebuilds sheets and runs both art test modules.
+- A DOM/canvas-stub smoke flow verified Idle/Walk/Cast/Talk/Run/Attack atlas row selection and completed the first quest path. It did not execute a real graphical browser or Unreal.
+- Exact sources, prompts, row layout, repeated hold-frame caveat and remaining Unreal gate: `Docs/PHASE_57_SPRITE_SHEET_ANIMATION_SLICE.md` and `Content/Aether/Art/GENERATED_ART_PROVENANCE.md`.
+- Still pending: UE 5.8 import, Paper2D/Flipbook creation, runtime profile binding, PIE inspection, complete directional cycles and additional NPC/mob families. No runtime PASS is claimed.
+
+
+## ARENA FOLLOW-UP — OCA DA VIGÍLIA QUEST SLICE (2026-10-17)
+
+- Continued after Phase 57 with a second playable browser-preview mission instead of claiming the unavailable Unreal acceptance gate.
+- Added the Aether Wisp source poses, RGBA frames, 4×3 Idle/Glide/Pulse atlas, art-manifest entries and exact provenance prompts.
+- WEB SLICE 0.3 now chains the original Elara / Wild Hound quest into an Oca investigation, ranged Wisp encounter, dodgeable aether pulse, Núcleo pickup and seal activation; UI, target panel, map, journal, rewards and key-item inventory track the second quest.
+- `node --check`, `git diff --check`, sprite-sheet build, manifest validation (18 IDs / 16 generated RGBA sources), six Python tests and a DOM/Canvas-stub full two-quest smoke passed. The smoke is not a real graphical browser.
+- The Workspace preview serves local assets on port 4173; Unreal Editor/UBT remain unavailable in the sandbox. UE 5.8 import, Paper2D/Flipbook creation, PIE, multiplayer, profile binding and runtime acceptance remain NOT VERIFIED. No `.uasset`/`.umap` was fabricated.
+- Phase documentation: `Docs/PHASE_58_WATCH_HOLLOW_QUEST_SLICE.md`. The WEB SLICE follow-ups and Phase 59 static triage are recorded separately in `ROADMAP.md`; none supersedes the requirement for local Unreal runtime acceptance.
+
+
+## ARENA FOLLOW-UP — AETHERFALL CARTOGRAPHY WEB SLICE (2026-10-17)
+
+- Continued the Phase 47 map integration in `Preview/` as a local browser presentation, preserving the two-quest sequence and animated sprite atlases.
+- Added `Preview/world-map-data.js` with the canonical nine `AOA.Region.FirstPermanent.*` zones, 12 logical cell roles, route/scenery coordinates and 22 POIs. `wilderness-south` remains a point within canonical `Wilderness`.
+- Added a responsive SVG cartography modal and terrain/logical-cell layers; `M`/`Escape`, POI/objective/free waypoints, minimap route, world Canvas marker and route clearing are wired. The quest-map target is resolved by the same helper used by `drawQuestMarkers`; wild-fragment and watch-core drops are positioned at their current world coordinates.
+- Added planned-only map points for dungeon/approach, elite, boss arena, PvP/event and expansion. They do not add canonical zones or implement those gameplay areas.
+- Verification: JavaScript syntax checks, `node Tools/Map/test_first_region_map.js`, `git diff --check`, temporary JSDOM/Canvas-stub gameplay and keyboard smoke, and HTTP 200 for the live preview resources. SVG raster review improved label overlap. No real graphical browser, Unreal Editor, PIE or Unreal Automation was run.
+- Real Unreal maps, blockout, terrain/buildings/collision/NavMesh, World Partition/Data Layers/HLOD, streaming and complete Phase 47 areas remain pending. Browser coordinates are not Unreal transforms. No `.umap`/`.uasset` was fabricated.
+- Detailed record: `Docs/PHASE_47_AETHERFALL_CARTOGRAPHY_WEB_SLICE_2026-10-17.md`.
+
+
+## ARENA FOLLOW-UP — 100 KM OVERWORLD / FARMING / EQUIPMENT WEB SLICE (2026-10-17)
+
+- Updated the browser preview to WEB SLICE 0.5 with a 100 × 100 km SVG overworld, ten teleport destinations (two cities + eight hunting regions), regional/cell map layers and working map-to-scene teleportation.
+- Each farming region has exactly ten active mob slots and per-mob respawn metadata of three seconds. Farm kills grant XP/coins and can drop collectible items. Quest kills/turn-ins grant only coins/items; the browser preview's only `grantXp` caller is the farm-mob kill path.
+- Added live inventory/equipment actions and gear stats, pet following/attacks, equipable wings, mob loot, arcane/healing spell VFX, level-up animation and expanded city buildings/animated townsfolk. Existing two quests and animated sprite-sheet preview are retained.
+- Map contract, JavaScript syntax, diff check, and a temporary JSDOM/Canvas-stub smoke passed. The stub checked map selection/teleport, ten mobs, exact 3-second respawn behavior, farm-only XP, quest rewards, gear stats and animation triggers; it is not a real graphical browser.
+- Preview resources use query version `0.5.0` and the port-4174 server remains the intended live preview. Browser km coordinates are not Unreal transforms; a local destination spawn is still used for each scene.
+- UE Editor/UBT/PIE/Automation, real `.umap`/`.uasset`, World Partition/Data Layers/streaming, authoritative multiplayer and runtime acceptance remain pending; no Unreal PASS or binary assets are claimed.
+- Detailed record: `Docs/PHASE_60_OVERWORLD_FARM_EQUIPMENT_WEB_SLICE_2026-10-17.md`.
